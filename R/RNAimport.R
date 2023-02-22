@@ -32,7 +32,7 @@
 #' clusters <- rtracklayer::import.gff("./data/reference/ClustersInfo.gff3")
 #'
 #' total_reads <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-#' names(total_reads) <- samples
+#' names(total_reads) <- sample_names
 #' siRNA_data <- RNAimport(results = directory,
 #'                            samples = sample_names,
 #'                            clusters = clusters,

@@ -57,7 +57,7 @@ using the `devtools` package:
 ```{r,  eval=FALSE, message=FALSE}
 
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("KJeynesCupper/RNAlocate", ref = "devel")
+devtools::install_github("KJeynesCupper/RNAlocate")
 ```
 
 # Load the package and the example data into R session
@@ -74,40 +74,39 @@ data("sRNA_24")
 Once installed, you will have access to the following functions:
 
 **Pre-processing**
-- `dir_relocate()`
-- `chr_punct()`
-- `chr_info()`
-- `merge_files()`
-- `quality_check()`
-- `find_overlap()`
+- `createWorkplace()`  
+- `chrModify()`
+- `chrInfo()`
+- `mergeFiles()`
+- `checkQuality()`
+- `findOverlap()`
+- `identifyClusters()`
 
 **Analysis**
 - `RNAimport()`
 - `RNAconsensus()`
 - `RNAsubset()`
 - `RNAdistribution()`
-- `frequency_plot()`
-- `DE_prepare()`
-- `PCA_plot()`
-- `distance_plot()`
-- `DE_analysis()`
-- `DE_results()`
-- `mobile_molecules()`
-- `heatmap_plot()`
+- `plotFrequency()`
+- `plotSamplePCA()`
+- `plotSampleDistribution()`
+- `RNAanalysis()`
+- `MobileMolecules()`
+- `plotHeatmap()`
 
 
 
 Further details on how each function operates will be provided later on in the
-documentation. For some functions there are recurring augments. 
+documentation. For some functions there are recurring arguments. 
 In the pre-processing steps, the `files` argument occurs frequently and tells 
 the function a local directory path to a folder holding a particular file(s). 
-Similarly, the augment `out` instructs the function of the location to save the 
-output file(s).  In the analysis steps, some important augments include `samples` 
+Similarly, the argument `out` instructs the function of the location to save the 
+output file(s).  In the analysis steps, some important arguments include `samples` 
 which refers to the a character vector contains the names of all samples in the 
 experiment, `conditions` which refers to a character vector containing a select
 few samples depending on your analysis preference, `groups` which refers to 
 a character vector of the two experimental conditions and lastly `controls` 
-which refers to the control samples in the analysis. A recurring augment in the 
+which refers to the control samples in the analysis. A recurring argument in the 
 analysis pipeline is the `method` argument which tells the function 
 how to process the data from the choice of two analytical methods 
 (i.e.`"DESeq"`, or `"edgeR"`). All other arguments are discussed
@@ -143,7 +142,7 @@ Where `<data_set>` is one of the package data sets mentioned above.
 
 ## Data organisation: working directiry structure
 The pre-processing steps rely on a fairly strict working directory structure. 
-The function *create_workplace* will produce the key directories which will store 
+The function *createWorkplace* will produce the key directories which will store 
 all the files you will need:
 
 * Raw: contain raw sRNA-seq files (.fasta/.fq)
@@ -153,7 +152,7 @@ all the files you will need:
 **Open a new R project, and lets begin!**
 
 ```{r, eval = FALSE}
-create_workplace(getwd()) 
+createWorkplace(getwd()) 
 ```
 
 ## The raw data files
@@ -202,7 +201,7 @@ file.copy(files, "/Users/user1/projectname/workplace/raw/")
 The pipeline is designed to analyse grafting systems with two 
 distinct genomes, here tomato and eggplant.  
 These are pulled from the internet and saved in the folder `reference` 
-in your working directory. Replace the `URL` augment with the FTP URL of a 
+in your working directory. Replace the `URL` argument with the FTP URL of a 
 genome reference, and replace the `destfile` argument with the directory 
 of your `reference` folder, plus the name you want to call the file. Ideally, 
 name it the Latin species name. 
@@ -223,7 +222,7 @@ Similar to the reference genomes, the annotation files will also need to be
 pulled from the internet but saved in the folder `annotation` in your working 
 directory. 
 
-The same as before, replace the `URL` augment with the online FTP URL of 
+The same as before, replace the `URL` argument with the online FTP URL of 
 your reference annotation, and replace the `destfile` argument with the 
 directory of your reference folder plus the name you want to call the file.
 Ideally, name it the Latin species name. 
@@ -265,8 +264,8 @@ genomes, for example, "SM" to represent the Latin name of eggplant.
 - If a chromosome naming pattern contains punctuation, the mapping step will not
 work. 
 
-Use `chr_info()` to produce a text file containing the chromosome names and 
-sizes, and use `chr_modify()` to alter the names of the chromosomes in a genome. 
+Use `chrInfo()` to produce a text file containing the chromosome names and 
+sizes, and use `chrModify()` to alter the names of the chromosomes in a genome. 
 
 
 In the example, the **Solanum lycopersicum** (version 4) genome contains a 
@@ -276,21 +275,21 @@ full-stop/period.
 
 ```{r, eval = FALSE}
 # check for chromosome names and the chromosome sizes in merged reference 
-chr_info(genome = "/Users/user1/projectname/workplace/reference/merge/
+chrInfo(genome = "/Users/user1/projectname/workplace/reference/merge/
            ref_merged.fasta", 
            out =  "/Users/user1/projectname/workplace/reference/merge/")
 # Remove punctuation from merged reference genome.  
-chr_modify(genome = "/Users/user1/projectname/workplace/reference/merge/
+chrModify(genome = "/Users/user1/projectname/workplace/reference/merge/
            Solanum_lycopersicum.fa.gz", 
           old = "SL4.",
           new = "SL4")
 ```
 
-Use the function `merge_files()` to concatenate the reference genome files into a 
+Use the function `mergeFiles()` to concatenate the reference genome files into a 
 single reference genome file through a system call command. 
 
 ```{r, eval = FALSE}
-merge_files(files = "/Users/user1/projectname/workplace/reference/*",
+mergeFiles(files = "/Users/user1/projectname/workplace/reference/*",
         out = "/Users/user1/projectname/workplace/reference/merge/
         ref_merged.fa")
 ```
@@ -305,13 +304,13 @@ To check whether the trimming has indeed cleaned the data up as expected, a
 final quality check is undertaken. This also provides useful information on your
 library. 
 
-To check the quality, use the `quality_check()` function which performs
+To check the quality, use the `checkQuality()` function which performs
 a system call to the operating system to use `FastQC` to check the files. The 
 program produces a `HTML` file for each sample, which is saved in a new folder 
 (`qc`) within the directory where the files undergoing the analysis are stored. 
 ```{r, eval = FALSE}
 # check quality of raw samples
-quality_check(files = "/Users/user1/projectname/workplace/raw/")
+checkQuality(files = "/Users/user1/projectname/workplace/raw/")
 ```
 
 ## Trimming samples 
@@ -343,7 +342,7 @@ done
 Lastly, complete a quality check on the trimmed samples in R. 
 ```{r, eval = FALSE}
 ## check quality of trimmed samples
-quality_check(files = "/Users/user1/projectname/workplace/trimmed/")
+checkQuality(files = "/Users/user1/projectname/workplace/trimmed/")
 
 ```
 
@@ -416,7 +415,7 @@ done
 ```
 
 ### Step 2 
-The second step in mapping is undertaken in R, use the `cluster_info.` 
+The second step in mapping is undertaken in R, use the `identifyClusters.` 
 For each sample, in the first mapping step, ShortStack software identifies 
 sRNA cluster (referred to as dicer-derived clusters) which aligned with 
 locations across the merged reference genome. The samples will share many of 
@@ -434,7 +433,7 @@ conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
 folder <- "./workplace/alignment_multi_one/"
 save_folder <- "./workplace/reference/"
 
-cluster_info(files = folder, 
+identifyClusters(files = folder, 
              out = save_folder,
              samples = conditions)
 
@@ -498,20 +497,20 @@ If you want to know what genomic features are associated with the genomic
 coordinates of a sRNA  we will need to overlap the genomic 
 annotation of our reference genomes with the clusters annotation file. The 
 genomic annotation of our reference genomes need to firstly be merged into a
-single file using the `merge_files` function. Then, the overlap between the
-files can be computed using the `find_overlap` function. This function, similar
-to the `merge_files` functions, commands a system call to the operating system 
+single file using the `mergeFiles` function. Then, the overlap between the
+files can be computed using the `findOverlap` function. This function, similar
+to the `mergeFiles` functions, commands a system call to the operating system 
 and sends information to `BEDtools`. 
 
 
 ```{r, eval = FALSE}
 ## merge the annotation files into a single annotation file 
-merge_files(files = "/Users/user1/projectname/workplace/annotation/*",
+mergeFiles(files = "/Users/user1/projectname/workplace/annotation/*",
             out = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff")
 ## Find the overlap between the identified clusters and the merged annotation file
 ## This will enable annotation of the sRNA to aid funcitonal analysis 
 
-find_overlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff",
+findOverlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff",
              clusters = "/Users/user1/projectname/workplace/reference/ClusterInfo.gff3", 
              out = "/Users/user1/projectname/workplace/reference/overlap.bed")
 ```
@@ -564,7 +563,7 @@ results_dir <-  "./analysis/alignment_unique_two/"
 sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
                 "TomTom_1", "TomTom_2", "TomTom_3")
 read_numbers <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-names(totalNumReads) <- conditions
+names(read_numbers) <- sample_names
 clusterlocations <- rtracklayer::import.gff("./analysis/reference/
                                             ClustersInfo.gff3")
 sRNA_data <- RNAimport(results = results_dir, 
@@ -575,30 +574,93 @@ sRNA_data <- RNAimport(results = results_dir,
 
 ```
 
+## Sample-level quality control
+A handy step in the analysis is to assess the overall similarity between 
+sample replicates to understand which samples are the most similar and which are
+different, and where the most variation is introduced in the data set. 
+As well as understanding whether the data set meets your expectations. 
+It is expected that between the conditions, the sample replicates show 
+enough variation to suggest that the replicates are from different groups. 
+
+To investigate the sample similarity/difference, we will undertake sample-level 
+quality control using three different methods: 
+
+- Distribution of RNA classes within each sample
+- Principle component analysis (PCA)
+- hierarchical clustering Heatmap
+
+
+This will show us how well samples within each condition cluster together, which 
+may highlight outliers. Plus, to show whether our experimental conditions 
+represent the main source of variation in the data set. 
+
+Here we will be employing an unsupervised clustering methods for the PCA and 
+hierarchical clustering Heatmap. This involves an unbiased log2-transformation of 
+the counts which will emphasis the the sample clustering to improve
+visualization. The DESeq2 package contains a particularly useful function to 
+undertake regularized log transformation (rlog) which controls the variance 
+across the mean, and in this package we have utlised this for the quality 
+control steps. 
+
 ### Plot the distribution of RNA classes within each sample
 Explore the number of each RNA class identified within each sample using the
 `RNAdistribution` function which produces a table and plots the results. The 
-results can be plotted as either a bar chart or a line graph for each sample 
-and can be shown in a bar chart facet or in as a single line graph, where each 
-line represents a sample. Alternatively, the results can be plotted individually 
+results can be plotted as either a bar chart (`style = "bar"`)  or a line graph 
+(`style = "line"`) for each sample and can be shown in a bar chart facet 
+(`facet = TRUE`) or in as a single line graph, where each line represents a 
+sample (`together=TRUE`). Alternatively, the results can be plotted individually 
 for each sample in either format. 
 
 ##### Table 1. The total number of each RNA class found within each sample, 
 ##### where N represents unclassified RNAs. 
 
 ```{r, echo=FALSE}
-cap9 <- "An example bar plot, in a facet format, to show the distribution of 
+cap9 <- "An example line graph (A) and bar graph (B), to show the distribution of 
 RNA classes within each sample"
 
 ```
 
-```{r, message=FALSE, fig.cap=cap9, fig.show="hold"}
+```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B")}
 
-sample.distribution <- RNAdistribution(sRNA_data, style = "line")
+sample.distribution_line <- RNAdistribution(sRNA_data, style = "line")
+
+sample.distribution_bar <- RNAdistribution(sRNA_data, style = "bar")
 
 ```
 
-## Define The Class of Each sRNA  
+### Principle component analysis to assess sample distance
+Principal Component Analysis (PCA) is a useful technique to illustrate sample
+distance as it emphasizes the variation through the reduction of dimensions in 
+the data set. Here, we introduce the function `plotSamplePCA()`
+
+```{r, echo=FALSE}
+cap3 <-"An example of a PCA, illustracting the sRNA data set sample similarity"
+
+```
+```{r ,message=FALSE, fig.cap=cap3, fig.show="hold", out.width="50%"}
+
+group <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
+           "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
+plotSamplePCA(sRNA_data, group)
+
+```
+
+### Hierarchical clustered heatmap to assess sample distance
+
+Similarly, to a PCA plot, the `plotSampleDistance()` function undertakes 
+hierarchical clustering with an unbiased log transformation to calculate sample 
+distance and is plotted in the form of a heatmap. 
+
+```{r, echo=FALSE}
+cap4 <-"An example of a heatmap,illustracting the sRNA data set sample similarity"
+
+```
+```{r ,message=FALSE, fig.cap=cap4, fig.show="hold", out.width="50%"}
+plotSampleDistance(sRNA_data)
+
+```
+
+## Define the consensus RNA class  
 Have a look at the `sRNA_data` object, you will see that for each sample the 
 class of sRNA has been determined (see columns with names starting with 
 DicerCall). The result will either state a number from 20-24 which represents 
@@ -611,7 +673,7 @@ of occurrences of classifications for a sRNA. The consensus is determined
 based on the class with the most counts. 
 
 The function requires the user to state which samples to base the consensus 
-calculation on (see augment `conditions`). It is recommend to state the treatment 
+calculation on (see argument `conditions`). It is recommend to state the treatment 
 samples only, because these are the ones of interest. 
 However, if you have less than two treatment replicate, calculating
 the consensus class this way could dramatically shrink your data - although this
@@ -649,203 +711,78 @@ sRNA_2122 <- RNAsubset(sRNA_data_summary, type = c(21, 22))
 
 ```
 
-## Plot consensus classification of clusters
+### Plot consensus classification of sRNA
 
-Use `frequency_plot()` to visualize the distribution of the consensus sRNA 
+Use `plotFrequency()` to visualize the distribution of the consensus sRNA 
 classes within the data. This step can be used as a quality control step to 
 illustrate the distribution of each sRNA class within the data. The function 
-can plot the absolute or relative frequency, use augment `relative`. It can be 
-benefical to view the absolute frequency as well as the relative to observe
+can plot the absolute or relative frequency, use argument `relative`. It can be 
+beneficial to view the absolute frequency as well as the relative to observe
 whether the data meets your expectations. 
 
-Similarly, the `distribution_plot()` function can be used to plot the distribution 
-of sRNA classes within each sample, individually. 
-
 ```{r, echo=FALSE}
-cap1 <- "A box plot example using `frequency_plot()` function with the example 
-data. In this example, the frequency of each small RNA class consensus is 
-shown."
-
-cap2 <- "A box plot example using the `distribution_plot()` function with the 
-example data. In this example, the frequency of each small RNA class  
-is illustrated for each sample"
+cap5 <-"A box plot example of the relative frequency of the consensus sRNA class."
 
 ```
 
-```{r, message=FALSE, fig.cap=cap1}
-frequency_plot(sRNA_data_summary, relative = FALSE)
+```{r, message=FALSE, fig.cap=cap5}
+plotFrequency(sRNA_data_summary, relative = TRUE)
 ```
 
-```{r , message=FALSE, fig.cap=cap2, eval = FALSE}
-## ERROR ON THIS PLOT. 
-distribution_plot(sRNA_data_summary)
-```
-
-## Count preparation with DESeq2 or edgeR 
+## Differential Expression analysis with DESeq2 or edgeR 
 Differential expression (DE) analysis is undertaken to identify sRNA which are 
 statistically significant to discover quantitative changes in the expression 
 levels between the treatment (hetero-grafting) and the control (self-grafting)
 groups. This technique can be undertaken with a variety of tools, in `RNAlocate`
 users have the option to use the `DESeq2` or `edgeR` analytical method. 
 
-The data must be prepared for the DE analysis using the `DE_prepare()`, and the 
-steps taken depend on the analytical method chosen. 
-In the package, this has been simplified into a single
-function where you must only state which method to you. Here we breakdown what 
-happens in each method: 
-
-**DESeq2 method**
-The `DESeq2` method creates a DESeqDataSet object from a table of 
-un-normalised counts and estimates the size factors using the 
-"median ratio method" to normalise the counts based on 
-sequencing differences in library size and RNA composition of the samples. 
-
-**edgeR method**
-The `edgeR` method creates DGEList object from a table of un-normalised counts,
-and TMM normalization is applied to data set to account for compositional 
-difference between the libraries.
+Although both methods will produce different results, it is typically they case 
+that that at the step where we isolate the mobile molecules, the same results 
+are produce. What is meant by this, is that the same mobile molecules are
+typically identified at the end of the analysis regardless of the analytical 
+method. However, in particular case, one method will be preferred over the other. 
+For instance, the `DESeq2` method is not appropriate when the experiment does not
+contain replicate (ie. one sample replicate per condition). On the other hand, 
+edgeR can be used. Here, we have included the recommend practice for edgeR when
+the data set does not contain replicates. This option can be employed by setting
+a custom dispersion value, see argument `dispersionValue`. 
 
 ```{r DEprep, message = FALSE, warning = FALSE}
-
 # sample conditions. 
-group <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant", 
+groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant", 
            "Tomato/Tomato", "Tomato/Tomato", "Tomato/Tomato")
 
 
-## DESeq prepare for each subset.
-# 24-nt subset
-sRNA_24_prep_DESeq <- DE_prepare(sRNA_24, group, method = "DESeq2")
-# 21/22-nt subset
-sRNA_2122_prep_DESeq <- DE_prepare(sRNA_2122, group, method = "DESeq2")
-
-
-
-## edgeR prepare for each subset.
-# 24-nt subset
-sRNA_24_prep_edgeR <- DE_prepare(sRNA_24, group, method = "edgeR")
-# 21/22-nt subset
-sRNA_2122_prep_edgeR <- DE_prepare(sRNA_2122, group, method = "edgeR")
-```
-
-
-## PCA and Heatmap plots to illustrate sample distances 
-`PCA_plot()` and `distance_plot()` functions visualize the variation between the 
-samples in an experiment to access sample distance as part of a quality check 
-of the data. 
-
-`The PCA_plot()` function undertakes a Principal Component Analysis 
-(PCA) using an unbiased log transformation and plots the results. 
-PCA is a method used to highlight variation and reduces the dimensions in a 
-data set to make it easier to visualise the similarities and difference.
-
-Similarly,The PCA_plot()` function undertakes hierarchical clustering with an 
-unbiased log transformation to calculate sample distance. 
-
-### Quality control plots for 24-nt sRNA dataset
-```{r, echo=FALSE}
-cap3 <- "An example of the `DESeq2` method, illustracting the 
- 24-nt sRNA data set. A) PCA plot. B) Hierarchical clustering heatmap"
-
-cap4 <- "An example of the `edgeR` method, illustracting the 
- 24-nt sRNA data set. A) PCA plot. B) Hierarchical clustering heatmap"
-
-cap5 <- "An example of the `DESeq2` method, illustracting the 
-21/22-nt sRNA data set. A) PCA plot. B) Hierarchical clustering heatmap"
-
-cap6 <- "An example of the `edgeR` method, illustracting the 
-21/22-nt sRNA data set. A) PCA plot. B) Hierarchical clustering heatmap"
-
-```
-
-```{r ,message=FALSE, fig.cap=cap3, fig.show="hold", out.width="50%", fig.subcap= c("A","B")}
-
-PCA_plot(sRNA_24_prep_DESeq)
-distance_plot(sRNA_24_prep_DESeq)
-
-```
-
-```{r, message=FALSE, fig.cap=cap4, fig.show="hold", out.width="50%", fig.subcap= c("A","B")}
-PCA_plot(sRNA_24_prep_edgeR)
-distance_plot(sRNA_24_prep_edgeR)
-
-
-```
-
-
-### Quality control plots for 21/22-nt sRNA dataset  
-
-```{r, message=FALSE, fig.cap=cap5, fig.show="hold", out.width="50%", fig.subcap= c("A","B")}
-
-PCA_plot(sRNA_2122_prep_DESeq)
-distance_plot(sRNA_2122_prep_DESeq)
-
-#gridExtra::grid.arrange(p5, p6, nrow(1))
-```
-
-```{r, message=FALSE, fig.cap=cap6, fig.show="hold", out.width="50%", fig.subcap= c("A","B")}
-PCA_plot(sRNA_2122_prep_edgeR)
-distance_plot(sRNA_2122_prep_edgeR)
-
-#gridExtra::grid.arrange(p7, p8, nrow(1))
-
-```
-
-
-## Differential Expression Analysis with DESeq2 or edgeR 
-`DE_analysis()` allows the user to run differential expression analysis on a 
-data set using either `DESeq2` or `edgeR`.The results from the analysis are 
-not easily accessible and do not contain the information on each sRNA,therefore, 
-the results are added to the summary data set using the `DE_results()` 
-function. This enables easier viewing and manipulation of the data. 
-
-The results from the anal
-```{r, message=FALSE}
 ## Differential analysis: DEseq2 method
-sRNA_24_DE_DESeq2 <- DE_analysis(data = sRNA_24_prep_DESeq2, 
-                          groupPair = c("Tomato/Eggplant","Tomato/Tomato"), 
-                          method = "DESeq2" )
-
-sRNA_2122_DE_DESeq2 <- DE_analysis(data = sRNA_2122_prep_DESeq2, 
-                            groupPair = c("Tomato/Eggplant","Tomato/Tomato"), 
-                            method = "DESeq2" )
-
-## Add results to the summary data frame. 
-res_sRNA_24_DESeq2 <- DE_results(Summarydata = sRNA_24,
-                                 analysisResults = sRNA_24_DE_DESeq2, 
-                                 method = "DESeq2")
-res_sRNA_2122_DESeq2 <- DE_results(Summarydata = sRNA_2122,
-                                   analysisResults= sRNA_2122_DE_DESeq2, 
-                                   method = "DESeq2")
-
+# 24-nt sRNA data-set
+sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_24, 
+                                 group = groups,
+                                 method = "DESeq2" )
+# 2122-nt sRNA data-set
+sRNA_2122_DESeq2 <- RNAanalysis(data = sRNA_2122, 
+                                 group = groups,
+                                 method = "DESeq2" )
 
 
 ## Differential analysis: edgeR method
-sRNA_24_DE_edgeR <- DE_analysis(data = sRNA_24_prep_edgeR, 
-                          groupPair = c("Tomato/Eggplant","Tomato/Tomato"), 
+sRNA_24_edgeR <- RNAanalysis(data = sRNA_24, 
+                          group = groups, 
                           method = "edgeR" )
 
-sRNA_2122_DE_edgeR <- DE_analysis(data = sRNA_2122_prep_edgeR , 
-                            groupPair = c("Tomato/Eggplant","Tomato/Tomato"), 
+sRNA_2122_edgeR <- RNAanalysis(data = sRNA_2122 , 
+                            group = groups, 
                             method = "edgeR" )
-
-## Add results to the summary data frame. 
-res_sRNA_24_edgeR <- DE_results(Summarydata = sRNA_24,
-                                analysisResults =  sRNA_24_DE_edgeR, 
-                                method = "edgeR")
-res_sRNA_2122_edgeR <- DE_results(Summarydata = sRNA_2122,
-                                  analysisResults = sRNA_2122_DE_edgeR,
-                                  method = "edgeR")
-
 ```
 
-## Identify mobile molecules 
+
+## Identify the mobile molecules 
 It is essential to remove the noise from the data to isolate potential mobile 
 molecules which include poorly mapped clusters and, in this case, the clusters 
 which map the the scion genotype when the aim is to identify molecules traveling 
 from the rootstock. In the data, the aim is to explore whether there are tomato 
 sRNA traveling up through the graft junction and exiting into the 
 eggplant leaf tissues. We can identify potential mobile molecule by using 
-the `mobile_molecules()` function. It selects clusters mapping to the rootstock 
+the `MobileMolecules()` function. It selects clusters mapping to the rootstock 
 genome in the hetero-graft. Therefore, we will remove clusters mapped to 
 chromosome in the genotype used in the self-graft controls. 
 
@@ -857,7 +794,7 @@ In the example, the tomato genome has chromosome labeled with
 associated with the eggplant genome and keep only clusters associated with the 
 tomato genome, set the `"task"` argument as `"keep"`.  
 
-The `mobile_molecules()` function extracts the most statistically significant 
+The `MobileMolecules()` function extracts the most statistically significant 
 mobile RNA from a test object, based on an adjusted p-value threshold = 0.05.The 
 threshold can be changed to make it less stringent by using the argument `padj`.
 Similarly, if you would prefer to extract the mobile RNA based on the p-value, 
@@ -870,37 +807,41 @@ setting `stat=FALSE`. This might be useful if you wish to compare the data sets.
 # vector of control names 
 control_names <- c("TomTom_1", "TomTom_2", "TomTom_3")
 
+
+
+
 ## Mobile Molecules: DEseq2 method
 # remove clusters associated to tomato in 24nt RNA database 
-sRNA_24_mobile_DEseq <- mobile_molecules(data = res_sRNA_24_DESeq2, 
+sRNA_24_mobile_DEseq <- MobileMolecules(data = sRNA_24_DESeq2, 
                                          controls = control_names, 
                                          id = "SL40", 
                                          task = "remove")
 
 # remove clusters associated to tomato in 2122nt RNA database 
-sRNA_2122_mobile_DEseq  <- mobile_molecules(data = res_sRNA_2122_DESeq2,
+sRNA_2122_mobile_DEseq  <- MobileMolecules(data = sRNA_2122_DESeq2,
                                             controls = control_names, 
                                             id = "SL40", 
                                             task = "remove")
 
+
+
+
+
 ## Mobile Molecules: edgeR method
 # remove clusters associated to tomato in 24nt RNA database 
-sRNA_24_mobile_edgeR <- mobile_molecules(data = res_sRNA_24_edgeR, 
+sRNA_24_mobile_edgeR <- MobileMolecules(data = sRNA_24_edgeR, 
                                         controls = control_names, 
                                          id = "SL40", task = "remove")
 
 # remove clusters associated to tomato in 2122nt RNA database 
-sRNA_2122_mobile_edgeR <- mobile_molecules(data = res_sRNA_2122_edgeR,
+sRNA_2122_mobile_edgeR <- MobileMolecules(data = sRNA_2122_edgeR,
                                            controls = control_names, 
                                            id = "SL40",
                                            task = "remove")
-
-
 ```
 
 
-
-## Heatmap plots to represent mobile molecules 
+### Heatmap plots to represent mobile molecules 
 Here we can use a hierarchical clustering heatmap to analysis the potential
 statistically significant mobile sRNAs we have identified. 
 It is expected that the log2 fold changes should be opposite between your
@@ -920,8 +861,8 @@ A) Identifed by the `DESeq2` method. B) Identifed the `edgeR` method."
 
 ```{r, message=FALSE, fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A DESeq2","B:edgeR") }
 
-p10 <- heatmap_plot(sRNA_24_mobile_DEseq)
-p11 <- heatmap_plot(sRNA_24_mobile_edgeR)
+p10 <- plotHeatmap(sRNA_24_mobile_DEseq)
+p11 <- plotHeatmap(sRNA_24_mobile_edgeR)
 
 ```
 
@@ -929,8 +870,8 @@ p11 <- heatmap_plot(sRNA_24_mobile_edgeR)
 ### Mobile molecules from the 21/22-nt sRNA dataset 
 ```{r, message=FALSE, fig.cap=cap8, fig.show="hold", out.width="50%", fig.subcap=  c("A:DESeq2","B:edgeR")}
 
-p12 <- heatmap_plot(sRNA_2122_mobile_DEseq)
-p13 <- heatmap_plot(sRNA_2122_mobile_edgeR)
+p12 <- plotHeatmap(sRNA_2122_mobile_DEseq)
+p13 <- plotHeatmap(sRNA_2122_mobile_edgeR)
 ```
 
 ## Session information

@@ -44,91 +44,42 @@ NULL
 NULL
 
 
-#' sRNA_2122_prep_DESeq2
+#' sRNA_24_DESeq2
 #' @docType data
 #' @keywords datasets
-#' @name sRNA_2122_prep_DESeq2
-#' @usage data(sRNA_2122_prep_DESeq2)
-NULL
-
-#' sRNA_2122_prep_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_prep_edgeR
-#' @usage data(sRNA_2122_prep_edgeR)
-NULL
-
-#' sRNA_24_prep_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_24_prep_DESeq2
-#' @usage data(sRNA_24_prep_DESeq2)
+#' @name sRNA_24_DESeq2
+#' @usage data(sRNA_24_DESeq2)
 NULL
 
 
-#' sRNA_24_prep_edgeR
+#' sRNA_2122_DESeq2
 #' @docType data
 #' @keywords datasets
-#' @name sRNA_24_prep_edgeR
-#' @usage data(sRNA_24_prep_edgeR)
-NULL
-
-#' sRNA_2122_DE_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_DE_DESeq2
-#' @usage data(sRNA_2122_DE_DESeq2)
-NULL
-
-#' sRNA_2122_DE_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_DE_edgeR
-#' @usage data(sRNA_2122_DE_edgeR)
-NULL
-
-#' sRNA_24_DE_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_24_DE_DESeq2
-#' @usage data(sRNA_24_DE_DESeq2)
+#' @name sRNA_2122_DESeq2
+#' @usage data(sRNA_2122_DESeq2)
 NULL
 
 
-#' sRNA_24_DE_edgeR
+#' sRNA_2122_edgeR
 #' @docType data
 #' @keywords datasets
-#' @name sRNA_24_DE_edgeR
-#' @usage data(sRNA_24_DE_edgeR)
+#' @name sRNA_2122_edgeR
+#' @usage data(sRNA_2122_edgeR)
 NULL
 
-#' res_sRNA_2122_DESeq2
+
+
+#' sRNA_24_edgeR
 #' @docType data
 #' @keywords datasets
-#' @name res_sRNA_2122_DESeq2
-#' @usage data(res_sRNA_2122_DESeq2)
+#' @name sRNA_24_edgeR
+#' @usage data(sRNA_24_edgeR)
 NULL
 
-#' res_sRNA_2122_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name res_sRNA_2122_edgeR
-#' @usage data(res_sRNA_2122_edgeR)
-NULL
 
-#' res_sRNA_24_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name res_sRNA_24_DESeq2
-#' @usage data(res_sRNA_24_DESeq2)
-NULL
 
-#' res_sRNA_24_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name res_sRNA_24_edgeR
-#' @usage data(res_sRNA_24_edgeR)
-NULL
+
+
 
 
 #' sRNA_24_mobile_DESeq2

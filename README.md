@@ -20,49 +20,47 @@ devtools::install_github("KJeynesCupper/RNAlocate")
 Functions
 ---------
 
-The `RNAlocate` package offer the following 7 pre-processing functions and  11 analysis functions:
+The `RNAlocate` package offer the following 7 pre-processing functions and  10 analysis functions:
 
 **Pre-processing**
-- `dir_relocate()`
-- `chr_checker()`
-- `chr_info()`
-- `merge_files()`
-- `quality_check()`
-- `find_overlap()`
+- `createWorkplace()`  
+- `chrModify()`
+- `chrInfo()`
+- `mergeFiles()`
+- `checkQuality()`
+- `findOverlap()`
+- `identifyClusters()`
 
 **Analysis**
 - `RNAimport()`
 - `RNAconsensus()`
 - `RNAsubset()`
 - `RNAdistribution()`
-- `frequency_plot()`
-- `DE_prepare()`
-- `PCA_plot()`
-- `distance_plot()`
-- `DE_analysis()`
-- `DE_results()`
-- `mobile_molecules()`
-- `heatmap_plot()`
+- `plotFrequency()`
+- `plot.PCA()`
+- `plotSampleDistribution()`
+- `RNAanalysis()`
+- `MobileMolecules()`
+- `plotHeatmap()`
 
 
 Loading test data
 -----------------
 
-To simulate the usage of the package, there are two grafting data sets. Both of the data sets
-were produced from the same raw data, yet, the only difference is the method of calling differential expression. 
-The package has the flexibility of the user to choose either the `DESeq2` or `edgeR` software. 
-Therefore, up to this point in the analysis, the data is identical. 
--   `sRNA-DESeq-data`
--  `sRNA-edgeR-data`
+To simulate the usage of the package, there is a grafting data set, from a 
+tomato-eggplant grafting experiment. The raw data and the pre-processed data
+can be found here. The raw data, `raw_sRNA_data`, contains a snippet of the full data set, where
+the reads are drawn from chromosome 1 in each genome. While, the pre-processed
+data set, `sRNA_data`,  contains the full experimental data and has already been processed by 
+the `RNAimport()` function. 
 
-
-To load these data sets, use the following command:
+To load the data set, use the following command:
 
 ``` r
-data("<object-type>")
+data("<object>")
 ```
 
-...where `"<object-type>"` is one of the previously mentioned data sets.
+...where `"<object>"` is one of the previously mentioned data sets.
 
 Getting help
 ------------
@@ -72,10 +70,10 @@ For additional information on each function, please read through the documentati
 For a step-by-step quick start analysis, consider reading the vignette provided with this package:
 
 ``` r
-vignette("RNAlocate:Quick _Start")
+vignette("RNAlocate-Quick-Start")
 ```
 
-For a more indepth analysis, consider reading the full vignette provided with this package:
+For a more in-depth analysis, consider reading the full vignette provided with this package:
 
 
 ``` r
@@ -83,4 +81,4 @@ vignette("RNAlocate")
 ```
 ------------------------------------------------------------------------
 
-*Last updated:* 02-02-2023
+*Last updated:* 22-02-2023

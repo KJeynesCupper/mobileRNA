@@ -43,5 +43,16 @@ an option to facet all plots into a single plot, or as a line graph.
 }
 \examples{
 data('sRNA_data')
-sample.distribution <- RNAdistribution(data = sRNA_data, style = "line")
+
+p1 <- RNAdistribution(data = sRNA_data, style = "line")
+
+p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
+
+p3 <- RNAdistribution(data = sRNA_data, style = "bar")
+
+p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
+
+p4 <- RNAdistribution(data = sRNA_data, style = "bar",
+                      facet = FALSE, facet.arrange = 2 )
+
 }

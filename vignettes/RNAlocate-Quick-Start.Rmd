@@ -51,8 +51,8 @@ studio and Linux and does not require the user to have extensive knowledge of
 coding or bioinformatics. Currently, there is no tool available which 
 allows for this type of analysis. 
 # Installation
-## Download and load the package from Bioconductor
-Download the package from GitHub:
+## Download and load the package from GitHub:
+
 ```{r , eval = FALSE}
 devtools::install_github(RNAlocate)
 ```
@@ -97,21 +97,22 @@ then it uses this information to check each sample for sRNAs which were
 found in other samples within the analysis which were not originally found. This
 ensures that each sample has an accurate count for each sRNA molecule. 
 
-1. Merge the two reference genomes into a single merged reference genome
+## 1. Merge the two reference genomes into a single merged reference genome
 ```{r, eval = FALSE}
 ## merge genome references into a single genome
-merge_files(files = "/Users/user1/projectname/workplace/reference/",
+mergeFiles(files = "/Users/user1/projectname/workplace/reference/",
             out = "/Users/user1/projectname/workplace/reference/merge/")
 ```
 
-2. Check the quality of raw sample files using FastQC
+## 2. Check the quality of raw sample files using FastQC.
 
 ```{r, eval = FALSE}
-quality_check(files = "/Users/user1/projectname/workplace/raw/")
+checkQuality(files = "/Users/user1/projectname/workplace/raw/")
 ```
 
-3. Trim raw sample files to remove adapter sequences (AGATCGGAAGAGCACACGTCT), 
-low quality reads and remove reads outside the desired nucleotide length (16-30)
+## 3. Trim raw sample files.  
+This is to remove adapter sequences (AGATCGGAAGAGCACACGTCT), 
+low quality reads and remove reads outside the desired nucleotide length (16-30).
 
 ```{bash , eval = FALSE}
 ## trim samples using trimmomatic 
@@ -133,16 +134,16 @@ done
 
 ```
 
-4. Check the quality of trimmed samples
+## 4. Check the quality of trimmed samples
 ```{r, eval = FALSE}
 ## check quality of trimmed samples
-quality_check(files = "/Users/user1/projectname/workplace/trimmed/")
+checkQuality(files = "/Users/user1/projectname/workplace/trimmed/")
 ```
 
-5. Mapping cleaned reads to the merged reference in three steps. 
+## 5. Mapping cleaned reads to the merged reference in three steps. 
 
-5.1 Map cleaned reads for both multi-mapping and unique mapping. This step is
-to identify dicer-derived clusters in each sample. 
+### 5.1 Map cleaned reads for both multi-mapping and unique mapping. 
+This step is to identify dicer-derived clusters in each sample. 
 
 ```{bash, eval = FALSE}
 
@@ -201,8 +202,8 @@ done
 ```
 
 
-5.2 Create an annotation file which contains all the dicer-derived clusters 
-across all the samples. 
+### 5.2 Create an annotation file which contains all the dicer-derived clusters 
+### across all the samples. 
 ```{r, eval = FALSE}
 ## Merge identified sRNA clusters across all samples into a annotation file 
 
@@ -212,14 +213,14 @@ conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
 folder <- "./workplace/alignment_multi_one/"
 save_folder <- "./workplace/reference/"
 
-cluster_info(files = folder, 
+identifyClusters(files = folder, 
              out = save_folder,
              samples = conditions)
 
 ```
 
-5.3 Using the information on the all the dicer-derived clusters which were 
-found, re-do the mapping. The identified clusters will effectively be translated
+### 5.3 Last mapping step using information on all the dicer-derived clusters. 
+The identified clusters will effectively be translated
 into the loci the `ShortStack` software will use for mapping. An additional step 
 to reduce noise has been introduced here by setting a threshold of 5 for the 
 minimum coverage. 
@@ -272,6 +273,10 @@ done
 
 ```
 
+
+## 6. Merge the Annotaion files and identify the overlap between the sRNA 
+## clusters and the genomic features in the annotation file. 
+
 ```{r, eval = FALSE}
 ## merge the annotation files into a single annotation file 
 merge_files(files = "/Users/user1/projectname/workplace/annotation/",
@@ -286,12 +291,14 @@ find_overlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/a
 
 
 
+
+
 # Analysis 
 The analysis uses the `result.txt` file created for each sample in the final 
 **unique** mapping step. Here, we show an example of how to identify mobile sRNA 
 molecules at lengths of 24-nt and 21/22-nt. 
 
-1. Organise the results from the pre-processing into a data set
+## 1. Organise the results from the pre-processing into a data set
 ```{r, eval = FALSE}
 ## Path to genomic overlap data file (.bed)
 genomic_features <-  "./analysis/reference/overlap.bed"
@@ -301,7 +308,7 @@ results_dir <-  "./analysis/alignment_unique_two/"
 sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
                 "TomTom_1", "TomTom_2", "TomTom_3")
 read_numbers <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-names(totalNumReads) <- conditions
+names(read_numbers) <- sample_names
 clusterlocations <- rtracklayer::import.gff("./analysis/reference/
                                             ClustersInfo.gff3")
 sRNA_data <- RNAimport(results = results_dir, 
@@ -314,8 +321,12 @@ sRNA_data <- RNAimport(results = results_dir,
 
 ```
 
-2. Define the consensus sRNA classes for each sRNA  and subset the data 
-based on the sRNA class to analyse in parallel 
+## 2. Define the consensus sRNA classes for each sRNA and subset. 
+This will produce add the consensus class to your summary data file. It is 
+important to subset your data at this stage to separate your analysis based on 
+a specific type of sRNA  class, based on nucelotide length (20-24 nucleotides).
+
+
 ```{r, message=FALSE}
 data(sRNA_data)
 ##  define consensus sRNA classes. 
@@ -329,44 +340,33 @@ sRNA_24 <- RNAsubset(sRNA_data_summary, type = 24, sig = FALSE)
 sRNA_2122 <- RNAsubset(sRNA_data_summary, type = c(21, 22), sig = FALSE)
 ```
 
-3. Differential expression analysis. In the example here, the DE analysis has 
-been undertaking using the `DESeq2` method, but there is also the option to 
-choose `edgeR` instead. Simply, change the `method` option in the `DE_prepare()`, 
-`DE_analysis()` and `DE_results()` functions.
+## 3. Differential expression analysis. 
+
+In the example here, the DE analysis has been undertaking using the `DESeq2` 
+method, but there is also the option to choose `edgeR` instead. Simply, change 
+the `method` option. 
 
 
 ```{r , message=FALSE}
-## DESeq method for each subset. 
 # sample conditions. 
-group <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant", 
+groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant", 
            "Tomato/Tomato", "Tomato/Tomato", "Tomato/Tomato")
 
-# 24-nt subset
-sRNA_24_prep <- DE_prepare(sRNA_24, group, method = "DESeq2")
-# 21/22-nt subset
-sRNA_2122_prep <- DE_prepare(sRNA_2122, group, method = "DESeq2")
 
-
-## Differential analysis: Option for edgeR or DEseq2 
-sRNA_24_DE <- DE_analysis(data = sRNA_24_prep, 
-                          groupPair = c("Tomato/Eggplant","Tomato/Tomato"), 
-                          method = "DESeq2" )
-
-sRNA_2122_DE <- DE_analysis(data = sRNA_2122_prep, 
-                            groupPair = c("Tomato/Eggplant","Tomato/Tomato"), 
-                            method = "DESeq2" )
-
-
-## Add results to the summary data frame. 
-res_sRNA_24 <- DE_results(Summarydata = sRNA_24,
-                           analysisResults = sRNA_24_DE, method = "DESeq2")
-res_sRNA_2122 <- DE_results(Summarydata = sRNA_2122,
-                             analysisResults = sRNA_2122_DE, method = "DESeq2")
+## Differential analysis: DEseq2 method
+# 24-nt sRNA data-set
+sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_24, 
+                                 group = groups,
+                                 method = "DESeq2" )
+# 2122-nt sRNA data-set
+sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_2122, 
+                                 group = groups,
+                                 method = "DESeq2" )
 
 ```
 
 
-4. Identify the potential mobile RNA molecules using the `mobile_molecules`. 
+## 4. Identify the potential mobile RNA molecules using `MobileMolecules()`. 
 The analysis extract the statistically significant mobile RNAs from your genome 
 of interest. 
 ```{r, message=FALSE}
@@ -377,28 +377,26 @@ of interest.
 controls <- c("TomTom_1","TomTom_2", "TomTom_3" )
 
 #  in 24nt RNA database 
-sRNA_24_mobile <- mobile_molecules(data = res_sRNA_24, 
+sRNA_24_mobile <- MobileMolecules(data = sRNA_24_DESeq2, 
                                    controls = controls,
                                    id = "SL40", 
                                    task = "remove")
 #  in 2122nt RNA database 
-sRNA_2122_mobile <- mobile_molecules(data = res_sRNA_2122,
+sRNA_2122_mobile <- MobileMolecules(data = sRNA_24_DESeq2,
                                      controls = controls, 
                                      id = "SL40", 
                                      task = "remove")
 
 ```
 
-5. Plot the potential mobile molecules using an MA-plot
+### 5. Plot the potential mobile molecules using a heatmap
 ```{r,  echo=FALSE}
 cap1 <- "An example heatmap to represent the potential mobile RNA 
 molecules using the DESeq2 method. A) 24 Nucleotide mobile RNA. 
 A) 21/22 Nucleotide mobile RNA. "
 ```
-
-6. Plot the potential mobile molecules using a heatmap
 ```{r,message=FALSE, fig.cap=cap1, fig.show="hold", out.width="50%", fig.subcap= c("A","B")}
-heatmap_plot(sRNA_24_mobile)
-heatmap_plot(sRNA_2122_mobile)
+plotHeatmap(sRNA_24_mobile)
+plotHeatmap(sRNA_2122_mobile)
 ```
 

@@ -45,7 +45,8 @@ Imports:
     GenomicRanges,
     rtracklayer, 
     GenomeInfoDb, 
-    data.table
+    data.table,
+    SimDesign
 biocViews: 
     Visualization,
     RNASeq,

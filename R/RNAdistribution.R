@@ -27,7 +27,18 @@
 #'
 #' @examples
 #' data('sRNA_data')
-#' sample.distribution <- RNAdistribution(data = sRNA_data, style = "line")
+#'
+#' p1 <- RNAdistribution(data = sRNA_data, style = "line")
+#'
+#' p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
+#'
+#' p3 <- RNAdistribution(data = sRNA_data, style = "bar")
+#'
+#' p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
+#'
+#' p4 <- RNAdistribution(data = sRNA_data, style = "bar",
+#'                       facet = FALSE, facet.arrange = 2 )
+#'
 #' @export
 #' @importFrom BiocGenerics "grep"
 #' @importFrom dplyr "%>%"
@@ -40,6 +51,15 @@
 #' @importFrom ggplot2 "aes"
 #' @importFrom ggplot2 "aes_string"
 #' @importFrom tidyr "gather"
+#' @importFrom data.table "melt"
+#' @importFrom ggplot2 "facet_wrap"
+#' @importFrom ggplot2 "theme_classic"
+#' @importFrom ggplot2 "geom_point"
+#' @importFrom ggplot2 "geom_line"
+#' @importFrom ggplot2 "xlab"
+#' @importFrom ggplot2 "ylab"
+#' @importFrom ggplot2 "labs"
+#'
 RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
                             facet.arrange = 3,
                             colour = NULL, together = TRUE){
@@ -87,7 +107,7 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
     print(ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class),
                           ggplot2::aes(Class, Count)) +
             ggplot2::geom_bar(stat = "identity", fill = colour) +
-            theme_classic()+
+            ggplot2::theme_classic()+
             ggplot2::facet_wrap(~ key, scales="free_y", ncol=facet.arrange))
   } else
     if (facet == FALSE){ # plot individually
@@ -100,14 +120,14 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
   }
   if (style == "line") {
     if (together == TRUE){
-    counts.df <- melt(counts.df, id.vars="Class")
- print(ggplot(counts.df, aes(Class,value, col=variable, group=1)) +
-         geom_point() +
-         geom_line() +
-        theme_classic()+
-        xlab("RNA Class") +
-   ylab("Counts") +
-   labs(color='Samples'))
+    counts.df <- data.table::melt(counts.df, id.vars="Class")
+ print(ggplot2::ggplot(counts.df, ggplot2::aes(Class,value, col=variable, group=1)) +
+         ggplot2::geom_point() +
+         ggplot2::geom_line() +
+         ggplot2::theme_classic()+
+         ggplot2::xlab("RNA Class") +
+         ggplot2::ylab("Counts") +
+         ggplot2::labs(color='Samples'))
     } else
     if (together == FALSE){
       plist2 = sapply(names(counts.df)[-grep("Class", names(counts.df))],
@@ -116,12 +136,12 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
                                        ggplot2::aes_string(x = "Class",
                                                            y = col, group=1)) +
                          ggplot2::geom_point(colour = colour) +
-                         theme_classic()+
+                         ggplot2::theme_classic()+
                          ggplot2::geom_line(colour = colour) +
                          ggplot2::labs(title = col,
                                        x  = "RNA Class", y = "Count")},
                      simplify=FALSE)
-      sn <- names(plist)
+      sn <- names(plist2)
       message("Printing line plots for samples: ", paste(sn, collapse=", "))
       for (J in 1:length(plist2)) {
         print(plist2[J])
