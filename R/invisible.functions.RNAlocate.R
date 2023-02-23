@@ -35,13 +35,23 @@
   }
   onlyControlFPKM <- base::unique(base::grep(paste(controls,collapse="|"),
                                              class_colnames, value=TRUE))
-  x <- c()
-  for (j in 1:nrow(data) ){
-    if(stats::var(stats::na.omit(as.numeric(
-      data[j,onlyControlFPKM], na.rm=T)))> 0 ){
-      x <- c(x,j)
+  if (length(onlyControlFPKM) > 1){
+    x <- c()
+    for (j in 1:nrow(data) ){
+      if(stats::var(stats::na.omit(as.numeric(
+        data[j,onlyControlFPKM], na.rm=T)))> 0 ){
+        x <- c(x,j)
+      }
     }
-  }
+  } else
+    if (length(onlyControlFPKM) == 1){
+      x <- c()
+      for (k in 1:nrow(data) ){
+        if(stats::na.omit(as.numeric(data[k,onlyControlFPKM], na.rm=T)) != 0 ){
+          x <- c(x,k)
+        }
+      }
+    }
   data <- data[-x,]
   return(data)
 }
@@ -51,7 +61,7 @@
 # returning an NA value if it does not work, it returns false.
 .match_vec <- function (x, table, nomatch = FALSE) {
   (match(x, table, nomatch))
-  }
+}
 
 
 .DESeq_normalise <- function(data, conditions){
@@ -83,5 +93,4 @@ utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "V16", "V17", "V2", "V3", "V4", "V5", "V6", "V7", "V8",
                          "V9", "padj",".", "nt_N", "n", "FPKM_mean", "chr",
                          "key", "Count", "Class", "padjusted", "pvalue"))
-
 

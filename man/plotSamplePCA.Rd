@@ -4,7 +4,7 @@
 \alias{plotSamplePCA}
 \title{PCA plot to illustrate sample distance.}
 \usage{
-plotSamplePCA(data, group)
+plotSamplePCA(data, group, vst = FALSE)
 }
 \arguments{
 \item{data}{class data.frame; data set containing the raw data produced as
@@ -13,6 +13,10 @@ output from `RNAconsensus()` and/or `RNAsubset()`.}
 \item{group}{character vector containing experimental conditions for each
 replicate. Ensure this is in the same order as the replicates are found in
 the `data` augment (from left to right).}
+
+\item{vst}{logical; Variance stabilizing transformation. By default, the
+function uses a regularized log transformation on the data set, however, this
+will not suit all experimental designs.}
 }
 \value{
 A PCA plot to show sample distance.
@@ -26,6 +30,11 @@ This function utilises the DESeq2 package to organise and plot the
 data. It organises the data into a DESeqDataSet which undergoes log
 transformation where the results are used to undertake the PCA analysis. The
 results are plotted against the priniciple components 1 and 2.
+
+In special conditions, regularized log transformation will not suit
+the experimental design. For example, an experimental design without
+replicates. In this instance, it is preferable to change the default setting
+and switch to a variance stabilizing transformation method (`vst=TRUE`).
 }
 \examples{
 data(sRNA_24)

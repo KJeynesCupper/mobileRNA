@@ -1,4 +1,4 @@
-#' Sample Data Table
+#' Import and organise data set
 #'
 #' @description Import specific data from the \code{"Results"} file of each
 #' sample and collate into a single dataframe. Plus, calculates the \code{FPKM}
@@ -47,9 +47,8 @@
 #' @importFrom S4Vectors "mcols"
 #' @importFrom BiocGenerics "width"
 #' @importFrom dplyr "select"
-
 RNAimport <- function(results, samples, clusters,
-                         totalNumReads, features){
+                      totalNumReads, features){
   if (base::missing(results)|| !base::inherits(results, c("character"))) {
     stop("results must be an object of character, representing a path to a
          directory")
@@ -59,8 +58,8 @@ RNAimport <- function(results, samples, clusters,
          sample names")
   }
   #if (base::missing(clusters)|| !base::inherits(clusters, c("character"))) {
-    #stop("clusters must be an object of character, representing a path to a
-      #   directory") }
+  #stop("clusters must be an object of character, representing a path to a
+  #   directory") }
   if (base::missing(totalNumReads)||
       !base::inherits(totalNumReads,c("numeric"))) {
     stop("totalNumReads must be an object of named numeric")
@@ -76,17 +75,14 @@ RNAimport <- function(results, samples, clusters,
     S4Vectors::mcols(clusters)[,paste0("Count_",i)] <- array[,4]
     S4Vectors::mcols(clusters)[,paste0("cluster_",i)] <- array[,2]
   }
- for (j in samples) {
-   S4Vectors::mcols(clusters)[,paste0("FPKM_",j)] <-
-     S4Vectors::mcols(clusters)[,paste0("Count_",j)] /
-     (BiocGenerics::width(clusters)/1000 * totalNumReads[j]/1000000 )
- }
+  for (j in samples) {
+    S4Vectors::mcols(clusters)[,paste0("FPKM_",j)] <-
+      S4Vectors::mcols(clusters)[,paste0("Count_",j)] /
+      (BiocGenerics::width(clusters)/1000 * totalNumReads[j]/1000000 )
+  }
   data <- Repitools::annoGR2DF(clusters)
   overlap_data <- .import_annotations(features)
-  data$features <- overlap_data$features[base::match(data$start, data$start)]
+  data$features <- overlap_data$attributes[base::match(data$start, data$start)]
   data <- data %>% dplyr::select(-score, -phase, -source, -type)
   return(data)
 }
-
-
-

@@ -113,5 +113,3 @@ RNAanalysis <- function(data, group, method = c("edgeR", "DESeq2"),
                      ~tidyr::replace_na(.,0))
   return(res.df)
 }
-
-

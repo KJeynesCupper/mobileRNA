@@ -9,12 +9,24 @@
 #' @param group character vector containing experimental conditions for each
 #' replicate. Ensure this is in the same order as the replicates are found in
 #' the `data` augment (from left to right).
+#'
+#' @param vst logical; Variance stabilizing transformation. By default, the
+#' function uses a regularized log transformation on the data set, however, this
+#' will not suit all experimental designs.
+#'
 #' @return A PCA plot to show sample distance.
 #'
 #' @details This function utilises the DESeq2 package to organise and plot the
 #' data. It organises the data into a DESeqDataSet which undergoes log
 #' transformation where the results are used to undertake the PCA analysis. The
 #' results are plotted against the priniciple components 1 and 2.
+#'
+#' In special conditions, regularized log transformation will not suit
+#' the experimental design. For example, an experimental design without
+#' replicates. In this instance, it is preferable to change the default setting
+#' and switch to a variance stabilizing transformation method (`vst=TRUE`).
+#'
+#'
 #' @examples
 #' data(sRNA_24)
 #'
@@ -37,7 +49,7 @@
 #' @importFrom ggplot2 "position_nudge"
 #' @importFrom ggrepel "geom_label_repel"
 #' @importFrom ggplot2 "aes"
-plotSamplePCA <- function(data, group){
+plotSamplePCA <- function(data, group, vst = FALSE){
   message("Checking and organising data")
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
     stop("data must be an object of class data.frame containing raw count data")
@@ -51,14 +63,24 @@ plotSamplePCA <- function(data, group){
   column.data <- data.frame(conditions=as.factor(group))
   base::rownames(column.data) <- base::colnames(data)
   count.data.set <- SimDesign::quiet(DESeq2::DESeqDataSetFromMatrix(countData=data,
-                                                   colData=column.data,
-                                                   design= ~conditions))
+                                                                    colData=column.data,
+                                                                    design= ~conditions))
   count.data.set$conditions <- stats::relevel(count.data.set$conditions,
                                               group[1])
   dds <- DESeq2::estimateSizeFactors(count.data.set)
   message("Transforming the count data to the log2 scale")
   # log transform the data.
-  rld1 <- DESeq2::rlog(dds, blind = TRUE)
+
+  if(vst ==TRUE){
+    message("Transforming the count data with a variance stabilizing transformation")
+    rld1 <- DESeq2::varianceStabilizingTransformation(dds, blind = TRUE)
+    # log transform the data.
+  } else
+    if(vst == FALSE) {
+      message("Transforming the count data to the log2 scale")
+      rld1 <- DESeq2::rlog(dds, blind = TRUE) # log transform the data.
+    }
+
   # use the DEseq plot pca function, store in an object.
   pca <- DESeq2::plotPCA(rld1, returnData = TRUE, intgroup = "conditions")
   ## change position
@@ -69,8 +91,7 @@ plotSamplePCA <- function(data, group){
   pca["ID"] <- sample_names # create new column with sample names
   message("Organising principal component analysis")
   X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
-  ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID),
-                            position = nudge, show.legend = FALSE)
-return(X)
+    ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID),
+                              position = nudge, show.legend = FALSE)
+  return(X)
 }
-

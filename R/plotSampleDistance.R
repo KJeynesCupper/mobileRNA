@@ -2,8 +2,20 @@
 #'
 #'A function to draw a simple hierarchical clustered heatmap to observe
 #'sample distance.
-#' @param data data.frame object containing raw count data
+#' @param data class data.frame; data set containing the raw data produced as
+#' output from `RNAconsensus()` and/or `RNAsubset()`.
+#'
+#' @param vst logical; Variance stabilizing transformation. By default, the
+#' function uses a regularized log transformation on the data set, however, this
+#' will not suit all experimental designs.
+#'
+#'
 #' @return A blue scale heatmap illustrating the sample distance
+#'
+#' @details In special conditions, regularized log transformation will not suit
+#' the experimental design. For example, an experimental design without
+#' replicates. In this instance, it is preferable to change the default setting
+#' and switch to a variance stabilizing transformation method (`vst=TRUE`).
 #' @examples
 #'
 #' data("sRNA_24")
@@ -16,11 +28,20 @@
 #' @importFrom pheatmap "pheatmap"
 #' @importFrom dplyr "select"
 #' @importFrom RColorBrewer "brewer.pal"
-plotSampleDistance <- function(data){
+plotSampleDistance <- function(data, vst = FALSE){
   message("Checking data")
   data <- as.matrix(data %>% dplyr::select(tidyselect::starts_with("Count")))
-  message("Transforming the count data to the log2 scale")
-  rld <- DESeq2::rlog(data, blind = TRUE) # log transform the data.
+
+  if(vst == TRUE){
+    message("Transforming the count data with a variance stabilizing transformation")
+    rld <- DESeq2::varianceStabilizingTransformation(data, blind = TRUE)
+    # log transform the data.
+  } else
+    if(vst == FALSE) {
+      message("Transforming the count data to the log2 scale")
+      rld <- DESeq2::rlog(data, blind = TRUE) # log transform the data.
+    }
+
   message("Calculating distance matrix")
   sample_names <- colnames(data)
   sample_names <- sub("Count_", "", sample_names)
@@ -30,13 +51,11 @@ plotSampleDistance <- function(data){
   colnames(distance_matrix) <- NULL
   message("Creating sample distance plot")
   colors <- grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9,"Blues")))(255)
-      plot <- pheatmap::pheatmap(distance_matrix,
-                                  clustering_distance_rows = distance,
-                                  clustering_distance_cols = distance,
-                                  col = colors)
+  plot <- pheatmap::pheatmap(distance_matrix,
+                             clustering_distance_rows = distance,
+                             clustering_distance_cols = distance,
+                             col = colors)
   return(plot)
 }
-
-
 
 

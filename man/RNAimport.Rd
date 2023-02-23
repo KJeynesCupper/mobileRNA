@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAimport.R
 \name{RNAimport}
 \alias{RNAimport}
-\title{Sample Data Table}
+\title{Import and organise data set}
 \usage{
 RNAimport(results, samples, clusters, totalNumReads, features)
 }
