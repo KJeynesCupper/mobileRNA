@@ -6,6 +6,7 @@
 \usage{
 RNAdistribution(
   data,
+  samples = NULL,
   style = c("bar", "line"),
   facet = TRUE,
   facet.arrange = 3,
@@ -17,6 +18,10 @@ RNAdistribution(
 \item{data}{a dataframe, on which one of the following functions has already
 been called: [RNAimport()],[RNAconsensus()].}
 
+\item{samples}{character vector. Store names of samples to analyse and plot.
+Functionality is dependent on the use of argument `facet` for a bar chart
+style plot and `together` for a line graph style plot.}
+
 \item{style}{plotting option to choose the style of a line graph or bar chart
 to represent your data. Where `style="line"` a line graph will be produced,
 while `style=bar` produces a bar graph.}
@@ -24,16 +29,23 @@ while `style=bar` produces a bar graph.}
 \item{facet}{Logical; forms a matrix of panels defined by row and column faceting
 variables. It plots the results for each sample as a bar-chart and contains
 it within a single plot. The number of rows in the facet can be changed using
-the augment ` facet.arrange` . Default ` facet = TRUE` , plot each
+the argument ` facet.arrange` . Default ` facet = TRUE` , plot each
 sample separately when ` facet = FALSE` .}
 
-\item{facet.arrange}{numeric sent to the ` ncol`  augment in
+\item{facet.arrange}{numeric sent to the ` ncol`  argument in
 [facet_wrap()] to define the number of columns.}
 
 \item{colour}{bar plot fill colour. Default colour is "darkblue".}
 
 \item{together}{Logical; forms a single line graph with multiple lines each
 to represent the sample replicates. Default `together=TRUE`.}
+}
+\value{
+Returns a list containing the data frame and the plot(s). To access
+one of the elements simply use the "$" symbol, and the elements "data" and
+"plot" will appear. The `samples` argument allows uses to plot specific
+samples in a single plot (facet bar plot or line graph). This can encourage
+closer comparision between sample replicates.
 }
 \description{
 ` RNAdistribution`  extracts information from the RNA summary
@@ -46,9 +58,14 @@ data('sRNA_data')
 
 p1 <- RNAdistribution(data = sRNA_data, style = "line")
 
+p1.2 <- RNAdistribution(data = sRNA_data, style = "line",
+                        samples = c("TomEgg_1", "TomEgg_2", "TomEgg_3"))
 p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
 
 p3 <- RNAdistribution(data = sRNA_data, style = "bar")
+
+p3.2 <- RNAdistribution(data = sRNA_data, style = "bar",
+                       samples = c("TomEgg_1", "TomEgg_2", "TomEgg_3"))
 
 p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
 

@@ -36,7 +36,7 @@ The `RNAlocate` package offer the following 7 pre-processing functions and  10 a
 - `RNAconsensus()`
 - `RNAsubset()`
 - `RNAdistribution()`
-- `plotFrequency()`
+- `plotConsensusFrequency()`
 - `plotSamplePCA()`
 - `plotSampleDistribution()`
 - `RNAanalysis()`

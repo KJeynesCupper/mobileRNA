@@ -4,7 +4,7 @@
 \alias{plotHeatmap}
 \title{Heatmap using hierarchical clustering}
 \usage{
-plotHeatmap(data, colours = NULL, dendogram = TRUE)
+plotHeatmap(data, colours = NULL, dendogram = TRUE, margins = NULL)
 }
 \arguments{
 \item{data}{Dataframe contain significant sRNA of a particular class
@@ -15,6 +15,9 @@ Defaults to heat colors from `grDevices` (heat.colors(100)).}
 
 \item{dendogram}{logical indicating whether to include the dendrogram, and
 retain clustering.}
+
+\item{margins}{numeric vector of length 2, to state width of the heatmap
+column names section and row names section, respectively.}
 }
 \description{
 Plot a heatmap with hierarchical clustering via an rlog

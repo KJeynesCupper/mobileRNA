@@ -19,7 +19,7 @@
 #' @details This function utilises the DESeq2 package to organise and plot the
 #' data. It organises the data into a DESeqDataSet which undergoes log
 #' transformation where the results are used to undertake the PCA analysis. The
-#' results are plotted against the priniciple components 1 and 2.
+#' results are plotted against the principle components 1 and 2.
 #'
 #' In special conditions, regularized log transformation will not suit
 #' the experimental design. For example, an experimental design without

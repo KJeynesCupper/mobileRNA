@@ -87,7 +87,7 @@ Once installed, you will have access to the following functions:
 - `RNAconsensus()`
 - `RNAsubset()`
 - `RNAdistribution()`
-- `plotFrequency()`
+- `plotConsensusFrequency()`
 - `plotSamplePCA()`
 - `plotSampleDistribution()`
 - `RNAanalysis()`
@@ -622,7 +622,7 @@ RNA classes within each sample"
 
 ```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B")}
 
-sample.distribution_line <- RNAdistribution(sRNA_data, style = "line")
+sample.distribution_line <- RNAdistribution(sRNA_data, style = "line", together = FALSE)
 
 sample.distribution_bar <- RNAdistribution(sRNA_data, style = "bar")
 

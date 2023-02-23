@@ -7,13 +7,17 @@
 #' @param data a dataframe, on which one of the following functions has already
 #' been called: [RNAimport()],[RNAconsensus()].
 #'
+#' @param samples character vector. Store names of samples to analyse and plot.
+#' Functionality is dependent on the use of argument `facet` for a bar chart
+#' style plot and `together` for a line graph style plot.
+#'
 #' @param facet Logical; forms a matrix of panels defined by row and column faceting
 #' variables. It plots the results for each sample as a bar-chart and contains
 #' it within a single plot. The number of rows in the facet can be changed using
-#' the augment ` facet.arrange` . Default ` facet = TRUE` , plot each
+#' the argument ` facet.arrange` . Default ` facet = TRUE` , plot each
 #' sample separately when ` facet = FALSE` .
 #'
-#' @param facet.arrange numeric sent to the ` ncol`  augment in
+#' @param facet.arrange numeric sent to the ` ncol`  argument in
 #' [facet_wrap()] to define the number of columns.
 #'
 #' @param colour bar plot fill colour. Default colour is "darkblue".
@@ -25,14 +29,26 @@
 #' @param together Logical; forms a single line graph with multiple lines each
 #' to represent the sample replicates. Default `together=TRUE`.
 #'
+#' @return Returns a list containing the data frame and the plot(s). To access
+#' one of the elements simply use the "$" symbol, and the elements "data" and
+#' "plot" will appear. The `samples` argument allows uses to plot specific
+#' samples in a single plot (facet bar plot or line graph). This can encourage
+#' closer comparision between sample replicates.
+#'
+#'
 #' @examples
 #' data('sRNA_data')
 #'
 #' p1 <- RNAdistribution(data = sRNA_data, style = "line")
 #'
+#' p1.2 <- RNAdistribution(data = sRNA_data, style = "line",
+#'                         samples = c("TomEgg_1", "TomEgg_2", "TomEgg_3"))
 #' p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
 #'
 #' p3 <- RNAdistribution(data = sRNA_data, style = "bar")
+#'
+#' p3.2 <- RNAdistribution(data = sRNA_data, style = "bar",
+#'                        samples = c("TomEgg_1", "TomEgg_2", "TomEgg_3"))
 #'
 #' p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
 #'
@@ -60,9 +76,13 @@
 #' @importFrom ggplot2 "ylab"
 #' @importFrom ggplot2 "labs"
 #'
-RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
+RNAdistribution <- function(data,
+                            samples =NULL,
+                            style = c("bar", "line"),
+                            facet = TRUE,
                             facet.arrange = 3,
                             colour = NULL, together = TRUE){
+
   if (base::missing(data)|| !base::inherits(data, c("data.frame"))) {
     stop("data must be a data frame, see ?help for more details")
   }
@@ -70,12 +90,10 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
     stop(paste("Please specify type of plot to produce", "(\"line\", or
                \"bar\")"))
   }
-  #select columns
-  class_colnames <- BiocGenerics::grep('DicerCall_', names(data), value = TRUE)
-  samples <- base::sub('DicerCall_', '', class_colnames)
+
   # subset dataframe to contain specified columns
   data.cols <- data %>%
-    dplyr::select(tidyselect::all_of(class_colnames))
+    dplyr::select(tidyselect::starts_with("DicerCall_"))
   # make list to store results
   counts.df <- apply(data.cols,MARGIN = 2,table)
   # make as data frame
@@ -84,9 +102,6 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
   colnames(counts.df)<-gsub("DicerCall_","",colnames(counts.df))
   # print results
   counts.df <- data.table::setDT(counts.df, keep.rownames = "Class")[]
-
-  print(counts.df)
-
   # store plots in a list - can access individually
   if (is.null(colour)) {
     colour <- "darkblue"
@@ -104,11 +119,25 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
   # plot results
   if (facet == TRUE) {
     message("Printing plots as facet for samples: ", paste(sn, collapse=", "))
-    print(ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class),
-                          ggplot2::aes(Class, Count)) +
-            ggplot2::geom_bar(stat = "identity", fill = colour) +
-            ggplot2::theme_classic()+
-            ggplot2::facet_wrap(~ key, scales="free_y", ncol=facet.arrange))
+    # REMOVE COLUMSN IS SPECIFIC SAMPLES SPECIFIC
+    if (is.null(samples)) {
+      p <- print(ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class),
+                                 ggplot2::aes(Class, Count)) +
+                   ggplot2::geom_bar(stat = "identity", fill = colour) +
+                   ggplot2::theme_classic()+
+                   ggplot2::facet_wrap(~ key, scales="free_y",
+                                       ncol=facet.arrange))
+    } else
+      if(!is.null(samples)){
+        counts.df <- counts.df %>% select(!all_of(samples))
+        p <- print(ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class),
+                                   ggplot2::aes(Class, Count)) +
+                     ggplot2::geom_bar(stat = "identity", fill = colour) +
+                     ggplot2::theme_classic()+
+                     ggplot2::facet_wrap(~ key, scales="free_y",
+                                         ncol=facet.arrange))
+      }
+
   } else
     if (facet == FALSE){ # plot individually
       message("Printing plots for samples: ", paste(sn, collapse=", "),
@@ -120,14 +149,27 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
   }
   if (style == "line") {
     if (together == TRUE){
-    counts.df <- data.table::melt(counts.df, id.vars="Class")
- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class,value, col=variable, group=1)) +
-         ggplot2::geom_point() +
-         ggplot2::geom_line() +
-         ggplot2::theme_classic()+
-         ggplot2::xlab("RNA Class") +
-         ggplot2::ylab("Counts") +
-         ggplot2::labs(color='Samples'))
+      if (is.null(samples)) {
+        counts.df <- data.table::melt(counts.df, id.vars="Class")
+        p <- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class,value, col=variable, group=1)) +
+                     ggplot2::geom_point() +
+                     ggplot2::geom_line() +
+                     ggplot2::theme_classic()+
+                     ggplot2::xlab("RNA Class") +
+                     ggplot2::ylab("Counts") +
+                     ggplot2::labs(color='Samples'))
+      } else
+        if (!is.null(samples)) {
+          counts.df <- counts.df %>% select(!all_of(samples))
+          counts.df <- data.table::melt(counts.df, id.vars="Class")
+          p <- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class,value, col=variable, group=1)) +
+                       ggplot2::geom_point() +
+                       ggplot2::geom_line() +
+                       ggplot2::theme_classic()+
+                       ggplot2::xlab("RNA Class") +
+                       ggplot2::ylab("Counts") +
+                       ggplot2::labs(color='Samples'))
+        }
     } else
     if (together == FALSE){
       plist2 = sapply(names(counts.df)[-grep("Class", names(counts.df))],
@@ -142,13 +184,16 @@ RNAdistribution <- function(data, style = c("bar", "line"),facet = TRUE,
                                        x  = "RNA Class", y = "Count")},
                      simplify=FALSE)
       sn <- names(plist2)
+      p <-plist2
       message("Printing line plots for samples: ", paste(sn, collapse=", "))
       for (J in 1:length(plist2)) {
         print(plist2[J])
       }
     }
   }
-  return(counts.df)
+  out <- list(plot = p, data = counts.df)
+  print(counts.df)
+  return(out)
 }
 
 

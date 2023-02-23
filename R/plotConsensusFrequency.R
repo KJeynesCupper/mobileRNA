@@ -1,7 +1,7 @@
 #' Plot Consensus small RNA frequency
 #'
 #' @description Plot a bar chart of distribution of small RNA classes
-#' (20-24nt sRNA) identified in the samples.
+#' (20-24nt sRNA) identified in the samples. Useful as a quality control step.
 #'
 #' @param data A data-frame (See [sample_table()] and
 #' [define_consensus()] to produce an appropriate data-frame).
@@ -13,7 +13,7 @@
 #' @examples
 #'
 #' data("sRNA_data_summary")
-#' p1 <- plotFrequency(data = sRNA_data_summary, relative=TRUE )
+#' p1 <- plotConsensusFrequency(data = sRNA_data_summary, relative=TRUE )
 #'
 #'
 #' @export
@@ -24,7 +24,7 @@
 #' @importFrom ggplot2 "geom_bar"
 #' @importFrom ggplot2 "labs"
 #' @importFrom ggplot2 "theme_classic"
-plotFrequency <- function(data, relative = FALSE){
+plotConsensusFrequency <- function(data, relative = FALSE){
   if (base::missing(data) || !base::inherits(data, c("matrix", "data.frame",
                                                      "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame.

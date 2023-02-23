@@ -8,6 +8,9 @@
 #' Defaults to heat colors from `grDevices` (heat.colors(100)).
 #' @param dendogram logical indicating whether to include the dendrogram, and
 #' retain clustering.
+#'
+#' @param margins numeric vector of length 2, to state width of the heatmap
+#' column names section and row names section, respectively.
 #' @details The function create a heatmap based on the hierarchical clustering
 #' of FPKM values using euclidean statistics.
 #' @examples
@@ -46,36 +49,48 @@
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "heat.colors"
 
-plotHeatmap <- function(data, colours = NULL, dendogram = TRUE){
+plotHeatmap <- function(data, colours = NULL, dendogram = TRUE,
+                        margins = NULL){
   if (base::missing(data) || !base::inherits(data, c("matrix",
                                                      "data.frame",
                                                      "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame,
          DataFrame. See ?plotHeatmap for more information.")
   }
-  data <- data %>% dplyr::select(!FPKM_mean)%>%
+  select_data <- data %>%
+    dplyr::select(!FPKM_mean) %>%
     dplyr::select(tidyselect::starts_with("FPKM"))
-  matrix<- as.matrix(data)
-  data[data == 0] <- 0.0001  # log trans
-  data <- base::log(data,2)
-  data <- stats::na.omit(data)   # remove nas.
-  v <- seq(1,nrow(data), by = 1)   # subset loci clusters
-  distance <- stats::dist(data[v,], method = "euclidean") # distance matrix
+
+  rownames(select_data) <- data$clusterID
+
+  matrix<- as.matrix(select_data)
+  select_data[select_data == 0] <- 0.0001  # log trans
+  select_data <- base::log(select_data,2)
+  select_data <- stats::na.omit(select_data)   # remove nas.
+  v <- seq(1,nrow(select_data), by = 1)   # subset loci clusters
+  distance <- stats::dist(select_data[v,], method = "euclidean") # distance matrix
   cluster <- stats::hclust(distance,method="ward.D")
   # define dendrogram
   dendrogram <- stats::as.dendrogram(cluster)
   # row means
-  rowv <- base::rowMeans(data, na.rm = T)
+  rowv <- base::rowMeans(select_data, na.rm = T)
   drow <- stats::reorder(dendrogram, rowv)
   # This reorders the dendrogram as much as possible based on row/column mean.
   #This enables you to reproduce the default order with this additional step.
   #iE, allows you to order the rows of the heatmap produced
   reorderfun = function(d,w) { d }
+  if(is.null(margins)){
+    margins <- c(10,10)
+  } else {
+    margins <- margins
+  }
   if (is.null(colours)) {
     plot.colours <- grDevices::heat.colors(100)
+  } else {
+    plot.colours <- colours
   }
   if (dendogram == TRUE) {
-    p1 <- gplots::heatmap.2(as.matrix(data[v,]),
+    p1 <- gplots::heatmap.2(as.matrix(select_data[v,]),
                             Rowv= dendrogram,
                             Colv=T, # t
                             dendrogram="both",
@@ -84,12 +99,12 @@ plotHeatmap <- function(data, colours = NULL, dendogram = TRUE){
                             trace="none",
                             reorderfun=reorderfun,
                             col= plot.colours,
-                            margins =c(8,5),
+                            margins =margins,
                             cexCol = 1,
                             lhei = c(3,8))
   } else
     if (dendogram == FALSE) {
-      p1 <- gplots::heatmap.2(as.matrix(data[v,]),
+      p1 <- gplots::heatmap.2(as.matrix(select_data[v,]),
                               Rowv= TRUE, # is TRUE, which implies dendrogram is computed and reordered based on row means.
                               Colv=TRUE, #columns should be treated identically to the rows.
                               dendrogram="none",
@@ -98,12 +113,10 @@ plotHeatmap <- function(data, colours = NULL, dendogram = TRUE){
                               trace="none",
                               reorderfun=reorderfun,
                               col= plot.colours,
-                              margins =c(8,5),
+                              margins =margins,
                               cexCol = 1,
                               lhei = c(3,8))
     }
-
-
   return(p1)
 }
 

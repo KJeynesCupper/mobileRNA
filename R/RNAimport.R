@@ -80,9 +80,15 @@ RNAimport <- function(results, samples, clusters,
       S4Vectors::mcols(clusters)[,paste0("Count_",j)] /
       (BiocGenerics::width(clusters)/1000 * totalNumReads[j]/1000000 )
   }
+
   data <- Repitools::annoGR2DF(clusters)
   overlap_data <- .import_annotations(features)
   data$features <- overlap_data$attributes[base::match(data$start, data$start)]
   data <- data %>% dplyr::select(-score, -phase, -source, -type)
-  return(data)
+  #add column for cluster ID
+  clustercolID <- data %>% dplyr::select(tidyselect::starts_with("cluster_"))
+  clustercolID <- clustercolID[1]
+  colnames(clustercolID)[1] <- 'clusterID'
+  res <- data.frame(clusterID = clustercolID, data)
+  return(res)
 }
