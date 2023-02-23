@@ -37,7 +37,7 @@ The `RNAlocate` package offer the following 7 pre-processing functions and  10 a
 - `RNAsubset()`
 - `RNAdistribution()`
 - `plotFrequency()`
-- `plot.PCA()`
+- `plotSamplePCA()`
 - `plotSampleDistribution()`
 - `RNAanalysis()`
 - `MobileMolecules()`
@@ -57,10 +57,10 @@ the `RNAimport()` function.
 To load the data set, use the following command:
 
 ``` r
-data("<object>")
+data("<data-object>")
 ```
 
-...where `"<object>"` is one of the previously mentioned data sets.
+...where `"<data-object>"` is one of the previously mentioned data sets.
 
 Getting help
 ------------
