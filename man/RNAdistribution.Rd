@@ -4,15 +4,7 @@
 \alias{RNAdistribution}
 \title{Extract the distribution of RNA classes within each sample}
 \usage{
-RNAdistribution(
-  data,
-  samples = NULL,
-  style = c("bar", "line"),
-  facet = TRUE,
-  facet.arrange = 3,
-  colour = NULL,
-  together = TRUE
-)
+RNAdistribution(data, colours = NULL, dendogram = TRUE, margins = NULL)
 }
 \arguments{
 \item{data}{a dataframe, on which one of the following functions has already
@@ -21,10 +13,6 @@ been called: [RNAimport()],[RNAconsensus()].}
 \item{samples}{character vector. Store names of samples to analyse and plot.
 Functionality is dependent on the use of argument `facet` for a bar chart
 style plot and `together` for a line graph style plot.}
-
-\item{style}{plotting option to choose the style of a line graph or bar chart
-to represent your data. Where `style="line"` a line graph will be produced,
-while `style=bar` produces a bar graph.}
 
 \item{facet}{Logical; forms a matrix of panels defined by row and column faceting
 variables. It plots the results for each sample as a bar-chart and contains
@@ -36,6 +24,10 @@ sample separately when ` facet = FALSE` .}
 [facet_wrap()] to define the number of columns.}
 
 \item{colour}{bar plot fill colour. Default colour is "darkblue".}
+
+\item{style}{plotting option to choose the style of a line graph or bar chart
+to represent your data. Where `style="line"` a line graph will be produced,
+while `style=bar` produces a bar graph.}
 
 \item{together}{Logical; forms a single line graph with multiple lines each
 to represent the sample replicates. Default `together=TRUE`.}

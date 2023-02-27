@@ -49,77 +49,61 @@
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "heat.colors"
 
-plotHeatmap <- function(data, colours = NULL, dendogram = TRUE,
-                        margins = NULL){
+plotHeatmap <-function (data, colours = NULL, dendogram = TRUE, margins = NULL)
+{
   if (base::missing(data) || !base::inherits(data, c("matrix",
-                                                     "data.frame",
-                                                     "DataFrame"))) {
-    stop("data must be an object of class matrix, data.frame,
-         DataFrame. See ?plotHeatmap for more information.")
+                                                     "data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame,\n         DataFrame. See ?plotHeatmap for more information.")
   }
-  select_data <- data %>%
-    dplyr::select(!FPKM_mean) %>%
-    dplyr::select(tidyselect::starts_with("FPKM"))
-
+  select_data <- data %>% dplyr::select(!FPKM_mean) %>% dplyr::select(tidyselect::starts_with("FPKM"))
   rownames(select_data) <- data$clusterID
-
-  matrix<- as.matrix(select_data)
-  select_data[select_data == 0] <- 0.0001  # log trans
-  select_data <- base::log(select_data,2)
-  select_data <- stats::na.omit(select_data)   # remove nas.
-  v <- seq(1,nrow(select_data), by = 1)   # subset loci clusters
-  distance <- stats::dist(select_data[v,], method = "euclidean") # distance matrix
-  cluster <- stats::hclust(distance,method="ward.D")
-  # define dendrogram
+  # remove FPKM
+  for ( col in 1:ncol(select_data)){
+    colnames(select_data)[col] <-  sub("FPKM_", "", colnames(select_data)[col])
+  }
+  matrix <- as.matrix(select_data)
+  select_data[select_data == 0] <- 1e-04
+  select_data <- base::log(select_data, 2)
+  select_data <- stats::na.omit(select_data)
+  v <- seq(1, nrow(select_data), by = 1)
+  distance <- stats::dist(select_data[v, ], method = "euclidean")
+  cluster <- stats::hclust(distance, method = "ward.D")
   dendrogram <- stats::as.dendrogram(cluster)
-  # row means
   rowv <- base::rowMeans(select_data, na.rm = T)
   drow <- stats::reorder(dendrogram, rowv)
-  # This reorders the dendrogram as much as possible based on row/column mean.
-  #This enables you to reproduce the default order with this additional step.
-  #iE, allows you to order the rows of the heatmap produced
-  reorderfun = function(d,w) { d }
-  if(is.null(margins)){
-    margins <- c(10,10)
-  } else {
+  reorderfun = function(d, w) {
+    d
+  }
+  if (is.null(margins)) {
+    margins <- c(10, 10)
+  }
+  else {
     margins <- margins
   }
   if (is.null(colours)) {
     plot.colours <- grDevices::heat.colors(100)
-  } else {
+  }
+  else {
     plot.colours <- colours
   }
   if (dendogram == TRUE) {
-    p1 <- gplots::heatmap.2(as.matrix(select_data[v,]),
-                            Rowv= dendrogram,
-                            Colv=T, # t
-                            dendrogram="both",
-                            scale="none",
-                            density.info="none",
-                            trace="none",
-                            reorderfun=reorderfun,
-                            col= plot.colours,
-                            margins =margins,
-                            cexCol = 1,
-                            lhei = c(3,8))
-  } else
-    if (dendogram == FALSE) {
-      p1 <- gplots::heatmap.2(as.matrix(select_data[v,]),
-                              Rowv= TRUE, # is TRUE, which implies dendrogram is computed and reordered based on row means.
-                              Colv=TRUE, #columns should be treated identically to the rows.
-                              dendrogram="none",
-                              scale="none",
-                              density.info="none",
-                              trace="none",
-                              reorderfun=reorderfun,
-                              col= plot.colours,
-                              margins =margins,
-                              cexCol = 1,
-                              lhei = c(3,8))
-    }
+    p1 <- gplots::heatmap.2(as.matrix(select_data[v, ]),
+                            Rowv = dendrogram, Colv = T, dendrogram = "both",
+                            scale = "none", density.info = "none", trace = "none",
+                            reorderfun = reorderfun, col = plot.colours,
+                            margins = margins, cexRow = 1,
+                            cexCol = 1, lhei = c(3, 8))
+  }
+  else if (dendogram == FALSE) {
+    p1 <- gplots::heatmap.2(as.matrix(select_data[v, ]),
+                            Rowv = TRUE, Colv = TRUE, dendrogram = "none", scale = "none",
+                            density.info = "none", trace = "none", reorderfun = reorderfun,
+                            col = plot.colours, margins = margins,
+                            cexCol = 1,  cexRow = 1,
+                            lhei = c(3, 8))
+  }
   return(p1)
 }
-
 
 
 
