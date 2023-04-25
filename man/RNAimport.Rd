@@ -2,17 +2,14 @@
 % Please edit documentation in R/RNAimport.R
 \name{RNAimport}
 \alias{RNAimport}
-\title{Import and organise data set}
+\title{Import and organise sRNAseq data set}
 \usage{
-RNAimport(results, samples, clusters, totalNumReads, features)
+RNAimport(results, samples, clusters, totalNumReads, features = NULL)
 }
 \arguments{
-\item{results}{Local directory location of sample folders. NOTE: Following
-the pre-processing steps, these can be found in second alignment folders.
-It is recommended to use results from the unique alignment found in
-\code{"./second_alignment_unique/"} over multimapped reads.
-It is recommended to run a parallel analysis one using the uniquely
-mapped reads and the other using multimapped reads.}
+\item{results}{Path to directory containing of sample folders. NOTE: Following
+the suggested pre-processing steps, these can be found in second alignment
+folders.}
 
 \item{samples}{Vector of characters naming the sample names correlating
 to outputted folders either \code{"second_alignment_unique"} or
@@ -26,16 +23,39 @@ for each samples. Each value labeled with the sample name.}
 \item{features}{Path to a .bed file containing the genomic information
 (annotations/features) which overlaps with the locations of the
 dicer-derived clusters. The file is created as a part of the pre-processing
-steps, see fun[find_overlap] function for more information.}
-}
-\value{
-A large dataframe with data for each sample including Dicercall,
-Count and Cluster ID.
+steps, see [RNAlocate::findOverlap()] function for more information. This is
+an optional argument, but will streamline your analysis later on if you wish
+to identify the genomic location of the cluster and the type of feature it
+overlaps with.}
 }
 \description{
-Import specific data from the \code{"Results"} file of each
-sample and collate into a single dataframe. Plus, calculates the \code{FPKM}
- for each sample.
+Imports sRNAseq pre-processed data outputted by ShorStack and
+organises into a single data frame.
+}
+\details{
+\code{"RNAimport"} takes the results from  pre-processed sRNAseq data which
+has been mapped and undertaken cluster analysis through ShortStack, and
+imports it from a given directory. Data is organised into a single data frame
+where each row represent an sRNA dicer-derived cluster. Columns 1 - 5
+supply information on the cluster including the name, coordinates
+(chromosome, start, end) and width of locus.
+
+Further columns represent data imported for each samples including DicerCall,
+Counts and cluster name. The DicerCall represents the size of most abundant
+small RNA size based on the parameter used in ShortStack. The Count column
+represents the number of aligned sRNA-seq reads that overlap the locus.
+For each replicate included in the analysis, these columns are labelled with
+the type and then then name of the samples, for example, DicerCall_Sample1.
+
+In addition, to importing the processed data, the function also calculates the
+ \code{FPKM} for each sample and visible at the far right of the data frame.
+
+To import the samples, the `samples` argument must represent a vector of
+the names of the folders present in the directory containing the sample
+replicate, ie, replicate names. It is recommended to use results from the
+unique alignment found in \code{"./second_alignment_unique/"} over multimapped
+reads. It is recommended to run a parallel analysis one using the uniquely
+mapped reads and the other using multimapped reads.
 }
 \examples{
 \dontrun{
@@ -48,7 +68,7 @@ clusters <- rtracklayer::import.gff("./data/reference/ClustersInfo.gff3")
 
 total_reads <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
 names(total_reads) <- sample_names
-siRNA_data <- RNAimport(results = directory,
+sRNA_data <- RNAimport(results = directory,
                            samples = sample_names,
                            clusters = clusters,
                            totalNumReads = total_reads

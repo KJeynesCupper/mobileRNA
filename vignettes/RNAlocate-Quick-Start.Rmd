@@ -22,6 +22,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 7, fig.align = "center")
+library(RNAlocate)
 ```
 
 # Introduction 
@@ -50,6 +52,10 @@ The tool offers a platform for users to easily work on sRNA-seq data within R
 studio and Linux and does not require the user to have extensive knowledge of 
 coding or bioinformatics. Currently, there is no tool available which 
 allows for this type of analysis. 
+
+# Method
+
+
 # Installation
 ## Download and load the package from GitHub:
 
@@ -92,10 +98,12 @@ create_workplace("/Users/user1/projectname/workplace/")
 # Pre-processing
 The pre-processing steps are very similar to other pre-processing steps for 
 different sequencing data. The only difference in this pipeline lies within the 
-mapping steps. The mapping step first aims to locate the sRNA in each sample, 
-then it uses this information to check each sample for sRNAs which were
-found in other samples within the analysis which were not originally found. This
-ensures that each sample has an accurate count for each sRNA molecule. 
+mapping steps, where samples are mapped to a merged reference genome. 
+The mapping step first aims to locate the sRNA in each sample, 
+then each replicate is mapped to all identified sRNA loci across the samples
+within the analysis. This ensures that each sample has an accurate count for 
+each sRNA molecule. The mapping and cluster analysis is undertaken using 
+ShortStack. 
 
 ## 1. Merge the two reference genomes into a single merged reference genome
 ```{r, eval = FALSE}
@@ -104,7 +112,7 @@ mergeFiles(files = "/Users/user1/projectname/workplace/reference/",
             out = "/Users/user1/projectname/workplace/reference/merge/")
 ```
 
-## 2. Check the quality of raw sample files using FastQC.
+## 2. Check the quality of raw sample files. 
 
 ```{r, eval = FALSE}
 checkQuality(files = "/Users/user1/projectname/workplace/raw/")
@@ -115,7 +123,6 @@ This is to remove adapter sequences (AGATCGGAAGAGCACACGTCT),
 low quality reads and remove reads outside the desired nucleotide length (16-30).
 
 ```{bash , eval = FALSE}
-## trim samples using trimmomatic 
 
 mkdir -p  /Users/user1/projectname/workplace/trimmed
 FILES=/Users/user1/projectname/workplace/raw/*.fq
@@ -129,7 +136,7 @@ trim_galore \
 "raw/$f"".fq" \
 -a AGATCGGAAGAGCACACGTCT \ # change this based on adaptors used
 --max_length 30 --length 16 \
---output_dir /Users/user1/projectname/workplace/trimmed
+--output_dir /Users/user1/projectname/workplace/trimmed/
 done
 
 ```
@@ -166,7 +173,7 @@ echo "mapping with ShortStack ... $f" >>
 
 ShortStack \
 --readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fa \
+--genomefile /Users/user1/projectname/workplace/reference/merge/ref_merged.fa \
 --bowtie_cores 6 \
 --mmap u \
 --mismatches 0 \
@@ -189,7 +196,7 @@ echo "mapping with ShortStack ... $f" >>
 
 ShortStack \
 --readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fa \
+--genomefile /Users/user1/projectname/workplace/reference/merge/ref_merged.fa \
 --bowtie_cores 6 \
 --mmap n \
 --mismatches 0 \
@@ -244,7 +251,7 @@ echo "mapping with ShortStack ... $f" >>
 /Users/user1/projectname/workplace/alignment_multi_two/stats_alignment.txt
 ShortStack \
 --readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fasta \
+--genomefile /Users/user1/projectname/workplace/reference/merge/ref_merged.fasta \
 --locifile /Users/user1/projectname/workplace/reference/ClusterInfo.txt \
 --bowtie_cores 6 \
 --mmap u \
@@ -259,7 +266,7 @@ echo "mapping unique matches with ShortStack ... $f" >>
 /Users/user1/projectname/workplace/alignment_unique_two/stats_alignment.txt
 ShortStack \
 --readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fasta \
+--genomefile /Users/user1/projectname/workplace/reference/merge/ref_merged.fasta \
 --locifile /Users/user1/projectname/workplace/reference/ClusterInfo.txt \
 --bowtie_cores 6 \
 --mmap n \
@@ -290,27 +297,47 @@ find_overlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/a
 ```
 
 
-
-
-
 # Analysis 
-The analysis uses the `result.txt` file created for each sample in the final 
-**unique** mapping step. Here, we show an example of how to identify mobile sRNA 
+The analysis uses the `Result.txt` file created for each sample in the second 
+**unique** mapping step directory, where there is one folder per sample replicate. 
+Here, we show an example of how to identify mobile sRNA 
 molecules at lengths of 24-nt and 21/22-nt. 
 
-## 1. Organise the results from the pre-processing into a data set
+## Organise the results from the pre-processing into a data set
+
+The `RNAimport` function required the location of results from the second 
+mapping step, complete annotation of the dicer-derived cluster information and 
+the genomic overlap between the clusters and reference annotation. 
+
+In addition, to select the samples and also calculate the FPKM values, the 
+function requires the sample names as represented by each results folder 
+outputted by ShortStack and the total number of reads analysed. The 
+total number of reads can be located in the log file in the results file of each 
+sample. Please ensure that the order of the total number of reads is the same
+for the order of sample names, in order to create a table. 
+
+
 ```{r, eval = FALSE}
+
+# Name of samples
+sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
+                "TomTom_1", "TomTom_2", "TomTom_3")
+# number of total reads in sample (same order as sample_names object)
+read_numbers <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
+# create table
+names(read_numbers) <- sample_names
+
 ## Path to genomic overlap data file (.bed)
 genomic_features <-  "./analysis/reference/overlap.bed"
 
-## Import & organise data. 
+## Path to results 
 results_dir <-  "./analysis/alignment_unique_two/"
-sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
-                "TomTom_1", "TomTom_2", "TomTom_3")
-read_numbers <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-names(read_numbers) <- sample_names
+
+## Path to annotation file created in the pre-processing step, storing 
+## dicer-derived cluster information. 
 clusterlocations <- rtracklayer::import.gff("./analysis/reference/
                                             ClustersInfo.gff3")
+## Import & organise data. 
 sRNA_data <- RNAimport(results = results_dir, 
                            samples = sample_names, 
                            clusters = clusterlocations, 
@@ -321,10 +348,20 @@ sRNA_data <- RNAimport(results = results_dir,
 
 ```
 
-## 2. Define the consensus sRNA classes for each sRNA and subset. 
-This will produce add the consensus class to your summary data file. It is 
-important to subset your data at this stage to separate your analysis based on 
-a specific type of sRNA  class, based on nucelotide length (20-24 nucleotides).
+## Define the consensus sRNA classes for each sRNA and subset. 
+Each sample in the analysis has determined the class (DicerCall) of a 
+dicer-derived sRNA cluster based on the most abundant small RNA size in the 
+sample at a locus. It is expected that samples in the same condition define a
+sRNA cluster as the same size and class. The `RNAconsensus` function is used
+to define the class of a sRNA cluster based on a consensus across specific 
+samples. To identify small RNA traveling from genotype A to B in a heterograft 
+in comparision to a self-grafted of the B genotype, it is recommend to base 
+the consensus call on the heterografted samples. This will ensure that the 
+sRNA class is more accurately defined by the genotype it originated from. 
+
+Here, we also utilise the `RNAsubset` function to separate your analysis based 
+on a specific class of sRNA, based on nucelotide length (20-24 nucleotides). In 
+this analysis it is focused on two groups: 24nt sRNAs and 21/22nt sRNAs.
 
 
 ```{r, message=FALSE}
@@ -340,11 +377,31 @@ sRNA_24 <- RNAsubset(sRNA_data_summary, type = 24, sig = FALSE)
 sRNA_2122 <- RNAsubset(sRNA_data_summary, type = c(21, 22), sig = FALSE)
 ```
 
-## 3. Differential expression analysis. 
+## Plot distribution of RNA classes 
+Plot the distribution of the consensus sRNA clusters sizes across the total 
+data set. 
+
+```{r}
+consensus_plot <- RNAdistribution(data = sRNA_data_summary, 
+                                  consensus = TRUE, style = "consensus")
+```
+
+## Differential expression analysis. 
+Differential expression analysis can be undertaken with a range of popularly 
+used tools. Here we have provided a function which provides the flexibility to 
+employ either the edgeR method or the DESeq2 method. 
 
 In the example here, the DE analysis has been undertaking using the `DESeq2` 
 method, but there is also the option to choose `edgeR` instead. Simply, change 
-the `method` option. 
+the `method` option. Regardless of the method, it is important to list the 
+conditions in the analysis in the order perceived in the input data frame. 
+For instance, the example the sample information in the data set contains 
+three heterografts and three selfgrafts, which are ordered from left to right in
+the dataset. 
+
+This step provides you with information on the statistical value and log-fold 
+change. This is important if you look to select statistically significant sRNA 
+clusters and/or plot the log-fold change as a heatmap to represent the data. 
 
 
 ```{r , message=FALSE}
@@ -366,9 +423,15 @@ sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_2122,
 ```
 
 
-## 4. Identify the potential mobile RNA molecules using `MobileMolecules()`. 
-The analysis extract the statistically significant mobile RNAs from your genome 
-of interest. 
+## Identify the potential mobile sRNA molecules
+
+This step identified the mobile sRNA from you genotype of interest. It removes 
+the sRNA which were mapped to the genotype of the destination tissue. 
+
+If statistical significance is not important to the analysis, the differential 
+expression step can be missed and the parameter `statistical` in  the `RNAmobile`
+function can be set to `FALSE`. 
+
 ```{r, message=FALSE}
 ## Identify mobile sRNAs in each subset - keep clusters associated to the 
 ## tomato genome
@@ -377,26 +440,73 @@ of interest.
 controls <- c("TomTom_1","TomTom_2", "TomTom_3" )
 
 #  in 24nt RNA database 
-sRNA_24_mobile <- MobileMolecules(data = sRNA_24_DESeq2, 
+sRNA_24_mobile <- RNAmobile(data = sRNA_24_DESeq2, 
                                    controls = controls,
                                    id = "SL40", 
                                    task = "remove")
 #  in 2122nt RNA database 
-sRNA_2122_mobile <- MobileMolecules(data = sRNA_24_DESeq2,
+sRNA_2122_mobile <- RNAmobile(data = sRNA_24_DESeq2,
                                      controls = controls, 
                                      id = "SL40", 
                                      task = "remove")
 
 ```
 
-### 5. Plot the potential mobile molecules using a heatmap
+
+## Plot heatmap of potential mobile sRNAs 
+
 ```{r,  echo=FALSE}
 cap1 <- "An example heatmap to represent the potential mobile RNA 
 molecules using the DESeq2 method. A) 24 Nucleotide mobile RNA. 
 A) 21/22 Nucleotide mobile RNA. "
 ```
+
 ```{r,message=FALSE, fig.cap=cap1, fig.show="hold", out.width="50%", fig.subcap= c("A","B")}
 plotHeatmap(sRNA_24_mobile)
 plotHeatmap(sRNA_2122_mobile)
+```
+
+# Additional features 
+
+The *RNAlocate* package offers several of other helpful functions to aid 
+analysis. This includes a function to plot sample distance for quality control,
+calculate the mean FPKM and counts across specific samples and 
+also calculate the overlap between genomic features and sRNA clusters.
+
+## Plot sample distance for quality control 
+
+```{r}
+# plot principal component analysis 
+analysis_groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
+           "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
+plotSamplePCA(data = sRNA_data, group = analysis_groups)
+
+# plot heatmap 
+PCA_p1 <- plotSampleDistance(sRNA_data)
+```
+
+## Calculate FPKM and Count means for specific samples
+```{r, eval = FALSE}
+# calculate mean FPKM and mean Counts for heterograft samples
+selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
+means <- RNAmean(data = sRNA_data, conditions = selected_samples)
+
+```
+
+
+## Calculate distribution of sRNA clusters across genomic features. 
+
+```{r, eval = FALSE}
+# matrix containing percentage of sRNA clusters associated to different genomic 
+# features
+dis_features <- RNAfeatures(data = sRNA_data, 
+                            annotation = "./annotation/eggplant_genome.gff3",
+                            repeats = "./annotation/eggplant_genome_repeats.gff3")
+```
+
+
+# Session information
+```{r}
+sessionInfo()
 ```
 

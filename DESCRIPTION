@@ -46,7 +46,9 @@ Imports:
     rtracklayer, 
     GenomeInfoDb, 
     data.table,
-    SimDesign
+    SimDesign,
+    scales,
+    IRanges
 biocViews: 
     Visualization,
     RNASeq,
@@ -57,3 +59,10 @@ biocViews:
     heterograft, 
     plant science, 
     botany
+SystemRequirements: FastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/),
+                    bedtools (https://bedtools.readthedocs.io/en/latest/),
+                    Samtools (http://www.htslib.org/),
+                    sed (https://www.gnu.org/software/sed/manual/sed.html),
+                    ShortStack (https://github.com/MikeAxtell/ShortStack),
+                    trimgalore (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/),
+

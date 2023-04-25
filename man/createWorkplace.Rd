@@ -2,13 +2,12 @@
 % Please edit documentation in R/createWorkplace.R
 \name{createWorkplace}
 \alias{createWorkplace}
-\title{Make the working directory structure}
+\title{Create a working directory file structure}
 \usage{
-createWorkplace(dirwd)
+createWorkplace(wd)
 }
 \arguments{
-\item{dirwd}{Working Directory path. This argument could include using
-the [getwd()] function to retrieve path.}
+\item{wd}{Path to working directory.}
 }
 \value{
 A working directory with folders the folders `"raw"` to store raw
@@ -17,8 +16,12 @@ genomes (`.fa/.fasta`) & `"annotation"` to store reference
 annotation files (`.gff/.gff3`)
 }
 \description{
-Creates the basic directory structure to store your raw data,
+Creates the basic directory to store your raw data,
 genome references and annotation files
+}
+\details{
+This argument could include using the [base::getwd()] function to
+retrieve path to the working directory.
 }
 \examples{
 \dontrun{

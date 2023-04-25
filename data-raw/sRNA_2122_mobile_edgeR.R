@@ -12,7 +12,7 @@ controls <- c("TomTom_1", "TomTom_2", "TomTom_3")
 
 
 # remove clusters associated to tomato in 2122nt RNA database
-sRNA_2122_mobile_edgeR <- MobileMolecules(data = sRNA_2122_edgeR, controls, id = "SL40", task = "remove")
+sRNA_2122_mobile_edgeR <- RNAmobile(data = sRNA_2122_edgeR, controls, id = "SL40", task = "remove")
 
 
 usethis::use_data(sRNA_2122_mobile_edgeR, overwrite = TRUE)

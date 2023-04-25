@@ -2,22 +2,32 @@
 % Please edit documentation in R/checkQuality.R
 \name{checkQuality}
 \alias{checkQuality}
-\title{Quality control step for .fastq files}
+\title{Quality control of FASTQ files}
 \usage{
 checkQuality(files)
 }
 \arguments{
-\item{files}{The local directory to sRNA-seq sample. These can be raw or
-trimmed.}
+\item{files}{The directory to FASTQ samples.}
 }
 \value{
-A "qc" folder within the directory containing \code{fastqc} quality
-check files for each sample in \code{HTML} format.
+Outputs two files per sample, one in html format and the other in
+json format. These are stored in a new folder within the directory containing
+the FASTQ files; this folder is names "qc".
 }
 \description{
-Invokes an OS command to run unzip any compressed .gz files
-and run a quality control analysis using \code{fastqc} on the files within the
-directory.
+Invokes an OS command to \code{fastqc} to run quality control
+analysis on the files within the choosen directory.
+}
+\details{
+The analysis can have compressed or uncompressed FASTQ files as
+input. If files are compressed in the \code{.gzip} format, these will be
+unzipped, and a copy will be retained in the directory.
+
+This can be utilised before and after the trimming of samples. Checking the
+quality of sequenced samples before analysis will identify whether adapter
+sequences or low quality reads need to be removed to improve the sample
+quality in preparation for the analysis. Similarly, checking sample quality
+after trimming will ensure the trimming step was performed as intended.
 }
 \examples{
 \dontrun{

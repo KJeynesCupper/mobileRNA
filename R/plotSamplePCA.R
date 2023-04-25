@@ -1,14 +1,15 @@
 #' PCA plot to illustrate sample distance.
 #'
-#' @description A function to draw a PCA plot. The function undertakes rlog
-#'  transformation of the data in an unbiased manner (\code{blind=TRUE}).
+#' @description A function to draw a principal component analysis (PCA) plot.
+#'  The function undertakes rlog transformation of the data in
+#'  an unbiased manner (\code{blind=TRUE}).
 #'
 #' @param data class data.frame; data set containing the raw data produced as
-#' output from `RNAconsensus()` and/or `RNAsubset()`.
+#' output from [RNAlocate::RNAconsensus()] and/or [RNAlocate::RNAsubset()].
 #'
-#' @param group character vector containing experimental conditions for each
-#' replicate. Ensure this is in the same order as the replicates are found in
-#' the `data` augment (from left to right).
+#' @param group character vector; contains experimental conditions for each
+#' replicate. IMPORTANT: Ensure this is in the same order as the replicates are
+#' found in the data frame supplied to the `data` argument (from left to right).
 #'
 #' @param vst logical; Variance stabilizing transformation. By default, the
 #' function uses a regularized log transformation on the data set, however, this
@@ -24,7 +25,7 @@
 #' In special conditions, regularized log transformation will not suit
 #' the experimental design. For example, an experimental design without
 #' replicates. In this instance, it is preferable to change the default setting
-#' and switch to a variance stabilizing transformation method (`vst=TRUE`).
+#' and switch to a variance stabilizing transformation method (\code{`vst=TRUE`}).
 #'
 #'
 #' @examples
@@ -34,7 +35,6 @@
 #'             "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
 #' p <-  plotSamplePCA(data = sRNA_24,group = groups )
 #'
-
 #'
 #'
 #'

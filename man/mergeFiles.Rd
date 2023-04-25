@@ -2,7 +2,7 @@
 % Please edit documentation in R/mergeFiles.R
 \name{mergeFiles}
 \alias{mergeFiles}
-\title{Merge the reference genomes into a single reference genome}
+\title{Merge two reference genomes into one}
 \usage{
 mergeFiles(files, file1 = NULL, file2 = NULL, out)
 }
@@ -17,20 +17,29 @@ mergeFiles(files, file1 = NULL, file2 = NULL, out)
 \item{out}{Path desired output directory.}
 }
 \value{
-A file named `"ref_merged.fa"` representing the merged
+A file named \code{ref_merged.fa} representing the merged
 genome reference.
 }
 \description{
-Merges two reference genomes (`.fa/.fasta)`. into one.
+Merges two reference genomes (`.fa/.fasta)`. into one single
+reference.
+}
+\details{
+Prior to merging it is import to check the chromosome names for each
+genome. This is to ensure they can be easily distinguished from each other
+after merging. To extract the chromosomal information, look at
+[RNAlocate::referenceInfo()] and to modify the chromosome names, look at
+[RNAlocate::modifyReference()].
 }
 \examples{
 \dontrun{
 mergeFiles(file1 = "./workplace/reference/ref1.fa.gz",
             file2 = "./workplace/reference/ref2.fa.gz"
-            out = "./workplace/reference/merge/")
+            out = "./workplace/reference/merge/ref_merged.fa")
 # Or,
-mergeFiles(files = "./workplace/reference/",
-            out = "./workplace/reference/merge/")
+mergeFiles(files = "./workplace/reference/*",
+            out = "./workplace/reference/merge/ref_merged.fa")
 }
+
 
 }

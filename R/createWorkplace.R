@@ -1,26 +1,33 @@
-#' Make the working directory structure
+#' Create a working directory file structure
 #'
-#' @description Creates the basic directory structure to store your raw data,
+#' @description Creates the basic directory to store your raw data,
 #' genome references and annotation files
-#' @param  dirwd Working Directory path. This argument could include using
-#' the [getwd()] function to retrieve path.
+#'
+#'
+#' @param wd Path to working directory.
+#'
+#'
 #' @return A working directory with folders the folders `"raw"` to store raw
 #' sequencing data (`.fastq/.fq`), `"reference"` to store reference
 #' genomes (`.fa/.fasta`) & `"annotation"` to store reference
 #' annotation files (`.gff/.gff3`)
+#'
+#' @details This argument could include using the [base::getwd()] function to
+#' retrieve path to the working directory.
+#'
 #' @examples
 #' \dontrun{
 #' createWorkplace(getwd())
 #' }
 #' @export
-createWorkplace <- function(dirwd){
-  message("The working directory path is ", getwd())
-  message("The following folders have been created here:reference,
-          annotation, raw", getwd())
-  dir.create(file.path(dirwd, "/reference"), showWarnings = FALSE)
-  dir.create(file.path(dirwd, "/reference/merge"), showWarnings = FALSE)
-  dir.create(file.path(dirwd, "/annotation"), showWarnings = FALSE)
-  dir.create(file.path(dirwd, "/annotation/merge"), showWarnings = FALSE)
-  dir.create(file.path(dirwd, "/raw"), showWarnings = FALSE)
+createWorkplace <- function(wd){
+  message("The working directory path is ", wd)
+  message("The following folders have been created here: reference,
+          annotation, raw")
+  dir.create(file.path(wd, "/reference"), showWarnings = FALSE)
+  dir.create(file.path(wd, "/reference/merge"), showWarnings = FALSE)
+  dir.create(file.path(wd, "/annotation"), showWarnings = FALSE)
+  dir.create(file.path(wd, "/annotation/merge"), showWarnings = FALSE)
+  dir.create(file.path(wd, "/raw"), showWarnings = FALSE)
 }
 

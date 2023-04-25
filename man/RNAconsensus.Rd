@@ -2,31 +2,47 @@
 % Please edit documentation in R/RNAconsensus.R
 \name{RNAconsensus}
 \alias{RNAconsensus}
-\title{Define the siRNA consensus for each dicer-derived cluster}
+\title{Define the sRNA consensus for each dicer-derived cluster}
 \usage{
 RNAconsensus(data, conditions, tidy = TRUE)
 }
 \arguments{
-\item{data}{data frame or GRanges object containing sample data. See
-[sample_table()] to produce an organised GRanges object of sample data.}
+\item{data}{a data frame object containing sample data where rows
+represent sRNA dicer-derived clusters, and where columns represent sample
+data. See [RNAlocate::RNAimport()] to load data, extract the required
+information for each sample and organise it as required.}
 
-\item{conditions}{Vector containing names of the heterografted conditions.
-Or, samples you wish to draw the consensus class from in the analysis.}
+\item{conditions}{a character vector containing names sample replicates to
+base the consensus on. Each string should represent a sample name already
+utilised in the analysis and present in the data frame supplied to the `data`
+argument.}
 
-\item{tidy}{Whether to remove clusters with an unknown or unclassified
-consensus result. `tidy=TRUE` to remove unclassified cluster, or
-\code{tidy=FALSE} to not remove background noise.
-It is preferable to remove the excess noise in data.}
+\item{tidy}{use of this argument will remove sRNA clusters with a unknown or
+unclassified consensus result. By default, the function will tidy the data
+and remove unclassified clusters to remove excess noise in the data set. To
+retain background background noise, set \code{tidy=FALSE}.}
 }
 \value{
 A data frame containing all existing columns in the input data object,
-plus, an additional column labeled `sRNA_Consensus` stating the consensus
+plus, an additional column labeled \code{sRNA_Consensus} stating the consensus
 small RNA type/class between 20-24 nucleotides in length.
 }
 \description{
-Using the data, the function creates a data frame with an
-additional column stating the consensus siRNA class/type for each
-dicer-derived cluster `sRNA_Consensus`.
+Using the data, the function uses the supplied data frame and
+adds an additional column stating the consensus sRNA class/type for each
+dicer-derived cluster.
+}
+\details{
+The function calculates the consensus sRNA class based on the conditions
+supplied. Depending on your reasons for analysis, different conditions should
+be supplied. For instance, if you wish to identify mobile sRNAs in a
+heterograft condition, where you compare replicates in either a heterograft
+or control condition, you should supply the names of the replicates in the
+heterograft condition. This means that the function will draw a consensus of
+the sRNA class based only on these replicates. This method is suggested
+because any mobile sRNA from the donor will not be found in the control
+samples, and hence, any class determination in the control samples for
+this sRNA cluster would be irrelevant.
 }
 \examples{
 

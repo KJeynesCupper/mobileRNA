@@ -8,11 +8,11 @@ plotSamplePCA(data, group, vst = FALSE)
 }
 \arguments{
 \item{data}{class data.frame; data set containing the raw data produced as
-output from `RNAconsensus()` and/or `RNAsubset()`.}
+output from [RNAlocate::RNAconsensus()] and/or [RNAlocate::RNAsubset()].}
 
-\item{group}{character vector containing experimental conditions for each
-replicate. Ensure this is in the same order as the replicates are found in
-the `data` augment (from left to right).}
+\item{group}{character vector; contains experimental conditions for each
+replicate. IMPORTANT: Ensure this is in the same order as the replicates are
+found in the data frame supplied to the `data` argument (from left to right).}
 
 \item{vst}{logical; Variance stabilizing transformation. By default, the
 function uses a regularized log transformation on the data set, however, this
@@ -22,8 +22,9 @@ will not suit all experimental designs.}
 A PCA plot to show sample distance.
 }
 \description{
-A function to draw a PCA plot. The function undertakes rlog
- transformation of the data in an unbiased manner (\code{blind=TRUE}).
+A function to draw a principal component analysis (PCA) plot.
+ The function undertakes rlog transformation of the data in
+ an unbiased manner (\code{blind=TRUE}).
 }
 \details{
 This function utilises the DESeq2 package to organise and plot the
@@ -34,7 +35,7 @@ results are plotted against the principle components 1 and 2.
 In special conditions, regularized log transformation will not suit
 the experimental design. For example, an experimental design without
 replicates. In this instance, it is preferable to change the default setting
-and switch to a variance stabilizing transformation method (`vst=TRUE`).
+and switch to a variance stabilizing transformation method (\code{`vst=TRUE`}).
 }
 \examples{
 data(sRNA_24)

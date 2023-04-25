@@ -8,7 +8,7 @@ controls <- c("TomTom_1", "TomTom_2", "TomTom_3")
 ## Mobile Molecules: DEseq2 method
 
 # remove clusters associated to tomato in 2122nt RNA database
-sRNA_2122_mobile_DESeq2  <- MobileMolecules(data = sRNA_24_DESeq2,controls, id = "SL40", task = "remove")
+sRNA_2122_mobile_DESeq2  <- RNAmobile(data = sRNA_24_DESeq2,controls, id = "SL40", task = "remove")
 
 
 

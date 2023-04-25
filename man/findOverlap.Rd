@@ -2,37 +2,52 @@
 % Please edit documentation in R/findOverlap.R
 \name{findOverlap}
 \alias{findOverlap}
-\title{Identify genomic annotations which overlap with the coordinates of the
-dicer-derived clusters.}
+\title{Identify genomic annotations which overlap with the coordinates of
+dicer-derived sRNA clusters.}
 \usage{
 findOverlap(annotation, clusters, out)
 }
 \arguments{
-\item{annotation}{Local directory path to merged reference annotation file
-(`.gff`).}
+\item{annotation}{Path to location of a genome annotation file
+(`.gff/.gff3`).}
 
-\item{clusters}{`.gff3` annotation file containing information of the
-siRNA dicer-derived clusters. This file will have been produced as a part of
-the pre-processing steps. Specifically, using the output from the first
-mapping step.}
+\item{clusters}{A `.gff3` annotation file containing information of the
+sRNA dicer-derived clusters identified across all the experimental replicates.
+This information including chromosome, start and end site coordinates.
+This file can be produced as a part of the pre-processing steps, see details
+for more information}
 
-\item{out}{Local directory path to the location to store the file which will
-be named "genomic_overlap.bed"}
-}
-\value{
-A file called `"genomic_overlap.bed"` containing annotation
-information on each dicer-derived cluster.
+\item{out}{Path to the location to store the output file.}
 }
 \description{
-A function to call an OS command to use `BEDtools`
+Calls an OS command to instruct  \code{BEDtools}
 to identify the intersect between the merged reference annotation and
-the merged dicer-derived cluster information in a `.gff3 `format.
+the merged dicer-derived cluster information in a `.gff3` format.
+}
+\details{
+The command outputs a `bed` file, named `genomic_overlap.bed`, which
+is stored in the location supplied to the `out` argument. This command
+utilities the intersect command from \code{BEDtools} along with the following
+parameters: -wa -wb. Used together, these parameters produced a file which
+supplies all the information from both files where a match was identified.
+
+The `clusters` information can be created by merging all identified sRNA
+clusters identified for each sample replicate in the analysis into a single
+annotation file. When employing \code{Shortstack} for mapping and cluster
+analysis, the algorithm produce an `.gff3` annotation file for each replicate
+("ShortStack_All.gff3"). These can be merged into one, where one line
+represents a cluster with its coordinates, and no duplicates.
 }
 \examples{
 \dontrun{
+# merged annotation reference file
 Anno <- "./annotation/merge/anno_merged.gff"
+# location to save output
 save <-   "./cluster_genomic_locations/"
+
+# location to information of sRNA clusters across experiment
 ClusterInfo <- "./clusters/ClustersInfo.gff3"
+
 findOverlap(annotation = Anno, clusters = ClusterInfo, out = save)
 }
 }

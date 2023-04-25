@@ -7,8 +7,9 @@
 RNAsubset(data, type, sig = FALSE, ...)
 }
 \arguments{
-\item{data}{A numerical data-frame containing the sample data and consensus
-sRNA class/type (see [RNAconsensus()].}
+\item{data}{A numerical data-frame containing the sample data, with a
+defined consensus sRNA class/type for each sRNA dicer-derived cluster
+(see [RNAlocate::RNAconsensus()].}
 
 \item{type}{A number to represent the type of small RNA population to subset
 for.}
@@ -23,10 +24,14 @@ Multiple values can be inputted, for instance both 21 and 22 can be
 stated to select both.}
 }
 \description{
-Creates a data-frame containing the desired sRNA class(s).
-See [RNAconsensus()] for information on defining the sRNA type
+Creates a data-frame containing the desired sRNA class(s) based
+on the consensus sRNA determination.
+}
+\details{
+See [RNAlocate::RNAconsensus()] for information on defining the sRNA type
 for each cluster. The function allows the choice to filtered the data by
-statistical significance. Set \code{sig=TRUE} to filtered by significance
+statistical significance based on differential expression analysis, see
+[RNAlocate::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
 (p-adjusted).
 }
 \examples{

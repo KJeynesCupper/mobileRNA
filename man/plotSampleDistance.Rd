@@ -2,30 +2,30 @@
 % Please edit documentation in R/plotSampleDistance.R
 \name{plotSampleDistance}
 \alias{plotSampleDistance}
-\title{Heatmap to access sample distance as a quality control step}
+\title{Sample quality control heatmap plot}
 \usage{
 plotSampleDistance(data, vst = FALSE)
 }
 \arguments{
-\item{data}{class data.frame; data set containing the raw data produced as
-output from `RNAconsensus()` and/or `RNAsubset()`.}
+\item{data}{data frame; data set containing the raw data produced as
+output from [RNAlocate::RNAconsensus()] and/or [RNAlocate:RNAsubset()]}
 
-\item{vst}{logical; Variance stabilizing transformation. By default, the
+\item{vst}{Logical; Variance stabilizing transformation. By default, the
 function uses a regularized log transformation on the data set, however, this
 will not suit all experimental designs.}
 }
 \value{
-A blue scale heatmap illustrating the sample distance
+A blue scale heatmap illustrating the sample distance.
 }
 \description{
 A function to draw a simple hierarchical clustered heatmap to observe
-sample distance.
+sample distance. Ideal for quality control of sequencing data.
 }
 \details{
 In special conditions, regularized log transformation will not suit
 the experimental design. For example, an experimental design without
 replicates. In this instance, it is preferable to change the default setting
-and switch to a variance stabilizing transformation method (`vst=TRUE`).
+and switch to a variance stabilizing transformation method (\code{vst=TRUE}).
 }
 \examples{
 

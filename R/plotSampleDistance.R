@@ -1,21 +1,25 @@
-#' Heatmap to access sample distance as a quality control step
+#' Sample quality control heatmap plot
 #'
 #'A function to draw a simple hierarchical clustered heatmap to observe
-#'sample distance.
-#' @param data class data.frame; data set containing the raw data produced as
-#' output from `RNAconsensus()` and/or `RNAsubset()`.
+#'sample distance. Ideal for quality control of sequencing data.
 #'
-#' @param vst logical; Variance stabilizing transformation. By default, the
+#'
+#' @param data data frame; data set containing the raw data produced as
+#' output from [RNAlocate::RNAconsensus()] and/or [RNAlocate:RNAsubset()]
+#'
+#' @param vst Logical; Variance stabilizing transformation. By default, the
 #' function uses a regularized log transformation on the data set, however, this
 #' will not suit all experimental designs.
 #'
 #'
-#' @return A blue scale heatmap illustrating the sample distance
+#' @return A blue scale heatmap illustrating the sample distance.
 #'
 #' @details In special conditions, regularized log transformation will not suit
 #' the experimental design. For example, an experimental design without
 #' replicates. In this instance, it is preferable to change the default setting
-#' and switch to a variance stabilizing transformation method (`vst=TRUE`).
+#' and switch to a variance stabilizing transformation method (\code{vst=TRUE}).
+#'
+#'
 #' @examples
 #'
 #' data("sRNA_24")

@@ -2,18 +2,19 @@
 % Please edit documentation in R/identifyClusters.R
 \name{identifyClusters}
 \alias{identifyClusters}
-\title{Merge the dicer-derived information into a single annotation file}
+\title{Merge sRNA dicer-derived cluster information into a annotation file (`.gff3`)}
 \usage{
 identifyClusters(files, out, samples)
 }
 \arguments{
-\item{files}{The path to the local directory containing the results of
-mapping step one.}
+\item{files}{Path to the directory containing the results of mapping step one.}
 
-\item{out}{The path to the local directory to save the annotation files.}
+\item{out}{Path to the directory to save the outputted annotation files
+(`.gff3` and `.txt`)}
 
 \item{samples}{A character vector containing the names of all the samples in
-the analysis. These should match the sample folder names.}
+the analysis. These should match the sample folder names created in mapping
+step one, outputted by \code{Shortstack}.}
 }
 \value{
 A plain text files (.txt) and General Feature Format (.gff3) file
@@ -21,17 +22,19 @@ containing the names of all cluster identified in across the samples
 and the genomic locations.
 }
 \description{
-Collate all in the identified dicer-derived clusters, which
-define each small RNA molecules in the analysis, into a single file.
+Collate all in the identified sRNA dicer-derived clusters,
+including the chromosome, start and end coordinates, into a single
+annotation file.
 }
 \examples{
 \dontrun{
-conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
-                 "TomTom_1","TomTom_2", "TomTom_3")
+
 
 folder <- "./workplace/alignment_multi_one/"
 save_folder <- "./workplace/reference/"
 
+conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
+                 "TomTom_1","TomTom_2", "TomTom_3")
 identifyClusters(files = folder,
            out = save_folder,
             samples = conditions)

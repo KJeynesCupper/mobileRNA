@@ -1,18 +1,28 @@
 #' Heatmap using hierarchical clustering
 #'
-#' @description Plot a heatmap with hierarchical clustering via an rlog
+#' @description Plots a heatmap with hierarchical clustering via an rlog
 #' transformation of FPKM data and euclidean statistics.
-#' @param data Dataframe contain significant sRNA of a particular class
-#' or type (ie. 24-nt or 21/22-nt sRNA)
-#' @param colours The colours used to produce the heatmap image.
-#' Defaults to heat colors from `grDevices` (heat.colors(100)).
-#' @param dendogram logical indicating whether to include the dendrogram, and
-#' retain clustering.
 #'
-#' @param margins numeric vector of length 2, to state width of the heatmap
-#' column names section and row names section, respectively.
+#'
+#' @param data Data frame containing FPKM values for each samples on
+#' each sRNA dicer-derived cluster of interest.
+#'
+#'
+#' @param colours  Colours to display and represent the heatmap.
+#' Defaults to [grDevices::heat.colors()] (heat.colors(100)).
+#'
+#'
+#' @param dendogram Logical; indicating whether to include the dendrogram, and
+#' retain clustering. Default, \code{dendogram = TRUE} to include.
+#'
+#' @param margins Numeric vector; Length of 2, to state width of the heatmap
+#' column names section and row names section, respectively. If null, default
+#' `margins` is set as c(10, 10).
+#'
 #' @details The function create a heatmap based on the hierarchical clustering
 #' of FPKM values using euclidean statistics.
+#'
+#'
 #' @examples
 #'
 #' ## DESeq2 example: mobile 24-nt & 21/22-nt sRNA

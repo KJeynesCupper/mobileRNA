@@ -12,9 +12,11 @@ output:
 fig_width: 7
 vignette: >
   %\VignetteIndexEntry{RNAlocate}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}}
   %\VignetteEncoding{UTF-8}
   %\usepackage[utf8]{inputenc}
+  
+  
 ---
 
 ```{r setup, include = FALSE}
@@ -37,7 +39,10 @@ An important role in long-distance signalling is played by small RNA molecules
 (sRNAs). These sRNAs can be produced in a tissue and then being transported 
 systemically across the vascular system into recipient organs, where they can 
 induce a molecular response and coordinate physiological changes. 
-Being mobile sRNA able to move across a graft junction, their study can bring to novel methods for transferring traits into crops, for example by combining genotypes by grafting, rather than using breeding or transgenic approaches. Several genomics studies used grafting to explore and 
+Being mobile sRNA able to move across a graft junction, their study can bring to 
+novel methods for transferring traits into crops, for example by combining 
+genotypes by grafting, rather than using breeding or transgenic approaches. 
+Several genomics studies used grafting to explore and 
 characterise mobile sRNAs, however, the approach used to distinguish these 
 mobile molecules from the sequencing noise is not standardised, and for 
 each study it is necessary to adapt general RNA sequencing pipelines to the 
@@ -50,6 +55,33 @@ and can achieve results on a range of RNA molecule types.
 
 
 # Methods
+This manual offers a pipeline for the analysis of sRNAseq data from plant
+grafting experiments, specifically to identify the movement of sRNA molecules 
+across a graft junction from one genotype to another. 
+
+The pre-processing method is different to others, as it involves mapping the 
+samples to a merged reference genome, comprising of the two genotypes in the
+heterograft system. In addition, all samples are analysed against a list of all
+identified sRNA cluster loci to ensure that all sRNA clusters are fairly 
+recognised in the analysis
+
+The analysis method takes the results produced by ShortStack mapping and cluster 
+analysis and identified potential mobile sRNA by removing those mapped to the 
+destination tissue genotype and removing additional falsely mapped sRNA. 
+Previous methods have not employed statistical analysis to select mobile sRNA, 
+here we have incorporated this into the analysis options. This adds greater 
+flexibility and control to the user. By the end of the analysis using RNAlocate, 
+the user could have produced a number of figures to represent the data. This 
+includes plots to represent the:
+* Distribution of sRNA sizes across samples, total dataset consensus sRNA, 
+or across the potential mobile sRNA. 
+* Distribution of sRNA across genomic features
+* Sample distance, including a PCA and heatmap
+* Heatmap of mobile sRNA expression 
+
+
+
+# Installation
 
 The latest version of `RNAlocate` can be installed via GitHub 
 using the `devtools` package:
@@ -75,8 +107,8 @@ Once installed, you will have access to the following functions:
 
 **Pre-processing**
 - `createWorkplace()`  
-- `chrModify()`
-- `chrInfo()`
+- `referenceInfo()`
+- `modifyReference()`
 - `mergeFiles()`
 - `checkQuality()`
 - `findOverlap()`
@@ -87,14 +119,13 @@ Once installed, you will have access to the following functions:
 - `RNAconsensus()`
 - `RNAsubset()`
 - `RNAdistribution()`
-- `plotConsensusFrequency()`
 - `plotSamplePCA()`
 - `plotSampleDistribution()`
 - `RNAanalysis()`
-- `MobileMolecules()`
+- `RNAmobile()`
 - `plotHeatmap()`
-
-
+- `RNAmean()`
+- `RNAfeatures()`
 
 Further details on how each function operates will be provided later on in the
 documentation. For some functions there are recurring arguments. 
@@ -110,8 +141,7 @@ which refers to the control samples in the analysis. A recurring argument in the
 analysis pipeline is the `method` argument which tells the function 
 how to process the data from the choice of two analytical methods 
 (i.e.`"DESeq"`, or `"edgeR"`). All other arguments are discussed
-in further detail by looking at the a functions help file
-(i.e. `?DE_results`).
+in further detail by looking at the a functions help file. 
 
 ## An overview of the data used
 For the following examples, an example small RNA-seq data set from a Tomato 
@@ -126,7 +156,7 @@ each sample. To improve the pre-processing speed, it has been reduced in size,
 containing reads only mapped to chromosome 1 in the tomato and eggplant
 genomes. 
 - The second data set, called `sRNA.data`, stores a matrix containing the
-pre-processed data from the experiment coresponding to all chromosomes. As a 
+pre-processed data from the experiment corresponding to all chromosomes. As a 
 user, this allows you to see what a full data set might look like and how 
 you might expect it to change across the analysis. 
 
@@ -275,11 +305,11 @@ full-stop/period.
 
 ```{r, eval = FALSE}
 # check for chromosome names and the chromosome sizes in merged reference 
-chrInfo(genome = "/Users/user1/projectname/workplace/reference/merge/
+referenceInfo(genome = "/Users/user1/projectname/workplace/reference/merge/
            ref_merged.fasta", 
            out =  "/Users/user1/projectname/workplace/reference/merge/")
 # Remove punctuation from merged reference genome.  
-chrModify(genome = "/Users/user1/projectname/workplace/reference/merge/
+modifyReference(genome = "/Users/user1/projectname/workplace/reference/merge/
            Solanum_lycopersicum.fa.gz", 
           old = "SL4.",
           new = "SL4")
@@ -376,7 +406,7 @@ FILES=/Users/user1/projectname/workplace/trimmed/*_trimmed.fq
 for f in $FILES
 do
 f=${f##*/}
-f=${f%_trimmed*}
+f=${f%_trimmed.fq}
 
 echo "mapping with ShortStack ... $f" >> 
 /Users/user1/projectname/workplace/alignment_multi_one/stats_alignment.txt
@@ -396,7 +426,7 @@ done
 for f in $FILES
 do
 f=${f##*/}
-f=${f%_trimmed*}
+f=${f%_trimmed.fq}
 
 echo "mapping with ShortStack ... $f" >>
 /Users/user1/projectname/workplace/alignment_unique_one/stats_alignment.txt
@@ -508,7 +538,7 @@ and sends information to `BEDtools`.
 mergeFiles(files = "/Users/user1/projectname/workplace/annotation/*",
             out = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff")
 ## Find the overlap between the identified clusters and the merged annotation file
-## This will enable annotation of the sRNA to aid funcitonal analysis 
+## This will enable annotation of the sRNA to aid functional analysis 
 
 findOverlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff",
              clusters = "/Users/user1/projectname/workplace/reference/ClusterInfo.gff3", 
@@ -516,7 +546,7 @@ findOverlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/an
 ```
 
 # Analysis 
-Here, the anaysis of the pre-processed data occurs, with the aim to 
+Here, the analysis of the pre-processed data occurs, with the aim to 
 identify if any mobile sRNA molecules are traveling from one genotype to
 the other in your grafting system. 
 
@@ -622,7 +652,8 @@ RNA classes within each sample"
 
 ```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B")}
 
-sample.distribution_line <- RNAdistribution(sRNA_data, style = "line", together = FALSE)
+sample.distribution_line <- RNAdistribution(sRNA_data, style = "line", 
+                                            together = FALSE)
 
 sample.distribution_bar <- RNAdistribution(sRNA_data, style = "bar")
 
@@ -713,21 +744,19 @@ sRNA_2122 <- RNAsubset(sRNA_data_summary, type = c(21, 22))
 
 ### Plot consensus classification of sRNA
 
-Use `plotFrequency()` to visualize the distribution of the consensus sRNA 
+Use `RNAdistriution()` to visualize the distribution of the consensus sRNA 
 classes within the data. This step can be used as a quality control step to 
 illustrate the distribution of each sRNA class within the data. The function 
 can plot the absolute or relative frequency, use argument `relative`. It can be 
 beneficial to view the absolute frequency as well as the relative to observe
 whether the data meets your expectations. 
 
-```{r, echo=FALSE}
-cap5 <-"A box plot example of the relative frequency of the consensus sRNA class."
-
+```{r}
+consensus_plot <- RNAdistribution(data = sRNA_data_summary, 
+                                  consensus = TRUE, style = "consensus")
 ```
 
-```{r, message=FALSE, fig.cap=cap5}
-plotFrequency(sRNA_data_summary, relative = TRUE)
-```
+
 
 ## Differential Expression analysis with DESeq2 or edgeR 
 Differential expression (DE) analysis is undertaken to identify sRNA which are 
@@ -782,7 +811,7 @@ which map the the scion genotype when the aim is to identify molecules traveling
 from the rootstock. In the data, the aim is to explore whether there are tomato 
 sRNA traveling up through the graft junction and exiting into the 
 eggplant leaf tissues. We can identify potential mobile molecule by using 
-the `MobileMolecules()` function. It selects clusters mapping to the rootstock 
+the `RNAmobile()` function. It selects clusters mapping to the rootstock 
 genome in the hetero-graft. Therefore, we will remove clusters mapped to 
 chromosome in the genotype used in the self-graft controls. 
 
@@ -794,9 +823,10 @@ In the example, the tomato genome has chromosome labeled with
 associated with the eggplant genome and keep only clusters associated with the 
 tomato genome, set the `"task"` argument as `"keep"`.  
 
-The `MobileMolecules()` function extracts the most statistically significant 
-mobile RNA from a test object, based on an adjusted p-value threshold = 0.05.The 
-threshold can be changed to make it less stringent by using the argument `padj`.
+The `RNAmobile()` function can take into account the statistically significance.
+If set to consider this, the function will filter sRNA based on an adjusted
+p-value threshold = 0.05. The threshold can be changed to make it less stringent 
+by using the argument `padj`.
 Similarly, if you would prefer to extract the mobile RNA based on the p-value, 
 rather than the adjusted p-values, the argument a numeric threshold can be 
 set for the argument `p.value`. If you would like to explore all mobile 
@@ -812,13 +842,13 @@ control_names <- c("TomTom_1", "TomTom_2", "TomTom_3")
 
 ## Mobile Molecules: DEseq2 method
 # remove clusters associated to tomato in 24nt RNA database 
-sRNA_24_mobile_DEseq <- MobileMolecules(data = sRNA_24_DESeq2, 
+sRNA_24_mobile_DEseq <- RNAmobile(data = sRNA_24_DESeq2, 
                                          controls = control_names, 
                                          id = "SL40", 
                                          task = "remove")
 
 # remove clusters associated to tomato in 2122nt RNA database 
-sRNA_2122_mobile_DEseq  <- MobileMolecules(data = sRNA_2122_DESeq2,
+sRNA_2122_mobile_DEseq  <- RNAmobile(data = sRNA_2122_DESeq2,
                                             controls = control_names, 
                                             id = "SL40", 
                                             task = "remove")
@@ -829,12 +859,12 @@ sRNA_2122_mobile_DEseq  <- MobileMolecules(data = sRNA_2122_DESeq2,
 
 ## Mobile Molecules: edgeR method
 # remove clusters associated to tomato in 24nt RNA database 
-sRNA_24_mobile_edgeR <- MobileMolecules(data = sRNA_24_edgeR, 
+sRNA_24_mobile_edgeR <- RNAmobile(data = sRNA_24_edgeR, 
                                         controls = control_names, 
                                          id = "SL40", task = "remove")
 
 # remove clusters associated to tomato in 2122nt RNA database 
-sRNA_2122_mobile_edgeR <- MobileMolecules(data = sRNA_2122_edgeR,
+sRNA_2122_mobile_edgeR <- RNAmobile(data = sRNA_2122_edgeR,
                                            controls = control_names, 
                                            id = "SL40",
                                            task = "remove")
@@ -874,8 +904,52 @@ p12 <- plotHeatmap(sRNA_2122_mobile_DEseq)
 p13 <- plotHeatmap(sRNA_2122_mobile_edgeR)
 ```
 
-## Session information
+
+# Additional features 
+
+The *RNAlocate* package offers several of other helpful functions to aid 
+analysis. This includes a function to calculate the mean FPKM and counts across 
+specific samples and also calculate the overlap between genomic features and 
+sRNA clusters.
+
+## Calculate FPKM and Count means for specific samples
+This function calculates the FPKM mean and Count mean across specific samples.
+
+```{r}
+# calculate mean FPKM and mean Counts for heterograft samples
+selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
+means <- RNAmean(data = sRNA_data, conditions = selected_samples)
+
+```
+
+
+## Calculate distribution of sRNA clusters across genomic features. 
+
+The distribution of sRNA clusters across genomic features should show a similar
+distribution as size distribution. It is expected that 24-nt sRNA are associated 
+with repeat regions and promoter regions, while 21/22-nt sRNA are likely to be
+associated with coding sequence. 
+
+This functions calculates the number of sRNA clusters associated to different 
+genomic regions including transposable elements, promoters, introns, exons and 
+untranslated regions. The results can either be displayed in the matrix as an 
+absolute value or as a percentage of the total. 
+
+The output can be utilsed and passed into a plot of your choice. Similarly, 
+this features can be utilsed across different data sets. For example, across
+the total data set or specific mobile sRNA subsets. 
+
+
+```{r, eval = FALSE}
+# matrix containing percentage of sRNA clusters associated to different genomic 
+# features
+dis_features <- RNAfeatures(data = sRNA_data_summary, 
+                            annotation = "./annotation/eggplant_genome.gff3",
+                            repeats = "./annotation/eggplant_genome_repeats.gff3")
+```
+
+
+# Session information
 ```{r}
 sessionInfo()
 ```
-

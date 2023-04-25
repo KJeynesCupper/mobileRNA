@@ -7,20 +7,21 @@
 plotHeatmap(data, colours = NULL, dendogram = TRUE, margins = NULL)
 }
 \arguments{
-\item{data}{Dataframe contain significant sRNA of a particular class
-or type (ie. 24-nt or 21/22-nt sRNA)}
+\item{data}{Data frame containing FPKM values for each samples on
+each sRNA dicer-derived cluster of interest.}
 
-\item{colours}{The colours used to produce the heatmap image.
-Defaults to heat colors from `grDevices` (heat.colors(100)).}
+\item{colours}{Colours to display and represent the heatmap.
+Defaults to [grDevices::heat.colors()] (heat.colors(100)).}
 
-\item{dendogram}{logical indicating whether to include the dendrogram, and
-retain clustering.}
+\item{dendogram}{Logical; indicating whether to include the dendrogram, and
+retain clustering. Default, \code{dendogram = TRUE} to include.}
 
-\item{margins}{numeric vector of length 2, to state width of the heatmap
-column names section and row names section, respectively.}
+\item{margins}{Numeric vector; Length of 2, to state width of the heatmap
+column names section and row names section, respectively. If null, default
+`margins` is set as c(10, 10).}
 }
 \description{
-Plot a heatmap with hierarchical clustering via an rlog
+Plots a heatmap with hierarchical clustering via an rlog
 transformation of FPKM data and euclidean statistics.
 }
 \details{
