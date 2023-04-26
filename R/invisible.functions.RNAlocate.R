@@ -7,19 +7,15 @@
 .import_annotations <- function(data){
   x <- utils::read.table(data ,header = FALSE, sep="\t",stringsAsFactors=FALSE,
                          quote="")
-  x <- x %>% dplyr::rename(seqID_loci = V1,
-                           source_loci = V2,
-                           type_loci = V3,
+  x <- x %>% dplyr::rename(chr = V1,
+                           source = V2,
+                           feature = V3,
                            start=V4,
                            end = V5,
-                           seqID= V9 ,
-                           feature_type = V11,
-                           feature_start =V12,
-                           feature_end = V13,
-                           strand = V15,
-                           phase = V16,
-                           attributes = V17) %>%
-    dplyr::select(-c(V6, V7, V8, V10, V14))
+                           score= V6 ,
+                           strand = V7,
+                           frame =V8,
+                           attribute = V9)
   return(x)
 }
 
@@ -29,25 +25,25 @@
 .remove_mapping_errors <- function(data, controls) {
   class_colnames <- c()
   for (i in colnames(data)){
-    if (stringr::str_detect(i, "FPKM_" )){
+    if (stringr::str_detect(i, "Count_" )){
       class_colnames <- c(class_colnames, i)
     }
   }
-  onlyControlFPKM <- base::unique(base::grep(paste(controls,collapse="|"),
+  onlyControlCount <- base::unique(base::grep(paste(controls,collapse="|"),
                                              class_colnames, value=TRUE))
-  if (length(onlyControlFPKM) > 1){
+  if (length(onlyControlCount) > 1){
     x <- c()
     for (j in 1:nrow(data) ){
       if(stats::var(stats::na.omit(as.numeric(
-        data[j,onlyControlFPKM], na.rm=T)))> 0 ){
+        data[j,onlyControlCount], na.rm=T)))> 0 ){
         x <- c(x,j)
       }
     }
   } else
-    if (length(onlyControlFPKM) == 1){
+    if (length(onlyControlCount) == 1){
       x <- c()
       for (k in 1:nrow(data) ){
-        if(stats::na.omit(as.numeric(data[k,onlyControlFPKM], na.rm=T)) != 0 ){
+        if(stats::na.omit(as.numeric(data[k,onlyControlCount], na.rm=T)) != 0 ){
           x <- c(x,k)
         }
       }

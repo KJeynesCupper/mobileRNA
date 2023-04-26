@@ -4,7 +4,7 @@
 \alias{RNAimport}
 \title{Import and organise sRNAseq data set}
 \usage{
-RNAimport(results, samples, clusters, totalNumReads, features = NULL)
+RNAimport(results, samples, clusters, features = NULL)
 }
 \arguments{
 \item{results}{Path to directory containing of sample folders. NOTE: Following
@@ -16,9 +16,6 @@ to outputted folders either \code{"second_alignment_unique"} or
 \code{"second_alignment_multi"}.}
 
 \item{clusters}{Import \code{.gff3} from \code{"reference"} folder.}
-
-\item{totalNumReads}{Table containing containing the total number of reads
-for each samples. Each value labeled with the sample name.}
 
 \item{features}{Path to a .bed file containing the genomic information
 (annotations/features) which overlaps with the locations of the
@@ -40,15 +37,14 @@ where each row represent an sRNA dicer-derived cluster. Columns 1 - 5
 supply information on the cluster including the name, coordinates
 (chromosome, start, end) and width of locus.
 
-Further columns represent data imported for each samples including DicerCall,
-Counts and cluster name. The DicerCall represents the size of most abundant
-small RNA size based on the parameter used in ShortStack. The Count column
-represents the number of aligned sRNA-seq reads that overlap the locus.
-For each replicate included in the analysis, these columns are labelled with
+Further columns represent data imported for each samples including cluster
+name, DicerCall, Counts and RPM. The DicerCall represents the size of most
+abundant small RNA size based on the parameter used in ShortStack.
+The Count column represents the number of aligned sRNA-seq reads that overlap
+the locus. The RPM represents the reads per million.
+For each replicate included in the analysis, these columns are labeled with
 the type and then then name of the samples, for example, DicerCall_Sample1.
 
-In addition, to importing the processed data, the function also calculates the
- \code{FPKM} for each sample and visible at the far right of the data frame.
 
 To import the samples, the `samples` argument must represent a vector of
 the names of the folders present in the directory containing the sample
@@ -66,12 +62,9 @@ sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3",
 
 clusters <- rtracklayer::import.gff("./data/reference/ClustersInfo.gff3")
 
-total_reads <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-names(total_reads) <- sample_names
 sRNA_data <- RNAimport(results = directory,
                            samples = sample_names,
                            clusters = clusters,
-                           totalNumReads = total_reads
                            features = genomic_features)
 }
 

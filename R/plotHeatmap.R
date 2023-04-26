@@ -1,7 +1,7 @@
 #' Heatmap using hierarchical clustering
 #'
 #' @description Plots a heatmap with hierarchical clustering via an rlog
-#' transformation of FPKM data and euclidean statistics.
+#' transformation of RPM data and euclidean statistics.
 #'
 #'
 #' @param data Data frame containing FPKM values for each samples on
@@ -59,17 +59,16 @@
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "heat.colors"
 
-plotHeatmap <-function (data, colours = NULL, dendogram = TRUE, margins = NULL)
-{
+plotHeatmap <-function (data, colours = NULL, dendogram = TRUE, margins = NULL){
   if (base::missing(data) || !base::inherits(data, c("matrix",
                                                      "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame,\n         DataFrame. See ?plotHeatmap for more information.")
   }
-  select_data <- data %>% dplyr::select(!FPKM_mean) %>% dplyr::select(tidyselect::starts_with("FPKM"))
+  select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
   rownames(select_data) <- data$clusterID
-  # remove FPKM
+  # remove RPM_
   for ( col in 1:ncol(select_data)){
-    colnames(select_data)[col] <-  sub("FPKM_", "", colnames(select_data)[col])
+    colnames(select_data)[col] <-  sub("RPM_", "", colnames(select_data)[col])
   }
   matrix <- as.matrix(select_data)
   select_data[select_data == 0] <- 1e-04

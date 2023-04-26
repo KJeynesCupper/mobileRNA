@@ -309,12 +309,6 @@ The `RNAimport` function required the location of results from the second
 mapping step, complete annotation of the dicer-derived cluster information and 
 the genomic overlap between the clusters and reference annotation. 
 
-In addition, to select the samples and also calculate the FPKM values, the 
-function requires the sample names as represented by each results folder 
-outputted by ShortStack and the total number of reads analysed. The 
-total number of reads can be located in the log file in the results file of each 
-sample. Please ensure that the order of the total number of reads is the same
-for the order of sample names, in order to create a table. 
 
 
 ```{r, eval = FALSE}
@@ -322,10 +316,6 @@ for the order of sample names, in order to create a table.
 # Name of samples
 sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
                 "TomTom_1", "TomTom_2", "TomTom_3")
-# number of total reads in sample (same order as sample_names object)
-read_numbers <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-# create table
-names(read_numbers) <- sample_names
 
 ## Path to genomic overlap data file (.bed)
 genomic_features <-  "./analysis/reference/overlap.bed"
@@ -340,8 +330,7 @@ clusterlocations <- rtracklayer::import.gff("./analysis/reference/
 ## Import & organise data. 
 sRNA_data <- RNAimport(results = results_dir, 
                            samples = sample_names, 
-                           clusters = clusterlocations, 
-                           totalNumReads = read_numbers, 
+                           clusters = clusterlocations,  
                            features = genomic_features)
 
 
@@ -355,7 +344,7 @@ sample at a locus. It is expected that samples in the same condition define a
 sRNA cluster as the same size and class. The `RNAconsensus` function is used
 to define the class of a sRNA cluster based on a consensus across specific 
 samples. To identify small RNA traveling from genotype A to B in a heterograft 
-in comparision to a self-grafted of the B genotype, it is recommend to base 
+in comparison to a self-grafted of the B genotype, it is recommend to base 
 the consensus call on the heterografted samples. This will ensure that the 
 sRNA class is more accurately defined by the genotype it originated from. 
 
@@ -470,7 +459,7 @@ plotHeatmap(sRNA_2122_mobile)
 
 The *RNAlocate* package offers several of other helpful functions to aid 
 analysis. This includes a function to plot sample distance for quality control,
-calculate the mean FPKM and counts across specific samples and 
+calculate the mean RPM and counts across specific samples and 
 also calculate the overlap between genomic features and sRNA clusters.
 
 ## Plot sample distance for quality control 
@@ -485,9 +474,9 @@ plotSamplePCA(data = sRNA_data, group = analysis_groups)
 PCA_p1 <- plotSampleDistance(sRNA_data)
 ```
 
-## Calculate FPKM and Count means for specific samples
+## Calculate RPM and Count means for specific samples
 ```{r, eval = FALSE}
-# calculate mean FPKM and mean Counts for heterograft samples
+# calculate mean RPM and mean Counts for heterograft samples
 selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
 means <- RNAmean(data = sRNA_data, conditions = selected_samples)
 

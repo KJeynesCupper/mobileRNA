@@ -11,15 +11,14 @@
 #' supply information on the cluster including the name, coordinates
 #' (chromosome, start, end) and width of locus.
 #'
-#' Further columns represent data imported for each samples including DicerCall,
-#' Counts and cluster name. The DicerCall represents the size of most abundant
-#' small RNA size based on the parameter used in ShortStack. The Count column
-#' represents the number of aligned sRNA-seq reads that overlap the locus.
-#' For each replicate included in the analysis, these columns are labelled with
+#' Further columns represent data imported for each samples including cluster
+#' name, DicerCall, Counts and RPM. The DicerCall represents the size of most
+#' abundant small RNA size based on the parameter used in ShortStack.
+#' The Count column represents the number of aligned sRNA-seq reads that overlap
+#' the locus. The RPM represents the reads per million.
+#' For each replicate included in the analysis, these columns are labeled with
 #' the type and then then name of the samples, for example, DicerCall_Sample1.
 #'
-#' In addition, to importing the processed data, the function also calculates the
-#'  \code{FPKM} for each sample and visible at the far right of the data frame.
 #'
 #' To import the samples, the `samples` argument must represent a vector of
 #' the names of the folders present in the directory containing the sample
@@ -38,8 +37,6 @@
 #'
 #' @param clusters Import \code{.gff3} from \code{"reference"} folder.
 #'
-#' @param totalNumReads Table containing containing the total number of reads
-#' for each samples. Each value labeled with the sample name.
 #'
 #' @param features Path to a .bed file containing the genomic information
 #' (annotations/features) which overlaps with the locations of the
@@ -60,12 +57,9 @@
 #'
 #' clusters <- rtracklayer::import.gff("./data/reference/ClustersInfo.gff3")
 #'
-#' total_reads <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-#' names(total_reads) <- sample_names
 #' sRNA_data <- RNAimport(results = directory,
 #'                            samples = sample_names,
 #'                            clusters = clusters,
-#'                            totalNumReads = total_reads
 #'                            features = genomic_features)
 #'}
 #'
@@ -77,8 +71,7 @@
 #' @importFrom BiocGenerics "width"
 #' @importFrom dplyr "select"
 #' @importFrom dplyr "left_join"
-RNAimport <- function(results, samples, clusters,
-                      totalNumReads, features = NULL){
+RNAimport <- function(results, samples, clusters, features = NULL){
   if (base::missing(results)|| !base::inherits(results, c("character"))) {
     stop("results must be an object of character, representing a path to a
          directory")
@@ -87,40 +80,38 @@ RNAimport <- function(results, samples, clusters,
     stop("samples must be an object of character, representing a vector of
          sample names")
   }
-  #if (base::missing(clusters)|| !base::inherits(clusters, c("character"))) {
-  #stop("clusters must be an object of character, representing a path to a
-  #   directory") }
-  if (base::missing(totalNumReads)||
-      !base::inherits(totalNumReads,c("numeric"))) {
-    stop("totalNumReads must be an object of named numeric")
+  if (base::missing(clusters)|| !base::inherits(clusters, c("GRanges"))) {
+    stop("clusters must be an object of GRanges")
   }
-  if (missing(features)|| !base::inherits(features, c("character"))) {
-    stop("features must be an object of character, representing a path to a
-         directory")
-  }
+
   for (i in samples) {
     array <- utils::read.table(paste0(results,i,"/Results.txt", sep=""),
                                sep="\t", header =F, row.names=NULL)
-    S4Vectors::mcols(clusters)[,paste0("DicerCall_",i)] <- array[,12]
-    S4Vectors::mcols(clusters)[,paste0("Count_",i)] <- array[,4]
-    S4Vectors::mcols(clusters)[,paste0("cluster_",i)] <- array[,2]
+    suppressWarnings(S4Vectors::mcols(clusters)[,paste0("cluster_",i)] <- array[,2])
+    suppressWarnings(S4Vectors::mcols(clusters)[,paste0("DicerCall_",i)] <- array[,12])
+    suppressWarnings(S4Vectors::mcols(clusters)[,paste0("Count_",i)] <- array[,4])
+    suppressWarnings(S4Vectors::mcols(clusters)[,paste0("RPM_",i)] <- array[,5])
+    # un-note line to inclde the major RNA strand.
+    #suppressWarnings(S4Vectors::mcols(clusters)[,paste0("MajorRNA_",i)] <- array[,9])
   }
-  for (j in samples) {
-    S4Vectors::mcols(clusters)[,paste0("FPKM_",j)] <-
-      S4Vectors::mcols(clusters)[,paste0("Count_",j)] /
-      (BiocGenerics::width(clusters)/1000 * totalNumReads[j]/1000000 )
-  }
-
   data <- Repitools::annoGR2DF(clusters)
-  overlap_data <- .import_annotations(features)
-  data <- data %>% dplyr::left_join(overlap_data$attributes, by = c("chr", "start",
-                                                             "end")) #### NEW
- # data$features <- overlap_data$attributes[base::match(data$start, data$start)]
   data <- data %>% dplyr::select(-score, -phase, -source, -type)
-  #add column for cluster ID
   clustercolID <- data %>% dplyr::select(tidyselect::starts_with("cluster_"))
   clustercolID <- clustercolID[1]
   colnames(clustercolID)[1] <- 'clusterID'
   res <- data.frame(clusterID = clustercolID, data)
-  return(res)
+
+  if(!is.null(features)){
+    overlap_data <- .import_annotations(features)
+    res2 <- merge(data,overlap_data, by=c("chr","start", "end"),all.x=TRUE)
+    clustercolID <- res2 %>% dplyr::select(tidyselect::starts_with("cluster_"))
+    clustercolID <- clustercolID[1]
+    colnames(clustercolID)[1] <- 'clusterID'
+    res2 <- data.frame(clusterID = clustercolID, res2)
+    return(res2)
+
+  } else
+
+    return(res)
 }
+

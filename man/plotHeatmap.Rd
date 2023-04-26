@@ -22,7 +22,7 @@ column names section and row names section, respectively. If null, default
 }
 \description{
 Plots a heatmap with hierarchical clustering via an rlog
-transformation of FPKM data and euclidean statistics.
+transformation of RPM data and euclidean statistics.
 }
 \details{
 The function create a heatmap based on the hierarchical clustering

@@ -31,7 +31,7 @@ annotation file.
 
 
 folder <- "./workplace/alignment_multi_one/"
-save_folder <- "./workplace/reference/"
+save_folder <- "./workplace/reference/ClustersInfo.gff3"
 
 conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
                  "TomTom_1","TomTom_2", "TomTom_3")

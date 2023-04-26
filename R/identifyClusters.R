@@ -21,7 +21,7 @@
 #'
 #'
 #'folder <- "./workplace/alignment_multi_one/"
-#'save_folder <- "./workplace/reference/"
+#'save_folder <- "./workplace/reference/ClustersInfo.gff3"
 #'
 #'conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
 #'                  "TomTom_1","TomTom_2", "TomTom_3")
@@ -53,9 +53,9 @@ identifyClusters <- function(files, out, samples ){
     GenomeInfoDb::seqnames(gff_merged)),":",stats::start(gff_merged),"-",
     stats::end(gff_merged)),name = paste0("cluster_", 1:length(gff_merged)))
 
-  utils::write.table(gff_merged_df, file = paste0(out, "ClustersInfo.txt"),
-              quote = F, sep = "\t", row.names = F, col.names = F)
+  #utils::write.table(gff_merged_df, file = paste0(out, "ClustersInfo.txt"),
+             # quote = F, sep = "\t", row.names = F, col.names = F)
 
-  rtracklayer::export(gff_merged, paste0(out, "ClustersInfo.gff3"))
+  rtracklayer::export(gff_merged, paste0(out))
 
 }
