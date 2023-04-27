@@ -4,7 +4,7 @@
 \alias{plotHeatmap}
 \title{Heatmap using hierarchical clustering}
 \usage{
-plotHeatmap(data, colours = NULL, dendogram = TRUE, margins = NULL)
+plotHeatmap(data, colours = NULL, dendogram = TRUE)
 }
 \arguments{
 \item{data}{Data frame containing FPKM values for each samples on
@@ -13,12 +13,12 @@ each sRNA dicer-derived cluster of interest.}
 \item{colours}{Colours to display and represent the heatmap.
 Defaults to [grDevices::heat.colors()] (heat.colors(100)).}
 
-\item{dendogram}{Logical; indicating whether to include the dendrogram, and
-retain clustering. Default, \code{dendogram = TRUE} to include.}
-
-\item{margins}{Numeric vector; Length of 2, to state width of the heatmap
-column names section and row names section, respectively. If null, default
-`margins` is set as c(10, 10).}
+\item{dendogram}{Logical; indicating whether to include the dendrogram and
+clustering, and retain clustering. Default, \code{dendogram = TRUE} to
+include.}
+}
+\value{
+Produces a list of objects, including the plot.
 }
 \description{
 Plots a heatmap with hierarchical clustering via an rlog

@@ -77,9 +77,9 @@ Raw fastq files should be trimmed to remove adapter sequences and low quality
 reads as per best practice. 
 
 #### Installation of Linux Dependencies
-The majority of the pre-processing functions and steps require a system call 
-to Linux software. Therefore, these dependencies need to be installed prior. 
-These include: 
+The majority of the pre-processing functions require a system call 
+to Linux software. The following dependencies need to be installed before you 
+begin:
 
 - `FastQC` (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - `bedtools` (https://bedtools.readthedocs.io/en/latest/)
@@ -91,28 +91,28 @@ These include:
 Mapping
 --------------------------------------------
 Here, we introduce an alternative mapping method for the analysis of plant
-heterograft samples. The heterograft system involves two genotypes, hence, here
-the two genome reference are merged into a single fasta reference to which 
+heterograft samples. The heterograft system involves two genotypes; here
+the two genome references are merged into a single reference to which 
 samples are aligned to. 
 
-`RNAlocate` offers functions which perform a system OS call to linux programs
-to undertake this step. To merge two reference genomes use: 
+`RNAlocate` offers a function to merge two reference genomes into one: 
 
 ``` r
 RNAlocate::mergeFiles(files = "/Users/user1/projectname/workplace/reference/*",
-        out = "/Users/user1/projectname/workplace/reference/merge/
-        merged_reference.fa")
+        out = "/Users/user1/projectname/workplace/reference/merge/merged_reference.fa")
 ```
 
-The analysis pipeline is formulated to analysis mapping and clustering results 
-produced by `ShortStack` (https://github.com/MikeAxtell/ShortStack). We recommend
-a double-mapping process using `ShortStack`. 
+The analysis pipeline is formulated to analyse mapping and clustering results 
+produced by `ShortStack` (https://github.com/MikeAxtell/ShortStack). 
 
 To distinguish between the reference genomes in a merged file, it is important 
 to make sure the chromosome names between the genomes are different and 
 distinguishable. 
 
-#### Step 1 - Identify dicer-derived sRNA cluster loci in each sample 
+Here, we recommend a double-mapping process using `ShortStack`, the steps are 
+as follow: 
+
+#### Step 1 - Identify loci of dicer-derived sRNA cluster in each sample 
 
 ``` bash
 ShortStack \
@@ -125,10 +125,10 @@ ShortStack \
 --outdir <./output/directory>
 
 ```
-#### Step 2 - Uniquely map samples to all identified cluster loci
+#### Step 2 - Uniquely map samples to all loci of identified sRNA clusters
 
 From the output of Step 1, the `identifyClusters()` function can collate all 
-the identified cluster loci into a single `.gff3` file.  
+the loci information into a single `.gff3` file.  
 
 ``` r
 sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
@@ -142,7 +142,7 @@ RNAlocate::identifyClusters(files = folder,
              samples = sample_names)
 ```
 
-Each sample is mapped to the merged reference genome and the annotation file 
+Each sample is mapped to the merged reference genome with the annotation file 
 containing the cluster loci to analyse. 
 
 ``` bash
@@ -189,20 +189,19 @@ sRNA_data <- RNAimport(results = results_dir,
 
 
 #### Step 2: Calculate the consensus of each sRNA cluster  
-Each sample in the analysis has a determined class (DicerCall) for each 
+Each sample in the analysis has determined the class of each 
 dicer-derived sRNA cluster based on the most abundant small RNA size in the 
 sample. It is expected that replicates within the same condition will define the 
-same cluster as the same size and class. The `RNAconsensus()` 
-function is used to define the class of a sRNA cluster based on the consensus 
-across specific replicates. 
+same cluster as the same class. The `RNAconsensus()` function is used to define 
+the class of a sRNA cluster based on the consensus across specific replicates. 
 
 To identify potentially mobile sRNA moving from genotype A to B in a heterograft,
-in comparison to a B-genotype self-graft, it is recommend to base 
+in comparison to a B-genotype self-graft, it is recommended to base 
 the consensus call on the heterograft samples. This will ensure that the 
 sRNA class is more accurately defined by the genotype it originates from. 
 
-Below, replicates treatment_1 and treatment_2 represent two heterograft samples, 
-while control_1 and control_2 represent self-graft samples.
+Below, replicates "treatment_1" and "treatment_2" represent two heterograft 
+samples, while "control_1" and "control_2" represent self-graft samples.
 
 ``` r
 
@@ -236,7 +235,8 @@ mobile <- RNAmobile(data = sRNA_data_summary,
 Output 
 --------------------------------------------
 A dataframe where rows represent potential mobile sRNA clusters.
-The columns include information on the cluster, samples, and more. 
+The columns include information on the cluster, individual sample replicates, 
+and more. 
 
 ### Information on the cluster:
 - `chr`: Name of the chromosome or scaffold
@@ -268,10 +268,12 @@ base of a codon, and so on
 additional information about each feature.
 
 If differential expression analysis was undertaken with`RNAanalysis()`: 
-- `log2FoldChange`      
-- `pvalue` 
-- `padjusted`   
-- `logCPM` 
+- `log2FoldChange` : Log2FoldChange–The effect size estimate
+- `pvalue` :  P value, the probability under the assumption of no effect or 
+no difference, of obtaining a result equal to or more extreme than what was 
+actually observed
+- `padjusted` : A p-value adjustment
+- `logCPM` : log counts per million, measure of expression level
 
 If the mean RPM and Count was calculated `RNAmean()`: 
 - `mean_RPM` : mean RPM, based on parameters 

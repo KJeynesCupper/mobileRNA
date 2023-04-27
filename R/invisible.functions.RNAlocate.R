@@ -23,19 +23,13 @@
 
 
 .remove_mapping_errors <- function(data, controls) {
-  class_colnames <- c()
-  for (i in colnames(data)){
-    if (stringr::str_detect(i, "Count_" )){
-      class_colnames <- c(class_colnames, i)
-    }
-  }
+  class_colnames <- grep("Count_", colnames(data), value = TRUE)
   onlyControlCount <- base::unique(base::grep(paste(controls,collapse="|"),
                                              class_colnames, value=TRUE))
   if (length(onlyControlCount) > 1){
     x <- c()
     for (j in 1:nrow(data) ){
-      if(stats::var(stats::na.omit(as.numeric(
-        data[j,onlyControlCount], na.rm=T)))> 0 ){
+      if(sum(stats::na.omit(as.numeric( data[j,onlyControlCount], na.rm=T)))>0){
         x <- c(x,j)
       }
     }
@@ -43,7 +37,7 @@
     if (length(onlyControlCount) == 1){
       x <- c()
       for (k in 1:nrow(data) ){
-        if(stats::na.omit(as.numeric(data[k,onlyControlCount], na.rm=T)) != 0 ){
+        if(stats::na.omit(as.numeric(data[k,onlyControlCount], na.rm=T))!= 0){
           x <- c(x,k)
         }
       }
@@ -91,4 +85,21 @@ utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "key", "Count", "Class", "padjusted", "pvalue", "freq",
                          "value" , "variable" , "repeats_info" , "Genome" ,
                          "Dataset"  ))
+
+
+# column name orientation
+pheatmaps_colnames_angle <- function (coln, gaps, ...) {
+  coord <- pheatmap:::find_coordinates(length(coln), gaps)
+  x     <- coord$coord - 0.5 * coord$size
+  res   <- grid::textGrob(
+    coln, x = x, y = grid::unit(1, "npc") - grid::unit(3,"bigpts"),
+    vjust = 0.75, hjust = 1, rot = 45, gp = grid::gpar(...)
+  )
+  return(res)
+}
+assignInNamespace(
+  x = "draw_colnames",
+  value = "pheatmaps_colnames_angle",
+  ns = asNamespace("pheatmap")
+)
 

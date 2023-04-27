@@ -135,11 +135,6 @@ RNAmobile <- function(data,controls, id, task =c("keep", "remove"),
     }else
       stop(base::sQuote(x), " not implemented")
   y <- .remove_mapping_errors(data = x, controls = controls)
-  #mean_FPKM <- base::rowMeans(y %>%dplyr::select(tidyselect::starts_with("FPKM")))
-  #mean_count <- base::rowMeans(y %>%dplyr::select(tidyselect::starts_with("Count")))
-  #CPM <- base::rowMeans(y %>% dplyr::select(tidyselect::starts_with("Count")))
-  #y$FPKM_mean <- mean_FPKM
-  #y$Count_mean <- mean_count
   if (statistical) {
     if (is.null(p.value)) {
       res <- y %>% filter(padjusted <= padj)

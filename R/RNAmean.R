@@ -27,7 +27,7 @@
 #' means <- RNAmean(data = sRNA_data, conditions = selected_samples)
 #' # for all samples
 #'means <- RNAmean(data = sRNA_data)
-RNAmeans <- function(data, conditions = NULL){
+RNAmean <- function(data, conditions = NULL){
   RPM_cols <- grep("RPM_", colnames(data), value = TRUE)
   count_cols <- grep("Count_", colnames(data), value = TRUE)
 

@@ -12,16 +12,16 @@
 #' Defaults to [grDevices::heat.colors()] (heat.colors(100)).
 #'
 #'
-#' @param dendogram Logical; indicating whether to include the dendrogram, and
-#' retain clustering. Default, \code{dendogram = TRUE} to include.
+#' @param dendogram Logical; indicating whether to include the dendrogram and
+#' clustering, and retain clustering. Default, \code{dendogram = TRUE} to
+#' include.
 #'
-#' @param margins Numeric vector; Length of 2, to state width of the heatmap
-#' column names section and row names section, respectively. If null, default
-#' `margins` is set as c(10, 10).
 #'
 #' @details The function create a heatmap based on the hierarchical clustering
 #' of FPKM values using euclidean statistics.
 #'
+#'@return
+#'Produces a list of objects, including the plot.
 #'
 #' @examples
 #'
@@ -55,14 +55,16 @@
 #' @importFrom stats "hclust"
 #' @importFrom stats "as.dendrogram"
 #' @importFrom stats "reorder"
-#' @importFrom gplots "heatmap.2"
+#' @importFrom pheatmap "pheatmap"
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "heat.colors"
 
-plotHeatmap <-function (data, colours = NULL, dendogram = TRUE, margins = NULL){
+plotHeatmap <-function (data, colours = NULL, dendogram = TRUE){
   if (base::missing(data) || !base::inherits(data, c("matrix",
-                                                     "data.frame", "DataFrame"))) {
-    stop("data must be an object of class matrix, data.frame,\n         DataFrame. See ?plotHeatmap for more information.")
+                                                     "data.frame",
+                                                     "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame,\n DataFrame.
+         See ?plotHeatmap for more information.")
   }
   select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
   rownames(select_data) <- data$clusterID
@@ -83,40 +85,30 @@ plotHeatmap <-function (data, colours = NULL, dendogram = TRUE, margins = NULL){
   reorderfun = function(d, w) {
     d
   }
-  if (is.null(margins)) {
-    margins <- c(10, 10)
-  }
-  else {
-    margins <- margins
-  }
   if (is.null(colours)) {
     plot.colours <- grDevices::heat.colors(100)
   }
   else {
     plot.colours <- colours
   }
+
   if (dendogram == TRUE) {
-    p1 <- gplots::heatmap.2(as.matrix(select_data[v, ]),
-                            Rowv = dendrogram, Colv = T, dendrogram = "both",
-                            scale = "none", density.info = "none", trace = "none",
-                            reorderfun = reorderfun, col = plot.colours,
-                            margins = margins, cexRow = 1,
-                            cexCol = 1, lhei = c(3, 8))
+
+   p1 <-  pheatmap::pheatmap(as.matrix(select_data[v, ]),
+                       border_color = FALSE,cellheight = 10,
+                       color = plot.colours)
+
   }
   else if (dendogram == FALSE) {
-    p1 <- gplots::heatmap.2(as.matrix(select_data[v, ]),
-                            Rowv = TRUE, Colv = TRUE, dendrogram = "none", scale = "none",
-                            density.info = "none", trace = "none", reorderfun = reorderfun,
-                            col = plot.colours, margins = margins,
-                            cexCol = 1,  cexRow = 1,
-                            lhei = c(3, 8))
+    p2 <-  pheatmap::pheatmap(as.matrix(select_data[v, ]),
+                              border_color = FALSE,
+                              treeheight_row = 0,
+                              treeheight_col = 0 ,
+                              cluster_rows=FALSE, cluster_cols=FALSE,
+                              color = plot.colours)
   }
-  return(p1)
+
+  out <- list(plot = p1, data = as.matrix(select_data[v, ]))
+  return(out)
 }
-
-
-
-
-
-
 

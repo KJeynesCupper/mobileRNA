@@ -891,7 +891,7 @@ A) Identifed by the `DESeq2` method. B) Identifed the `edgeR` method."
 
 ```{r, message=FALSE, fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A DESeq2","B:edgeR") }
 
-p10 <- plotHeatmap(sRNA_24_mobile_DEseq)
+p10 <- plotHeatmap(sRNA_24_mobile_DESeq2)
 p11 <- plotHeatmap(sRNA_24_mobile_edgeR)
 
 ```
@@ -900,7 +900,7 @@ p11 <- plotHeatmap(sRNA_24_mobile_edgeR)
 ### Mobile molecules from the 21/22-nt sRNA dataset 
 ```{r, message=FALSE, fig.cap=cap8, fig.show="hold", out.width="50%", fig.subcap=  c("A:DESeq2","B:edgeR")}
 
-p12 <- plotHeatmap(sRNA_2122_mobile_DEseq)
+p12 <- plotHeatmap(sRNA_2122_mobile_DESeq2)
 p13 <- plotHeatmap(sRNA_2122_mobile_edgeR)
 ```
 

@@ -48,7 +48,9 @@ Imports:
     data.table,
     SimDesign,
     scales,
-    IRanges
+    IRanges,
+    grid,
+    stats
 biocViews: 
     Visualization,
     RNASeq,
