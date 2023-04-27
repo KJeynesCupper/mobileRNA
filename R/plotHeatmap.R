@@ -72,7 +72,6 @@ plotHeatmap <-function (data, colours = NULL, dendogram = TRUE){
   for ( col in 1:ncol(select_data)){
     colnames(select_data)[col] <-  sub("RPM_", "", colnames(select_data)[col])
   }
-  matrix <- as.matrix(select_data)
   select_data[select_data == 0] <- 1e-04
   select_data <- base::log(select_data, 2)
   select_data <- stats::na.omit(select_data)

@@ -1,5 +1,5 @@
 ---
-title: "RNAlocate Manual: mobile sRNA identification"
+title: "Overview: RNAlocate for mobile sRNA identification between genotypes"
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output: 
@@ -92,14 +92,25 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("KJeynesCupper/RNAlocate")
 ```
 
+
+# Installation of Linux Dependencies
+The majority of the pre-processing functions require a system call 
+to Linux software. The following dependencies need to be installed before you 
+begin:
+
+- `FastQC` (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- `bedtools` (https://bedtools.readthedocs.io/en/latest/)
+- `Samtools` (http://www.htslib.org/)
+- `sed` (https://www.gnu.org/software/sed/manual/sed.html)
+- `ShortStack` (https://github.com/MikeAxtell/ShortStack)
+
+
 # Load the package and the example data into R session
 
 ```{r Load, message=FALSE}
 
 library(RNAlocate)
-library(DESeq2)
-library(edgeR)
-data("sRNA_24")
+data("sRNA_data")
 
 ```
 
@@ -126,7 +137,7 @@ Once installed, you will have access to the following functions:
 - `plotHeatmap()`
 - `RNAmean()`
 - `RNAfeatures()`
-
+- `RNAattributes()`
 Further details on how each function operates will be provided later on in the
 documentation. For some functions there are recurring arguments. 
 In the pre-processing steps, the `files` argument occurs frequently and tells 
@@ -150,25 +161,20 @@ experiment was utilised. The heterografts are composed of an tomato scion and
 a eggplant rootstock. While in the self-graft, tomato has been used as the 
 control with the aim to analyse whether a the eggplant rootstock can send 
 sRNA molecules across the graft junction to the tomato scion.
-The data is stored in two formats:
-- The `raw.sRNA.data` data set contains the raw small RNA-seq fastq files for 
-each sample. To improve the pre-processing speed, it has been reduced in size, 
-containing reads only mapped to chromosome 1 in the tomato and eggplant
-genomes. 
-- The second data set, called `sRNA.data`, stores a matrix containing the
-pre-processed data from the experiment corresponding to all chromosomes. As a 
+
+The data set, called `sRNA_data`, stores a matrix containing the
+pre-processed data from the experiment. As a 
 user, this allows you to see what a full data set might look like and how 
 you might expect it to change across the analysis. 
 
 These can be loaded in these R workspace by using the following command:
 
 
-```
-data(<data_set>)
+``` r
+data("sRNA_data")
 ```
 
 
-Where `<data_set>` is one of the package data sets mentioned above. 
 
 ## Data organisation: working directiry structure
 The pre-processing steps rely on a fairly strict working directory structure. 
@@ -243,7 +249,8 @@ download.file(url = 'https://solgenomics.net/ftp/genomes/Solanum_melongena_V4.1/
               method = "wget")
 
 # reference 2
-download.file(url = 'https://solgenomics.net/ftp/tomato_genome/Heinz1706/assembly/build_4.00/S_lycopersicum_chromosomes.4.00.fa.gz', destfile = "/Users/user1/projectname/workplace/reference/Solanum_lycopersicum.fa.gz",
+download.file(url = 'https://solgenomics.net/ftp/tomato_genome/Heinz1706/assembly/build_4.00/S_lycopersicum_chromosomes.4.00.fa.gz',
+              destfile = "/Users/user1/projectname/workplace/reference/Solanum_lycopersicum.fa.gz",
               method = "wget")
 ```
 
@@ -259,10 +266,14 @@ Ideally, name it the Latin species name.
 
 ```{r, eval = FALSE}
 # reference 1
-download.file(url = 'dir.annoation1.gff', destfile = "/Users/user1/projectname/workplace/annotation/Solanum_melongena_anno.gff", method = "wget")
+download.file(url = 'dir.annoation1.gff', 
+              destfile = "/Users/user1/projectname/workplace/annotation/Solanum_melongena_anno.gff", 
+              method = "wget")
 
 # reference 2
-download.file(url = 'dir.annoation2.gff', destfile = "/Users/user1/projectname/workplace/annotation/Solanum_lycopersicum_anno.gff", method = "wget")
+download.file(url = 'dir.annoation2.gff', 
+              destfile = "/Users/user1/projectname/workplace/annotation/Solanum_lycopersicum_anno.gff", 
+              method = "wget")
 ```
 
 
@@ -282,7 +293,9 @@ via the command line, these include:
 
 
 
-## Merge Reference Genome and More
+## Pre-mapping
+
+### Preparing the merged genome
 Here we merge the two reference genomes into a single merged genome. But first,
 the chromosomes names need to be check and modified. Why?
 
@@ -326,202 +339,7 @@ mergeFiles(files = "/Users/user1/projectname/workplace/reference/*",
 
 
 
-## Quality check of raw  & clean data
-Raw and cleaned samples must undergo a quality check. The quality check of raw
-samples will inform you whether the data contains adapter sequences and 
-poor quality reads which will inform your decisions for trimming the data. 
-To check whether the trimming has indeed cleaned the data up as expected, a 
-final quality check is undertaken. This also provides useful information on your
-library. 
-
-To check the quality, use the `checkQuality()` function which performs
-a system call to the operating system to use `FastQC` to check the files. The 
-program produces a `HTML` file for each sample, which is saved in a new folder 
-(`qc`) within the directory where the files undergoing the analysis are stored. 
-```{r, eval = FALSE}
-# check quality of raw samples
-checkQuality(files = "/Users/user1/projectname/workplace/raw/")
-```
-
-## Trimming samples 
-Samples can be cleaned via trimming to remove adapter sequencing, low quality 
-reads and reads outside the desired lengths (16-30 nucleotides). The example 
-bash snippet below suggest a suitable method of trimming using `Trimmomatic`. 
-To remove the adapter sequences, it is best practice to identify the exact 
-adapters used in the library preparation. 
-
-```{bash,  eval = FALSE}
-## trim samples using trimmomatic 
-
-mkdir -p  /Users/user1/projectname/workplace/trimmed
-FILES=/Users/user1/projectname/workplace/raw/*.fq
-
-for f in $FILES
-do
-f=${f##*/}
-f=${f%.fq}
-
-trim_galore \
-"raw/$f"".fq" \
--a AGATCGGAAGAGCACACGTCT \ # change this based on adaptors used
---max_length 30 --length 16 \
---output_dir /Users/user1/projectname/workplace/trimmed
-done
-```
-
-Lastly, complete a quality check on the trimmed samples in R. 
-```{r, eval = FALSE}
-## check quality of trimmed samples
-checkQuality(files = "/Users/user1/projectname/workplace/trimmed/")
-
-```
-
-## Mapping 
-The mapping occurs in three steps: 
-
-* *Step 1 :* Aligns samples with the merged reference genome to identify the 
-locations of the sRNA clusters in each sample.
-* *Step 2 :* Creates a plain text file and .gff3 file containing all the identified 
-sRNA clusters across samples.
-* *Step 3:* Aligns the samples to the merged reference genome with the sRNA
-cluster location.
-
-
-### Step 1
-The bash script below suggests an appropriate method to undertaking the first 
-mapping step using `ShortStack`. The samples are mapped to the merged genome 
-using two different methods: multi-mapping and unique. The multimapping method
-identifies reads in a sample which map to more than one location in the genome, 
-whilst the unique mapping method only selects reads which map to a single unique
-location in the genome. 
-
-```{bash , eval = FALSE}
-# Make subdirectories to save results from step 1 
-mkdir -p /Users/user1/projectname/workplace/alignment_multi_one
-mkdir -p /Users/user1/projectname/workplace/alignment_unique_one
-
-FILES=/Users/user1/projectname/workplace/trimmed/*_trimmed.fq
-
-# Multimapping for alignment 1.
-for f in $FILES
-do
-f=${f##*/}
-f=${f%_trimmed.fq}
-
-echo "mapping with ShortStack ... $f" >> 
-/Users/user1/projectname/workplace/alignment_multi_one/stats_alignment.txt
-ShortStack \
---readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fa \
---bowtie_cores 6 \
---mmap u \
---mismatches 0 \
---nohp \
---bowtie_m all \
---outdir /Users/user1/projectname/workplace/alignment_multi_one/$f >> /Users/user1/projectname/workplace/alignment_multi_one/stats_alignment.txt 2>&1
-done
-
-
-# Unique mapping for aligment 1 
-for f in $FILES
-do
-f=${f##*/}
-f=${f%_trimmed.fq}
-
-echo "mapping with ShortStack ... $f" >>
-/Users/user1/projectname/workplace/alignment_unique_one/stats_alignment.txt
-
-ShortStack \
---readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fa \
---bowtie_cores 6 \
---mmap n \
---mismatches 0 \
---nohp \
---outdir /Users/user1/projectname/workplace/alignment_unique_one/$f >> /Users/user1/projectname/workplace/alignment_unique_one/stats_alignment.txt 2>&1
-
-done
-
-```
-
-### Step 2 
-The second step in mapping is undertaken in R, use the `identifyClusters.` 
-For each sample, in the first mapping step, ShortStack software identifies 
-sRNA cluster (referred to as dicer-derived clusters) which aligned with 
-locations across the merged reference genome. The samples will share many of 
-these cluster, although, there will be some unique clusters only found in the 
-hetero-graft treatment and not in the self-graft controls, and potentially 
-vice versa. These will likely correspond to potential mobile molecules, but we 
-cannot be sure till we have fully analysed the data. At Step 2, the identified 
-sRNA clusters across all samples are merged into a single annotation file 
-in the form of a plan text file (.txt) and General Feature Format file (.gff3). 
-
-```{r, eval = FALSE}
-conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
-                "TomTom_1","TomTom_2", "TomTom_3")
-
-folder <- "./workplace/alignment_multi_one/"
-save_folder <- "./workplace/reference/"
-
-identifyClusters(files = folder, 
-             out = save_folder,
-             samples = conditions)
-
-```
-
-### Step 3
-The final step in mapping is similar to the first step, however, this time we
-include the newly created annotation file containing all the sRNA cluster 
-information as well as an additional parameter to reduce noise in the data. 
-This parameter (`--mincov 5`) sets a minimum read coverage of 5 (i.e. there must 
-be a minimum of 5 reads per cluster in a sample). 
-
-```{bash ,eval = FALSE}
-
-# make new subdirectories to save results of mapping part 2 
-mkdir -p /Users/user1/projectname/workplace/alignment_multi_two
-mkdir -p /Users/user1/projectname/workplace/alignment_unique_two
-
-FILES=/Users/user1/projectname/workplace/trimmed/*_trimmed.fq
-
-for f in $FILES
-do
-f=${f##*/}
-f=${f%_trimmed*}
-
-echo "mapping with ShortStack ... $f" >>
-/Users/user1/projectname/workplace/alignment_multi_two/stats_alignment.txt
-ShortStack \
---readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fasta \
---locifile /Users/user1/projectname/workplace/reference/ClusterInfo.txt \
---bowtie_cores 6 \
---mmap u \
---mismatches 0 \
---nohp \
---bowtie_m all \
---mincov 5 \
---outdir /Users/user1/projectname/workplace/alignment_multi_two/$f >>
-/Users/user1/projectname/workplace/alignment_multi_two/stats_alignment.txt 2>&1
-
-echo "mapping unique matches with ShortStack ... $f" >> 
-/Users/user1/projectname/workplace/alignment_unique_two/stats_alignment.txt
-ShortStack \
---readfile "/Users/user1/projectname/workplace/trimmed/$f""_trimmed.fq" \
---genomefile /Users/user1/projectname/workplace/reference/ref_merged.fasta \
---locifile /Users/user1/projectname/workplace/reference/ClusterInfo.txt \
---bowtie_cores 6 \
---mmap n \
---mismatches 0 \
---nohp \
---mincov 5 \
---outdir /Users/user1/projectname/workplace/alignment_unique_two/$f >>
-/Users/user1/projectname/workplace/alignment_unique_two/stats_alignment.txt 2>&1
-
-done
-
-```
-
+ 
 ## Identify genomic locations of sRNA 
 If you want to know what genomic features are associated with the genomic
 coordinates of a sRNA  we will need to overlap the genomic 
@@ -545,6 +363,115 @@ findOverlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/an
              out = "/Users/user1/projectname/workplace/reference/overlap.bed")
 ```
 
+
+### Quality check of raw  & clean data
+Raw and cleaned samples must undergo a quality check. The quality check of raw
+samples will inform you whether the data contains adapter sequences and 
+poor quality reads which will inform your decisions for trimming the data. 
+To check whether the trimming has indeed cleaned the data up as expected, a 
+final quality check is undertaken. This also provides useful information on your
+library. 
+
+To check the quality, use the `checkQuality()` function which performs
+a system call to the operating system to use `FastQC` to check the files. The 
+program produces a `HTML` file for each sample, which is saved in a new folder 
+(`qc`) within the directory where the files undergoing the analysis are stored. 
+```{r, eval = FALSE}
+# check quality of raw samples
+checkQuality(files = "/Users/user1/projectname/workplace/raw/")
+```
+
+Samples can be cleaned via trimming to remove adapter sequencing, low quality 
+reads and reads outside the desired lengths (16-30 nucleotides). The 
+`checkQuality()` function can be used again to check the quality of the trimmed
+samples to ensure the cleaning has worked as designed. 
+
+## Mapping 
+The mapping occurs in 3 steps: 
+
+* *Step 1 :* Aligns samples with the merged reference genome to identify the 
+locations of the sRNA clusters in each sample.
+* *Step 2 :* Creates a plain text file and .gff3 file containing all the 
+identified sRNA clusters across samples.
+* *Step 3:* Aligns the samples to the merged reference genome with the sRNA
+cluster location.
+
+
+The analysis pipeline is formulated to analyse mapping and clustering results 
+produced by `ShortStack` (https://github.com/MikeAxtell/ShortStack). 
+
+To distinguish between the reference genomes in a merged file, it is important 
+to make sure the chromosome names between the genomes are different and 
+distinguishable. 
+
+Here, we recommend a double-mapping process using `ShortStack`, the steps are 
+as follow: 
+
+### Step 1 - Identify loci of dicer-derived sRNA cluster in each sample 
+
+The bash script below suggests an appropriate method to undertaking the first 
+mapping step using `ShortStack`. The samples are mapped uniquely ( ie. no 
+multi-mapping) to the merged genome. 
+
+``` bash
+ShortStack \
+--readfile <control_1.fastq> \
+--genomefile <merged_reference.fa> \
+--bowtie_cores 6 \
+--mmap n \
+--mismatches 0 \
+--nohp \
+--outdir <./output/directory>
+
+```
+### Step 2 - Create annotation file containing all identified sRNA cluster loci across samples
+
+From the output of Step 1, the `identifyClusters()` function can collate all 
+the loci information into a single `.gff3` file.  
+
+For each sample, in step one, ShortStack identifies sRNA cluster 
+(referred to as dicer-derived clusters) which aligned with locations across the 
+merged reference genome. The samples will share many of these cluster, although, 
+there will be some unique clusters only found in the treatment and not in the 
+controls, and potentially vice versa. These will likely correspond to potential
+mobile molecules, but we cannot be sure till we have fully analysed the data. 
+
+
+``` r
+sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
+
+folder <- <./output/directory/from/step/1/>
+save_folder <- <./output/directory/ClustersInfo.gff3>
+
+
+RNAlocate::identifyClusters(files = folder, 
+             out = save_folder,
+             samples = sample_names)
+```
+
+
+### Step 3 - Uniquely map samples to all loci of identified sRNA clusters
+
+The final step in mapping is similar to the first step, however, this time we
+include the newly created annotation file containing all the sRNA cluster 
+information as well as an additional parameter to reduce noise in the data. 
+This parameter (`--mincov 5`) sets a minimum read coverage of 5 (i.e. there must 
+be a minimum of 5 reads per cluster in a sample). 
+
+``` bash
+ShortStack \
+--readfile <control_1.fastq> \
+--genomefile <merged_reference.fa> \
+--locifile <./output/directory/ClustersInfo.gff3> \
+--bowtie_cores 6 \
+--mmap n \
+--mismatches 0 \
+--nohp \
+--mincov 5 \
+--outdir <./output/directory/step2/>
+
+```
+
 # Analysis 
 Here, the analysis of the pre-processed data occurs, with the aim to 
 identify if any mobile sRNA molecules are traveling from one genotype to
@@ -558,31 +485,23 @@ information which is stored in the `Results.txt`.
 
 The `RNAimport()` function imports the data from the folder containing 
 all sample folders. The function extracts the required information, stores it 
-in a matrix and uses it to calculate fragments per kilobase of exon per 
-million mapped fragments (FPKM).  
+in a matrix.  
 
 The function requires some information to coordinate the importation and 
-calculations. It requires three different directory paths. One is the path to 
+calculations. It requires two different directory paths; one is the path to 
 your processed samples; this is the path to the folder containing all the 
 individual sample folders which is stores in argument `results`. The second 
 directory path is to the annotation file containing information on the small
-RNA clusters, stored in the argument `clusters`. The final path is to the 
-file containing the genomic overlap information, which is assigned by the 
-argument `features`. 
+RNA clusters, stored in the argument `clusters`. 
+As an optional extra, if you wish to find the overlap between the clusters and 
+the merged genome reference annotations, created in the pre-mapping stage, 
+this can be assigned to the argument `features`. 
 
-The last pieces of information the function requires is a list of the sample 
-names, both treatment and control replicates which is stored in the argument
+The last pieces of information the function requires a vector containing the
+sample names, both treatment and control replicates which is stored in the argument
 `conditions`. The sample names must match the names of the folders produced in 
-the mapping. The final information requires some manual work. 
-You will need to manually open each Results.txt file for your samples and 
-retrieve the total number of reads. Store these values in the `totalNumReads` 
-object in the same order as the samples are listed in the `conditions` variable. 
+the mapping. 
 
-In this example, we have extracted the results from the uniquely mapped reads.
-It is important you understand the difference between multi-mapped reads
-and uniquely mapped reads as these are important concepts which can shape your 
-analysis. It is recommend to run a parallel analysis using the results
-from multi-mapped reads compared to results from uniquely mapped reads. 
 
 ```{r, eval = FALSE, message=FALSE}
 ## Path to genomic overlap data file (.bed)
@@ -592,8 +511,7 @@ genomic_features <-  "./analysis/reference/overlap.bed"
 results_dir <-  "./analysis/alignment_unique_two/"
 sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
                 "TomTom_1", "TomTom_2", "TomTom_3")
-read_numbers <- c(24441759,21378845, 21482356, 3951725, 3343954, 2586910)
-names(read_numbers) <- sample_names
+
 clusterlocations <- rtracklayer::import.gff("./analysis/reference/
                                             ClustersInfo.gff3")
 sRNA_data <- RNAimport(results = results_dir, 
@@ -619,7 +537,6 @@ quality control using three different methods:
 - Principle component analysis (PCA)
 - hierarchical clustering Heatmap
 
-
 This will show us how well samples within each condition cluster together, which 
 may highlight outliers. Plus, to show whether our experimental conditions 
 represent the main source of variation in the data set. 
@@ -629,7 +546,7 @@ hierarchical clustering Heatmap. This involves an unbiased log2-transformation o
 the counts which will emphasis the the sample clustering to improve
 visualization. The DESeq2 package contains a particularly useful function to 
 undertake regularized log transformation (rlog) which controls the variance 
-across the mean, and in this package we have utlised this for the quality 
+across the mean, and in this package we have utilized this for the quality 
 control steps. 
 
 ### Plot the distribution of RNA classes within each sample
@@ -652,10 +569,14 @@ RNA classes within each sample"
 
 ```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B")}
 
-sample.distribution_line <- RNAdistribution(sRNA_data, style = "line", 
-                                            together = FALSE)
+sample.distribution_line <- RNAdistribution(sRNA_data, 
+                                            style = "line", 
+                                            together = FALSE, 
+                                            facet = TRUE)
 
-sample.distribution_bar <- RNAdistribution(sRNA_data, style = "bar")
+sample.distribution_bar <- RNAdistribution(sRNA_data, 
+                                           style = "bar", 
+                                           facet = TRUE)
 
 ```
 
@@ -672,6 +593,7 @@ cap3 <-"An example of a PCA, illustracting the sRNA data set sample similarity"
 
 group <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
            "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
+
 plotSamplePCA(sRNA_data, group)
 
 ```
@@ -718,7 +640,7 @@ The function also works to remove noise from your data. If the user wishes to
 keep the noise, set `tidy=FALSE` to  prevent the removal of unclassified 
 clusters. 
 
-For the downstream analysis, it is important to define the distinct 24-nt and 
+For the downstream analysis, it can be useful to define the distinct 24-nt and 
 21/22-nt populations of sRNA molecules at the beginning of the analysis. 
 Hence, the data should be subset. To subset the data, use the `RNAsubset()` 
 function to choose which sRNA populations to include:
@@ -806,7 +728,7 @@ sRNA_2122_edgeR <- RNAanalysis(data = sRNA_2122 ,
 
 ## Identify the mobile molecules 
 It is essential to remove the noise from the data to isolate potential mobile 
-molecules which include poorly mapped clusters and, in this case, the clusters 
+molecules which include falsely mapped clusters and, in this case, the clusters 
 which map the the scion genotype when the aim is to identify molecules traveling 
 from the rootstock. In the data, the aim is to explore whether there are tomato 
 sRNA traveling up through the graft junction and exiting into the 
@@ -815,8 +737,6 @@ the `RNAmobile()` function. It selects clusters mapping to the rootstock
 genome in the hetero-graft. Therefore, we will remove clusters mapped to 
 chromosome in the genotype used in the self-graft controls. 
 
-Note: This function does not introduce statistical analysis. 
-This will be introduced later. 
 
 In the example, the tomato genome has chromosome labeled with 
 "SL40" whilst the the eggplant genome has no labels. To remove clusters 
@@ -827,6 +747,7 @@ The `RNAmobile()` function can take into account the statistically significance.
 If set to consider this, the function will filter sRNA based on an adjusted
 p-value threshold = 0.05. The threshold can be changed to make it less stringent 
 by using the argument `padj`.
+
 Similarly, if you would prefer to extract the mobile RNA based on the p-value, 
 rather than the adjusted p-values, the argument a numeric threshold can be 
 set for the argument `p.value`. If you would like to explore all mobile 
@@ -889,7 +810,7 @@ A) Identifed by the `DESeq2` method. B) Identifed the `edgeR` method."
 
 ```
 
-```{r, message=FALSE, fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A DESeq2","B:edgeR") }
+```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A DESeq2","B:edgeR") }
 
 p10 <- plotHeatmap(sRNA_24_mobile_DESeq2)
 p11 <- plotHeatmap(sRNA_24_mobile_edgeR)
@@ -939,14 +860,55 @@ The output can be utilsed and passed into a plot of your choice. Similarly,
 this features can be utilsed across different data sets. For example, across
 the total data set or specific mobile sRNA subsets. 
 
+It is important to recognise, that if you alter the chromosome names in either 
+of the mapping reference genomes, the chromsome names will need to match in the 
+annotation files(s). 
 
 ```{r, eval = FALSE}
 # matrix containing percentage of sRNA clusters associated to different genomic 
 # features
-dis_features <- RNAfeatures(data = sRNA_data_summary, 
+dis_features <- RNAfeatures(data = sRNA_24_mobile_DESeq2, 
                             annotation = "./annotation/eggplant_genome.gff3",
                             repeats = "./annotation/eggplant_genome_repeats.gff3")
 ```
+
+
+## Assign sRNA clusters with an annotation attribute
+
+
+Each sRNA cluster contains coordinates, these can be matches with coordinates in
+an annotation file (individual, or, merged). If there is a match, the cluster 
+will receive information on:
+
+- `source` : name of the program that generated this feature, or the data source 
+(database or project name)
+- `feature` : feature type name, e.g. Gene, Variation, Similarity
+- `score` : A floating point value
+- `strand` : defined as + (forward) or - (reverse)
+- `frame` : One of '0', '1' or '2'. '0' indicates that the first base of the 
+feature is the first base of a codon, '1' that the second base is the first 
+base of a codon, and so on
+- `attribute` : A semicolon-separated list of tag-value pairs, providing 
+additional information about each feature.
+
+It is important to recognise, that if you alter the chromosome names in either 
+of the mapping reference genomes, the chromosome names will need to match in the 
+annotation files(s). 
+
+
+```{r, eval = FALSE}
+
+# matrix containing percentage of sRNA clusters associated to different genomic 
+
+# add matching attributes to all sRNA clusters
+data_plus_attributes <- RNAattributes(data = sRNA_data_summary, 
+                            annotation = "./annotation/merged annotation.gff3")
+
+# add matching attributes to potential mobile 24nt sRNA clusters
+data_plus_attributes_eggplant <- RNAattributes(data = sRNA_24_mobile_DESeq2, 
+                            annotation = "./annotation/eggplant_genome.gff3")
+```
+
 
 
 # Session information
