@@ -18,6 +18,7 @@
 #'
 #'@importFrom stringr "str_detect"
 #'@importFrom dplyr "mutate"
+#'@importFrom dplyr "select"
 #'@importFrom dplyr "%>%"
 #'@export
 #' @examples
@@ -28,8 +29,8 @@
 #' # for all samples
 #'means <- RNAmean(data = sRNA_data)
 RNAmean <- function(data, conditions = NULL){
-  RPM_cols <- grep("RPM_", colnames(data), value = TRUE)
-  count_cols <- grep("Count_", colnames(data), value = TRUE)
+  RPM_cols <- dplyr::select(data, starts_with("RPM_"))
+  count_cols <- dplyr::select(data, starts_with("Count_"))
 
   if (!is.null(conditions)){
     RPM <- base::unique(grep(paste(conditions,collapse="|"),

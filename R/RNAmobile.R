@@ -128,12 +128,13 @@ RNAmobile <- function(data,controls, id, task =c("keep", "remove"),
                the all the chromosomes within the genome you wish to keep
                or remove"))
   }
-  if(task== 'remove'){
-    x <- data %>% dplyr::filter(!base::grepl(id,chr))
-  } else if (task == "keep"){
-      x <- data %>% dplyr::filter(base::grepl(id,chr))
-    }else
-      stop(base::sQuote(x), " not implemented")
+  x <- data %>%
+    dplyr::filter(case_when(
+      task == "remove" & !base::grepl(id, chr) ~ TRUE,
+      task == "keep" & base::grepl(id, chr) ~ TRUE,
+      TRUE ~ FALSE
+    ))
+
   y <- .remove_mapping_errors(data = x, controls = controls)
   if (statistical) {
     if (is.null(p.value)) {
