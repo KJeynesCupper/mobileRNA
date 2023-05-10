@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAmean.R
 \name{RNAmean}
 \alias{RNAmean}
-\title{Calculate FPKM across samples}
+\title{Calculate mean RPM and mean Count across given samples}
 \usage{
 RNAmean(data, conditions = NULL)
 }
@@ -28,7 +28,10 @@ across all or specific samples.
 data("sRNA_data")
 # across specific samples
 selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
+
 means <- RNAmean(data = sRNA_data, conditions = selected_samples)
+
 # for all samples
 means <- RNAmean(data = sRNA_data)
+
 }

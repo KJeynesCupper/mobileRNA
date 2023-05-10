@@ -25,13 +25,13 @@
 #'
 #' @param controls Character vector; containing names of control samples.
 #'
-#' @param id a string related to the chromosomes in a particular genome. A
-#' distinuishing feature of the genome of interest or non-interest in the
+#' @param id a character string related to the chromosomes in a particular genome. A
+#' distinguishing feature of the genome of interest or non-interest in the
 #' chromosome name (`chr` column).
 #'
 #' @param task an option to keep or remove the chromosomes containing the
 #' identifying string. To keep the chromosomes with the ID, set task=keep.
-#' To remove, set `task="remove"`.
+#' To remove, set `task="remove"`. As default, task is set to `keep`.
 #'
 #'
 #' @param statistical If TRUE, will undertake statistical filtering based on the a
@@ -108,34 +108,33 @@
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
+#' @importFrom dplyr "case_when"
 
-RNAmobile <- function(data,controls, id, task =c("keep", "remove"),
+RNAmobile <- function(data,controls, id, task = NULL ,
                              statistical = TRUE, padj = 0.05, p.value = NULL){
-  if (base::missing(task) || !task %in% c("keep", "remove")) {
-    stop(paste("Please specify task as to either", "(\"keep\", or \"remove\")",
-               "chromosomes with the coresponding string"))
-  }
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
   stop("data must be an object of class matrix, data.frame, DataFrame")
     }
-  if (base::missing(id) || id %in% "") {
-    stop(paste("Please specify a single character string which is present in
-               the all the chromosomes within the genome you wish to keep
-               or remove"))
+  if (base::missing(controls) || !base::inherits(controls, "character")) {
+    stop(paste("Please specify a character vector storing names of control
+               replicates"))
   }
   if (base::missing(id) || id %in% "") {
     stop(paste("Please specify a single character string which is present in
                the all the chromosomes within the genome you wish to keep
                or remove"))
   }
+
   x <- data %>%
-    dplyr::filter(case_when(
+    dplyr::filter(dplyr::case_when(
+      is.null(task) & base::grepl(id, chr) ~ TRUE,
       task == "remove" & !base::grepl(id, chr) ~ TRUE,
       task == "keep" & base::grepl(id, chr) ~ TRUE,
       TRUE ~ FALSE
     ))
 
   y <- .remove_mapping_errors(data = x, controls = controls)
+
   if (statistical) {
     if (is.null(p.value)) {
       res <- y %>% filter(padjusted <= padj)

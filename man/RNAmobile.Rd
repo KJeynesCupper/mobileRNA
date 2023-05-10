@@ -8,7 +8,7 @@ RNAmobile(
   data,
   controls,
   id,
-  task = c("keep", "remove"),
+  task = NULL,
   statistical = TRUE,
   padj = 0.05,
   p.value = NULL
@@ -19,13 +19,13 @@ RNAmobile(
 
 \item{controls}{Character vector; containing names of control samples.}
 
-\item{id}{a string related to the chromosomes in a particular genome. A
-distinuishing feature of the genome of interest or non-interest in the
+\item{id}{a character string related to the chromosomes in a particular genome. A
+distinguishing feature of the genome of interest or non-interest in the
 chromosome name (`chr` column).}
 
 \item{task}{an option to keep or remove the chromosomes containing the
 identifying string. To keep the chromosomes with the ID, set task=keep.
-To remove, set `task="remove"`.}
+To remove, set `task="remove"`. As default, task is set to `keep`.}
 
 \item{statistical}{If TRUE, will undertake statistical filtering based on the a
 p-value or adjusted p-value threshold stated by `padj` and `p.value`.}

@@ -15,9 +15,16 @@ chromosome number, `start` and `end` which supply the coordinates.}
 reference annotation file (.gff/.gff1/.gff2/.gff3).}
 }
 \description{
-Based on genomic coordinates, assign sRNA clusters with an annotation.
+Based on genomic coordinates, assign sRNA clusters with an annotation that
+has an exact match based on chromosome number, start and end coordinates
 }
 \details{
-The function merges the annotation (.gff/.gff3) information with
-the sRNA data set based on the chromosome, start and end coordinates.
+The function merges an annotation (.gff/.gff3) file with
+the sRNA data set based on the chromosome, start and end coordinates. It is
+important that any alteration which were made to the genome reference (FASTA), such
+as alterations to the chromosome name, must be carried forth to the
+genome annotation file. If alterations were made to the reference genome
+using the [RNAlocate::RNAmergeGenomes()] function, alteration inline with
+these can be accomplished using the [RNAlocate::RNAmergeAnnotations()]
+function.
 }

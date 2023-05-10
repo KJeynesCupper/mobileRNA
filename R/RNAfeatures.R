@@ -52,6 +52,7 @@
 #'@importFrom scales "label_percent"
 #'@importFrom dplyr "%>%"
 #'@importFrom IRanges "overlapsAny"
+#'@importFrom BiocGenerics "width"
 #'@export
 RNAfeatures <- function(data, annotation, repeats = NULL, percentage = TRUE){
   annotation_info <-rtracklayer::import.gff3(annotation)
@@ -116,25 +117,25 @@ RNAfeatures <- function(data, annotation, repeats = NULL, percentage = TRUE){
   rownames(sRNA_features_df) <- c("Genome", "Dataset")
 
   # genome
-  sRNA_features_df[1,1] <- sum(width(promoters))
-  sRNA_features_df[1,2] <- sum(width(exons))
-  sRNA_features_df[1,3] <- sum(width(introns))
-  sRNA_features_df[1,4] <- sum(width(five_UTR))
-  sRNA_features_df[1,5] <- sum(width(three_UTR))
-  sRNA_features_df[1,6] <- sum(width(TEs))
-  sRNA_features_df[1,7] <- sum(width(others))
+  sRNA_features_df[1,1] <- sum(BiocGenerics::width(promoters))
+  sRNA_features_df[1,2] <- sum(BiocGenerics::width(exons))
+  sRNA_features_df[1,3] <- sum(BiocGenerics::width(introns))
+  sRNA_features_df[1,4] <- sum(BiocGenerics::width(five_UTR))
+  sRNA_features_df[1,5] <- sum(BiocGenerics::width(three_UTR))
+  sRNA_features_df[1,6] <- sum(BiocGenerics::width(TEs))
+  sRNA_features_df[1,7] <- sum(BiocGenerics::width(others))
 
   # select sample
   sRNA_df <-  data %>% dplyr::select(chr, start, end)
   sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
 
-  sRNA_features_df[2,1] <- sum(width(intersect(promoters,sRNA_df)))
-  sRNA_features_df[2,2] <- sum(width(intersect(exons,sRNA_df)))
-  sRNA_features_df[2,3] <- sum(width(intersect(introns,sRNA_df)))
-  sRNA_features_df[2,4] <- sum(width(intersect(five_UTR,sRNA_df)))
-  sRNA_features_df[2,5] <- sum(width(intersect(three_UTR,sRNA_df)))
-  sRNA_features_df[2,6] <- sum(width(intersect(TEs,sRNA_df)))
-  sRNA_features_df[2,7] <- sum(width(intersect(others,sRNA_df)))
+  sRNA_features_df[2,1] <- sum(BiocGenerics::width(intersect(promoters,sRNA_df)))
+  sRNA_features_df[2,2] <- sum(BiocGenerics::width(intersect(exons,sRNA_df)))
+  sRNA_features_df[2,3] <- sum(BiocGenerics::width(intersect(introns,sRNA_df)))
+  sRNA_features_df[2,4] <- sum(BiocGenerics::width(intersect(five_UTR,sRNA_df)))
+  sRNA_features_df[2,5] <- sum(BiocGenerics::width(intersect(three_UTR,sRNA_df)))
+  sRNA_features_df[2,6] <- sum(BiocGenerics::width(intersect(TEs,sRNA_df)))
+  sRNA_features_df[2,7] <- sum(BiocGenerics::width(intersect(others,sRNA_df)))
 
   if(percentage == TRUE){
     # convert to percentage

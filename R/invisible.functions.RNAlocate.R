@@ -103,3 +103,4 @@ assignInNamespace(
   ns = asNamespace("pheatmap")
 )
 
+

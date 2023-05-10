@@ -2,7 +2,7 @@
 #'
 #' @description Organises the sRNAseq results data, outputted by ShorStack, for
 #' each sample replicate into a single dataframe using the loci information
-#' produced by the [RNAlocate::identifyClusters()] function which contains a
+#' produced by the [RNAlocate::RNAloci()] function which contains a
 #' list of all the clusters identified across samples.
 #'
 #'
@@ -42,7 +42,7 @@
 #' columns state genomic location (labelled "Locus") and the cluster name
 #' (labelled "Cluster"). This file contains an accululation of all
 #' sRNA dicer-derived clusters  identified across samples in the analyse, without
-#' duplication. This can be produced using the [RNAlocate::identifyClusters()]
+#' duplication. This can be produced using the [RNAlocate::RNAloci()]
 #' function
 #'
 #'
@@ -59,7 +59,7 @@
 #' @param report Logical; prompts progress.
 #'
 #'
-#' @param features Path to a .bed file containing the genomic information
+#' @param features Path to a txt file containing the genomic information
 #' (annotations/features) which overlaps with the locations of the
 #' dicer-derived clusters. The file is created as a part of the pre-processing
 #' steps, see [RNAlocate::findOverlap()] function for more information. This is
@@ -73,7 +73,8 @@
 #' \dontrun{
 #' genomic_features <- "./data/reference/overlap.bed"
 #'
-#' clusters <- read.table(file = "./data/reference/ClustersInfo.txt" ,header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
+#' clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
+#' header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
 #'
 #'RNAorganise(loci = clusters,
 #'            directory = "./replicates_EggTom_spike/",
@@ -87,7 +88,14 @@
 #' @export
 #' @importFrom data.table "data.table"
 #' @importFrom data.table "setnames"
-RNAorganise <- function(loci, directory, samples,
+#' @importFrom  utils "read.table"
+#' @importFrom data.table "fread"
+#' @importFrom dplyr "mutate"
+#' @importFrom dplyr "across"
+#' @importFrom dplyr "contains"
+#' @importFrom tidyr "replace_na"
+#' @importFrom data.table ":="
+RNAimport <- function(loci, directory, samples,
                         report = TRUE, features = NULL) {
 
   if (base::missing(loci)|| !base::inherits(loci, c("data.frame"))) {
@@ -107,7 +115,7 @@ RNAorganise <- function(loci, directory, samples,
   # LOad sample data as list of data frames, with index as file name.
   dt_list <- list()
   for (file in samples) {
-    dt_list[[file]] <- read.table(paste0(directory, file, "/Results.txt"), header = TRUE)
+    dt_list[[file]] <- utils::read.table(paste0(directory, file, "/Results.txt"), header = TRUE)
   }
 
   required_cols <- c("Locus", "DicerCall", "Reads", "RPM")
@@ -165,9 +173,9 @@ RNAorganise <- function(loci, directory, samples,
   # Fill in missing values with 0 or N
   ## Dicer call needs to character/factor
   dt1 <- dt1 %>%
-    mutate(across(contains('Count_'), ~replace_na(.,0))) %>%
-    mutate(across(contains('RPM_'), ~replace_na(.,0))) %>%
-    mutate(across(contains('DicerCall_'), ~replace_na(.,"N")))
+    dplyr::mutate(dplyr::across(dplyr::contains('Count_'), ~tidyr::replace_na(.,0))) %>%
+    dplyr::mutate(dplyr::across(dplyr::contains('RPM_'), ~tidyr::replace_na(.,0))) %>%
+    dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'), ~tidyr::replace_na(.,"N")))
 
 
   # Convert dt1 back to a data.frame and return it
@@ -183,8 +191,9 @@ RNAorganise <- function(loci, directory, samples,
   names(df_final)[1] <- "Locus"
 
   if(!is.null(features)){
-    overlap_data <- .import_annotations(features)
-    res2 <- merge(df_final,overlap_data, by=c("chr","start", "end"),all.x=TRUE)
+    #overlap_data <- .import_annotations(features)
+    overlap_data <- data.table::fread(features, header = TRUE)
+    res2 <- merge(df_final,features, by=c("chr","start", "end"),all.x=TRUE)
     return(res2)
   } else
 

@@ -34,7 +34,6 @@ Imports:
     grDevices,
     pheatmap,
     gplots,
-    stats,
     stringr,
     utils,
     tidyselect, 
@@ -50,7 +49,9 @@ Imports:
     scales,
     IRanges,
     grid,
-    stats
+    stats,
+    Biostrings, 
+    tools
 biocViews: 
     Visualization,
     RNASeq,

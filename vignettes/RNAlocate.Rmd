@@ -1,5 +1,5 @@
 ---
-title: "Overview: RNAlocate for mobile sRNA identification between genotypes"
+title: "Overview of the RNAlocate R package for mobile sRNA identification between genotypes"
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output: 
@@ -117,13 +117,7 @@ data("sRNA_data")
 Once installed, you will have access to the following functions:
 
 **Pre-processing**
-- `createWorkplace()`  
-- `referenceInfo()`
-- `modifyReference()`
-- `mergeFiles()`
-- `checkQuality()`
-- `findOverlap()`
-- `identifyClusters()`
+
 
 **Analysis**
 - `RNAimport()`
@@ -138,6 +132,9 @@ Once installed, you will have access to the following functions:
 - `RNAmean()`
 - `RNAfeatures()`
 - `RNAattributes()`
+
+
+
 Further details on how each function operates will be provided later on in the
 documentation. For some functions there are recurring arguments. 
 In the pre-processing steps, the `files` argument occurs frequently and tells 
@@ -176,215 +173,117 @@ data("sRNA_data")
 
 
 
-## Data organisation: working directiry structure
-The pre-processing steps rely on a fairly strict working directory structure. 
-The function *createWorkplace* will produce the key directories which will store 
-all the files you will need:
+## Data organisation
+There are Two key elements required for the pipeline analysis:
+* sRNA-seq sample replicates  (.fasta/.fq)
+* Two reference genomes (.fasta/.fa)
 
-* Raw: contain raw sRNA-seq files (.fasta/.fq)
-* Reference: store reference genomes pulled from the internet (.fasta/.fa)
-* Annotation: store the genome annotations pulled from the internet (.gff/.gff3) 
+And one additional element; to improve functional analysis:
+* Two reference genome annotations (.gff/.gff3)  
 
-**Open a new R project, and lets begin!**
+### The raw data files
 
-```{r, eval = FALSE}
-createWorkplace(getwd()) 
-```
-
-## The raw data files
-As input, the *RNAlocate* package expects the raw sRNA-seq data files from the 
-next-generation sequencing to be placed within the `raw` folder in your working 
-directory. 
-
-IMPORTANT: It is recommended to rename your files to names you wish for them to 
-be represented as in plots. Plus, it makes the analysis easier!
+It is recommended to rename your files to names you wish for them to 
+be represented as within the analysis and shown as labels in plots. 
+Plus, it makes the analysis easier!
 
 For example, instead of names such as:
 * `sample_1.fq`
 * `sample_2.fq`
+* `sample_3.fq`
+* `sample_4.fq`
+* `sample_5.fq`
+* `sample_6.fq`
 
-For the example data set, here we have renamed the files for the hetero-grafts as:
+For the example data set included in the package, here we have renamed the 
+files based on the condition (treatment or control). 
+For the hetero-grafts, where the is a tomato scion and an eggplant rootstock:
 * `TomEgg_1.fq`
 * `TomEgg_2.fq`
 * `TomEgg_3.fq`
 
-and for the eggplant self-grafts:
+and for the tomato self-grafts:
 * `TomTom_1.fq`
 * `TomTom_2.fq`
 * `TomTom_3.fq`
 
-The code snippet below will help you move raw files from any folder to the 
-`raw` folder in your working directory. Replace the `from` argument with your 
-directory containing all the fastq raw data files and the `to` argument with 
-the working directory to the raw folder.
 
-Note: Using the "*" will allow you to move all files within the given directory.  
-```{r, eval = FALSE}
-file.copy(from = "/Users/user1/fastq/*",  
-            to = "/Users/user1/projectname/workplace/raw/")
-```
-
-Note: If you only want to analyse a select few files which all contain a
-the same string in the names use the below snippet to help. For example, if the files all 
-contain AH at the beginning: 
-
-```{r, eval = FALSE}
-files <- list.files("/Users/user1/fastq", "^+AH[.]fq$", full.names = TRUE)
-file.copy(files, "/Users/user1/projectname/workplace/raw/")
-```
-
-## The reference genome files (.fasta)
+### The reference genomes and annotation files (.fasta/.fa)
 The pipeline is designed to analyse grafting systems with two 
 distinct genomes, here tomato and eggplant.  
-These are pulled from the internet and saved in the folder `reference` 
-in your working directory. Replace the `URL` argument with the FTP URL of a 
-genome reference, and replace the `destfile` argument with the directory 
-of your `reference` folder, plus the name you want to call the file. Ideally, 
-name it the Latin species name. 
-
-```{r, eval = FALSE}
-# Eggplant genome.
-download.file(url = 'https://solgenomics.net/ftp/genomes/Solanum_melongena_V4.1/Eggplant_V4.1.fa', 
-              destfile = "/Users/user1/projectname/workplace/reference/Solanum_melongena.fa.gz",
-              method = "wget")
-
-# reference 2
-download.file(url = 'https://solgenomics.net/ftp/tomato_genome/Heinz1706/assembly/build_4.00/S_lycopersicum_chromosomes.4.00.fa.gz',
-              destfile = "/Users/user1/projectname/workplace/reference/Solanum_lycopersicum.fa.gz",
-              method = "wget")
-```
-
-## The genome annotation files (.gff)
-Similar to the reference genomes, the annotation files will also need to be 
-pulled from the internet but saved in the folder `annotation` in your working 
-directory. 
-
-The same as before, replace the `URL` argument with the online FTP URL of 
-your reference annotation, and replace the `destfile` argument with the 
-directory of your reference folder plus the name you want to call the file.
-Ideally, name it the Latin species name. 
-
-```{r, eval = FALSE}
-# reference 1
-download.file(url = 'dir.annoation1.gff', 
-              destfile = "/Users/user1/projectname/workplace/annotation/Solanum_melongena_anno.gff", 
-              method = "wget")
-
-# reference 2
-download.file(url = 'dir.annoation2.gff', 
-              destfile = "/Users/user1/projectname/workplace/annotation/Solanum_lycopersicum_anno.gff", 
-              method = "wget")
-```
 
 
 # Pre-Processing 
-Now that all the data, genome references and annotations are organised in the 
-correct locations we can begin processing the data.  
-
 The pre-processing step involves cleaning raw data and aligning data to the 
 merged genome. As well as, identifying the genomic annotations associated with 
 the sRNA clusters. These steps require several programs to be installed 
 via the command line, these include:
 
-* `FastQC` (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-* `Trimmomatic`(http://www.usadellab.org/cms/?page=trimmomatic)
 * `ShortStack` (https://github.com/MikeAxtell/ShortStack)
 * `BEDtools` (https://bedtools.readthedocs.io/)
 
 
+Going forward, the pipeline has assumed that the sRNA-seq samples have met quality
+control standards. 
 
 ## Pre-mapping
 
 ### Preparing the merged genome
-Here we merge the two reference genomes into a single merged genome. But first,
-the chromosomes names need to be check and modified. Why?
+Here we merge the two reference genomes into a single merged genome using the
+[RNAlocate::RNAgenomeMerge()] function. As default, this function changes the 
+chromosome names of each genome to ensure they are distinguishable. To do so, 
+the function requires an input of the initials of each organism's Latin name. 
+But why do this:
 
-- If the two genomes use the same pattern to name the chromosomes, the user will 
+* If the two genomes use the same pattern to name the chromosomes, the user will 
 not be able to differentiate the chromosomes from one another in the merged 
 genome. This could be solves by adding letters to the chromosomes of one of the
 genomes, for example, "SM" to represent the Latin name of eggplant. 
 
-- If a chromosome naming pattern contains punctuation, the mapping step will not
+* If a chromosome naming pattern contains punctuation, the mapping step will not
 work. 
-
-Use `chrInfo()` to produce a text file containing the chromosome names and 
-sizes, and use `chrModify()` to alter the names of the chromosomes in a genome. 
 
 
 In the example, the **Solanum lycopersicum** (version 4) genome contains a 
-full-stop/period within each chromosome name which needs to be removed where 
-each chromosome name starts with "SL4." Here, we will remove the 
-full-stop/period. 
+full-stop/period within each chromosome name which needs to be removed as well. 
+Here we rename the chromosomes of the tomato genome to `SL` and the chromosomes 
+related to the eggplant genome (**Solanum melongena**) to `SM`. 
 
 ```{r, eval = FALSE}
-# check for chromosome names and the chromosome sizes in merged reference 
-referenceInfo(genome = "/Users/user1/projectname/workplace/reference/merge/
-           ref_merged.fasta", 
-           out =  "/Users/user1/projectname/workplace/reference/merge/")
-# Remove punctuation from merged reference genome.  
-modifyReference(genome = "/Users/user1/projectname/workplace/reference/merge/
-           Solanum_lycopersicum.fa.gz", 
-          old = "SL4.",
-          new = "SL4")
-```
-
-Use the function `mergeFiles()` to concatenate the reference genome files into a 
-single reference genome file through a system call command. 
-
-```{r, eval = FALSE}
-mergeFiles(files = "/Users/user1/projectname/workplace/reference/*",
-        out = "/Users/user1/projectname/workplace/reference/merge/
-        ref_merged.fa")
+RNAmergeGenome(genomeA = "/Users/user1/projectname/workplace/reference/ref1.fa",
+               genomeB = "/Users/user1/projectname/workplace/reference/ref2.fa",
+               abbreviationGenomeA = "SL", 
+               abbreviationGenomeB = "SM", 
+               out_dir = "/Users/user1/projectname/workplace/reference/merge/
+               ref_merged.fa")
 ```
 
 
 
  
 ## Identify genomic locations of sRNA 
-If you want to know what genomic features are associated with the genomic
-coordinates of a sRNA  we will need to overlap the genomic 
-annotation of our reference genomes with the clusters annotation file. The 
-genomic annotation of our reference genomes need to firstly be merged into a
-single file using the `mergeFiles` function. Then, the overlap between the
-files can be computed using the `findOverlap` function. This function, similar
-to the `mergeFiles` functions, commands a system call to the operating system 
-and sends information to `BEDtools`. 
+If you want to know what genomic features are associated with the locus of a sRNA  
+we will need to overlap the genomic annotation of our reference genomes with the 
+clusters annotation file. The genomic annotation of our reference genomes need to
+firstly be merged into a single file using the `RNAannotationMerge` function. 
+Similar to the `RNAgenomeMerge` function, as default, it also changes the 
+chromosome names. Make sure these mirror the changes made in the genome reference
+
+The overlap between the annotation and the loci of clusters can be computed 
+using the `RNAannotationOverlap`. 
 
 
 ```{r, eval = FALSE}
 ## merge the annotation files into a single annotation file 
-mergeFiles(files = "/Users/user1/projectname/workplace/annotation/*",
-            out = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff")
-## Find the overlap between the identified clusters and the merged annotation file
-## This will enable annotation of the sRNA to aid functional analysis 
+RNAmergeAnnotation(annotationA = "/Users/user1/projectname/workplace/annotation/annotation_1.gff3",
+                   annotationB = "/Users/user1/projectname/workplace/annotation/annotation_1.gff3",
+                   abbreviationAnnoA = "SL", 
+                   abbreviationAnnoB = "SM"
+                  out_dir = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff")
 
-findOverlap(annotation = "/Users/user1/projectname/workplace/annotation/merge/anno_merged.gff",
-             clusters = "/Users/user1/projectname/workplace/reference/ClusterInfo.gff3", 
-             out = "/Users/user1/projectname/workplace/reference/overlap.bed")
 ```
 
 
-### Quality check of raw  & clean data
-Raw and cleaned samples must undergo a quality check. The quality check of raw
-samples will inform you whether the data contains adapter sequences and 
-poor quality reads which will inform your decisions for trimming the data. 
-To check whether the trimming has indeed cleaned the data up as expected, a 
-final quality check is undertaken. This also provides useful information on your
-library. 
-
-To check the quality, use the `checkQuality()` function which performs
-a system call to the operating system to use `FastQC` to check the files. The 
-program produces a `HTML` file for each sample, which is saved in a new folder 
-(`qc`) within the directory where the files undergoing the analysis are stored. 
-```{r, eval = FALSE}
-# check quality of raw samples
-checkQuality(files = "/Users/user1/projectname/workplace/raw/")
-```
-
-Samples can be cleaned via trimming to remove adapter sequencing, low quality 
-reads and reads outside the desired lengths (16-30 nucleotides). The 
-`checkQuality()` function can be used again to check the quality of the trimmed
-samples to ensure the cleaning has worked as designed. 
 
 ## Mapping 
 The mapping occurs in 3 steps: 
@@ -411,7 +310,8 @@ as follow:
 
 The bash script below suggests an appropriate method to undertaking the first 
 mapping step using `ShortStack`. The samples are mapped uniquely ( ie. no 
-multi-mapping) to the merged genome. 
+multi-mapping) to the merged genome. This script can easily be converted into a 
+for loop. 
 
 ``` bash
 ShortStack \
@@ -424,6 +324,7 @@ ShortStack \
 --outdir <./output/directory>
 
 ```
+
 ### Step 2 - Create annotation file containing all identified sRNA cluster loci across samples
 
 From the output of Step 1, the `identifyClusters()` function can collate all 
@@ -441,10 +342,10 @@ mobile molecules, but we cannot be sure till we have fully analysed the data.
 sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
 folder <- <./output/directory/from/step/1/>
-save_folder <- <./output/directory/ClustersInfo.gff3>
+save_folder <- <./output/directory/ClustersInfo.txt>
 
 
-RNAlocate::identifyClusters(files = folder, 
+loci_info <- RNAlocate::RNAloci(files = folder, 
              out = save_folder,
              samples = sample_names)
 ```
