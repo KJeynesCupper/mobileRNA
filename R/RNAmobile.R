@@ -11,7 +11,7 @@
 #'
 #' The second step, after selecting clusters which are mapped to the genome of
 #' interest, removes sRNA clusters which were incorrectly mapped. These
-#' are clusters which have counts or FPKM values in the control samples
+#' are clusters which have counts or RPM values in the control samples
 #' (ie. same genome as the destination tissue in the hetero-graft condition).
 #' These samples should not have counts if the sRNA originates from a different
 #' genotype to the control.
@@ -35,7 +35,11 @@
 #'
 #'
 #' @param statistical If TRUE, will undertake statistical filtering based on the a
-#' p-value or adjusted p-value threshold stated by `padj` and `p.value`.
+#' p-value or adjusted p-value threshold stated by `padj` and `p.value`. Default
+#' set at FALSE. Requires presence of columns containing statistical data.
+#' In order to filter by the adjusted p-value, a column named `padjusted` must
+#' be present. Similarly, to filter by the p-value, a column named `pvalue` must
+#' be present. See [RNAlocate::RNAanalysis()] to calculate statistical values.
 #'
 #' @param padj A user defined numeric value to represent the adjusted p-value
 #' threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -111,7 +115,7 @@
 #' @importFrom dplyr "case_when"
 
 RNAmobile <- function(data,controls, id, task = NULL ,
-                             statistical = TRUE, padj = 0.05, p.value = NULL){
+                             statistical = FALSE, padj = 0.05, p.value = NULL){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
   stop("data must be an object of class matrix, data.frame, DataFrame")
     }

@@ -22,22 +22,22 @@
 
 
 
+# remove mapping errors during RNAmobile
 .remove_mapping_errors <- function(data, controls) {
-  class_colnames <- grep("Count_", colnames(data), value = TRUE)
-  onlyControlCount <- base::unique(base::grep(paste(controls,collapse="|"),
-                                             class_colnames, value=TRUE))
-  if (length(onlyControlCount) > 1){
+  class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
+
+  if (length(colnames(class_colnames)) > 1){
     x <- c()
     for (j in 1:nrow(data) ){
-      if(sum(stats::na.omit(as.numeric( data[j,onlyControlCount], na.rm=T)))>0){
+      if(sum(stats::na.omit(as.numeric( data[j,colnames(class_colnames)], na.rm=T)))>0){
         x <- c(x,j)
       }
     }
   } else
-    if (length(onlyControlCount) == 1){
+    if (length(colnames(class_colnames)) == 1){
       x <- c()
       for (k in 1:nrow(data) ){
-        if(stats::na.omit(as.numeric(data[k,onlyControlCount], na.rm=T))!= 0){
+        if(stats::na.omit(as.numeric(data[k,colnames(class_colnames)], na.rm=T))!= 0){
           x <- c(x,k)
         }
       }
@@ -45,6 +45,7 @@
   data <- data[-x,]
   return(data)
 }
+
 
 
 # This is a modified version of the base match function, which instead of

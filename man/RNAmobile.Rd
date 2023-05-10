@@ -9,7 +9,7 @@ RNAmobile(
   controls,
   id,
   task = NULL,
-  statistical = TRUE,
+  statistical = FALSE,
   padj = 0.05,
   p.value = NULL
 )
@@ -28,7 +28,11 @@ identifying string. To keep the chromosomes with the ID, set task=keep.
 To remove, set `task="remove"`. As default, task is set to `keep`.}
 
 \item{statistical}{If TRUE, will undertake statistical filtering based on the a
-p-value or adjusted p-value threshold stated by `padj` and `p.value`.}
+p-value or adjusted p-value threshold stated by `padj` and `p.value`. Default
+set at FALSE. Requires presence of columns containing statistical data.
+In order to filter by the adjusted p-value, a column named `padjusted` must
+be present. Similarly, to filter by the p-value, a column named `pvalue` must
+be present. See [RNAlocate::RNAanalysis()] to calculate statistical values.}
 
 \item{padj}{A user defined numeric value to represent the adjusted p-value
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -55,7 +59,7 @@ if the two genomes are distinguishable by their chromosome names.
 
 The second step, after selecting clusters which are mapped to the genome of
 interest, removes sRNA clusters which were incorrectly mapped. These
-are clusters which have counts or FPKM values in the control samples
+are clusters which have counts or RPM values in the control samples
 (ie. same genome as the destination tissue in the hetero-graft condition).
 These samples should not have counts if the sRNA originates from a different
 genotype to the control.
