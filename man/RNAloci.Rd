@@ -4,12 +4,12 @@
 \alias{RNAloci}
 \title{Compute complete list of sRNA dicer-derived cluster loci}
 \usage{
-RNAloci(files, out_dir, samples)
+RNAloci(files, out, samples)
 }
 \arguments{
 \item{files}{Path to the directory containing ShortStack mapping results.}
 
-\item{out_dir}{Path to the directory to save the outputted annotation files,
+\item{out}{Path to the directory to save the outputted annotation files,
 include the name of the output file, including file extension (.txt`)}
 
 \item{samples}{A character vector containing the names of all the samples in

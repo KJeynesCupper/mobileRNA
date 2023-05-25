@@ -117,7 +117,9 @@ data("sRNA_data")
 Once installed, you will have access to the following functions:
 
 **Pre-processing**
-
+- `RNAmergeGenomes()`
+- `RNAmergeAnnotations()`
+- `RNAloci()`
 
 **Analysis**
 - `RNAimport()`
@@ -215,12 +217,25 @@ distinct genomes, here tomato and eggplant.
 
 # Pre-Processing 
 The pre-processing step involves cleaning raw data and aligning data to the 
-merged genome. As well as, identifying the genomic annotations associated with 
-the sRNA clusters. These steps require several programs to be installed 
-via the command line, these include:
+merged genome.  We recommend installing and using the `ShortStack` (https://github.com/MikeAxtell/ShortStack)
+program to aligns samples to the merged genome and undertake cluster analysis. 
+This program is specifically formulated for sRNAseq analysis, utilising Bowtie 
+(Version 1) to map samples and a specifically formulated algorithm to cluster 
+sRNAs. 
 
-* `ShortStack` (https://github.com/MikeAxtell/ShortStack)
-* `BEDtools` (https://bedtools.readthedocs.io/)
+Here, we introduce an alternative mapping method for the analysis of plant
+heterograft samples. The heterograft system involves two genotypes; here
+the two genome references are merged into a single reference to which 
+samples are aligned to. 
+
+`RNAlocate` offers a function to merge two FASTA reference genomes into one. 
+To distinguish between the reference genomes in a merged file, it is important 
+to make sure the chromosome names between the genomes are different and 
+distinguishable. The function below added a particular character string to the 
+start of each chromosome name in each reference genome. As standard, the string
+"A_" is added to the reference genome supplied to "genomeA" and "B_" is added 
+to the reference genome supplied to "genomeB". These can be customised to the 
+users preference, see manual for more information. 
 
 
 Going forward, the pipeline has assumed that the sRNA-seq samples have met quality
@@ -250,7 +265,7 @@ Here we rename the chromosomes of the tomato genome to `SL` and the chromosomes
 related to the eggplant genome (**Solanum melongena**) to `SM`. 
 
 ```{r, eval = FALSE}
-RNAmergeGenome(genomeA = "/Users/user1/projectname/workplace/reference/ref1.fa",
+RNAmergeGenomes(genomeA = "/Users/user1/projectname/workplace/reference/ref1.fa",
                genomeB = "/Users/user1/projectname/workplace/reference/ref2.fa",
                abbreviationGenomeA = "SL", 
                abbreviationGenomeB = "SM", 
@@ -262,16 +277,19 @@ RNAmergeGenome(genomeA = "/Users/user1/projectname/workplace/reference/ref1.fa",
 
  
 ## Identify genomic locations of sRNA 
-If you want to know what genomic features are associated with the locus of a sRNA  
-we will need to overlap the genomic annotation of our reference genomes with the 
-clusters annotation file. The genomic annotation of our reference genomes need to
-firstly be merged into a single file using the `RNAannotationMerge` function. 
-Similar to the `RNAgenomeMerge` function, as default, it also changes the 
-chromosome names. Make sure these mirror the changes made in the genome reference
+To identify associates between sRNA clusters and genomic features, the genomic 
+annotation files (GFF) of each reference genome must be merged in the same way 
+the reference genomes were. This includes following the same naming patterns for
+the chromosomes in each genome as undertaken earlier with the `RNAmergeGenomes()`
+function. To undertake a similar merging between the two GFF files, use the 
+`RNAmergeAnnotations` function. 
 
-The overlap between the annotation and the loci of clusters can be computed 
-using the `RNAannotationOverlap`. 
-
+The overlap between the merged annotation and the loci of clusters can be undertaken
+later in analysis using the functions `RNAfeatures` and `RNAattributes`. Where
+`RNAfeatures` computes the proportion of sRNA overlapping specific features, 
+such as 2kb promoter regions, transposable element regions and exons/introns. 
+While the `RNAattributes` function, adds the specific genomic features or regions
+a sRNA cluster exactly overlaps with to the working dataset. 
 
 ```{r, eval = FALSE}
 ## merge the annotation files into a single annotation file 
@@ -327,8 +345,9 @@ ShortStack \
 
 ### Step 2 - Create annotation file containing all identified sRNA cluster loci across samples
 
-From the output of Step 1, the `identifyClusters()` function can collate all 
-the loci information into a single `.gff3` file.  
+From the output of Step 1, the `RNAloci()` function can collate all 
+the loci information into a single `txt` file and the dataframe is saved to the 
+global object. 
 
 For each sample, in step one, ShortStack identifies sRNA cluster 
 (referred to as dicer-derived clusters) which aligned with locations across the 
@@ -389,37 +408,29 @@ all sample folders. The function extracts the required information, stores it
 in a matrix.  
 
 The function requires some information to coordinate the importation and 
-calculations. It requires two different directory paths; one is the path to 
-your processed samples; this is the path to the folder containing all the 
-individual sample folders which is stores in argument `results`. The second 
-directory path is to the annotation file containing information on the small
-RNA clusters, stored in the argument `clusters`. 
-As an optional extra, if you wish to find the overlap between the clusters and 
-the merged genome reference annotations, created in the pre-mapping stage, 
-this can be assigned to the argument `features`. 
-
+calculations. It requires a directory path to your processed samples; 
+this is the path to the folder containing all the 
+individual sample folders which is stores in argument `directory`. The second 
+directory path is to the loci file containing information on the loci of the 
+sRNA clusters across the analysis, stored in the argument `loci`. 
 The last pieces of information the function requires a vector containing the
 sample names, both treatment and control replicates which is stored in the argument
-`conditions`. The sample names must match the names of the folders produced in 
-the mapping. 
+`samples`. The sample names must match the names of the folders produced in 
+the mapping, and stored in the directory supplied to the argument `directory`. 
 
 
 ```{r, eval = FALSE, message=FALSE}
-## Path to genomic overlap data file (.bed)
-genomic_features <-  "./analysis/reference/overlap.bed"
-
 ## Import & organise data. 
 results_dir <-  "./analysis/alignment_unique_two/"
 sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3", 
                 "TomTom_1", "TomTom_2", "TomTom_3")
+clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
+                              header = TRUE, sep = "\t", 
+                              stringsAsFactors = TRUE,comment.char="")
 
-clusterlocations <- rtracklayer::import.gff("./analysis/reference/
-                                            ClustersInfo.gff3")
-sRNA_data <- RNAimport(results = results_dir, 
-                           samples = sample_names, 
-                           clusters = clusterlocations, 
-                           totalNumReads = read_numbers, 
-                           features = genomic_features)
+sRNA_data <- RNAimport(loci = loci_info,
+                       directory = results_dir, 
+                           samples = sample_names)
 
 ```
 
@@ -734,11 +745,11 @@ analysis. This includes a function to calculate the mean FPKM and counts across
 specific samples and also calculate the overlap between genomic features and 
 sRNA clusters.
 
-## Calculate FPKM and Count means for specific samples
-This function calculates the FPKM mean and Count mean across specific samples.
+## Calculate RPM and Count means for specific samples
+This function calculates the RPM mean and Count mean across specific samples.
 
 ```{r}
-# calculate mean FPKM and mean Counts for heterograft samples
+# calculate mean RPM and mean Counts for heterograft samples
 selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
 means <- RNAmean(data = sRNA_data, conditions = selected_samples)
 
@@ -762,7 +773,7 @@ this features can be utilsed across different data sets. For example, across
 the total data set or specific mobile sRNA subsets. 
 
 It is important to recognise, that if you alter the chromosome names in either 
-of the mapping reference genomes, the chromsome names will need to match in the 
+of the mapping reference genomes, the chromosome names will need to match in the 
 annotation files(s). 
 
 ```{r, eval = FALSE}

@@ -59,28 +59,19 @@
 #' @param report Logical; prompts progress.
 #'
 #'
-#' @param features Path to a txt file containing the genomic information
-#' (annotations/features) which overlaps with the locations of the
-#' dicer-derived clusters. The file is created as a part of the pre-processing
-#' steps, see [RNAlocate::findOverlap()] function for more information. This is
-#' an optional argument, but will streamline your analysis later on if you wish
-#' to identify the genomic location of the cluster and the type of feature it
-#' overlaps with.
 #'
 #'
 #'
 #' @examples
 #' \dontrun{
-#' genomic_features <- "./data/reference/overlap.bed"
 #'
 #' clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
 #' header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
 #'
 #'RNAorganise(loci = clusters,
-#'            directory = "./replicates_EggTom_spike/",
+#'            directory = "./analysis/alignment_unique_two/",
 #'            samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-#'                        "TomTom_1" , "TomTom_2" , "TomTom_3"),
-#'            features = genomic_features)
+#'                        "TomTom_1" , "TomTom_2" , "TomTom_3"))
 #'
 #'
 #'}
@@ -96,11 +87,18 @@
 #' @importFrom tidyr "replace_na"
 #' @importFrom data.table ":="
 RNAimport <- function(loci, directory, samples,
-                        report = TRUE, features = NULL) {
+                        report = TRUE) {
 
-  if (base::missing(loci)|| !base::inherits(loci, c("data.frame"))) {
-    stop("loci must be an object of data frame, representing the loci of clusters
-         identified across all sample replicates")
+  if (base::missing(loci)) {
+    stop("loci must be an object of data frame or directory to plain text dataframe.
+         Dataframe represents the loci of clusters identified across all sample replicates")
+  }
+
+  # import loci data
+  if(base::inherits(loci, c("data.frame")) == FALSE){
+    message("Loading loci file from directory...")
+    loci <- utils::read.table(file = loci,header = TRUE, sep = "\t",
+                              stringsAsFactors = TRUE,comment.char="")
   }
   # check loci file has column called locus
   col_needed_loci <- "Locus"
@@ -115,12 +113,12 @@ RNAimport <- function(loci, directory, samples,
   # LOad sample data as list of data frames, with index as file name.
   dt_list <- list()
   for (file in samples) {
-    dt_list[[file]] <- utils::read.table(paste0(directory, file, "/Results.txt"), header = TRUE)
+    dt_list[[file]] <- data.table::fread(paste0(directory, file, "/Results.txt"), header = TRUE)
   }
-
-  required_cols <- c("Locus", "DicerCall", "Reads", "RPM")
-
+  # remove any hashtags from header (shortstack add this to header line, position 1)
+  dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
   # Check each data frame in the list for the required columns
+  required_cols <- c("Locus", "DicerCall", "Reads", "RPM")
   for (df in dt_list) {
     if (!all(required_cols %in% colnames(df))) {
       stop("Sample data frame does not contain all required columns: ",
@@ -190,12 +188,6 @@ RNAimport <- function(loci, directory, samples,
   df_final <- cbind(res_data[,1], locus_cols, res_data[, 2:ncol(res_data)])
   names(df_final)[1] <- "Locus"
 
-  if(!is.null(features)){
-    #overlap_data <- .import_annotations(features)
-    overlap_data <- data.table::fread(features, header = TRUE)
-    res2 <- merge(df_final,features, by=c("chr","start", "end"),all.x=TRUE)
-    return(res2)
-  } else
 
     return(df_final)
 }

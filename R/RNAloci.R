@@ -20,7 +20,7 @@
 #'
 #' @param files Path to the directory containing ShortStack mapping results.
 #'
-#' @param out_dir  Path to the directory to save the outputted annotation files,
+#' @param out  Path to the directory to save the outputted annotation files,
 #' include the name of the output file, including file extension (.txt`)
 #'
 #' @param samples A character vector containing the names of all the samples in
@@ -55,13 +55,13 @@
 #' @importFrom rtracklayer "export"
 #' @importFrom GenomicRanges "GRangesList"
 #' @importFrom GenomeInfoDb "seqnames"
-#' @importFrom stats "start"
-#' @importFrom stats "end"
+#' @importFrom BiocGenerics "start"
+#' @importFrom BiocGenerics "end"
 #' @importFrom utils "write.table"
 
-RNAloci <- function(files, out_dir, samples ){
+RNAloci <- function(files, out, samples ){
 
-  if (base::missing(files) || !base::inherits(files, c("character"))) {
+  if (base::missing(files)) {
     stop(paste("Please specify files, a connection to a local directory containing
                sample folders"))
   }
@@ -70,9 +70,8 @@ RNAloci <- function(files, out_dir, samples ){
                cooresponding to the folders of each sample replicate containing
                results"))
   }
-  if (base::missing(out_dir) || !base::inherits(out_dir, c("character"))
-      || tools::file_ext(out_dir == "txt")) {
-    stop(paste("Please specify out_dir, a connection to a local directory to
+  if (base::missing(out) || tools::file_ext(out == "txt")) {
+    stop(paste("Please specify out, a connection to a local directory to
                store output, including name and file extention (.txt)"))
   }
 
@@ -85,12 +84,15 @@ RNAloci <- function(files, out_dir, samples ){
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), ignore.strand=TRUE)
 
   gff_merged_df <- data.frame(Locus = paste0(as.character(
-    GenomeInfoDb::seqnames(gff_merged)),":",stats::start(gff_merged),"-",
-    stats::end(gff_merged)),Cluster = paste0("cluster_", 1:length(gff_merged)))
+    GenomeInfoDb::seqnames(gff_merged)),":",
+    BiocGenerics::start(gff_merged),
+    "-",BiocGenerics::end(gff_merged)),
+    Cluster = paste0("cluster_", 1:length(gff_merged)))
 
-  message("Writting Loci file to:  ", out_dir)
-  utils::write.table(gff_merged_df, file = out_dir,
+
+  utils::write.table(gff_merged_df, file = out,
               quote = F, sep = "\t", row.names = F, col.names = T)
-
+  message("Writting Loci file to:  ", out)
   return(gff_merged_df)
+  message("Loci data frame saved to named object")
 }

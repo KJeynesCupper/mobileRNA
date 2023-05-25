@@ -4,7 +4,7 @@
 \alias{RNAimport}
 \title{Import and organise sRNAseq data set}
 \usage{
-RNAimport(loci, directory, samples, report = TRUE, features = NULL)
+RNAimport(loci, directory, samples, report = TRUE)
 }
 \arguments{
 \item{loci}{dataframe; rows represent individual sRNA dicer-derived clusters
@@ -22,14 +22,6 @@ folders.}
 to outputted folders located in the \code{`directory`} argument path.}
 
 \item{report}{Logical; prompts progress.}
-
-\item{features}{Path to a txt file containing the genomic information
-(annotations/features) which overlaps with the locations of the
-dicer-derived clusters. The file is created as a part of the pre-processing
-steps, see [RNAlocate::findOverlap()] function for more information. This is
-an optional argument, but will streamline your analysis later on if you wish
-to identify the genomic location of the cluster and the type of feature it
-overlaps with.}
 }
 \description{
 Organises the sRNAseq results data, outputted by ShorStack, for
@@ -69,16 +61,14 @@ columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 }
 \examples{
 \dontrun{
-genomic_features <- "./data/reference/overlap.bed"
 
 clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
 header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
 
 RNAorganise(loci = clusters,
-           directory = "./replicates_EggTom_spike/",
+           directory = "./analysis/alignment_unique_two/",
            samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-                       "TomTom_1" , "TomTom_2" , "TomTom_3"),
-           features = genomic_features)
+                       "TomTom_1" , "TomTom_2" , "TomTom_3"))
 
 
 }

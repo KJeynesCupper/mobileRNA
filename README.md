@@ -77,15 +77,11 @@ Raw fastq files should be trimmed to remove adapter sequences and low quality
 reads as per best practice. 
 
 #### Installation of Linux Dependencies
-The majority of the pre-processing functions require a system call 
-to Linux software. The following dependencies need to be installed before you 
-begin:
-
-- `FastQC` (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-- `bedtools` (https://bedtools.readthedocs.io/en/latest/)
-- `Samtools` (http://www.htslib.org/)
-- `sed` (https://www.gnu.org/software/sed/manual/sed.html)
-- `ShortStack` (https://github.com/MikeAxtell/ShortStack)
+We recommend installing and using the `ShortStack` (https://github.com/MikeAxtell/ShortStack)
+program to aligns samples to the merged genome and undertake cluster analysis. 
+This program is specifically formulated for sRNAseq analysis, utilising Bowtie 
+(Version 1) to map samples and a specifically formulated algorithm to cluster 
+sRNAs. 
 
 
 Mapping
@@ -95,20 +91,25 @@ heterograft samples. The heterograft system involves two genotypes; here
 the two genome references are merged into a single reference to which 
 samples are aligned to. 
 
-`RNAlocate` offers a function to merge two reference genomes into one: 
+`RNAlocate` offers a function to merge two FASTA reference genomes into one. 
+To distinguish between the reference genomes in a merged file, it is important 
+to make sure the chromosome names between the genomes are different and 
+distinguishable. The function below added a particular character string to the 
+start of each chromosome name in each reference genome. As standard, the string
+"A_" is added to the reference genome supplied to "genomeA" and "B_" is added 
+to the reference genome supplied to "genomeB". These can be customised to the 
+users preference, see manual for more information. 
 
 ``` r
-RNAlocate::mergeFiles(files = "/Users/user1/projectname/workplace/reference/*",
-        out = "/Users/user1/projectname/workplace/reference/merge/merged_reference.fa")
+merged_reference <- RNAlocate::RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
+                                    genomeB = "./workplace/reference/ref2.fa",
+                        out_dir = "./workplace/reference/merge/merged_ref.fa")
+
 ```
+
 
 The analysis pipeline is formulated to analyse mapping and clustering results 
 produced by `ShortStack` (https://github.com/MikeAxtell/ShortStack). 
-
-To distinguish between the reference genomes in a merged file, it is important 
-to make sure the chromosome names between the genomes are different and 
-distinguishable. 
-
 Here, we recommend a double-mapping process using `ShortStack`, the steps are 
 as follow: 
 
@@ -127,17 +128,18 @@ ShortStack \
 ```
 #### Step 2 - Uniquely map samples to all loci of identified sRNA clusters
 
-From the output of Step 1, the `identifyClusters()` function can collate all 
-the loci information into a single `.gff3` file.  
+Using the output from Step 1, the `RNAloci()` function can collate all 
+the loci information into a single `.txt` file which can be utilised by `ShortStack`
+in the finally mapping step to the `locifile` argument. 
 
 ``` r
 sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
 folder <- <./output/directory/from/step/1/>
-save_folder <- <./output/directory/ClustersInfo.gff3>
+save_folder <- <./output/directory/ClustersInfo.txt>
 
 
-RNAlocate::identifyClusters(files = folder, 
+loci_info <- RNAlocate::RNAloci(files = folder, 
              out = save_folder,
              samples = sample_names)
 ```
@@ -178,12 +180,12 @@ results_dir <-  "<./output/directory/step2/>"
 sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
 # sRNA cluster loci annotation file 
-clusters_anno <- rtracklayer::import.gff(<./output/directory/ClustersInfo.gff3>)
+clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
+header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
 
-
-sRNA_data <- RNAimport(results = results_dir, 
-                           samples = sample_names, 
-                           clusters = clusters_anno)
+sRNA_data <- RNAimport(loci = loci_info, 
+                       directory = results_dir, 
+                       samples = sample_names)
                            
 ```
 
@@ -280,4 +282,4 @@ If the mean RPM and Count was calculated `RNAmean()`:
 - `mean_Count` : mean counts, based on parameters 
 ------------------------------------------------------------------------
 
-*Last updated:* 26-04-2023
+*Last updated:* 15-05-2023
