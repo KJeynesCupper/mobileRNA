@@ -27,10 +27,11 @@
 #' (chromosome, start, end) and cluster name.
 #'
 #' Further columns represent data imported for each samples including DicerCall,
-#' Counts and RPM. The DicerCall represents the size of most
+#' Counts, MajorRNA and RPM. The DicerCall represents the size of most
 #' abundant small RNA size based on the parameter used in ShortStack.
 #' The Count column represents the number of aligned sRNA-seq reads that overlap
-#' the locus. The RPM represents the reads per million.
+#' the locus. The RPM represents the reads per million and rhe MajorRNA represents
+#' the most common RNA sequence.
 #' For each replicate included in the analysis, these columns are labeled with
 #' the type and then then name of the sample, for example, for
 #' a sample called "Sample1", the information from this sample will be stored in
@@ -40,7 +41,7 @@
 #'
 #' @param loci dataframe; rows represent individual sRNA dicer-derived clusters
 #' columns state genomic location (labelled "Locus") and the cluster name
-#' (labelled "Cluster"). This file contains an accululation of all
+#' (labeled "Cluster"). This file contains an accumulation of all
 #' sRNA dicer-derived clusters  identified across samples in the analyse, without
 #' duplication. This can be produced using the [RNAlocate::RNAloci()]
 #' function
