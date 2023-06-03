@@ -118,7 +118,7 @@ RNAimport <- function(loci, directory, samples,
   # remove any hashtags from header (shortstack add this to header line, position 1)
   dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
   # Check each data frame in the list for the required columns
-  required_cols <- c("Locus", "DicerCall", "Reads", "RPM")
+  required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
   for (df in dt_list) {
     if (!all(required_cols %in% colnames(df))) {
       stop("Sample data frame does not contain all required columns: ",
@@ -148,10 +148,11 @@ RNAimport <- function(loci, directory, samples,
     dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
                            Count=sum(Reads),
                            RPM = sum(RPM)),
+                       MajorRNA = MajorRNA,
                        by = join_cols]
 
     # Rename the aggregated columns
-    col_names <- paste0(c("DicerCall_", "Count_", "RPM_"),  i)
+    col_names <- paste0(c("DicerCall_", "Count_", "RPM_", "MajorRNA_"),  i)
     data.table::setnames(dt_agg, c("Locus", col_names))
 
     # Merge the aggregated values back into df1
@@ -173,6 +174,7 @@ RNAimport <- function(loci, directory, samples,
   dt1 <- dt1 %>%
     dplyr::mutate(dplyr::across(dplyr::contains('Count_'), ~tidyr::replace_na(.,0))) %>%
     dplyr::mutate(dplyr::across(dplyr::contains('RPM_'), ~tidyr::replace_na(.,0))) %>%
+    dplyr::mutate(dplyr::across(dplyr::contains('MajorRNA_'), ~tidyr::replace_na(.,0))) %>%
     dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'), ~tidyr::replace_na(.,"N")))
 
 
