@@ -8,9 +8,6 @@ authors:
     href: https://catonilab.com/
   Marco Catoni:
     href: https://catonilab.com/
-  RStudio:
-    href: https://www.rstudio.com
-    html: <img src='https://www.tidyverse.org/rstudio-logo.svg' alt='RStudio' width='72' />
 
 template:
   bootstrap: 5

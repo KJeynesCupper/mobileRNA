@@ -49,7 +49,7 @@
 #'
 #'IMPORTANT:  The genome reference and annotation of a species
 #'must have chromosomes with matching names. It is critical that if you used
-#'the [mobileRNA::RNAannotationMerge()] function to to create a merged genome
+#'the [mobileRNA::RNAmergeAnnotations()] function to to create a merged genome
 #'annotation,that you treat the input references in the same way.
 #'
 #' @examples \dontrun{

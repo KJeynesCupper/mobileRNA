@@ -1,5 +1,5 @@
 ---
-  title: "Overview of the mobileRNA R package for mobile sRNA identification between genotypes"
+title: "Overview of the mobileRNA R package for mobile sRNA identification between genotypes"
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output:
@@ -11,15 +11,16 @@ theme: united
 highlight: tango
 fig_width: 7
 vignette: >
-  %\VignetteIndexEntry{mobileRNA}
-%\VignetteEngine{knitr::rmarkdown}}
-%\VignetteEncoding{UTF-8}
-%\usepackage[utf8]{inputenc}
-
+ %\VignetteIndexEntry{mobileRNA}
+ %\VignetteEngine{knitr::rmarkdown}}
+ %\VignetteEncoding{UTF-8}
+ %\VignettePackage{mobileRNA}
+ %\VignetteDepends{mobileRNA}
+ %\usepackage[utf8]{inputenc}
 
 ---
 
-  ```{r setup, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   fig.align='center',
@@ -86,7 +87,7 @@ or across the potential mobile sRNA.
 The latest version of `mobileRNA` can be installed via GitHub
 using the `devtools` package:
 
-  ```{r,  eval=FALSE, message=FALSE}
+```{r,  eval=FALSE, message=FALSE}
 
 if (!require("devtools")) install.packages("devtools")
 devtools::install_github("KJeynesCupper/mobileRNA")
@@ -98,7 +99,7 @@ The majority of the pre-processing functions require a system call
 to Linux software. The following dependencies need to be installed before you
 begin:
 
-  - `FastQC` (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- `FastQC` (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - `bedtools` (https://bedtools.readthedocs.io/en/latest/)
 - `Samtools` (http://www.htslib.org/)
 - `sed` (https://www.gnu.org/software/sed/manual/sed.html)
@@ -117,12 +118,12 @@ data("sRNA_data")
 Once installed, you will have access to the following functions:
 
   **Pre-processing**
-  - `RNAmergeGenomes()`
+- `RNAmergeGenomes()`
 - `RNAmergeAnnotations()`
 - `RNAloci()`
 
 **Analysis**
-  - `RNAimport()`
+- `RNAimport()`
 - `RNAconsensus()`
 - `RNAsubset()`
 - `RNAdistribution()`
@@ -177,7 +178,7 @@ data("sRNA_data")
 
 ## Data organisation
 There are Two key elements required for the pipeline analysis:
-  * sRNA-seq sample replicates  (.fasta/.fq)
+* sRNA-seq sample replicates  (.fasta/.fq)
 * Two reference genomes (.fasta/.fa)
 
 And one additional element; to improve functional analysis:
@@ -190,7 +191,7 @@ be represented as within the analysis and shown as labels in plots.
 Plus, it makes the analysis easier!
 
   For example, instead of names such as:
-  * `sample_1.fq`
+* `sample_1.fq`
 * `sample_2.fq`
 * `sample_3.fq`
 * `sample_4.fq`
@@ -200,12 +201,12 @@ Plus, it makes the analysis easier!
 For the example data set included in the package, here we have renamed the
 files based on the condition (treatment or control).
 For the hetero-grafts, where the is a tomato scion and an eggplant rootstock:
-  * `TomEgg_1.fq`
+* `TomEgg_1.fq`
 * `TomEgg_2.fq`
 * `TomEgg_3.fq`
 
 and for the tomato self-grafts:
-  * `TomTom_1.fq`
+* `TomTom_1.fq`
 * `TomTom_2.fq`
 * `TomTom_3.fq`
 

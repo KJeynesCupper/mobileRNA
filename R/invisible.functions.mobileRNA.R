@@ -98,10 +98,9 @@ pheatmaps_colnames_angle <- function (coln, gaps, ...) {
   )
   return(res)
 }
-assignInNamespace(
+suppressWarnings(assignInNamespace(
   x = "draw_colnames",
   value = "pheatmaps_colnames_angle",
-  ns = asNamespace("pheatmap")
-)
+  ns = asNamespace("pheatmap")))
 
 

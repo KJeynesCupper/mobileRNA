@@ -8,7 +8,7 @@ plotSampleDistance(data, vst = FALSE)
 }
 \arguments{
 \item{data}{data frame; data set containing the raw data produced as
-output from \code{\link[=RNAconsensus]{RNAconsensus()}} and/or \code{\link[=mobileRNA:RNAsubset]{mobileRNA:RNAsubset()}}}
+output from \code{\link[=RNAconsensus]{RNAconsensus()}} and/or \code{\link[=RNAsubset]{RNAsubset()}}}
 
 \item{vst}{Logical; Variance stabilizing transformation. By default, the
 function uses a regularized log transformation on the data set, however, this
