@@ -12,7 +12,8 @@ Description: The mobileRNA package allows for the identifcation of mobile small
   steps for sRNA-seq mRNA-seq data with the end goal of identifying mobile RNAs 
   and their potential function or implications on phenotypic changes. 
 License: MIT + file LICENSE
-URL: https://github.com/KJeynesCupper/mobileRNA.git
+URL: https://github.com/KJeynesCupper/mobileRNA.git,
+    https://kjeynescupper.github.io/mobileRNA/
 Depends:
     R (>= 3.5.0)
 VignetteBuilder:
@@ -68,5 +69,3 @@ biocViews:
     plant science, 
     botany
 SystemRequirements: ShortStack (https://github.com/MikeAxtell/ShortStack)
-
-
