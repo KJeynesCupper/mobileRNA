@@ -94,6 +94,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/program_flow.png"
 )
 ```
+<a href="https://github.com/KJeynesCupper/mobileRNA/man/figures/program_flow.png"><img src="https://github.com/KJeynesCupper/mobileRNA/man/figures/program_flow.png" width="630" height="252"/></a>  
 
 Pre-mapping
 --------------------------------------------
@@ -119,6 +120,8 @@ merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
                         out_dir = "./workplace/reference/merge/merged_ref.fa")
 
 ```
+
+
 
 Mapping 
 --------------------------------------------
