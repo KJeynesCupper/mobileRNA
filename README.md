@@ -122,7 +122,7 @@ merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
 Mapping 
 --------------------------------------------
 
-### sRNA-seq Mapping with ShortStack
+### Mapping sRNA-seq data with ShortStack
 Here, we recommend a double-mapping process using `ShortStack`, the steps are 
 as follow: 
 
