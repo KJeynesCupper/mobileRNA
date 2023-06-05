@@ -6,7 +6,7 @@
 #' analysis with `DESeq2` or `edgeR`.
 #'
 #' @param data numeric data frame produced by [mobileRNA::RNAimport()] and/or
-#' [mobileRNA::RNAsubset()].\code{\link{mobileRNA::RNAsubset()}}
+#' [mobileRNA::RNAsubset()]. \code{\link{mobileRNA::RNAsubset()}}
 #'
 #' @param group Vector of the condition (ie. treatment or control) for each
 #' sample. Must be stated in the same order as the samples in the `data` file
