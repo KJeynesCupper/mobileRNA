@@ -89,7 +89,7 @@ the analysis to identify potentially mobile RNA species.
 
 
 <p>
-    <img src="./man/figures/program_flow.png" width="300" height="380" />
+    <img src="./man/figures/program_flow.png" width="300" height="350" />
 </p>
 
 Pre-mapping
