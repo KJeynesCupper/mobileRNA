@@ -36,7 +36,7 @@ Table of Contents
 - [Mapping](#Mapping)
 - [Post-mapping analysis](#Post-mapping-analysis)
 - [Output](#Output)
-- [Other purposes](#Other purposes)
+- [Optional extras and additional applications](#Optional-extras-and-additional-applications)
 
 Installation
 ------------
@@ -87,13 +87,10 @@ genome assemblies into one, then the pre-processing moves into Linux to align
 each replicate to the merged reference and then back into R-Studio to undertake 
 the analysis to identify potentially mobile RNA species. 
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/program_flow.png"
-)
-```
+
+<p>
+    <img src="./man/figures/program_flow.png" width="300" height="290" />
+</p>
 
 Pre-mapping
 --------------------------------------------
@@ -120,10 +117,12 @@ merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
 
 ```
 
+
+
 Mapping 
 --------------------------------------------
 
-### sRNA-seq Mapping with ShortStack
+### Mapping sRNA-seq data with ShortStack
 Here, we recommend a double-mapping process using `ShortStack`, the steps are 
 as follow: 
 
@@ -297,11 +296,16 @@ If the mean RPM and Count was calculated `RNAmean()`:
 - `mean_Count` : mean counts, based on parameters 
 
 
-Other purposes  
+Optional extras and additional applications  
 --------------------------------------------
+The package also includes functions for: 
+- Exploratory and quality control analysis, such as PCA & heatmap plots. 
+- Summary values including RPM mean and Count mean across specific samples.
+- Plot the distribution of sRNA classes (20-24nt) across indivudal replicates or across the dataset. 
+- Statistical analysis using differential methods from either DESeq2 or edgeR. 
+- Functional analysis to identify potential target sequences in the destination tissue
 
-The package workflow can easily be manipulated to enable the identification of
-local populations of RNA species. 
+The package workflow can easily be manipulated to enable the identification of local populations of RNA species. 
 
 ------------------------------------------------------------------------
 
