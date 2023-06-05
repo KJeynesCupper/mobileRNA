@@ -22,7 +22,7 @@ file in GFF3 format}
 
 \item{out_dir}{either a character string or a \code{base::connections()} open
 for writing. Place path to output directory in "", including file output name
-with extension of either `.gff` or `.gff3`.}
+with extension of either \code{.gff} or \code{.gff3}.}
 
 \item{abbreviationAnnoA}{a string placed in "", to replace chromosome names
 within \code{annotationA}.Default set as "A".}
@@ -46,7 +46,7 @@ assigned, as well as writing the merged annotation file in
 GFF format to a give output directory.
 }
 \description{
-Merges two genomes annotation files (`GFF format`) into one
+Merges two genomes annotation files (\verb{GFF format}) into one
 single GFF file saved to desired directory.
 }
 \details{
@@ -56,22 +56,20 @@ by the chromosome names. As a default setting, the function extracts the
 chromosome names for a given GFF file and adds an ID before each chromosome
 name and removes any periods.
 
-
-
 The function requires the input of two reference annotation genomes, where one represents
-`annotationA` and the other represents `annotationB`. As default, the function
-will rename the chromosome names in `annotationA` to "A". For example, A0, A1 ,
-A2 etc. To set a custom chromosome name for `annotationA` alter the argument
-\code{abbreviationAnnoA}. While, for  `annotationB` as default the chromosome
+\code{annotationA} and the other represents \code{annotationB}. As default, the function
+will rename the chromosome names in \code{annotationA} to "A". For example, A0, A1 ,
+A2 etc. To set a custom chromosome name for \code{annotationA} alter the argument
+\code{abbreviationAnnoA}. While, for  \code{annotationB} as default the chromosome
 names will be named "B", for example, B0, B1, B2 etc. To set a custom
-chromosome name for `annotationB` alter the argument \code{abbreviationAnnoB}.
+chromosome name for \code{annotationB} alter the argument \code{abbreviationAnnoB}.
 The function can do so by  draw the chromosome number within the given GFF file,
 remove all prior character or numerical values, and replace it with the
 supplied string.
 
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
-the [mobileRNA::RNAmergeGenomes()] function to to create a merged reference genome,
+the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a merged reference genome,
 that you treat the input annotations in the same way.
 }
 \examples{

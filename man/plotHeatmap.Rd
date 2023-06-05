@@ -11,7 +11,7 @@ plotHeatmap(data, colours = NULL, dendogram = TRUE)
 each sRNA dicer-derived cluster of interest.}
 
 \item{colours}{Colours to display and represent the heatmap.
-Defaults to [grDevices::heat.colors()] (heat.colors(100)).}
+Defaults to \code{\link[grDevices:palettes]{grDevices::heat.colors()}} (heat.colors(100)).}
 
 \item{dendogram}{Logical; indicating whether to include the dendrogram and
 clustering, and retain clustering. Default, \code{dendogram = TRUE} to

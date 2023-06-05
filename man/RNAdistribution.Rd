@@ -18,21 +18,23 @@ RNAdistribution(
 }
 \arguments{
 \item{data}{a dataframe, on which one of the following functions has already
-been called: [mobileRNA::RNAimport()],[mobileRNA::RNAconsensus()].}
+been called: \code{\link[=RNAimport]{RNAimport()}},\code{\link[=RNAconsensus]{RNAconsensus()}}.}
 
 \item{samples}{character vector. Store names of samples to analyse and plot.
 Argument is required for plotting individual sample replicates, either
 individually, overlapped together or in a facet. Use the sample
-replicate names present in the data frame (`data`), select samples you wish
+replicate names present in the data frame (\code{data}), select samples you wish
 to plot. Is not required when plotting the sRNA consensus using the argument
 \code{total=TRUE}.}
 
 \item{style}{plotting option to choose the style of either a line graph or
 bar chart to represent your data.
-* Where \code{style="line"} a line graph will be produced
-* Where \code{style="bar"} produces a bar graph
-* Where \code{style="consensus"} produces the line graph for the consenus
-sRNA in conjunction with \code{consensus=TRUE}}
+\itemize{
+\item Where \code{style="line"} a line graph will be produced
+\item Where \code{style="bar"} produces a bar graph
+\item Where \code{style="consensus"} produces the line graph for the consenus
+sRNA in conjunction with \code{consensus=TRUE}
+}}
 
 \item{facet}{Logical; forms a matrix of panels defined by row and column faceting
 variables. It plots the results for each sample as a bar-chart and contains
@@ -41,8 +43,8 @@ the argument \code{facet.arrange} . Default \code{facet = TRUE} , plot each
 sample separately when \code{facet = FALSE} .}
 
 \item{facet.arrange}{numeric; value supplied to define the number of columns
-to include in the facet. This argument is piped into the ` ncol`  argument in
-[ggplot2::facet_wrap()] to define the number of columns. By default, this is
+to include in the facet. This argument is piped into the \code{ ncol}  argument in
+\code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} to define the number of columns. By default, this is
 set to 3.}
 
 \item{colour}{bar plot fill colour. Default colour is "darkblue".}
@@ -52,26 +54,26 @@ to represent the sample replicates. Default \code{together=TRUE}.}
 
 \item{consensus}{Logical; plots the distribution of sRNA classes across all
 identified dicer-derived clusters based on the consensus. See
-[mobileRNA::RNAconsensus()]
+\code{\link[=RNAconsensus]{RNAconsensus()}}
 function to calculate consensus RNA class based the experimental replicates.
 Default \code{consensus=FALSE}.}
 
 \item{relative}{Logical; calculates relative frequency of consensus
 dicer-derived sRNA clusters. Only applicable when  only in conjunction with
-argument `consensus`, when set as \code{consensus=TRUE}. As default,
+argument \code{consensus}, when set as \code{consensus=TRUE}. As default,
 \code{relative=FALSE}.}
 }
 \value{
 The function returns a list containing the results in the form of a
 data frame and the plot(s). To access an element, simply use the "$" symbol,
-and the elements "data" and "plot" will appear. The `samples` argument allows
+and the elements "data" and "plot" will appear. The \code{samples} argument allows
 uses to plot specific samples in a single plot (facet bar plot or line graph).
 This can encourage closer comparison between sample replicates.
 }
 \description{
 \code{RNAdistribution} plots the distribution of dicer-derived
 sRNA classes (20-24nt) across samples or across the sRNA consensus
-determined by the function [mobileRNA::RNAconsensus()].
+determined by the function \code{\link[=RNAconsensus]{RNAconsensus()}}.
 }
 \details{
 The function can be used to plot a variety of different comparisons and plots.
@@ -79,7 +81,6 @@ It can be used to plot the distribution of sRNA classes within each sample
 replicate, which can be represented as a bar chart \code{style="bar"} or a
 line graph \code{style="line"}. These plots can be represented individually or
 in a single plot facet \code{facet="TRUE"} by default.
-
 
 To plot the sRNA dicer-derived clusters identified in each sample, the
 function extracts the information from the RNA summary data and calculates the
@@ -91,7 +92,7 @@ option for bar plots.
 
 The final option, is to plot the total consensus of dicer-derived sRNA clusters
 across the experimental conditions, the function pulls the consensus call
-from the column created by the [RNAconsensus()] function in the working
+from the column created by the \code{\link[=RNAconsensus]{RNAconsensus()}} function in the working
 data frame.
 }
 \examples{

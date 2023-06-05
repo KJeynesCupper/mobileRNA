@@ -9,12 +9,12 @@ RNAconsensus(data, conditions, tidy = TRUE)
 \arguments{
 \item{data}{a data frame object containing sample data where rows
 represent sRNA dicer-derived clusters, and where columns represent sample
-data. See [mobileRNA::RNAimport()] to load data, extract the required
+data. See \code{\link[=RNAimport]{RNAimport()}} to load data, extract the required
 information for each sample and organise it as required.}
 
 \item{conditions}{a character vector containing names sample replicates to
 base the consensus on. Each string should represent a sample name already
-utilised in the analysis and present in the data frame supplied to the `data`
+utilised in the analysis and present in the data frame supplied to the \code{data}
 argument.}
 
 \item{tidy}{use of this argument will remove sRNA clusters with a unknown or

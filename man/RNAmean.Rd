@@ -7,7 +7,7 @@
 RNAmean(data, conditions = NULL)
 }
 \arguments{
-\item{data}{data frame, see [mobileRNA::RNAimport()] to produce an organised
+\item{data}{data frame, see \code{\link[=RNAimport]{RNAimport()}} to produce an organised
 object of sample data.}
 
 \item{conditions}{Character vector; represent sample names. If not supplied,
@@ -17,8 +17,8 @@ function will calculate means across all samples in dataframe.}
 A data frame containing all existing columns in the input data object,
 plus, an additional columns.
 
-As default, the FPKM means will be stored in the column named `mean_RPM`,
-while the count means are stored in column names `mean_Count`.s
+As default, the FPKM means will be stored in the column named \code{mean_RPM},
+while the count means are stored in column names \code{mean_Count}.s
 }
 \description{
 Using the data, the function calculates the mean RPM and Counts

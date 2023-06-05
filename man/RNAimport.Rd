@@ -48,9 +48,9 @@ multimapped reads). Lastly, RPM contains the Reads per Million score.
 
 \code{"RNAimport"} takes the results from  pre-processed sRNAseq data which
 has been mapped and undertaken cluster analysis through ShortStack, organises
- into a single data frame. Each row represent an sRNA dicer-derived cluster
- within the analysis and columns 1 - 5 supply information on the cluster
- including the locus, the separated coordinates
+into a single data frame. Each row represent an sRNA dicer-derived cluster
+within the analysis and columns 1 - 5 supply information on the cluster
+including the locus, the separated coordinates
 (chromosome, start, end) and cluster name.
 
 Further columns represent data imported for each samples including DicerCall,

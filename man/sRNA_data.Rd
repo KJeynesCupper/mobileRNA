@@ -3,13 +3,13 @@
 \docType{data}
 \name{sRNA_data}
 \alias{sRNA_data}
-\title{The `sRNA_data` data set}
+\title{The \code{sRNA_data} data set}
 \usage{
 data(sRNA_data)
 }
 \description{
 This data sets represents the results of the pre-processing. The data has
-been organised using the `sample_table` function.
+been organised using the \code{sample_table} function.
 }
 \details{
 Tomato (Solanium lycopersicum) and eggplant (Solanium melongena) were used

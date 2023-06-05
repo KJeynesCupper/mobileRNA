@@ -3,50 +3,52 @@
 \name{RNAanalysis}
 \alias{RNAanalysis}
 \title{Differential Expression (DE) Analysis of sRNA dicer-derived clusters
-using `DESeq2` or `edgeR`}
+using \code{DESeq2} or \code{edgeR}}
 \usage{
 RNAanalysis(data, group, method = c("edgeR", "DESeq2"), dispersionValue = NULL)
 }
 \arguments{
-\item{data}{numeric data frame produced by [mobileRNA::RNAimport()] and/or
-[mobileRNA::RNAsubset()]. \code{\link{mobileRNA::RNAsubset()}}}
+\item{data}{numeric data frame produced by \code{\link[=RNAimport]{RNAimport()}} and/or
+\code{\link[=RNAsubset]{RNAsubset()}}.}
 
 \item{group}{Vector of the condition (ie. treatment or control) for each
-sample. Must be stated in the same order as the samples in the `data` file
+sample. Must be stated in the same order as the samples in the \code{data} file
 from left to right.}
 
 \item{method}{The method to undertaken differential analysis, choose from
-methods of either [DESeq2::DESeq2] or [edgeR::edgeR].
+methods of either \link[DESeq2:DESeq]{DESeq2::DESeq} or \link[edgeR:edgeR-package]{edgeR::edgeR}.
 Must be stated as either "DESeq2" or "edgeR" in the function.}
 
 \item{dispersionValue}{numeric value; manual setting of dispersion value
 which is recommended for analysis in experiments without biological
-replicates when utilising the [edgeR::edgeR] method.}
+replicates when utilising the \link[edgeR:edgeR-package]{edgeR::edgeR} method.}
 }
 \value{
 Undertakes differential analysis, based on a specified method, and
 adds the results to the supplied dataframe. This includes:
-* Count mean
-* Log fold change
-* p-value
-* Adjusted p-value
-* Log counts per million (CPM/RPM)
+\itemize{
+\item Count mean
+\item Log fold change
+\item p-value
+\item Adjusted p-value
+\item Log counts per million (CPM/RPM)
+}
 }
 \description{
 This function allows you to compute the differential expression
 of sRNA dicer-derived clusters. The function allows the choice between
-analysis with `DESeq2` or `edgeR`.
+analysis with \code{DESeq2} or \code{edgeR}.
 }
 \details{
 The analysis allows the users to choose the method which best suits
-their data. Notably, `DESeq2` cannot compute the analysis when there only
-one replicate per condition, but, `edgeR` can. Simply set a suitable
+their data. Notably, \code{DESeq2} cannot compute the analysis when there only
+one replicate per condition, but, \code{edgeR} can. Simply set a suitable
 dispersion value, based on similar data, to use this feature. The dispersion
 value is other wise known as the common Biological squared coefficient
 of variation. A typical dispersion value is 0.4 for human data sets, 0.1  for
 data on genetically identical model organisms or 0.01 for technical replicate.
 See the User’s Guide for the  ‘EdgeR’ package for more details,
-[edgeR::edgeR].
+\link[edgeR:edgeR-package]{edgeR::edgeR}.
 }
 \examples{
 # sample conditions.

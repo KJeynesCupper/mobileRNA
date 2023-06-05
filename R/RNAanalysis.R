@@ -6,14 +6,14 @@
 #' analysis with `DESeq2` or `edgeR`.
 #'
 #' @param data numeric data frame produced by [mobileRNA::RNAimport()] and/or
-#' [mobileRNA::RNAsubset()]. \code{\link{mobileRNA::RNAsubset()}}
+#' [mobileRNA::RNAsubset()].
 #'
 #' @param group Vector of the condition (ie. treatment or control) for each
 #' sample. Must be stated in the same order as the samples in the `data` file
 #' from left to right.
 #'
 #' @param method The method to undertaken differential analysis, choose from
-#' methods of either [DESeq2::DESeq2] or [edgeR::edgeR].
+#' methods of either [DESeq2::DESeq] or [edgeR::edgeR].
 #' Must be stated as either "DESeq2" or "edgeR" in the function.
 #'
 #' @param dispersionValue numeric value; manual setting of dispersion value

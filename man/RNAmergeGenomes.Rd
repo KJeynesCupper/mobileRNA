@@ -47,20 +47,19 @@ chromosome names for a given FASTA file and alters the name while retaining the
 identifying number.
 
 The function requires the input of two reference genomes, where one represents
-`Genome-A` and the other represents `Genome-B`. As default, the function
-will rename the chromosome names in `Genome-A` to "A". For example, A0, A1 ,
-A2 etc. To set a custom chromosome name for `Genome-A` alter the argument
-\code{abbreviationGenomeA}. While, for  `Genome-B` as default the chromosome
+\code{Genome-A} and the other represents \code{Genome-B}. As default, the function
+will rename the chromosome names in \code{Genome-A} to "A". For example, A0, A1 ,
+A2 etc. To set a custom chromosome name for \code{Genome-A} alter the argument
+\code{abbreviationGenomeA}. While, for  \code{Genome-B} as default the chromosome
 names will be named "B", for example, B0, B1, B2 etc. To set a custom
-chromosome name for `Genome-A` alter the argument \code{abbreviationGenomeB}.
+chromosome name for \code{Genome-A} alter the argument \code{abbreviationGenomeB}.
 The function can do so by  draw the chromosome number within the given GFF file,
 remove all prior character or numerical values, and replace it with the
 supplied string.
 
-
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
-the [mobileRNA::RNAannotationMerge()] function to to create a merged genome
+the \code{\link[=RNAannotationMerge]{RNAannotationMerge()}} function to to create a merged genome
 annotation,that you treat the input references in the same way.
 }
 \examples{

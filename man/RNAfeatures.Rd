@@ -8,8 +8,8 @@ RNAfeatures(data, annotation, repeats = NULL, percentage = TRUE)
 }
 \arguments{
 \item{data}{data frame; containing rows of potential dicer-derived clusters
-including columns which supply the genomic coordinates, where `chr` supplies the
-chromosome number, `start` and `end` which supply the coordinates.}
+including columns which supply the genomic coordinates, where \code{chr} supplies the
+chromosome number, \code{start} and \code{end} which supply the coordinates.}
 
 \item{annotation}{A path, URL, connection or GFFFile object. A genome
 reference annotation file (.gff/.gff1/.gff2/.gff3).}

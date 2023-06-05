@@ -8,11 +8,11 @@ plotSamplePCA(data, group, vst = FALSE)
 }
 \arguments{
 \item{data}{class data.frame; data set containing the raw data produced as
-output from [mobileRNA::RNAconsensus()] and/or [mobileRNA::RNAsubset()].}
+output from \code{\link[=RNAconsensus]{RNAconsensus()}} and/or \code{\link[=RNAsubset]{RNAsubset()}}.}
 
 \item{group}{character vector; contains experimental conditions for each
 replicate. IMPORTANT: Ensure this is in the same order as the replicates are
-found in the data frame supplied to the `data` argument (from left to right).}
+found in the data frame supplied to the \code{data} argument (from left to right).}
 
 \item{vst}{logical; Variance stabilizing transformation. By default, the
 function uses a regularized log transformation on the data set, however, this
@@ -23,8 +23,8 @@ A PCA plot to show sample distance.
 }
 \description{
 A function to draw a principal component analysis (PCA) plot.
- The function undertakes rlog transformation of the data in
- an unbiased manner (\code{blind=TRUE}).
+The function undertakes rlog transformation of the data in
+an unbiased manner (\code{blind=TRUE}).
 }
 \details{
 This function utilises the DESeq2 package to organise and plot the

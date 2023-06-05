@@ -9,7 +9,7 @@ RNAsubset(data, type, sig = FALSE, ...)
 \arguments{
 \item{data}{A numerical data-frame containing the sample data, with a
 defined consensus sRNA class/type for each sRNA dicer-derived cluster
-(see [mobileRNA::RNAconsensus()].}
+(see \code{\link[=RNAconsensus]{RNAconsensus()}}.}
 
 \item{type}{A number to represent the type of small RNA population to subset
 for.}
@@ -18,7 +18,7 @@ for.}
 \code{sig=TRUE}, data will be filtered based on p-adjusted < 0.05
 significance threshold.}
 
-\item{...}{Related to number in the `type` argument
+\item{...}{Related to number in the \code{type} argument
 This can be a value from 20-24. To select, 24-nt sRNA, state 24.
 Multiple values can be inputted, for instance both 21 and 22 can be
 stated to select both.}
@@ -28,10 +28,10 @@ Creates a data-frame containing the desired sRNA class(s) based
 on the consensus sRNA determination.
 }
 \details{
-See [mobileRNA::RNAconsensus()] for information on defining the sRNA type
+See \code{\link[=RNAconsensus]{RNAconsensus()}} for information on defining the sRNA type
 for each cluster. The function allows the choice to filtered the data by
 statistical significance based on differential expression analysis, see
-[mobileRNA::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
+\code{\link[=RNAanalysis]{RNAanalysis()}}. Set \code{sig=TRUE} to filtered by significance
 (p-adjusted).
 }
 \examples{

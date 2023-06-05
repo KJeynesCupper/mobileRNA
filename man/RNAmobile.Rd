@@ -21,18 +21,18 @@ RNAmobile(
 
 \item{id}{a character string related to the chromosomes in a particular genome. A
 distinguishing feature of the genome of interest or non-interest in the
-chromosome name (`chr` column).}
+chromosome name (\code{chr} column).}
 
 \item{task}{an option to keep or remove the chromosomes containing the
 identifying string. To keep the chromosomes with the ID, set task=keep.
-To remove, set `task="remove"`. As default, task is set to `keep`.}
+To remove, set \code{task="remove"}. As default, task is set to \code{keep}.}
 
 \item{statistical}{If TRUE, will undertake statistical filtering based on the a
-p-value or adjusted p-value threshold stated by `padj` and `p.value`. Default
+p-value or adjusted p-value threshold stated by \code{padj} and \code{p.value}. Default
 set at FALSE. Requires presence of columns containing statistical data.
-In order to filter by the adjusted p-value, a column named `padjusted` must
-be present. Similarly, to filter by the p-value, a column named `pvalue` must
-be present. See [mobileRNA::RNAanalysis()] to calculate statistical values.}
+In order to filter by the adjusted p-value, a column named \code{padjusted} must
+be present. Similarly, to filter by the p-value, a column named \code{pvalue} must
+be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistical values.}
 
 \item{padj}{A user defined numeric value to represent the adjusted p-value
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -66,7 +66,7 @@ genotype to the control.
 
 The function also allows for statistical analysis based on the results
 collect from differential analysis of the total dataset using the function
-[mobileRNA::RNAanalysis()]. This features enables the filtering of sRNA
+\code{\link[=RNAanalysis]{RNAanalysis()}}. This features enables the filtering of sRNA
 clusters which meet a specific p-value or adjusted p-values.
 }
 \examples{

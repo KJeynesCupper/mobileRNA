@@ -8,8 +8,8 @@ RNAattributes(data, annotation)
 }
 \arguments{
 \item{data}{data frame; containing rows of potential dicer-derived clusters
-including columns which supply the genomic coordinates, where `chr` supplies the
-chromosome number, `start` and `end` which supply the coordinates.}
+including columns which supply the genomic coordinates, where \code{chr} supplies the
+chromosome number, \code{start} and \code{end} which supply the coordinates.}
 
 \item{annotation}{A path, URL, connection or GFFFile object. A genome
 reference annotation file (.gff/.gff1/.gff2/.gff3).}
@@ -24,7 +24,7 @@ the sRNA data set based on the chromosome, start and end coordinates. It is
 important that any alteration which were made to the genome reference (FASTA), such
 as alterations to the chromosome name, must be carried forth to the
 genome annotation file. If alterations were made to the reference genome
-using the [mobileRNA::RNAmergeGenomes()] function, alteration inline with
-these can be accomplished using the [mobileRNA::RNAmergeAnnotations()]
+using the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function, alteration inline with
+these can be accomplished using the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}}
 function.
 }

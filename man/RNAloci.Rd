@@ -19,8 +19,8 @@ step one, outputted by \code{Shortstack}.}
 \value{
 A plain text file (.txt) and when assigned to a variable, the dataframe
 is saved to the global environment. The output contains two columns,
-`Locus` containing the genomic coordinates of the dicer-derived cluster and
-`Cluster` contains the given name for the dicer-derived cluster.
+\code{Locus} containing the genomic coordinates of the dicer-derived cluster and
+\code{Cluster} contains the given name for the dicer-derived cluster.
 }
 \description{
 Collates all in the identified sRNA dicer-derived clusters
