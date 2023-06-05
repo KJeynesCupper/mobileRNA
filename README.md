@@ -1,6 +1,8 @@
 mobileRNA 
 ======================================================================
 
+# ggplot2 <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+
 Overview
 --------
 
@@ -31,7 +33,7 @@ Table of Contents
 - [Installation](#installation)
 - [Loading test data](#Loading-test-data)
 - [Getting help](#Getting-help)
-- [Overview](#Overview)
+- [Summary](#Summary)
 - [Pre-mapping](#Pre-mapping)
 - [Mapping](#Mapping)
 - [Post-mapping analysis](#Post-mapping-analysis)
@@ -79,7 +81,7 @@ with this package:
 vignette("mobileRNA")
 ```
 
-Overview
+Summary
 ------------
 
 The workflow is shown in the figure below. It begin in R-Studio to merge the two 
