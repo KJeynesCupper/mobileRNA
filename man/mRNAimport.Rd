@@ -16,13 +16,6 @@ to outputted folders located in the \code{`directory`} argument path.}
 
 \item{tidy}{Logical; removes genes from analysis where there are zero counts
 across all replicates.}
-
-\item{loci}{dataframe; rows represent individual sRNA dicer-derived clusters
-columns state genomic location (labeled "Locus") and the cluster name
-(labeled "Cluster"). This file contains an accumulation of all
-sRNA dicer-derived clusters  identified across samples in the analyse, without
-duplication. This can be produced using the [mobileRNA::RNAloci()]
-function}
 }
 \description{
 Organises mRNAseq counts data from each sample replicate into
@@ -46,6 +39,13 @@ For example, for a sample called "Sample1", the counts will be stored in a
 column called "Count_Sample1".
 }
 \examples{
-\dontrun{}
+\dontrun{
+
+df_mRNA <- RNAimport(input = "mRNA",
+                     directory = "./analysis/mRNA_counts/",
+                     samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
+                                  "TomTom_1" , "TomTom_2" , "TomTom_3"))
+
+}
 
 }

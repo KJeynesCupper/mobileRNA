@@ -84,10 +84,11 @@
 #' @importFrom tidyr "replace_na"
 #' @importFrom data.table ":="
 #' @importFrom magrittr "%>%"
-#' @importFrom magrittr "filter"
-#' @importFrom stats "unique"
-#' @importFrom utils "cat"
-#' @importFrom methods "mget"
+#' @importFrom dplyr "filter"
+#' @importFrom dplyr "if_any"
+#' @importFrom dplyr "where"
+#' @importFrom stats "setNames"
+
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                       report = TRUE,
                       tidy = TRUE) {
@@ -213,7 +214,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       # remove rows with
       if (tidy){
         mRNA_information <- mRNA_information %>%
-          filter(if_any(where(is.numeric), ~. != 0))
+          dplyr::filter(dplyr::if_any(dplyr::where(is.numeric), ~. != 0))
       }
       return(mRNA_information)
     }

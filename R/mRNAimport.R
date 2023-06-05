@@ -21,12 +21,6 @@
 #' For example, for a sample called "Sample1", the counts will be stored in a
 #' column called "Count_Sample1".
 #'
-#' @param loci dataframe; rows represent individual sRNA dicer-derived clusters
-#' columns state genomic location (labeled "Locus") and the cluster name
-#' (labeled "Cluster"). This file contains an accumulation of all
-#' sRNA dicer-derived clusters  identified across samples in the analyse, without
-#' duplication. This can be produced using the [mobileRNA::RNAloci()]
-#' function
 #'
 #'
 #'
@@ -44,17 +38,24 @@
 #'
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{
+#'
+#' df_mRNA <- RNAimport(input = "mRNA",
+#'                      directory = "./analysis/mRNA_counts/",
+#'                      samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
+#'                                   "TomTom_1" , "TomTom_2" , "TomTom_3"))
+#'
+#' }
 #'
 #' @export
 #' @importFrom data.table fread
 #' @importFrom data.table setnames
 #' @importFrom dplyr mutate across contains
 #' @importFrom tidyr replace_na
-#' @importFrom magrittr %>% filter
-#' @importFrom stats unique
-#' @importFrom utils cat
-#' @importFrom methods mget
+#' @importFrom magrittr %>%
+#' @importFrom dplyr "filter"
+#' @importFrom stats "setNames"
+
 mRNAimport <- function(directory, samples, report = TRUE, tidy = TRUE){
 
   # load data as list
@@ -100,7 +101,7 @@ mRNAimport <- function(directory, samples, report = TRUE, tidy = TRUE){
   # remove rows with
   if (tidy){
     mRNA_information <- mRNA_information %>%
-      filter(if_any(where(is.numeric), ~. != 0))
+      dplyr::filter(dplyr::if_any(dplyr::where(is.numeric), ~. != 0))
     }
 
   return(mRNA_information)

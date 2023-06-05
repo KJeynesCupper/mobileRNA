@@ -55,8 +55,8 @@
 #' @importFrom rtracklayer "export"
 #' @importFrom GenomicRanges "GRangesList"
 #' @importFrom GenomeInfoDb "seqnames"
-#' @importFrom BiocGenerics "start"
-#' @importFrom BiocGenerics "end"
+#' @importFrom stats "start"
+#' @importFrom stats "end"
 #' @importFrom utils "write.table"
 
 RNAloci <- function(files, out, samples ){
@@ -85,8 +85,8 @@ RNAloci <- function(files, out, samples ){
 
   gff_merged_df <- data.frame(Locus = paste0(as.character(
     GenomeInfoDb::seqnames(gff_merged)),":",
-    BiocGenerics::start(gff_merged),
-    "-",BiocGenerics::end(gff_merged)),
+    stats::start(gff_merged),
+    "-",stats::end(gff_merged)),
     Cluster = paste0("cluster_", 1:length(gff_merged)))
 
 
