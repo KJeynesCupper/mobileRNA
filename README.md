@@ -94,7 +94,8 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/program_flow.png"
 )
 ```
-<a href="https://github.com/KJeynesCupper/mobileRNA/man/figures/program_flow.png"><img src="https://github.com/KJeynesCupper/mobileRNA/man/figures/program_flow.png" width="630" height="252"/></a>  
+
+![Alt Text for your logo](./man/figures/program_flow.png "My Logo")
 
 Pre-mapping
 --------------------------------------------
