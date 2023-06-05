@@ -87,15 +87,10 @@ genome assemblies into one, then the pre-processing moves into Linux to align
 each replicate to the merged reference and then back into R-Studio to undertake 
 the analysis to identify potentially mobile RNA species. 
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/program_flow.png"
-)
-```
 
-![Alt Text for your logo](./man/figures/program_flow.png "My Logo")
+<p>
+    <img src="./man/figures/program_flow.png" width="220" height="240" />
+</p>
 
 Pre-mapping
 --------------------------------------------
