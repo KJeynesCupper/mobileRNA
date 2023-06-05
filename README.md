@@ -1,4 +1,4 @@
-mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo2.png" align="right" height="138" /></a>
 ======================================================================
 
 
