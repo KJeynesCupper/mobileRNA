@@ -2,8 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-<<<<<<< HEAD
 inst/doc
-=======
->>>>>>> 5c7bcf062874b002a90714e420873aa4562030f1
-
+docs
