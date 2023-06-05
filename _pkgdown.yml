@@ -22,3 +22,28 @@ template:
 
   development:
   mode: auto
+
+  reference:
+- title: "Pre-mapping"
+  desc: Functions for merging genome assemblies and annotations
+  contents:
+  - RNAmergeGenomes
+  - RNAmergeAnnotations
+- title: "Mapping: Identify sRNA loci"
+  desc: "Function for collating sRNA loci across replicates"
+  contents:
+  - RNAloci
+- title: "Analysis"
+  desc: Functions for analysis
+  contents:
+  - RNAimport
+  - RNAdistribution
+  - plotSamplePCA
+  - plotSampleDistance
+  - RNAconsensus
+  - RNAsubset
+  - RNAmobile
+  - RNAanalysis
+  - RNAattributes
+  - RNAfeature
+
