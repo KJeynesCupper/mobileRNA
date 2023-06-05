@@ -5,8 +5,9 @@ Overview
 --------
 
 mobileRNA is an `R` package that provides a pipeline for the rapid 
-identification of endogenous mobile RNA molecules in plant graft systems. The tool provides 
-a pipeline for pre-processing and analysis of sRNA and mRNA sequencing data. 
+identification of endogenous mobile RNA molecules in plant graft systems. The 
+tool provides a pipeline for pre-processing and analysis of sRNA sequencing data,
+and soon mRNA sequencing data. 
 
 It has been established that many different substances and molecules 
 including RNAs can travel across the graft junction. Plant heterograft systems are 
@@ -30,11 +31,12 @@ Table of Contents
 - [Installation](#installation)
 - [Loading test data](#Loading-test-data)
 - [Getting help](#Getting-help)
+- [Overview](#Overview)
 - [Pre-mapping](#Pre-mapping)
 - [Mapping](#Mapping)
 - [Post-mapping analysis](#Post-mapping-analysis)
 - [Output](#Output)
-
+- [Other purposes](#Other purposes)
 
 Installation
 ------------
@@ -80,7 +82,18 @@ vignette("mobileRNA")
 Overview
 ------------
 
+The workflow is shown in the figure below. It begin in R-Studio to merge the two 
+genome assemblies into one, then the pre-processing moves into Linux to align 
+each replicate to the merged reference and then back into R-Studio to undertake 
+the analysis to identify potentially mobile RNA species. 
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/program_flow.png"
+)
+```
 
 Pre-mapping
 --------------------------------------------
@@ -101,7 +114,7 @@ to the reference genome supplied to "genomeB". These can be customised to the
 users preference, see manual for more information. 
 
 ``` r
-merged_reference <- mobileRNA::RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
+merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
                                     genomeB = "./workplace/reference/ref2.fa",
                         out_dir = "./workplace/reference/merge/merged_ref.fa")
 
@@ -134,13 +147,13 @@ the loci information into a single `.txt` file which can be utilised by `ShortSt
 in the finally mapping step to the `locifile` argument. 
 
 ``` r
-sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
 folder <- <./output/directory/from/step/1/>
 save_folder <- <./output/directory/ClustersInfo.txt>
+sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
 
-loci_info <- mobileRNA::RNAloci(files = folder, 
+loci_info <- RNAloci(files = folder, 
              out = save_folder,
              samples = sample_names)
 ```
@@ -181,8 +194,8 @@ results_dir <-  "<./output/directory/step2/>"
 sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
 
-sRNA_data <- mobileRNA::RNAimport(directory = results_dir,
-                                  samples = sample_names)
+sRNA_data <- RNAimport(directory = results_dir,
+                      samples = sample_names)
                            
 ```
 
@@ -204,7 +217,7 @@ samples, while "control_1" and "control_2" represent self-graft samples.
 
 samples <- c("<treatment_1>", "<treatment_2>")
 
-sRNA_data_summary <- mobileRNA::RNAconsensus(data = sRNA_data, 
+sRNA_data_summary <- RNAconsensus(data = sRNA_data, 
                                  conditions = samples, 
                                  tidy=TRUE)
 
@@ -221,7 +234,7 @@ contains "A" before the chromosome number.
 # define control samples
 controls <- c("<control_1>", "<control_2>")
 
-mobile <- mobileRNA::RNAmobile(data = sRNA_data_summary, 
+mobile <- RNAmobile(data = sRNA_data_summary, 
                     controls = controls,
                     id = "A", 
                     task = "keep")
@@ -282,6 +295,14 @@ actually observed
 If the mean RPM and Count was calculated `RNAmean()`: 
 - `mean_RPM` : mean RPM, based on parameters 
 - `mean_Count` : mean counts, based on parameters 
+
+
+Other purposes  
+--------------------------------------------
+
+The package workflow can easily be manipulated to enable the identification of
+local populations of RNA species. 
+
 ------------------------------------------------------------------------
 
 *Last updated:* 15-05-2023
