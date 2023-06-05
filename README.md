@@ -1,7 +1,7 @@
-mobileRNA 
+mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 ======================================================================
 
-# ggplot2 <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
+
 
 Overview
 --------
