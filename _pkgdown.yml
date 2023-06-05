@@ -1,4 +1,24 @@
 url: https://kjeynescupper.github.io/mobileRNA/
+
+home:
+  title: Identify mobile RNAs in plant grafting systems
+
+authors:
+  katie Jeynes-Cupper:
+    href: https://catonilab.com/
+  Marco Catoni:
+    href: https://catonilab.com/
+  RStudio:
+    href: https://www.rstudio.com
+    html: <img src='https://www.tidyverse.org/rstudio-logo.svg' alt='RStudio' width='72' />
+
 template:
   bootstrap: 5
+   bootswatch: cerulean
+   bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
 
+  development:
+  mode: auto
