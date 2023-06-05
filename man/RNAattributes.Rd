@@ -24,7 +24,7 @@ the sRNA data set based on the chromosome, start and end coordinates. It is
 important that any alteration which were made to the genome reference (FASTA), such
 as alterations to the chromosome name, must be carried forth to the
 genome annotation file. If alterations were made to the reference genome
-using the [RNAlocate::RNAmergeGenomes()] function, alteration inline with
-these can be accomplished using the [RNAlocate::RNAmergeAnnotations()]
+using the [mobileRNA::RNAmergeGenomes()] function, alteration inline with
+these can be accomplished using the [mobileRNA::RNAmergeAnnotations()]
 function.
 }

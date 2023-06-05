@@ -8,8 +8,8 @@ using `DESeq2` or `edgeR`}
 RNAanalysis(data, group, method = c("edgeR", "DESeq2"), dispersionValue = NULL)
 }
 \arguments{
-\item{data}{numeric data frame produced by [RNAlocate::RNAimport()] and/or
-[RNAlocate::RNAsubset()].}
+\item{data}{numeric data frame produced by [mobileRNA::RNAimport()] and/or
+[mobileRNA::RNAsubset()].}
 
 \item{group}{Vector of the condition (ie. treatment or control) for each
 sample. Must be stated in the same order as the samples in the `data` file

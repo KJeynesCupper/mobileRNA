@@ -1,9 +1,8 @@
-#' Import and organise sRNAseq data set
+#' Import and organise sRNAseq or mRNA data sets
 #'
-#' @description Organises the sRNAseq results data, outputted by ShorStack, for
-#' each sample replicate into a single dataframe using the loci information
-#' produced by the [RNAlocate::RNAloci()] function which contains a
-#' list of all the clusters identified across samples.
+#' @description Load and organise either sRNAseq or mRNAseq results into a single
+#' dataframe containing all experimental replicates specified where rows
+#' represent either a sRNA locus or gene, respectively.
 #'
 #'
 #' @details
@@ -27,26 +26,18 @@
 #' (chromosome, start, end) and cluster name.
 #'
 #' Further columns represent data imported for each samples including DicerCall,
-#' Counts, MajorRNA and RPM. The DicerCall represents the size of most
+#' Counts and RPM. The DicerCall represents the size of most
 #' abundant small RNA size based on the parameter used in ShortStack.
 #' The Count column represents the number of aligned sRNA-seq reads that overlap
-#' the locus. The RPM represents the reads per million and rhe MajorRNA represents
-#' the most common RNA sequence.
+#' the locus. The RPM represents the reads per million.
 #' For each replicate included in the analysis, these columns are labeled with
 #' the type and then then name of the sample, for example, for
 #' a sample called "Sample1", the information from this sample will be stored in
 #' columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 #'
 #'
-#'
-#' @param loci dataframe; rows represent individual sRNA dicer-derived clusters
-#' columns state genomic location (labelled "Locus") and the cluster name
-#' (labeled "Cluster"). This file contains an accumulation of all
-#' sRNA dicer-derived clusters  identified across samples in the analyse, without
-#' duplication. This can be produced using the [RNAlocate::RNAloci()]
-#' function
-#'
-#'
+#'@param input string; define type of Next-Generation Sequencing dataset
+#'originates from, either "sRNA" or "mRNA" are the only valid inputs.
 #'
 #' @param directory Path to directory containing of sample folders. NOTE: Following
 #' the suggested pre-processing steps, these can be found in second alignment
@@ -59,6 +50,8 @@
 #'
 #' @param report Logical; prompts progress.
 #'
+#'@param tidy Logical; removes genes from analysis where there are zero counts
+#'across all replicates.
 #'
 #'
 #'
@@ -66,132 +59,163 @@
 #' @examples
 #' \dontrun{
 #'
-#' clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
-#' header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
+#' # import sRNAseq data
+#' df_sRNA <- RNAimport(input = "sRNA",
+#'                      directory = "./analysis/sRNA_mapping_results/",
+#'                      samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
+#'                                  "TomTom_1" , "TomTom_2" , "TomTom_3"))
 #'
-#'RNAorganise(loci = clusters,
-#'            directory = "./analysis/alignment_unique_two/",
-#'            samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-#'                        "TomTom_1" , "TomTom_2" , "TomTom_3"))
-#'
+#'# import mRNAseq data
+#' df_mRNA <- RNAimport(input = "mRNA",
+#'                      directory = "./analysis/mRNA_counts/",
+#'                      samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
+#'                                   "TomTom_1" , "TomTom_2" , "TomTom_3"))
 #'
 #'}
 #'
 #' @export
 #' @importFrom data.table "data.table"
 #' @importFrom data.table "setnames"
-#' @importFrom  utils "read.table"
+#' @importFrom utils "read.table"
 #' @importFrom data.table "fread"
 #' @importFrom dplyr "mutate"
 #' @importFrom dplyr "across"
 #' @importFrom dplyr "contains"
 #' @importFrom tidyr "replace_na"
 #' @importFrom data.table ":="
-RNAimport <- function(loci, directory, samples,
-                        report = TRUE) {
+#' @importFrom magrittr "%>%"
+#' @importFrom magrittr "filter"
+#' @importFrom stats "unique"
+#' @importFrom utils "cat"
+#' @importFrom methods "mget"
+RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
+                      report = TRUE,
+                      tidy = TRUE) {
 
-  if (base::missing(loci)) {
-    stop("loci must be an object of data frame or directory to plain text dataframe.
-         Dataframe represents the loci of clusters identified across all sample replicates")
-  }
-
-  # import loci data
-  if(base::inherits(loci, c("data.frame")) == FALSE){
-    message("Loading loci file from directory...")
-    loci <- utils::read.table(file = loci,header = TRUE, sep = "\t",
-                              stringsAsFactors = TRUE,comment.char="")
-  }
-  # check loci file has column called locus
-  col_needed_loci <- "Locus"
-
-  if (length(setdiff(col_needed_loci, names(loci))) > 0 || grep("Locus", colnames(loci)) != 1 ) {
-    stop("loci dataframe must contain 'Locus' column,  each row contains the
-         genomic coordinates for a given cluster.
-
-         'Locus' column must  be in the first position within the dataframe ")
-  }
-
-  # LOad sample data as list of data frames, with index as file name.
-  dt_list <- list()
-  for (file in samples) {
-    dt_list[[file]] <- data.table::fread(paste0(directory, file, "/Results.txt"), header = TRUE)
-  }
-  # remove any hashtags from header (shortstack add this to header line, position 1)
-  dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
-  # Check each data frame in the list for the required columns
-  required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
-  for (df in dt_list) {
-    if (!all(required_cols %in% colnames(df))) {
-      stop("Sample data frame does not contain all required columns: ",
-           paste(setdiff(required_cols, colnames(df)), ".", collapse = ", ",
-                 "Make sure there is not a hashtag or similar in the header line
+  if(input=="sRNA"){
+    # LOad sample data as list of data frames, with index as file name.
+    dt_list <- list()
+    for (file in samples) {
+      dt_list[[file]] <- data.table::fread(paste0(directory, file, "/Results.txt"), header = TRUE)
+    }
+    # remove any hashtags from header (shortstack add this to header line, position 1)
+    dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
+    # Check each data frame in the list for the required columns
+    required_cols <- c("Locus", "DicerCall", "Reads", "RPM")
+    for (df in dt_list) {
+      if (!all(required_cols %in% colnames(df))) {
+        stop("Sample data frame does not contain all required columns: ",
+             paste(setdiff(required_cols, colnames(df)), ".", collapse = ", ",
+                   "Make sure there is not a hashtag or similar in the header line
                  of the input file(s)"))
+      }
     }
-  }
 
+    # merge first columns to create list of loci across all samples
+    loci <- lapply(sample_data, "[", , "Locus")
+    loci_all <- unique(Reduce(merge,loci))
 
-  # Convert all input dataframes to data.tables
-  dt1 <- data.table::data.table(loci)
+    # Define a function to update the loci with the matching values from a single input dataframe
+    update_locus_df <- function(dt, i) {
+      # Join loci and the current input dataframe on chromosome and coordinate range
+      join_cols <- c("Locus")
+      dt_match <- loci_all[dt, on = join_cols, nomatch = 0]
 
-  # create list of data to add, name each with its proper name.
-  #dt_list <- list(...)
-  #names(dt_list) <- as.character(substitute(list(...))[-1])
-  #dt_list <- lapply(dt_list, data.table::data.table)
+      # Aggregate the matching rows by chromosome, start coordinate, and end coordinate,
+      # and compute the sum of DicerCall, Reads, and RPM values for each group
+      dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
+                             Count=sum(Reads),
+                             RPM = sum(RPM)),
+                         by = join_cols]
 
-  # Define a function to update df1 with the matching values from a single input dataframe
-  update_locus_df <- function(dt, i) {
-    # Join df1 and the current input dataframe on chromosome and coordinate range
-    join_cols <- c("Locus")
-    dt_match <- dt1[dt, on = join_cols, nomatch = 0]
+      # Rename the aggregated columns
+      col_names <- paste0(c("DicerCall_", "Count_", "RPM_"),  i)
+      data.table::setnames(dt_agg, c("Locus", col_names))
 
-    # Aggregate the matching rows by chromosome, start coordinate, and end coordinate,
-    # and compute the sum of DicerCall, Reads, and RPM values for each group
-    dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
-                           Count=sum(Reads),
-                           RPM = sum(RPM)),
-                       MajorRNA = MajorRNA,
-                       by = join_cols]
+      # Merge the aggregated values back into df1
+      loci_all[dt_agg, on = join_cols, (col_names) := mget(col_names)]
 
-    # Rename the aggregated columns
-    col_names <- paste0(c("DicerCall_", "Count_", "RPM_", "MajorRNA_"),  i)
-    data.table::setnames(dt_agg, c("Locus", col_names))
-
-    # Merge the aggregated values back into df1
-    dt1[dt_agg, on = join_cols, (col_names) := mget(col_names)]
-
-    # Print progress
-    if (report) {
-      cat("Added information from", i, "to the analysis locus dataframe" ,"\n")
+      # Print progress
+      if (report) {
+        cat("Added information from", i, "to the analysis locus dataframe" ,"\n")
+      }
     }
-  }
 
-  # Update df1 with the matching values from each input dataframe
-  for (i in seq_along(dt_list)) {
-    update_locus_df(dt_list[[i]], names(dt_list)[i])
-  }
+    # Update loci with the matching values from each input dataframe
+    for (i in seq_along(dt_list)) {
+      update_locus_df(dt_list[[i]], names(dt_list)[i])
+    }
 
-  # Fill in missing values with 0 or N
-  ## Dicer call needs to character/factor
-  dt1 <- dt1 %>%
-    dplyr::mutate(dplyr::across(dplyr::contains('Count_'), ~tidyr::replace_na(.,0))) %>%
-    dplyr::mutate(dplyr::across(dplyr::contains('RPM_'), ~tidyr::replace_na(.,0))) %>%
-    dplyr::mutate(dplyr::across(dplyr::contains('MajorRNA_'), ~tidyr::replace_na(.,0))) %>%
-    dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'), ~tidyr::replace_na(.,"N")))
+    # Fill in missing values with 0 or N
+    ## Dicer call needs to character/factor
+    loci_all <- loci_all %>%
+      dplyr::mutate(dplyr::across(dplyr::contains('Count_'), ~tidyr::replace_na(.,0))) %>%
+      dplyr::mutate(dplyr::across(dplyr::contains('RPM_'), ~tidyr::replace_na(.,0))) %>%
+      dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'), ~tidyr::replace_na(.,"N")))
 
 
-  # Convert dt1 back to a data.frame and return it
-  res_data <- as.data.frame(dt1)
+    # Convert loci_all back to a data.frame and return it
+    res_data <- as.data.frame(loci_all)
 
-  # Split the Locus column into three new columns
-  locus_cols <- data.frame(
-    chr = sapply(strsplit(res_data$Locus, split = ":"), "[[", 1),
-    start = sapply(strsplit(sapply(strsplit(res_data$Locus, split = ":"), "[[", 2), split = "-"), "[[", 1),
-    end = sapply(strsplit(sapply(strsplit(res_data$Locus, split = ":"), "[[", 2), split = "-"), "[[", 2)
-  )
-  df_final <- cbind(res_data[,1], locus_cols, res_data[, 2:ncol(res_data)])
-  names(df_final)[1] <- "Locus"
+    # Split the Locus column into three new columns
+    locus_cols <- data.frame(
+      chr = sapply(strsplit(res_data$Locus, split = ":"), "[[", 1),
+      start = sapply(strsplit(sapply(strsplit(res_data$Locus, split = ":"), "[[", 2), split = "-"), "[[", 1),
+      end = sapply(strsplit(sapply(strsplit(res_data$Locus, split = ":"), "[[", 2), split = "-"), "[[", 2)
+    )
+    df_final <- cbind(res_data[,1], locus_cols, res_data[, 2:ncol(res_data)])
+    names(df_final)[1] <- "Locus"
 
-
+    # return values
     return(df_final)
+
+  } else
+    if(input == "mRNA"){
+      # load data as list
+      sample_data <- list()
+      for (file in samples) {
+        sample_data[[file]] <- data.table::fread(paste0(directory, file, ".txt"), header = FALSE)
+        colnames(sample_data[[file]])[1] <- "Gene"
+        colnames(sample_data[[file]])[2] <- "Count"
+      }
+
+      # check each file has two columns
+      for (df in sample_data) {
+        if (!all(ncol(df) == 2)) {
+          stop("mRNA dataset(s) does not contain required columns")
+        }
+      }
+      # merge first columns to create list of genes across all samples
+      genes <- lapply(sample_data, "[", , "Gene")
+      genes_all <- unique(Reduce(merge,genes))
+
+      # ADDs sample information to the genes_all object
+      for (i in seq_along(sample_data)){
+        matches <- genes_all[sample_data[[i]], on = "Gene", nomatch = 0]
+        matches_values <- matches[, .(Count=sum(Count)),by = "Gene"]
+        # Rename the aggregated columns
+        col_name <- paste0("Count_", names(sample_data)[i])
+        data.table::setnames(matches_values, c("Gene", col_name))
+        # Merge the aggregated values back into df1
+        genes_all[matches_values, on = "Gene", (col_name) := mget(col_name)]
+        # Print progress
+        if (report) {
+          cat("Added information from", i, "to the analysis mRNA dataframe" ,"\n")
+        }
+      }
+
+      # Fill in missing values with 0 or N
+      mRNA_information <- genes_all %>%
+        dplyr::mutate(dplyr::across(dplyr::contains('Count_'), ~tidyr::replace_na(.,0)))
+      # Convert data.frame and return it
+      mRNA_information <- as.data.frame(mRNA_information)
+
+      # remove rows with
+      if (tidy){
+        mRNA_information <- mRNA_information %>%
+          filter(if_any(where(is.numeric), ~. != 0))
+      }
+      return(mRNA_information)
+    }
 }
 

@@ -9,7 +9,7 @@ RNAconsensus(data, conditions, tidy = TRUE)
 \arguments{
 \item{data}{a data frame object containing sample data where rows
 represent sRNA dicer-derived clusters, and where columns represent sample
-data. See [RNAlocate::RNAimport()] to load data, extract the required
+data. See [mobileRNA::RNAimport()] to load data, extract the required
 information for each sample and organise it as required.}
 
 \item{conditions}{a character vector containing names sample replicates to

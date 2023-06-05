@@ -18,7 +18,7 @@ RNAdistribution(
 }
 \arguments{
 \item{data}{a dataframe, on which one of the following functions has already
-been called: [RNAlocate::RNAimport()],[RNAlocate::RNAconsensus()].}
+been called: [mobileRNA::RNAimport()],[mobileRNA::RNAconsensus()].}
 
 \item{samples}{character vector. Store names of samples to analyse and plot.
 Argument is required for plotting individual sample replicates, either
@@ -52,7 +52,7 @@ to represent the sample replicates. Default \code{together=TRUE}.}
 
 \item{consensus}{Logical; plots the distribution of sRNA classes across all
 identified dicer-derived clusters based on the consensus. See
-[RNAlocate::RNAconsensus()]
+[mobileRNA::RNAconsensus()]
 function to calculate consensus RNA class based the experimental replicates.
 Default \code{consensus=FALSE}.}
 
@@ -71,7 +71,7 @@ This can encourage closer comparison between sample replicates.
 \description{
 \code{RNAdistribution} plots the distribution of dicer-derived
 sRNA classes (20-24nt) across samples or across the sRNA consensus
-determined by the function [RNAlocate::RNAconsensus()].
+determined by the function [mobileRNA::RNAconsensus()].
 }
 \details{
 The function can be used to plot a variety of different comparisons and plots.

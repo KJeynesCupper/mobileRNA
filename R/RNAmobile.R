@@ -18,7 +18,7 @@
 #'
 #' The function also allows for statistical analysis based on the results
 #' collect from differential analysis of the total dataset using the function
-#' [RNAlocate::RNAanalysis()]. This features enables the filtering of sRNA
+#' [mobileRNA::RNAanalysis()]. This features enables the filtering of sRNA
 #' clusters which meet a specific p-value or adjusted p-values.
 #'
 #' @param data Numeric data frame
@@ -39,7 +39,7 @@
 #' set at FALSE. Requires presence of columns containing statistical data.
 #' In order to filter by the adjusted p-value, a column named `padjusted` must
 #' be present. Similarly, to filter by the p-value, a column named `pvalue` must
-#' be present. See [RNAlocate::RNAanalysis()] to calculate statistical values.
+#' be present. See [mobileRNA::RNAanalysis()] to calculate statistical values.
 #'
 #' @param padj A user defined numeric value to represent the adjusted p-value
 #' threshold to define statistic significance. Defaults set at 0.05.Only mobile

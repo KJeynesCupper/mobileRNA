@@ -1,16 +1,18 @@
-Package: RNAlocate
+Package: mobileRNA
 Type: Package
 Title: Identify mobile RNA molecules in plant graft systems 
 Version: 1.0.0
 Authors@R: c(
     person("Katie", "Jeynes-Cupper", email = "katie.jeynescupper@gmail.com", role = c("cre","aut")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut"))
-Description: The relocate package allows for the identifcation of mobile small 
- interfering RNA molecules (siRNA) derived from one genotype which have travelled 
- into another genotype via a graft junction in a hetero-graft plant system.  
- The package allows users to pre-process and analyse sRNA-seq data in this context with the end goal of identifying mobile siRNAs and their potential function or implications on phenotypic changes. 
+Description: The mobileRNA package allows for the identifcation of mobile small 
+  RNA molecules (20-24 nt) and messenger RNAs (mRNAs) derived from one genotype 
+  which have travelled across a graft junction into another genotype in a 
+  hetero-graft plant system.The package includes pre-mapping steps and analysis 
+  steps for sRNA-seq mRNA-seq data with the end goal of identifying mobile RNAs 
+  and their potential function or implications on phenotypic changes. 
 License: MIT + file LICENSE
-URL: https://github.com/KJeynesCupper/RNAlocate.git
+URL: https://github.com/KJeynesCupper/mobileRNA.git
 Depends:
     R (>= 3.5.0)
 VignetteBuilder:
@@ -51,7 +53,9 @@ Imports:
     grid,
     stats,
     Biostrings, 
-    tools
+    tools,
+    methods,
+    magrittr
 biocViews: 
     Visualization,
     RNASeq,
@@ -62,10 +66,6 @@ biocViews:
     heterograft, 
     plant science, 
     botany
-SystemRequirements: FastQC (https://www.bioinformatics.babraham.ac.uk/projects/fastqc/),
-                    bedtools (https://bedtools.readthedocs.io/en/latest/),
-                    Samtools (http://www.htslib.org/),
-                    sed (https://www.gnu.org/software/sed/manual/sed.html),
-                    ShortStack (https://github.com/MikeAxtell/ShortStack),
-                    trimgalore (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/),
+SystemRequirements: ShortStack (https://github.com/MikeAxtell/ShortStack)
+
 

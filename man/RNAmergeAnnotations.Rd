@@ -71,7 +71,7 @@ supplied string.
 
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
-the [RNAlocate::RNAmergeGenomes()] function to to create a merged reference genome,
+the [mobileRNA::RNAmergeGenomes()] function to to create a merged reference genome,
 that you treat the input annotations in the same way.
 }
 \examples{

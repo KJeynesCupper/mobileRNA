@@ -4,16 +4,16 @@
 #' on the consensus sRNA determination.
 #'
 #' @details
-#' See [RNAlocate::RNAconsensus()] for information on defining the sRNA type
+#' See [mobileRNA::RNAconsensus()] for information on defining the sRNA type
 #' for each cluster. The function allows the choice to filtered the data by
 #' statistical significance based on differential expression analysis, see
-#' [RNAlocate::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
+#' [mobileRNA::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
 #' (p-adjusted).
 #'
 #'
 #' @param data A numerical data-frame containing the sample data, with a
 #' defined consensus sRNA class/type for each sRNA dicer-derived cluster
-#' (see [RNAlocate::RNAconsensus()].
+#' (see [mobileRNA::RNAconsensus()].
 #'
 #' @param type A number to represent the type of small RNA population to subset
 #' for.

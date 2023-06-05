@@ -2,17 +2,19 @@
 % Please edit documentation in R/RNAimport.R
 \name{RNAimport}
 \alias{RNAimport}
-\title{Import and organise sRNAseq data set}
+\title{Import and organise sRNAseq or mRNA data sets}
 \usage{
-RNAimport(loci, directory, samples, report = TRUE)
+RNAimport(
+  input = c("sRNA", "mRNA"),
+  directory,
+  samples,
+  report = TRUE,
+  tidy = TRUE
+)
 }
 \arguments{
-\item{loci}{dataframe; rows represent individual sRNA dicer-derived clusters
-columns state genomic location (labelled "Locus") and the cluster name
-(labeled "Cluster"). This file contains an accumulation of all
-sRNA dicer-derived clusters  identified across samples in the analyse, without
-duplication. This can be produced using the [RNAlocate::RNAloci()]
-function}
+\item{input}{string; define type of Next-Generation Sequencing dataset
+originates from, either "sRNA" or "mRNA" are the only valid inputs.}
 
 \item{directory}{Path to directory containing of sample folders. NOTE: Following
 the suggested pre-processing steps, these can be found in second alignment
@@ -22,12 +24,14 @@ folders.}
 to outputted folders located in the \code{`directory`} argument path.}
 
 \item{report}{Logical; prompts progress.}
+
+\item{tidy}{Logical; removes genes from analysis where there are zero counts
+across all replicates.}
 }
 \description{
-Organises the sRNAseq results data, outputted by ShorStack, for
-each sample replicate into a single dataframe using the loci information
-produced by the [RNAlocate::RNAloci()] function which contains a
-list of all the clusters identified across samples.
+Load and organise either sRNAseq or mRNAseq results into a single
+dataframe containing all experimental replicates specified where rows
+represent either a sRNA locus or gene, respectively.
 }
 \details{
 Supply the directory to the folder storing the various sample replicate folders
@@ -50,11 +54,10 @@ has been mapped and undertaken cluster analysis through ShortStack, organises
 (chromosome, start, end) and cluster name.
 
 Further columns represent data imported for each samples including DicerCall,
-Counts, MajorRNA and RPM. The DicerCall represents the size of most
+Counts and RPM. The DicerCall represents the size of most
 abundant small RNA size based on the parameter used in ShortStack.
 The Count column represents the number of aligned sRNA-seq reads that overlap
-the locus. The RPM represents the reads per million and rhe MajorRNA represents
-the most common RNA sequence.
+the locus. The RPM represents the reads per million.
 For each replicate included in the analysis, these columns are labeled with
 the type and then then name of the sample, for example, for
 a sample called "Sample1", the information from this sample will be stored in
@@ -63,14 +66,17 @@ columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 \examples{
 \dontrun{
 
-clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
-header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
+# import sRNAseq data
+df_sRNA <- RNAimport(input = "sRNA",
+                     directory = "./analysis/sRNA_mapping_results/",
+                     samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
+                                 "TomTom_1" , "TomTom_2" , "TomTom_3"))
 
-RNAorganise(loci = clusters,
-           directory = "./analysis/alignment_unique_two/",
-           samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-                       "TomTom_1" , "TomTom_2" , "TomTom_3"))
-
+# import mRNAseq data
+df_mRNA <- RNAimport(input = "mRNA",
+                     directory = "./analysis/mRNA_counts/",
+                     samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
+                                  "TomTom_1" , "TomTom_2" , "TomTom_3"))
 
 }
 

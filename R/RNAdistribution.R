@@ -2,10 +2,10 @@
 #'
 #' @description \code{RNAdistribution} plots the distribution of dicer-derived
 #' sRNA classes (20-24nt) across samples or across the sRNA consensus
-#' determined by the function [RNAlocate::RNAconsensus()].
+#' determined by the function [mobileRNA::RNAconsensus()].
 #'
 #' @param data a dataframe, on which one of the following functions has already
-#' been called: [RNAlocate::RNAimport()],[RNAlocate::RNAconsensus()].
+#' been called: [mobileRNA::RNAimport()],[mobileRNA::RNAconsensus()].
 #'
 #' @param samples character vector. Store names of samples to analyse and plot.
 #' Argument is required for plotting individual sample replicates, either
@@ -40,7 +40,7 @@
 #'
 #'@param consensus Logical; plots the distribution of sRNA classes across all
 #'identified dicer-derived clusters based on the consensus. See
-#'[RNAlocate::RNAconsensus()]
+#'[mobileRNA::RNAconsensus()]
 #'function to calculate consensus RNA class based the experimental replicates.
 #'Default \code{consensus=FALSE}.
 #'

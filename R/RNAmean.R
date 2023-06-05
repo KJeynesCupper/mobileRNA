@@ -3,7 +3,7 @@
 #' @description Using the data, the function calculates the mean RPM and Counts
 #' across all or specific samples.
 #'
-#' @param data data frame, see [RNAlocate::RNAimport()] to produce an organised
+#' @param data data frame, see [mobileRNA::RNAimport()] to produce an organised
 #' object of sample data.
 #'
 #' @param conditions Character vector; represent sample names. If not supplied,
@@ -14,7 +14,7 @@
 #'plus, an additional columns.
 #'
 #'As default, the FPKM means will be stored in the column named `mean_RPM`,
-#'while the count means are stored in column names `mean_Count`.
+#'while the count means are stored in column names `mean_Count`.s
 #'
 #'@importFrom stringr "str_detect"
 #'@importFrom dplyr "mutate"

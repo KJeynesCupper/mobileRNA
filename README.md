@@ -1,11 +1,24 @@
-RNAlocate 
+mobileRNA 
 ======================================================================
 
 Overview
 --------
 
-RNAlocate is an `R` package that provides a pipeline for the rapid identification of mobile RNA molecules in 
-plant graft systems. The tool provides an improved pipeline for pre-processing and analysis of sequencing data. 
+mobileRNA is an `R` package that provides a pipeline for the rapid 
+identification of endogenous mobile RNA molecules in plant graft systems. The tool provides 
+a pipeline for pre-processing and analysis of sRNA and mRNA sequencing data. 
+
+It has been established that many different substances and molecules 
+including RNAs can travel across the graft junction. Plant heterograft systems are 
+comprised of two genotypes joined at the graft junction; hence, molecules produces
+and encoded by each genotype can move across the graft junction and be exchanged. These 
+molecules could have implications to the regulation of gene expression and trait
+acquisition. 
+
+Current methods utilise a step-wise mapping of samples to each genome within the
+graft system. While, here we introduce a new mapping method where we align 
+each sample replicates to a merge genome reference comprised of both genome 
+assemblies relating to the genotypes in the heterograft system. 
 
 Author
 --------
@@ -30,7 +43,7 @@ The latest version of the package can be install directly from this GitHub repo:
 
 ``` r
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("KJeynesCupper/RNAlocate")
+devtools::install_github("KJeynesCupper/mobileRNA", branch = "main")
 ```
 
 Loading test data
@@ -53,63 +66,51 @@ Getting help
 ------------
 
 For additional information on each function, please read through the 
-documentation in the `RNAlocate` package by typing the `?` help operator before 
+documentation in the `mobileRNA` package by typing the `?` help operator before 
 any of the function names in the package or by using the `help()` function.
 
-For a step-by-step quick start analysis, consider reading the vignette provided 
+For an in-depth step-by-step analysis, consider reading the vignette provided 
 with this package:
 
-``` r
-vignette("RNAlocate-Quick-Start")
-```
-
-For a more in-depth analysis, consider reading the full vignette provided with 
-this package:
-
 
 ``` r
-vignette("RNAlocate")
+vignette("mobileRNA")
 ```
+
+Overview
+------------
+
+
 
 Pre-mapping
 --------------------------------------------
 Raw fastq files should be trimmed to remove adapter sequences and low quality 
-reads as per best practice. 
+reads as per best practice. We recommend installing the `ShortStack` 
+(https://github.com/MikeAxtell/ShortStack) program to align and cluster sRNA-seq 
+samples. The program is formulated for sRNA-seq analysis, utilising Bowtie 
+and an custom clustering algorithm.   
 
-#### Installation of Linux Dependencies
-We recommend installing and using the `ShortStack` (https://github.com/MikeAxtell/ShortStack)
-program to aligns samples to the merged genome and undertake cluster analysis. 
-This program is specifically formulated for sRNAseq analysis, utilising Bowtie 
-(Version 1) to map samples and a specifically formulated algorithm to cluster 
-sRNAs. 
+Here, we introduce a mapping method utilising a merged genome reference, comprised 
+of both genome assemblies relating to the genotypes in the heterograft system. 
 
-
-Mapping
---------------------------------------------
-Here, we introduce an alternative mapping method for the analysis of plant
-heterograft samples. The heterograft system involves two genotypes; here
-the two genome references are merged into a single reference to which 
-samples are aligned to. 
-
-`RNAlocate` offers a function to merge two FASTA reference genomes into one. 
-To distinguish between the reference genomes in a merged file, it is important 
-to make sure the chromosome names between the genomes are different and 
-distinguishable. The function below added a particular character string to the 
-start of each chromosome name in each reference genome. As standard, the string
+`mobileRNA` offers a function to merge two FASTA reference genomes into one. 
+To ensure the two genomes are distinguishable within the merged file, the function
+added a prefix to each chromosome name. As standard, the string
 "A_" is added to the reference genome supplied to "genomeA" and "B_" is added 
 to the reference genome supplied to "genomeB". These can be customised to the 
 users preference, see manual for more information. 
 
 ``` r
-merged_reference <- RNAlocate::RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
+merged_reference <- mobileRNA::RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
                                     genomeB = "./workplace/reference/ref2.fa",
                         out_dir = "./workplace/reference/merge/merged_ref.fa")
 
 ```
 
+Mapping 
+--------------------------------------------
 
-The analysis pipeline is formulated to analyse mapping and clustering results 
-produced by `ShortStack` (https://github.com/MikeAxtell/ShortStack). 
+### sRNA-seq Mapping with ShortStack
 Here, we recommend a double-mapping process using `ShortStack`, the steps are 
 as follow: 
 
@@ -139,7 +140,7 @@ folder <- <./output/directory/from/step/1/>
 save_folder <- <./output/directory/ClustersInfo.txt>
 
 
-loci_info <- RNAlocate::RNAloci(files = folder, 
+loci_info <- mobileRNA::RNAloci(files = folder, 
              out = save_folder,
              samples = sample_names)
 ```
@@ -179,27 +180,21 @@ results_dir <-  "<./output/directory/step2/>"
 # Sample names and total number of reads, in the same order. 
 sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
 
-# sRNA cluster loci annotation file 
-clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
-header = TRUE, sep = "\t", stringsAsFactors = TRUE,comment.char="")
 
-sRNA_data <- RNAimport(loci = loci_info, 
-                       directory = results_dir, 
-                       samples = sample_names)
+sRNA_data <- mobileRNA::RNAimport(directory = results_dir,
+                                  samples = sample_names)
                            
 ```
 
 
 #### Step 2: Calculate the consensus of each sRNA cluster  
-Each sample in the analysis has determined the class of each 
-dicer-derived sRNA cluster based on the most abundant small RNA size in the 
-sample. It is expected that replicates within the same condition will define the 
-same cluster as the same class. The `RNAconsensus()` function is used to define 
-the class of a sRNA cluster based on the consensus across specific replicates. 
+For a given sRNA cluster, each replicate has determined the class (20-24nt) based 
+on the most abundant small RNA size. Replicates within the same condition are
+expected to class a given sRNA similarly. 
 
-To identify potentially mobile sRNA moving from genotype A to B in a heterograft,
-in comparison to a B-genotype self-graft, it is recommended to base 
-the consensus call on the heterograft samples. This will ensure that the 
+The `RNAconsensus()` function is used to define the class of a sRNA cluster 
+based on the consensus across specific replicates. To identify forigen mobile 
+sRNAs, it is recommended to base the consensus call on the heterograft samples. This will ensure that the 
 sRNA class is more accurately defined by the genotype it originates from. 
 
 Below, replicates "treatment_1" and "treatment_2" represent two heterograft 
@@ -209,7 +204,7 @@ samples, while "control_1" and "control_2" represent self-graft samples.
 
 samples <- c("<treatment_1>", "<treatment_2>")
 
-sRNA_data_summary <- RNAconsensus(data = sRNA_data, 
+sRNA_data_summary <- mobileRNA::RNAconsensus(data = sRNA_data, 
                                  conditions = samples, 
                                  tidy=TRUE)
 
@@ -226,10 +221,17 @@ contains "A" before the chromosome number.
 # define control samples
 controls <- c("<control_1>", "<control_2>")
 
-mobile <- RNAmobile(data = sRNA_data_summary, 
+mobile <- mobileRNA::RNAmobile(data = sRNA_data_summary, 
                     controls = controls,
                     id = "A", 
                     task = "keep")
+
+# output dataframe containing potentially mobile sRNAs
+output <- mobile
+
+# save output as txt file 
+write.table(output, "./output.txt")
+
 
 ```
 
