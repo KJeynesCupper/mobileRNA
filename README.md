@@ -1,7 +1,5 @@
-mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo2.png" align="right" height="138" /></a>
+mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 ======================================================================
-
-
 
 Overview
 --------
@@ -83,16 +81,18 @@ vignette("mobileRNA")
 
 Summary
 ------------
-
-The workflow is shown in the figure below. It begin in R-Studio to merge the two 
-genome assemblies into one, then the pre-processing moves into Linux to align 
-each replicate to the merged reference and then back into R-Studio to undertake 
-the analysis to identify potentially mobile RNA species. 
-
-
 <p>
-    <img src="./man/figures/program_flow.png" width="300" height="250" />
+    <img src="./man/figures/program_flow.png" width="300" height="250" align="right" />
 </p>
+
+The workflow is shown in the figure to the right. 
+It begin in R-Studio to merge the two genome assemblies into one, then the 
+pre-processing moves into Linux to align each replicate to the merged reference 
+and then back into R-Studio to undertake the analysis to identify potentially 
+mobile RNA species.  
+
+
+
 
 Pre-mapping
 --------------------------------------------

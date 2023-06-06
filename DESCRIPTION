@@ -37,14 +37,10 @@ Imports:
     ggrepel,
     grDevices,
     pheatmap,
-    gplots,
     stringr,
     utils,
     tidyselect, 
-    DEFormats,
-    S4Vectors,
     RColorBrewer, 
-    SummarizedExperiment,
     GenomicRanges,
     rtracklayer, 
     GenomeInfoDb, 
@@ -56,7 +52,6 @@ Imports:
     stats,
     Biostrings, 
     tools,
-    methods,
     magrittr
 biocViews: 
     Visualization,

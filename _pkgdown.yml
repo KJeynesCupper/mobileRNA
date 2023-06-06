@@ -1,46 +1,4 @@
-url: https://kjeynescupper.github.io/mobileRNA/
-
-home:
-  title: Identify mobile RNAs in plant grafting systems
-
-authors:
-  katie Jeynes-Cupper:
-    href: https://catonilab.com/
-  Marco Catoni:
-    href: https://catonilab.com/
-
+url: ~
 template:
   bootstrap: 5
-   bootswatch: cerulean
-   bslib:
-    primary: "#0054AD"
-    border-radius: 0.5rem
-    btn-border-radius: 0.25rem
-
-  development:
-  mode: auto
-
-  reference:
-- title: "Pre-mapping"
-  desc: Functions for merging genome assemblies and annotations
-  contents:
-  - RNAmergeGenomes
-  - RNAmergeAnnotations
-- title: "Mapping: Identify sRNA loci"
-  desc: "Function for collating sRNA loci across replicates"
-  contents:
-  - RNAloci
-- title: "Analysis"
-  desc: Functions for analysis
-  contents:
-  - RNAimport
-  - RNAdistribution
-  - plotSamplePCA
-  - plotSampleDistance
-  - RNAconsensus
-  - RNAsubset
-  - RNAmobile
-  - RNAanalysis
-  - RNAattributes
-  - RNAfeature
-
+  bootswatch: flatly

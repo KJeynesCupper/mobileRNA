@@ -88,19 +88,3 @@ utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ))
 
 
-# column name orientation
-pheatmaps_colnames_angle <- function (coln, gaps, ...) {
-  coord <- pheatmap:::find_coordinates(length(coln), gaps)
-  x     <- coord$coord - 0.5 * coord$size
-  res   <- grid::textGrob(
-    coln, x = x, y = grid::unit(1, "npc") - grid::unit(3,"bigpts"),
-    vjust = 0.75, hjust = 1, rot = 45, gp = grid::gpar(...)
-  )
-  return(res)
-}
-suppressWarnings(assignInNamespace(
-  x = "draw_colnames",
-  value = "pheatmaps_colnames_angle",
-  ns = asNamespace("pheatmap")))
-
-
