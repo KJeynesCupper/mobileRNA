@@ -12,105 +12,46 @@
 #' TomEgg_2, TomEgg_3) and three replicates for the self-graft control
 #' (TomTom_1, TomTom_2, TomTom_3).
 #'
-#'
+#' sRNA_data
 #' @docType data
-#' @keywords datasets
+#' @keywords dataset
 #' @name sRNA_data
 #' @usage data(sRNA_data)
+#' @description Simulated sRNAseq dataset
+#' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
+#' created to simulate to movement of sRNA molecules from an Tomato rootstock to
+#' an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
+#' tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
+#' these heterografts to three Eggplant self-grafts which are the original un-spiked
+#' Eggplant replicates.
 NULL
 
 
-#' sRNA_data_summary
+#' sRNA_data_consensus
 #' @docType data
-#' @keywords datasets
-#' @name sRNA_data_summary
-#' @usage data(sRNA_data_summary)
+#' @keywords dataset
+#' @name sRNA_data_consensus
+#' @usage data(sRNA_data_consensus)
+#' @description Simulated sRNAseq dataset with RNA consensus
+#' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
+#' created to simulate to movement of sRNA molecules from an Tomato rootstock to
+#' an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
+#' tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
+#' these heterografts to three Eggplant self-grafts which are the original un-spiked
+#' Eggplant replicates.
 NULL
 
 
-#' sRNA_24
+#' sRNA_data_mobile
 #' @docType data
-#' @keywords datasets
-#' @name sRNA_24
-#' @usage data(sRNA_24)
+#' @keywords dataset
+#' @name sRNA_data_mobile
+#' @usage data(sRNA_data_mobile)
+#' @description Simulated sRNAseq dataset - potentially mobile RNAs
+#' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
+#' created to simulate to movement of sRNA molecules from an Tomato rootstock to
+#' an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
+#' tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
+#' these heterografts to three Eggplant self-grafts which are the original un-spiked
+#' Eggplant replicates.
 NULL
-
-
-#' sRNA_2122
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122
-#' @usage data(sRNA_2122)
-NULL
-
-
-#' sRNA_24_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_24_DESeq2
-#' @usage data(sRNA_24_DESeq2)
-NULL
-
-
-#' sRNA_2122_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_DESeq2
-#' @usage data(sRNA_2122_DESeq2)
-NULL
-
-
-#' sRNA_2122_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_edgeR
-#' @usage data(sRNA_2122_edgeR)
-NULL
-
-
-
-#' sRNA_24_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_24_edgeR
-#' @usage data(sRNA_24_edgeR)
-NULL
-
-
-
-
-
-
-
-#' sRNA_24_mobile_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_24_mobile_DESeq2
-#' @usage data(sRNA_24_mobile_DESeq2)
-NULL
-
-#'sRNA_2122_mobile_DESeq2
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_mobile_DESeq2
-#' @usage data(sRNA_2122_mobile_DESeq2)
-NULL
-
-
-#'sRNA_2122_mobile_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_2122_mobile_edgeR
-#' @usage data(sRNA_2122_mobile_edgeR)
-NULL
-
-
-#'sRNA_24_mobile_edgeR
-#' @docType data
-#' @keywords datasets
-#' @name sRNA_24_mobile_edgeR
-#' @usage data(sRNA_24_mobile_edgeR)
-NULL
-
-
-

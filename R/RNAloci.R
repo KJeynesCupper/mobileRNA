@@ -40,13 +40,13 @@
 #'folder <- "./workplace/alignment_unique_one/"
 #'save_folder <- "./workplace/reference/LociInfo.txt"
 #'
-#'conditions <- c("TomEgg_1","TomEgg_2","TomEgg_3",
-#'                  "TomTom_1","TomTom_2", "TomTom_3")
+#'conditions <- c("heterograft_1","heterograft_2","heterograft_3",
+#'                  "selfgraft_1","selfgraft_2", "selfgraft_3")
 #'
 #'
 #'Loci_info <- RNAloci(files = folder,
-#'                          out = save_folder,
-#'                          samples = conditions)
+#'                     out = save_folder,
+#'                     samples = conditions)
 #'
 #' }
 #' @export

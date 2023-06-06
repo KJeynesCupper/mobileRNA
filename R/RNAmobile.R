@@ -57,65 +57,67 @@
 #' @examples
 #'
 #'
-#' ## DESeq2 example (24-nt & 21/22-nt sRNA)
-#'data("sRNA_24_DESeq2")
-#'data("sRNA_1224_DESeq2")
+#'data("sRNA_data_consensus")
 #'
 #'
 #' # vector of control names
-#' controls <- c("TomTom_1", "TomTom_2", "TomTom_3")
+#' controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 #'
-#' # Identify mobile 24-nt sRNA from eggplant genome:
-#' # remove clusters associated to tomato
-#' sRNA_24_mobile_DEseq2 <- RNAmobile(data = sRNA_24_DESeq2,
-#'                                          controls = controls,
-#'                                          id = "SL40",
-#'                                          task = "remove")
-#'
-#' # Identify mobile 21/22-nt sRNA from eggplant genome:
-#' # remove clusters associated to tomato
-#' sRNA_2122_mobile_DEseq2  <- RNAmobile(data = sRNA_2122_DESeq2,
-#'                                              controls = controls,
-#'                                              id = "SL40",
-#'                                              task = "remove")
+#' # Locate potentially mobile sRNA clusters associated to tomato, no statistical analysis
+#' mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
+#'                     controls = controls,
+#'                     id = "SL40",
+#'                     task = "keep",
+#'                     statistical = FALSE)
 #'
 #'
 #'
+#'  # Locate potentially mobile sRNA clusters associated to tomato, include statistical analysis
+#'
+#' ## undertake statistical analysis with either edgeR or DESeq2, here we use DESeq2
+#' groups <- c("Heterograft", "Heterograft", "Heterograft",
+#'           "Selfgraft", "Selfgraft", "Selfgraft")
+#'
+#' analysis_df <- RNAanalysis(data = sRNA_data_consensus,
+#'                              group = groups,
+#'                              method = "DESeq2" )
+#'
+#' ## locate mobile sRNA using p-adjusted value
+#' mobile_df2 <- RNAmobile(data = analysis_df,
+#'                     controls = controls,
+#'                     id = "SL40",
+#'                     task = "keep",
+#'                     statistical = TRUE)
+#'
+#' ## or, locate mobile sRNA using p-value value
+#' mobile_df3 <- RNAmobile(data = analysis_df,
+#'                     controls = controls,
+#'                     id = "SL40",
+#'                     task = "keep",
+#'                     statistical = TRUE,
+#'                     p.value = 0.05)
 #'
 #'
 #'
-#' ## Mobile molecules from the edgeR example
+#'# Locate local sRNA clusters associated to eggplant, include statistical analysis
+#' mobile_df4 <- RNAmobile(data = sRNA_data_consensus,
+#'                     controls = controls,
+#'                     id = "SL40",
+#'                     task = "remove",
+#'                     statistical = FALSE)
 #'
-#' data("sRNA_24_edgeR")
-#' data("sRNA_2122_edgeR")
-#' # vector of control names
-#' controls <- c("TomTom_1", "TomTom_2", "TomTom_3")
-#'
-#'
-#' # Identify mobile 24-nt sRNA from eggplant genome:
-#' # remove clusters associated to tomato
-#' sRNA_24_mobile_edgeR <- RNAmobile(data = sRNA_24_edgeR,
-#'                                          controls = controls,
-#'                                          id = "SL40",
-#'                                          task = "remove")
-#'
-#' # Identify mobile 21/22-nt sRNA from eggplant genome:
-#' # remove clusters associated to tomato
-#' sRNA_2122_mobile_edgeR <- RNAmobile(data = sRNA_2122_edgeR,
-#'                                            controls = controls,
-#'                                            id = "SL40",
-#'                                            task = "remove")
-
 #'
 #' @export
-#' @importFrom dplyr "%>%"
+#' @importFrom magrittr "%>%"
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
 #' @importFrom dplyr "case_when"
 
 RNAmobile <- function(data,controls, id, task = NULL ,
-                             statistical = FALSE, padj = 0.05, p.value = NULL){
+                             statistical = FALSE,
+                             padj = 0.05,
+                             p.value = NULL){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
   stop("data must be an object of class matrix, data.frame, DataFrame")
     }

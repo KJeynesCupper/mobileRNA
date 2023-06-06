@@ -8,7 +8,13 @@
 #' for each cluster. The function allows the choice to filtered the data by
 #' statistical significance based on differential expression analysis, see
 #' [mobileRNA::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
-#' (p-adjusted).
+#' (p-adjusted). It is important to consider the point in your analysis you
+#' subset the data or/and undertake differential analysis to achieve statistical
+#' values. Subsetting the dataset into groups based on the sRNA class will create
+#' a smaller set of data for each to draw statistical differences. Depending on
+#' the size of your data, and analysis aims this should be taken into consideration.
+#'
+#'
 #'
 #'
 #' @param data A numerical data-frame containing the sample data, with a
@@ -27,27 +33,20 @@
 #'  significance threshold.
 #'
 #' @examples
-#' data("sRNA_data")
-#'
-#'##  define consensus sRNA classes.
-#'samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
-#'
-#' # Define consensus
-#'sRNA_data_summary <- RNAconsensus(data = sRNA_data,
-#'                                      conditions = samples)
+#' data("sRNA_data_consensus")
 #'
 #' # Subset data for  24-nt sRNAs
-#' sRNA_24 <- RNAsubset(sRNA_data_summary, type = 24)
+#' sRNA_24 <- RNAsubset(sRNA_data_consensus, type = 24)
 #'
 #'
 #'# Subset data for 24 21/22-nt sRNAs
-#'sRNA_2122 <- RNAsubset(sRNA_data_summary, type = c(21, 22))
+#'sRNA_2122 <- RNAsubset(sRNA_data_consensus, type = c(21, 22))
 #'
 #' # You can subset by any combination of classes. For example, a dataset
 #' # of 23-nt & 24-nt sRNAs or just 20-nt sRNAs.
 #'
 #' @export
-#' @importFrom dplyr "%>%"
+#' @importFrom magrittr "%>%"
 #' @importFrom dplyr "filter"
 
 RNAsubset <- function(data, type,  sig=FALSE, ...){

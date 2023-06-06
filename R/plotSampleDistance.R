@@ -22,8 +22,8 @@
 #'
 #' @examples
 #'
-#' data("sRNA_24")
-#' plotSampleDistance(sRNA_24)
+#' data("sRNA_data_consensus")
+#' plotSampleDistance(sRNA_data_consensus)
 #'
 #' @export
 #' @importFrom DESeq2 "rlog"

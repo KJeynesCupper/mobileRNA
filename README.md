@@ -273,23 +273,19 @@ overlap this locus.
 ### Other information
 - `sRNA_Consensus` : Consensus sRNA class calculated by `RNAconsensus()`
 
-If an annotation file was imported and overlapped using `RNAimport()`, parameter
-- `source` : name of the program that generated this feature, or the data source 
-(database or project name)
+If an annotation file was imported and overlapped using `RNAattributes()`:
+
+- `source` : name of the program that generated this feature, or the data source (database or project name)
 - `feature` : feature type name, e.g. Gene, Variation, Similarity
 - `score` : A floating point value
 - `strand` : defined as + (forward) or - (reverse)
-- `frame` : One of '0', '1' or '2'. '0' indicates that the first base of the 
-feature is the first base of a codon, '1' that the second base is the first 
-base of a codon, and so on
-- `attribute` : A semicolon-separated list of tag-value pairs, providing 
-additional information about each feature.
+- `frame` : One of '0', '1' or '2'. '0' indicates that the first base of the feature is the first base of a codon, '1' that the second base is the first base of a codon, and so on
+- `attribute` : A semicolon-separated list of tag-value pairs, providing additional information about each feature.
 
 If differential expression analysis was undertaken with`RNAanalysis()`: 
+
 - `log2FoldChange` : Log2FoldChange–The effect size estimate
-- `pvalue` :  P value, the probability under the assumption of no effect or 
-no difference, of obtaining a result equal to or more extreme than what was 
-actually observed
+- `pvalue` :  P value, the probability under the assumption of no effect or no difference, of obtaining a result equal to or more extreme than what was actually observed
 - `padjusted` : A p-value adjustment
 - `logCPM` : log counts per million, measure of expression level
 
@@ -301,14 +297,15 @@ If the mean RPM and Count was calculated `RNAmean()`:
 Optional extras and additional applications  
 --------------------------------------------
 The package also includes functions for: 
-- Exploratory and quality control analysis, such as PCA & heatmap plots. 
-- Summary values including RPM mean and Count mean across specific samples.
-- Plot the distribution of sRNA classes (20-24nt) across indivudal replicates or across the dataset. 
-- Statistical analysis using differential methods from either DESeq2 or edgeR. 
-- Functional analysis to identify potential target sequences in the destination tissue
+
+* Exploratory and quality control analysis, such as PCA & heatmap plots. 
+* Summary values including RPM mean and Count mean across specific samples.
+* Plot the distribution of sRNA classes (20-24nt) across indivudal replicates or across the dataset. 
+* Statistical analysis using differential methods from either DESeq2 or edgeR. 
+* Functional analysis to identify potential target sequences in the destination tissue
 
 The package workflow can easily be manipulated to enable the identification of local populations of RNA species. 
 
 ------------------------------------------------------------------------
 
-*Last updated:* 15-05-2023
+*Last updated:* 06-06-2023

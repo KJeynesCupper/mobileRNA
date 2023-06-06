@@ -51,28 +51,21 @@ See the User’s Guide for the  ‘EdgeR’ package for more details,
 \link[edgeR:edgeR-package]{edgeR::edgeR}.
 }
 \examples{
+
+data("sRNA_data_consensus")
 # sample conditions.
-groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-          "Tomato/Tomato", "Tomato/Tomato", "Tomato/Tomato")
+groups <- c("Heterograft", "Heterograft", "Heterograft",
+          "Selfgraft", "Selfgraft", "Selfgraft")
 
 
 ## Differential analysis: DEseq2 method
-# 24-nt sRNA data-set
-sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_24,
+sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
                              group = groups,
                              method = "DESeq2" )
-# 2122-nt sRNA data-set
-sRNA_2122_DESeq2 <- RNAanalysis(data = sRNA_2122,
-                               group = groups,
-                               method = "DESeq2")
 
 
 ## Differential analysis: edgeR method
-sRNA_24_edgeR <- RNAanalysis(data = sRNA_24,
+sRNA_edgeR <- RNAanalysis(data = sRNA_data_consensus,
                             group = groups,
                             method = "edgeR" )
-
-sRNA_2122_edgeR <- RNAanalysis(data = sRNA_2122 ,
-                              group = groups,
-                              method = "edgeR" )
 }

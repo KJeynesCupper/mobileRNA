@@ -62,15 +62,18 @@
 #' # import sRNAseq data
 #' df_sRNA <- RNAimport(input = "sRNA",
 #'                      directory = "./analysis/sRNA_mapping_results/",
-#'                      samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-#'                                  "TomTom_1" , "TomTom_2" , "TomTom_3"))
+#'                      samples = c("heterograft_1", "heterograft_2", "heterograft_3",
+#'                                  "selfgraft_1" , "selfgraft_2" , "selfgraft_3"))
 #'
 #'# import mRNAseq data
 #' df_mRNA <- RNAimport(input = "mRNA",
 #'                      directory = "./analysis/mRNA_counts/",
-#'                      samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-#'                                   "TomTom_1" , "TomTom_2" , "TomTom_3"))
+#'                      samples = c("heterograft_1", "heterograft_2", "heterograft_3",
+#'                                  "selfgraft_1" , "selfgraft_2" , "selfgraft_3"))
 #'
+#'
+#'# The output of this function can be explore in the data object sRNA_data
+#' View(data("sRNA_data"))
 #'}
 #'
 #' @export
@@ -90,8 +93,8 @@
 #' @importFrom stats "setNames"
 
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
-                      report = TRUE,
-                      tidy = TRUE) {
+                       report = TRUE,
+                       tidy = TRUE) {
 
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
@@ -102,7 +105,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     # remove any hashtags from header (shortstack add this to header line, position 1)
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    required_cols <- c("Locus", "DicerCall", "Reads", "RPM")
+    required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
         stop("Sample data frame does not contain all required columns: ",
@@ -113,7 +116,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     }
 
     # merge first columns to create list of loci across all samples
-    loci <- lapply(sample_data, "[", , "Locus")
+    loci <- lapply(dt_list, "[", , "Locus")
     loci_all <- unique(Reduce(merge,loci))
 
     # Define a function to update the loci with the matching values from a single input dataframe
@@ -126,11 +129,12 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       # and compute the sum of DicerCall, Reads, and RPM values for each group
       dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
                              Count=sum(Reads),
-                             RPM = sum(RPM)),
+                             RPM = sum(RPM),
+                             MajorRNA = as.character(MajorRNA)),
                          by = join_cols]
 
       # Rename the aggregated columns
-      col_names <- paste0(c("DicerCall_", "Count_", "RPM_"),  i)
+      col_names <- paste0(c("DicerCall_", "Count_", "RPM_", "MajorRNA_"),  i)
       data.table::setnames(dt_agg, c("Locus", col_names))
 
       # Merge the aggregated values back into df1
@@ -152,7 +156,8 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     loci_all <- loci_all %>%
       dplyr::mutate(dplyr::across(dplyr::contains('Count_'), ~tidyr::replace_na(.,0))) %>%
       dplyr::mutate(dplyr::across(dplyr::contains('RPM_'), ~tidyr::replace_na(.,0))) %>%
-      dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'), ~tidyr::replace_na(.,"N")))
+      dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'), ~tidyr::replace_na(.,"N")))%>%
+      dplyr::mutate(dplyr::across(dplyr::contains('MajorRNA_'), ~tidyr::replace_na(.,"N")))
 
 
     # Convert loci_all back to a data.frame and return it
@@ -166,7 +171,11 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     )
     df_final <- cbind(res_data[,1], locus_cols, res_data[, 2:ncol(res_data)])
     names(df_final)[1] <- "Locus"
-
+    # order by chr
+    df_final <- df_final[order(df_final$chr),]
+    # insert cluster name
+    cluster_names <-  paste0("cluster_", 1:nrow(df_final))
+    df_final <- as.data.frame(append(df_final, list(Cluster = cluster_names), after = 4))
     # return values
     return(df_final)
 

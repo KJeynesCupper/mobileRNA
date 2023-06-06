@@ -29,11 +29,11 @@
 #'
 #'
 #' @examples
-#' data(sRNA_24)
+#' data("sRNA_data_consensus")
 #'
 #' groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-#'             "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
-#' p <-  plotSamplePCA(data = sRNA_24,group = groups )
+#'             "Eggplant/Eggplant",   "Eggplant/Eggplant", "Eggplant/Eggplant")
+#' p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 #'
 #'
 #'

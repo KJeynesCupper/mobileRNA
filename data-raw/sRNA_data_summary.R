@@ -7,3 +7,17 @@ sRNA_data_summary <- RNAconsensus(data = sRNA_data,
                                       tidy=TRUE)
 
 usethis::use_data(sRNA_data_summary, overwrite = TRUE)
+
+
+
+
+
+##### new 06/05/2023
+sRNA_data_consensus <- mobileRNA::RNAconsensus(sRNA_data,
+                                    conditions = c("heterograft_1", "heterograft_2", "heterograft_3"))
+
+usethis::use_data(sRNA_data_consensus, overwrite = TRUE)
+
+##### new 06/05/2023
+sRNA_data_mobile <- mobileRNA::RNAmobile(data = sRNA_data_consensus, controls = c("selfgraft_1", "selfgraft_2" , "selfgraft_3"), id = "SL", task ="keep", statistical = FALSE )
+usethis::use_data(sRNA_data_mobile, overwrite = TRUE)

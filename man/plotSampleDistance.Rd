@@ -29,7 +29,7 @@ and switch to a variance stabilizing transformation method (\code{vst=TRUE}).
 }
 \examples{
 
-data("sRNA_24")
-plotSampleDistance(sRNA_24)
+data("sRNA_data_consensus")
+plotSampleDistance(sRNA_data_consensus)
 
 }

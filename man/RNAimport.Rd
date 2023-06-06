@@ -69,15 +69,18 @@ columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 # import sRNAseq data
 df_sRNA <- RNAimport(input = "sRNA",
                      directory = "./analysis/sRNA_mapping_results/",
-                     samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-                                 "TomTom_1" , "TomTom_2" , "TomTom_3"))
+                     samples = c("heterograft_1", "heterograft_2", "heterograft_3",
+                                 "selfgraft_1" , "selfgraft_2" , "selfgraft_3"))
 
 # import mRNAseq data
 df_mRNA <- RNAimport(input = "mRNA",
                      directory = "./analysis/mRNA_counts/",
-                     samples = c( "TomEgg_1", "TomEgg_2", "TomEgg_3",
-                                  "TomTom_1" , "TomTom_2" , "TomTom_3"))
+                     samples = c("heterograft_1", "heterograft_2", "heterograft_3",
+                                 "selfgraft_1" , "selfgraft_2" , "selfgraft_3"))
 
+
+# The output of this function can be explore in the data object sRNA_data
+View(data("sRNA_data"))
 }
 
 }

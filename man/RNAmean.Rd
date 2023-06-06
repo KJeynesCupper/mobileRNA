@@ -27,7 +27,7 @@ across all or specific samples.
 \examples{
 data("sRNA_data")
 # across specific samples
-selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
+selected_samples <- c("heterograft_1", "heterograft_2", "heterograft_3")
 
 means <- RNAmean(data = sRNA_data, conditions = selected_samples)
 

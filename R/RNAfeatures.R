@@ -37,7 +37,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' dis_features <- RNAfeatures(data = sRNA_data_summary,
+#' dis_features <- RNAfeatures(data = sRNA_data_consensus,
 #'                        annotation = "./annotation/eggplant_genome.gff3",
 #'                        repeats = "./annotation/eggplant_genome_repeats.gff3")
 #' }

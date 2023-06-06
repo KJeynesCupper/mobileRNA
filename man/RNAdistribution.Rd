@@ -101,20 +101,20 @@ data('sRNA_data')
 p1 <- RNAdistribution(data = sRNA_data, style = "line")
 
 p1.2 <- RNAdistribution(data = sRNA_data, style = "line",
-                        samples = c("TomEgg_1", "TomEgg_2", "TomEgg_3"))
+                        samples = c("heterograft_1", "heterograft_2", "heterograft_3"))
 p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
 
 p3 <- RNAdistribution(data = sRNA_data, style = "bar")
 
 p3.2 <- RNAdistribution(data = sRNA_data, style = "bar",
-                       samples = c("TomEgg_1", "TomEgg_2", "TomEgg_3"))
+                       samples = c("heterograft_1", "heterograft_2", "heterograft_3"))
 
 p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
 
 p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
-data("sRNA_data_summary")
-p6 <- RNAdistribution(data = sRNA_data_summary, style = "consensus", consensus = TRUE)
+data("sRNA_data_consensus")
+p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus", consensus = TRUE)
 
 }

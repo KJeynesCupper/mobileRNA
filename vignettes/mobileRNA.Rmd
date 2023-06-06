@@ -155,12 +155,17 @@ how to process the data from the choice of two analytical methods
 in further detail by looking at the a functions help file.
 
 ## An overview of the data used
-For the following examples, an example small RNA-seq data set from a Tomato
-(**Solanium lycopersicum**) & Eggplant (**Solanium melongena**) grafting
-experiment was utilised. The heterografts are composed of an tomato scion and
-a eggplant rootstock. While in the self-graft, tomato has been used as the
-control with the aim to analyse whether a the eggplant rootstock can send
-sRNA molecules across the graft junction to the tomato scion.
+For the following examples, a semi-synthetic small RNA-seq data set has been utilised
+to simulate the movement of sRNA molecules from an Tomato (**Solanium lycopersicum**)
+rootstock to a Eggplant (**Solanium melongena**) scion, a grafting
+system known to be compatible.The three heterograft replicates, known as "heterograft_1",
+"heterograft_2" and "heterograft_3" are individual tomato replicates spiked with 
+150 tomato sRNA clusters. While the selfgraft replicates, known as "selfgraft_1",
+"selfgraft_2" and "selfgraft_3", are the individual tomato replicates without 
+the spiked tomato sRNA clusters. Moreover, the replicates mirror each other where,
+for instance, "heterograft_1" and "selfgraft_1" are the same replicate, either with 
+or without the spiked clusters. These replicates serve for the aim to analyse 
+sRNA mobility. 
 
 The data set, called `sRNA_data`, stores a matrix containing the
 pre-processed data from the experiment. As a
@@ -173,6 +178,13 @@ These can be loaded in these R workspace by using the following command:
   ``` r
 data("sRNA_data")
 ```
+
+In addition, there are two further datasets called "sRNA_data_consensus" and 
+"sRNA_data_mobile" which are utilised in the function documentations. Both 
+build on the "sRNA_data" dataset where "sRNA_data_consensus" contains the 
+RNA consensus results formed by the function [RNAconsensus()]. While, the 
+"sRNA_data_mobile" contains only the likely mobile sRNAs selected by the 
+function [RNAmobile()] under the default parameters. 
 
 
 
@@ -200,15 +212,15 @@ Plus, it makes the analysis easier!
 
 For the example data set included in the package, here we have renamed the
 files based on the condition (treatment or control).
-For the hetero-grafts, where the is a tomato scion and an eggplant rootstock:
-* `TomEgg_1.fq`
-* `TomEgg_2.fq`
-* `TomEgg_3.fq`
+For the hetero-grafts, where the is a eggplant scion and an tomato rootstock:
+* `heterograft_1.fq`
+* `heterograft_2.fq`
+* `heterograft_3.fq`
 
-and for the tomato self-grafts:
-* `TomTom_1.fq`
-* `TomTom_2.fq`
-* `TomTom_3.fq`
+and for the eggplant self-grafts:
+* `selfgraft_1.fq`
+* `selfgraft_2.fq`
+* `selfgraft_3.fq`
 
 
 ### The reference genomes and annotation files (.fasta/.fa)
@@ -276,7 +288,6 @@ RNAmergeGenomes(genomeA = "/Users/user1/projectname/workplace/reference/ref1.fa"
 
 
 
-
 ## Identify genomic locations of sRNA
 To identify associates between sRNA clusters and genomic features, the genomic
 annotation files (GFF) of each reference genome must be merged in the same way
@@ -334,7 +345,7 @@ for loop.
 
 ``` bash
 ShortStack \
---readfile <control_1.fastq> \
+--readfile <heterograft_1.fq> \
 --genomefile <merged_reference.fa> \
 --bowtie_cores 6 \
 --mmap n \
@@ -359,7 +370,8 @@ mobile molecules, but we cannot be sure till we have fully analysed the data.
 
 
 ``` r
-sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
+sample_names <- c("<heterograft_1>", "<heterograft_2>", "<heterograft_3>",
+                  "<selfgraft_1>","<selfgraft_2>", "<selfgraft_3>")
 
 folder <- <./output/directory/from/step/1/>
 save_folder <- <./output/directory/ClustersInfo.txt>
@@ -381,7 +393,7 @@ be a minimum of 5 reads per cluster in a sample).
 
 ``` bash
 ShortStack \
---readfile <control_1.fastq> \
+--readfile <heterograft_1.fq> \
 --genomefile <merged_reference.fa> \
 --locifile <./output/directory/ClustersInfo.gff3> \
 --bowtie_cores 6 \
@@ -423,13 +435,11 @@ the mapping, and stored in the directory supplied to the argument `directory`.
 ```{r, eval = FALSE, message=FALSE}
 ## Import & organise data.
 results_dir <-  "./analysis/alignment_unique_two/"
-sample_names <- c("TomEgg_1","TomEgg_2", "TomEgg_3",
-                "TomTom_1", "TomTom_2", "TomTom_3")
-clusters <- utils::read.table(file = "./data/reference/ClustersInfo.txt",
-                              header = TRUE, sep = "\t",
-                              stringsAsFactors = TRUE,comment.char="")
+sample_names <- c("heterograft_1","heterograft_2", "heterograft_3",
+                  "selfgraft_1", "selfgraft_2", "selfgraft_3")
 
-sRNA_data <- RNAimport(loci = loci_info,
+
+sRNA_data <- RNAimport(input = "sRNA",
                        directory = results_dir,
                            samples = sample_names)
 
@@ -482,12 +492,12 @@ RNA classes within each sample"
 
 ```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B")}
 
-sample.distribution_line <- RNAdistribution(sRNA_data,
+sample_distribution_line <- RNAdistribution(sRNA_data,
                                             style = "line",
                                             together = FALSE,
                                             facet = TRUE)
 
-sample.distribution_bar <- RNAdistribution(sRNA_data,
+sample_distribution_bar <- RNAdistribution(sRNA_data,
                                            style = "bar",
                                            facet = TRUE)
 
@@ -504,8 +514,8 @@ cap3 <-"An example of a PCA, illustracting the sRNA data set sample similarity"
 ```
 ```{r ,message=FALSE, fig.cap=cap3, fig.show="hold", out.width="50%"}
 
-group <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-           "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
+group <- c("Heterograft", "Heterograft", "Heterograft",
+            "Selfgraft", "Selfgraft", "Selfgraft")
 
 plotSamplePCA(sRNA_data, group)
 
@@ -564,16 +574,16 @@ specific groups, use the `type` argument.
 
 ```{r, message=FALSE}
 ##  define consensus sRNA classes based of treatment/hetero-graft samples
-samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
+samples <- c("heterograft_1","heterograft_2", "heterograft_3")
 
 # define consensus, store as a data summary file.
-sRNA_data_summary <- RNAconsensus(data = sRNA_data,
+sRNA_data_consensus <- RNAconsensus(data = sRNA_data,
                                   conditions = samples,
                                   tidy=TRUE)
 # Subset data for analysis: 24-nt sRNAs
-sRNA_24 <- RNAsubset(sRNA_data_summary, type = 24)
+sRNA_24 <- RNAsubset(sRNA_data_consensus, type = 24)
 # Subset data for analysis: 24 21/22-nt sRNAs
-sRNA_2122 <- RNAsubset(sRNA_data_summary, type = c(21, 22))
+sRNA_2122 <- RNAsubset(sRNA_data_consensus, type = c(21, 22))
 
 ```
 
@@ -587,8 +597,9 @@ beneficial to view the absolute frequency as well as the relative to observe
 whether the data meets your expectations.
 
 ```{r}
-consensus_plot <- RNAdistribution(data = sRNA_data_summary,
-                                  consensus = TRUE, style = "consensus")
+consensus_plot <- RNAdistribution(data = sRNA_data_consensus,
+                                  consensus = TRUE, 
+                                  style = "consensus")
 ```
 
 
@@ -611,10 +622,18 @@ edgeR can be used. Here, we have included the recommend practice for edgeR when
 the data set does not contain replicates. This option can be employed by setting
 a custom dispersion value, see argument `dispersionValue`.
 
+
+Please note that this step is optional and not a required part of the analysis. 
 ```{r DEprep, message = FALSE, warning = FALSE}
 # sample conditions.
-groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-            "Tomato/Tomato", "Tomato/Tomato", "Tomato/Tomato")
+groups <- c("Heterograft", "Heterograft", "Heterograft",
+            "Selfgraft", "Selfgraft", "Selfgraft")
+
+## Differential analysis of whole dataset: DEseq2 method 
+sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
+                              group = groups,
+                              method = "DESeq2" )
+
 
 
 ## Differential analysis: DEseq2 method
@@ -626,6 +645,12 @@ sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_24,
 sRNA_2122_DESeq2 <- RNAanalysis(data = sRNA_2122,
                                 group = groups,
                                 method = "DESeq2" )
+
+
+## Differential analysis of whole dataset: edgeR method 
+sRNA_edgeR <- RNAanalysis(data = sRNA_data_consensus,
+                              group = groups,
+                              method = "edgeR" )
 
 
 ## Differential analysis: edgeR method
@@ -659,49 +684,56 @@ tomato genome, set the `"task"` argument as `"keep"`.
 The `RNAmobile()` function can take into account the statistically significance.
 If set to consider this, the function will filter sRNA based on an adjusted
 p-value threshold = 0.05. The threshold can be changed to make it less stringent
-by using the argument `padj`.
+by using the argument `padj`.Similarly, if you would prefer to extract the mobile 
+RNA based on the p-value,rather than the adjusted p-values,  a numeric threshold 
+can be set for the argument `p.value`. As default, the function does not consider
+the statistical values and properties of the sRNAs. To consider, use `statistical=TRUE`
 
-Similarly, if you would prefer to extract the mobile RNA based on the p-value,
-rather than the adjusted p-values, the argument a numeric threshold can be
-set for the argument `p.value`. If you would like to explore all mobile
-molecules, both significant and not, the statistical analysis can be removed by
-setting `stat=FALSE`. This might be useful if you wish to compare the data sets.
 
+Below we have used the datasets which contains the additional columns with the
+statistical values. As stated above, we do not need to use the statistical values 
+to identify the mobile molecules but it can be explored and utilised to plot a 
+heatmap based on the logFC. 
 ```{r , message=FALSE}
 # vector of control names
-control_names <- c("TomTom_1", "TomTom_2", "TomTom_3")
+control_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
 
+## Identify potential tomato mobile molecules, before subsetting classes
+mobile_sRNA <- RNAmobile(data = sRNA_DESeq2, 
+                         controls = control_names,
+                         id = "SL40",
+                         task = "keep")
+
+# or identify within specific classes 
+# within 24-nt sRNA datset 
+mobile_sRNA_24 <- RNAmobile(data = sRNA_24_DESeq2, 
+                         controls = control_names,
+                         id = "SL40",
+                         task = "keep")
+# within 21/22-nt sRNA datset
+mobile_sRNA_2122 <- RNAmobile(data = sRNA_2122_DESeq2, 
+                         controls = control_names,
+                         id = "SL40",
+                         task = "keep")
 
 
-## Mobile Molecules: DEseq2 method
-# remove clusters associated to tomato in 24nt RNA database
-sRNA_24_mobile_DEseq <- RNAmobile(data = sRNA_24_DESeq2,
-                                  controls = control_names,
-                                  id = "SL40",
-                                  task = "remove")
+# If you wish to consider the statistical values from DESeq2 analysis 
 
-# remove clusters associated to tomato in 2122nt RNA database
-sRNA_2122_mobile_DEseq  <- RNAmobile(data = sRNA_2122_DESeq2,
-                                     controls = control_names,
-                                     id = "SL40",
-                                     task = "remove")
+mobile_sRNA_sig24 <- RNAmobile(data = sRNA_24_DESeq2, 
+                         controls = control_names,
+                         id = "SL40",
+                         task = "keep", 
+                         statistical = TRUE)
 
+mobile_sRNA_sig2122 <- RNAmobile(data = sRNA_2122_DESeq2, 
+                         controls = control_names,
+                         id = "SL40",
+                         task = "keep", 
+                         statistical = TRUE)
+  
+  
 
-
-
-
-## Mobile Molecules: edgeR method
-# remove clusters associated to tomato in 24nt RNA database
-sRNA_24_mobile_edgeR <- RNAmobile(data = sRNA_24_edgeR,
-                                  controls = control_names,
-                                  id = "SL40", task = "remove")
-
-# remove clusters associated to tomato in 2122nt RNA database
-sRNA_2122_mobile_edgeR <- RNAmobile(data = sRNA_2122_edgeR,
-                                    controls = control_names,
-                                    id = "SL40",
-                                    task = "remove")
 ```
 
 
@@ -715,44 +747,47 @@ control samples show down-regulation.
 
 ### Mobile molecules from the 24-nt sRNA dataset
 ```{r, echo=FALSE}
-cap7 <- "An example heatmap of the potential mobile 24-nt RNA molecules
-A) Identifed by the `DESeq2` method. B) Identifed by the `edgeR` method."
+cap7 <- "An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method
+A). Class of 24-nt sRNAs B) Class of 21/22-nt sRNAs."
 
-cap8<- "An example heatmap of the potential mobile 21/22-nt RNA molecules,
-A) Identifed by the `DESeq2` method. B) Identifed the `edgeR` method."
 
-```
-
-```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A DESeq2","B:edgeR") }
-
-p10 <- plotHeatmap(sRNA_24_mobile_DESeq2)
-p11 <- plotHeatmap(sRNA_24_mobile_edgeR)
 
 ```
 
+```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A","B") }
 
-### Mobile molecules from the 21/22-nt sRNA dataset
-```{r, message=FALSE, fig.cap=cap8, fig.show="hold", out.width="50%", fig.subcap=  c("A:DESeq2","B:edgeR")}
+p10 <- plotHeatmap(mobile_sRNA_sig24)
+p11 <- plotHeatmap(mobile_sRNA_sig2122)
 
-p12 <- plotHeatmap(sRNA_2122_mobile_DESeq2)
-p13 <- plotHeatmap(sRNA_2122_mobile_edgeR)
 ```
+
 
 
 # Additional features
 
-The *mobileRNA* package offers several of other helpful functions to aid
-analysis. This includes a function to calculate the mean FPKM and counts across
+The *mobileRNA* package offers several optional extra-helpful functions to aid
+analysis. This includes a function to calculate the mean RPM and counts across
 specific samples and also calculate the overlap between genomic features and
 sRNA clusters.
 
 ## Calculate RPM and Count means for specific samples
-This function calculates the RPM mean and Count mean across specific samples.
+This function calculates the RPM mean and Count mean across specific samples.The 
+output of the calculation is added as an additional column to the input dataframe. 
+
+This can be manipulated to be used before or after identified mobile RNAs. When 
+calculating means after identifying mobile molecules, it is recommend to base this
+on the heterograft samples rather than the full dataset (selfgrafts + heterograft
+replicates) as all potential mobile sRNAs should have zero counts or RPM value in 
+the selfgraft control replicates. By including the full dataset in these 
+calculations, the mean values for the mobile molecules will be skewed. 
+
+Therefore, depending on your intended output this function could be approached 
+in multiple ways. 
 
 ```{r}
 # calculate mean RPM and mean Counts for heterograft samples
-selected_samples <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
-means <- RNAmean(data = sRNA_data, conditions = selected_samples)
+selected_samples <- c("heterograft_1", "heterograft_2", "heterograft_3")
+means <- RNAmean(data = sRNA_data_consensus, conditions = selected_samples)
 
 ```
 
@@ -777,18 +812,21 @@ It is important to recognise, that if you alter the chromosome names in either
 of the mapping reference genomes, the chromosome names will need to match in the
 annotation files(s).
 
+In this example, we look at the features which the potentially mobile sRNAs from 
+tomato could target in the eggplant genome ie. the destination tissue. Similarly, 
+the sRNA targets in the origin ie. tomato genome could also be identified with
+this function. 
+
 ```{r, eval = FALSE}
 # matrix containing percentage of sRNA clusters associated to different genomic
 # features
-dis_features <- RNAfeatures(data = sRNA_24_mobile_DESeq2,
+table_features <- RNAfeatures(data = mobile_sRNA_24,
                             annotation = "./annotation/eggplant_genome.gff3",
                             repeats = "./annotation/eggplant_genome_repeats.gff3")
 ```
 
 
 ## Assign sRNA clusters with an annotation attribute
-
-
 Each sRNA cluster contains coordinates, these can be matches with coordinates in
 an annotation file (individual, or, merged). If there is a match, the cluster
 will receive information on:
@@ -814,12 +852,12 @@ annotation files(s).
 # matrix containing percentage of sRNA clusters associated to different genomic
 
 # add matching attributes to all sRNA clusters
-data_plus_attributes <- RNAattributes(data = sRNA_data_summary,
-                                      annotation = "./annotation/merged annotation.gff3")
+data_plus_attributes <- RNAattributes(data = sRNA_data_consensus,
+                                      annotation = "./annotation/merged_annotation.gff3")
 
 # add matching attributes to potential mobile 24nt sRNA clusters
-data_plus_attributes_eggplant <- RNAattributes(data = sRNA_24_mobile_DESeq2,
-                                               annotation = "./annotation/eggplant_genome.gff3")
+data_plus_attributes <- RNAattributes(data = mobile_sRNA_24,
+                                               annotation = "./annotation/tomato_annotation.gff3")
 ```
 
 

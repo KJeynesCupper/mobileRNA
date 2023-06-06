@@ -29,16 +29,14 @@ The function create a heatmap based on the hierarchical clustering
 of FPKM values using euclidean statistics.
 }
 \examples{
+data("sRNA_data_consensus")
+# plot heatmap of sRNAs across dataset
+ p1 <-  plotHeatmap(sRNA_data_consensus)
 
-## DESeq2 example: mobile 24-nt & 21/22-nt sRNA
 
- # plot heatmap of likely mobile 24-nt sRNA
- data("sRNA_24_mobile_DESeq2")
- p1 <-  plotHeatmap(sRNA_24_mobile_DESeq2)
-
- # plot heatmap of likely mobile 24-nt sRNA
- data("sRNA_2122_mobile_DESeq2")
- p2 <-  plotHeatmap(sRNA_2122_mobile_DESeq2)
+data("sRNA_data_mobile")
+# plot heatmap of potential mobile sRNAs
+ p1 <-  plotHeatmap(sRNA_data_mobile)
 
 
 

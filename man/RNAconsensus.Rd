@@ -49,11 +49,11 @@ this sRNA cluster would be irrelevant.
  data("sRNA_data")
 
 # define consensus sRNA classes.
-conditions <- c("TomEgg_1", "TomEgg_2", "TomEgg_3")
+conditions <- c("heterograft_1", "heterograft_2", "heterograft_3")
 
 # Run function to define sRNA class for each cluster.
-sRNA_data_summary <- RNAconsensus(data = sRNA_data,
-                                     conditions = conditions,
-                                    tidy=TRUE)
+sRNA_data_consensus <- RNAconsensus(data = sRNA_data,
+                                  conditions = conditions,
+                                  tidy=TRUE)
 
 }

@@ -38,11 +38,11 @@ replicates. In this instance, it is preferable to change the default setting
 and switch to a variance stabilizing transformation method (\code{`vst=TRUE`}).
 }
 \examples{
-data(sRNA_24)
+data("sRNA_data_consensus")
 
 groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-            "Tomato/Tomato",   "Tomato/Tomato", "Tomato/Tomato")
-p <-  plotSamplePCA(data = sRNA_24,group = groups )
+            "Eggplant/Eggplant",   "Eggplant/Eggplant", "Eggplant/Eggplant")
+p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 
 
 
