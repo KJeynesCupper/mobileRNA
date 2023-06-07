@@ -3,6 +3,6 @@
 .RData
 .Ruserdata
 inst/doc
-docs
 .Rproj
 data-raw
+docs
