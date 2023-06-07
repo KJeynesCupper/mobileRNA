@@ -8,8 +8,8 @@ RNAfeatures(data, annotation, repeats = NULL, percentage = TRUE)
 }
 \arguments{
 \item{data}{data frame; containing rows of potential dicer-derived clusters
-including columns which supply the genomic coordinates, where \code{chr} supplies the
-chromosome number, \code{start} and \code{end} which supply the coordinates.}
+including columns which supply the genomic coordinates, where \code{chr} supplies
+the chromosome number, \code{start} and \code{end} which supply the coordinates.}
 
 \item{annotation}{A path, URL, connection or GFFFile object. A genome
 reference annotation file (.gff/.gff1/.gff2/.gff3).}
@@ -17,13 +17,18 @@ reference annotation file (.gff/.gff1/.gff2/.gff3).}
 \item{repeats}{A path, URL, connection or GFFFile object. A genome
 reference annotation file, which specifically contains information on repeat
 sequences in the genome (.gff/.gff1/.gff2/.gff3). By default, this is not
-required, however if there is a specific repeats annotation file for the genome
-it is suggested to supply it.}
+required, however if there is a specific repeats annotation file for the
+genome it is suggested to supply it.}
 
 \item{percentage}{returns results as a percentage of the total, when
 \code{percentage = TRUE} (default). While \code{percentage = FALSE}, results
 are returned as a count value representing the number of sRNA clusters
 that overlap with a given genomic feature.}
+}
+\value{
+Returns a table containing the number or percentage of overlaps in
+the supplied dataset with specific regions in the genome annotation such
+as genes, TEs, introns, exons.
 }
 \description{
 Calculates the percentage of sRNA dicer-derived clusters which
@@ -33,7 +38,7 @@ regions, exons, introns, and 3'/'5 untranslated regions.
 \details{
 The function calculates the number or percentage of sRNA dicer-derived
 clusters which overlap with genomic features based on their genomic
-coordinates. This is outputted as either a matrix or data frame, respectively.
+coordinates. This is outputted as either a matrix or data frame,respectively.
 
 This function can be utilised at different steps in your analysis, but is
 particularly powerful when observing the genomic location of potential mobile

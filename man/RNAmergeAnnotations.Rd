@@ -56,42 +56,19 @@ by the chromosome names. As a default setting, the function extracts the
 chromosome names for a given GFF file and adds an ID before each chromosome
 name and removes any periods.
 
-The function requires the input of two reference annotation genomes, where one represents
-\code{annotationA} and the other represents \code{annotationB}. As default, the function
-will rename the chromosome names in \code{annotationA} to "A". For example, A0, A1 ,
-A2 etc. To set a custom chromosome name for \code{annotationA} alter the argument
-\code{abbreviationAnnoA}. While, for  \code{annotationB} as default the chromosome
-names will be named "B", for example, B0, B1, B2 etc. To set a custom
-chromosome name for \code{annotationB} alter the argument \code{abbreviationAnnoB}.
-The function can do so by  draw the chromosome number within the given GFF file,
-remove all prior character or numerical values, and replace it with the
-supplied string.
+The function requires the input of two reference annotation genomes, where
+one represents \code{annotationA} and the other represents \code{annotationB}.
+As default, the function will rename the chromosome names in \code{annotationA}
+to "A". For example, A0, A1, A2 etc. To set a custom chromosome name for
+\code{annotationA} alter the argument \code{abbreviationAnnoA}. While, for
+\code{annotationB} as default the chromosome names will be named "B", for example,
+B0, B1, B2 etc. To set a custom chromosome name for \code{annotationB} alter the
+argument \code{abbreviationAnnoB}. The function can do so by  draw the
+chromosome number within the given GFF file, remove all prior character or
+numerical values, and replace it with the supplied string.
 
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
-the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a merged reference genome,
-that you treat the input annotations in the same way.
-}
-\examples{
-\dontrun{
-merged_anno <- RNAannotationMerge(annotationA = "./workplace/reference/ref1_annotation.gff3",
-            annotationB = "./workplace/reference/ref2_annotation.gff3",
-            out_dir = "./workplace/reference/merge/merged_annotation.gff3")
-
-## or, to set specific changes to chromosome names. annotationA represents
-## the Solanum lycopersicum and the chromosomes will be abbreviated to `SL`,
-## and annotationB represents Solanum melongena and the chromosomes will be
-## abbreviated to `SM`.
-
-merged_anno_2 <- RNAannotationMerge(annotationA = "./workplace/reference/ref1_annotation.gff3",
-            annotationB = "./workplace/reference/ref2_annotation.gff3",
-            out_dir = "./workplace/reference/merge/merged_annotation.gff3",
-            abbreviationAnnoA = "SL",
-            abbreviationAnnoB = "SM")
-
-
-
-}
-
-
+the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a merged reference
+genome,that you treat the input annotations in the same way.
 }

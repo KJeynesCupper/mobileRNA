@@ -36,10 +36,12 @@ RNAmean <- function(data, conditions = NULL){
   count_cols <- dplyr::select(data, starts_with("Count_"))
 
   if (!is.null(conditions)){
-    RPM <- grep(paste(conditions, collapse = "|"), colnames(RPM_cols), value = TRUE)
+    RPM <- grep(paste(conditions, collapse = "|"), colnames(RPM_cols),
+                value = TRUE)
 
 
-    count <- grep(paste(conditions, collapse = "|"), colnames(count_cols), value = TRUE)
+    count <- grep(paste(conditions, collapse = "|"), colnames(count_cols),
+                  value = TRUE)
 
     data <- data %>%
       dplyr::mutate(mean_RPM = base::rowMeans(.[RPM])) %>%

@@ -19,16 +19,16 @@ RNAmobile(
 
 \item{controls}{Character vector; containing names of control samples.}
 
-\item{id}{a character string related to the chromosomes in a particular genome. A
-distinguishing feature of the genome of interest or non-interest in the
-chromosome name (\code{chr} column).}
+\item{id}{a character string related to the chromosomes in a particular
+genome. A distinguishing feature of the genome of interest or non-interest in
+the chromosome name (\code{chr} column).}
 
 \item{task}{an option to keep or remove the chromosomes containing the
 identifying string. To keep the chromosomes with the ID, set task=keep.
 To remove, set \code{task="remove"}. As default, task is set to \code{keep}.}
 
-\item{statistical}{If TRUE, will undertake statistical filtering based on the a
-p-value or adjusted p-value threshold stated by \code{padj} and \code{p.value}. Default
+\item{statistical}{If TRUE, will undertake statistical filtering based on the
+a p-value or adjusted p-value threshold stated by \code{padj} & \code{p.value}.Default
 set at FALSE. Requires presence of columns containing statistical data.
 In order to filter by the adjusted p-value, a column named \code{padjusted} must
 be present. Similarly, to filter by the p-value, a column named \code{pvalue} must
@@ -78,7 +78,8 @@ data("sRNA_data_consensus")
 # vector of control names
 controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 
-# Locate potentially mobile sRNA clusters associated to tomato, no statistical analysis
+# Locate potentially mobile sRNA clusters associated to tomato, no
+# statistical analysis
 mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
                     controls = controls,
                     id = "SL40",
@@ -87,9 +88,11 @@ mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
 
 
 
- # Locate potentially mobile sRNA clusters associated to tomato, include statistical analysis
+ # Locate potentially mobile sRNA clusters associated to tomato, include
+ # statistical analysis
 
-## undertake statistical analysis with either edgeR or DESeq2, here we use DESeq2
+## undertake statistical analysis with either edgeR or DESeq2, here we use
+# # DESeq2
 groups <- c("Heterograft", "Heterograft", "Heterograft",
           "Selfgraft", "Selfgraft", "Selfgraft")
 
@@ -114,7 +117,8 @@ mobile_df3 <- RNAmobile(data = analysis_df,
 
 
 
-# Locate local sRNA clusters associated to eggplant, include statistical analysis
+# Locate local sRNA clusters associated to eggplant, include statistical
+# analysis
 mobile_df4 <- RNAmobile(data = sRNA_data_consensus,
                     controls = controls,
                     id = "SL40",

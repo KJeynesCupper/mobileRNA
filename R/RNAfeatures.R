@@ -8,7 +8,7 @@
 #' @details
 #' The function calculates the number or percentage of sRNA dicer-derived
 #' clusters which overlap with genomic features based on their genomic
-#' coordinates. This is outputted as either a matrix or data frame, respectively.
+#' coordinates. This is outputted as either a matrix or data frame,respectively.
 #'
 #' This function can be utilised at different steps in your analysis, but is
 #' particularly powerful when observing the genomic location of potential mobile
@@ -16,8 +16,8 @@
 #' annotation file.
 #'
 #' @param data data frame; containing rows of potential dicer-derived clusters
-#' including columns which supply the genomic coordinates, where `chr` supplies the
-#' chromosome number, `start` and `end` which supply the coordinates.
+#' including columns which supply the genomic coordinates, where `chr` supplies
+#' the chromosome number, `start` and `end` which supply the coordinates.
 #'
 #' @param annotation A path, URL, connection or GFFFile object. A genome
 #' reference annotation file (.gff/.gff1/.gff2/.gff3).
@@ -25,14 +25,17 @@
 #' @param repeats A path, URL, connection or GFFFile object. A genome
 #' reference annotation file, which specifically contains information on repeat
 #' sequences in the genome (.gff/.gff1/.gff2/.gff3). By default, this is not
-#' required, however if there is a specific repeats annotation file for the genome
-#' it is suggested to supply it.
+#' required, however if there is a specific repeats annotation file for the
+#' genome it is suggested to supply it.
 #'
 #' @param percentage returns results as a percentage of the total, when
 #' \code{percentage = TRUE} (default). While \code{percentage = FALSE}, results
 #' are returned as a count value representing the number of sRNA clusters
 #' that overlap with a given genomic feature.
 #'
+#' @return Returns a table containing the number or percentage of overlaps in
+#' the supplied dataset with specific regions in the genome annotation such
+#' as genes, TEs, introns, exons.
 #'
 #' @examples
 #' \dontrun{
@@ -129,11 +132,16 @@ RNAfeatures <- function(data, annotation, repeats = NULL, percentage = TRUE){
   sRNA_df <-  data %>% dplyr::select(chr, start, end)
   sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
 
-  sRNA_features_df[2,1] <- sum(BiocGenerics::width(intersect(promoters,sRNA_df)))
-  sRNA_features_df[2,2] <- sum(BiocGenerics::width(intersect(exons,sRNA_df)))
-  sRNA_features_df[2,3] <- sum(BiocGenerics::width(intersect(introns,sRNA_df)))
-  sRNA_features_df[2,4] <- sum(BiocGenerics::width(intersect(five_UTR,sRNA_df)))
-  sRNA_features_df[2,5] <- sum(BiocGenerics::width(intersect(three_UTR,sRNA_df)))
+  sRNA_features_df[2,1] <- sum(BiocGenerics::width(intersect(
+    promoters,sRNA_df)))
+  sRNA_features_df[2,2] <- sum(BiocGenerics::width(intersect(
+    exons,sRNA_df)))
+  sRNA_features_df[2,3] <- sum(BiocGenerics::width(intersect(
+    introns,sRNA_df)))
+  sRNA_features_df[2,4] <- sum(BiocGenerics::width(intersect(
+    five_UTR,sRNA_df)))
+  sRNA_features_df[2,5] <- sum(BiocGenerics::width(intersect(
+    three_UTR,sRNA_df)))
   sRNA_features_df[2,6] <- sum(BiocGenerics::width(intersect(TEs,sRNA_df)))
   sRNA_features_df[2,7] <- sum(BiocGenerics::width(intersect(others,sRNA_df)))
 

@@ -10,9 +10,10 @@
 #' [mobileRNA::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
 #' (p-adjusted). It is important to consider the point in your analysis you
 #' subset the data or/and undertake differential analysis to achieve statistical
-#' values. Subsetting the dataset into groups based on the sRNA class will create
-#' a smaller set of data for each to draw statistical differences. Depending on
-#' the size of your data, and analysis aims this should be taken into consideration.
+#' values. Subsetting the dataset into groups based on the sRNA class will
+#' create a smaller set of data for each to draw statistical differences.
+#' Depending on the size of your data, and analysis aims this should be taken
+#' into consideration.
 #'
 #'
 #'
@@ -32,6 +33,8 @@
 #'  \code{sig=TRUE}, data will be filtered based on p-adjusted < 0.05
 #'  significance threshold.
 #'
+#' @return A dataframe containing sRNA clusters with a sRNA consensus matching
+#' the size instructed to the type argument.
 #' @examples
 #' data("sRNA_data_consensus")
 #'

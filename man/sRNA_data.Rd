@@ -29,7 +29,9 @@ Simulates data is taken from eggplant and tomato sRNAseq samples and
 created to simulate to movement of sRNA molecules from an Tomato rootstock to
 an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
 tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
-these heterografts to three Eggplant self-grafts which are the original un-spiked
-Eggplant replicates.
+these heterografts to three Eggplant self-grafts which are the original
+un-spiked Eggplant replicates.
+@examples
+data("sRNA_data")
 }
 \keyword{dataset}

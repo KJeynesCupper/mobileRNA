@@ -35,6 +35,10 @@ within \code{genomeB}.Default set as "B".}
 names of the supplied annotation files are to be altered or not. As default,
 chromosome names are altered.}
 }
+\value{
+A FASTA format file containing two genome assemblies with edited
+chromosome names (prefixes, and removal of periods)
+}
 \description{
 Merges two reference genomes (.fa/.fasta). into one single
 reference with modified chromosome names to ensure distinguishability.
@@ -43,19 +47,19 @@ reference with modified chromosome names to ensure distinguishability.
 The functions primary goal is to merge two FASTA files, however, when
 merging genomic files it is critical that the two genomes are distinguishable
 by the chromosome names. As a default setting, the function extracts the
-chromosome names for a given FASTA file and alters the name while retaining the
-identifying number.
+chromosome names for a given FASTA file and alters the name while retaining
+the identifying number.
 
-The function requires the input of two reference genomes, where one represents
-\code{Genome-A} and the other represents \code{Genome-B}. As default, the function
-will rename the chromosome names in \code{Genome-A} to "A". For example, A0, A1 ,
-A2 etc. To set a custom chromosome name for \code{Genome-A} alter the argument
-\code{abbreviationGenomeA}. While, for  \code{Genome-B} as default the chromosome
-names will be named "B", for example, B0, B1, B2 etc. To set a custom
-chromosome name for \code{Genome-A} alter the argument \code{abbreviationGenomeB}.
-The function can do so by  draw the chromosome number within the given GFF file,
-remove all prior character or numerical values, and replace it with the
-supplied string.
+The function requires the input of two reference genomes, where one
+represents \code{Genome-A} and the other represents \code{Genome-B}. As default, the
+function will rename the chromosome names in \code{Genome-A} to "A". For example,
+A0, A1, A2 etc. To set a custom chromosome name for \code{Genome-A} alter the
+argument \code{abbreviationGenomeA}. While, for  \code{Genome-B} as default the
+chromosome names will be named "B", for example, B0, B1, B2 etc. To set a
+custom chromosome name for \code{Genome-A} alter the argument
+\code{abbreviationGenomeB}. The function can do so by  draw the chromosome
+number within the given GFF file, remove all prior character or numerical
+values, and replace it with the supplied string.
 
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
@@ -64,7 +68,7 @@ annotation,that you treat the input references in the same way.
 }
 \examples{
 \dontrun{
-merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
+merged_ref <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
             genomeB = "./workplace/reference/ref2.fa",
             out_dir = "./workplace/reference/merge/merged_ref.fa")
 
@@ -73,7 +77,7 @@ merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
 ## and annotationB represents Solanum melongena and the chromosomes will be
 ## abbreviated to `SM`.
 
-merged_reference2 <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
+merged_ref2 <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
             genomeB = "./workplace/reference/ref2.fa",
             out_dir = "./workplace/reference/merge/merged_ref.fa",
             abbreviationGenomeA = "SL",

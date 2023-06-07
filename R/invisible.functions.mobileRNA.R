@@ -28,16 +28,18 @@
 
   if (length(colnames(class_colnames)) > 1){
     x <- c()
-    for (j in 1:nrow(data) ){
-      if(sum(stats::na.omit(as.numeric( data[j,colnames(class_colnames)], na.rm=T)))>0){
+    for (j in 1:nrow(data)){
+      if(sum(stats::na.omit(as.numeric( data[j,colnames(class_colnames)],
+                                        na.rm=TRUE)))>0){
         x <- c(x,j)
       }
     }
   } else
     if (length(colnames(class_colnames)) == 1){
       x <- c()
-      for (k in 1:nrow(data) ){
-        if(stats::na.omit(as.numeric(data[k,colnames(class_colnames)], na.rm=T))!= 0){
+      for (k in 1:nrow(data)){
+        if(stats::na.omit(as.numeric(data[k,colnames(class_colnames)],
+                                     na.rm=TRUE))!= 0){
           x <- c(x,k)
         }
       }

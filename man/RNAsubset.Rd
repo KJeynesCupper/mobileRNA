@@ -23,6 +23,10 @@ This can be a value from 20-24. To select, 24-nt sRNA, state 24.
 Multiple values can be inputted, for instance both 21 and 22 can be
 stated to select both.}
 }
+\value{
+A dataframe containing sRNA clusters with a sRNA consensus matching
+the size instructed to the type argument.
+}
 \description{
 Creates a data-frame containing the desired sRNA class(s) based
 on the consensus sRNA determination.
@@ -34,9 +38,10 @@ statistical significance based on differential expression analysis, see
 \code{\link[=RNAanalysis]{RNAanalysis()}}. Set \code{sig=TRUE} to filtered by significance
 (p-adjusted). It is important to consider the point in your analysis you
 subset the data or/and undertake differential analysis to achieve statistical
-values. Subsetting the dataset into groups based on the sRNA class will create
-a smaller set of data for each to draw statistical differences. Depending on
-the size of your data, and analysis aims this should be taken into consideration.
+values. Subsetting the dataset into groups based on the sRNA class will
+create a smaller set of data for each to draw statistical differences.
+Depending on the size of your data, and analysis aims this should be taken
+into consideration.
 }
 \examples{
 data("sRNA_data_consensus")

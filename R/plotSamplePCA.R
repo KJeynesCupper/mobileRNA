@@ -25,7 +25,8 @@
 #' In special conditions, regularized log transformation will not suit
 #' the experimental design. For example, an experimental design without
 #' replicates. In this instance, it is preferable to change the default setting
-#' and switch to a variance stabilizing transformation method (\code{`vst=TRUE`}).
+#' and switch to a variance stabilizing transformation method
+#' (\code{`vst=TRUE`}).
 #'
 #'
 #' @examples
@@ -62,9 +63,8 @@ plotSamplePCA <- function(data, group, vst = FALSE){
   # use DESeq to organise the data.
   column.data <- data.frame(conditions=as.factor(group))
   base::rownames(column.data) <- base::colnames(data)
-  count.data.set <- SimDesign::quiet(DESeq2::DESeqDataSetFromMatrix(countData=data,
-                                                                    colData=column.data,
-                                                                    design= ~conditions))
+  count.data.set <- SimDesign::quiet(DESeq2::DESeqDataSetFromMatrix(
+    countData=data,colData=column.data,design= ~conditions))
   count.data.set$conditions <- stats::relevel(count.data.set$conditions,
                                               group[1])
   dds <- DESeq2::estimateSizeFactors(count.data.set)
@@ -72,7 +72,8 @@ plotSamplePCA <- function(data, group, vst = FALSE){
   # log transform the data.
 
   if(vst ==TRUE){
-    message("Transforming the count data with a variance stabilizing transformation")
+    message("Transforming the count data with a variance stabilizing
+            transformation")
     rld1 <- DESeq2::varianceStabilizingTransformation(dds, blind = TRUE)
     # log transform the data.
   } else

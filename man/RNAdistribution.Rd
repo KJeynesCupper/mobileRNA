@@ -32,15 +32,16 @@ bar chart to represent your data.
 \itemize{
 \item Where \code{style="line"} a line graph will be produced
 \item Where \code{style="bar"} produces a bar graph
-\item Where \code{style="consensus"} produces the line graph for the consenus
+\item Where \code{style="consensus"} produces the line graph for the consensus
 sRNA in conjunction with \code{consensus=TRUE}
 }}
 
-\item{facet}{Logical; forms a matrix of panels defined by row and column faceting
-variables. It plots the results for each sample as a bar-chart and contains
-it within a single plot. The number of rows in the facet can be changed using
-the argument \code{facet.arrange} . Default \code{facet = TRUE} , plot each
-sample separately when \code{facet = FALSE} .}
+\item{facet}{Logical; forms a matrix of panels defined by row and column
+faceting variables. It plots the results for each sample as a bar-chart
+and contains it within a single plot. The number of rows in the facet can
+be changed using the argument \code{facet.arrange}.
+Default \code{facet = TRUE} , plots each sample separately when
+\code{facet = FALSE} .}
 
 \item{facet.arrange}{numeric; value supplied to define the number of columns
 to include in the facet. This argument is piped into the \code{ ncol}  argument in
@@ -101,13 +102,15 @@ data('sRNA_data')
 p1 <- RNAdistribution(data = sRNA_data, style = "line")
 
 p1.2 <- RNAdistribution(data = sRNA_data, style = "line",
-                        samples = c("heterograft_1", "heterograft_2", "heterograft_3"))
+                        samples = c("heterograft_1", "heterograft_2",
+                        "heterograft_3"))
 p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
 
 p3 <- RNAdistribution(data = sRNA_data, style = "bar")
 
 p3.2 <- RNAdistribution(data = sRNA_data, style = "bar",
-                       samples = c("heterograft_1", "heterograft_2", "heterograft_3"))
+                       samples = c("heterograft_1", "heterograft_2",
+                       "heterograft_3"))
 
 p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
 
@@ -115,6 +118,7 @@ p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
 data("sRNA_data_consensus")
-p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus", consensus = TRUE)
+p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus",
+consensus = TRUE)
 
 }
