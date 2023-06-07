@@ -72,3 +72,28 @@ must have chromosomes with matching names. It is critical that if you used
 the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a merged reference
 genome,that you treat the input annotations in the same way.
 }
+\examples{
+\dontrun{
+merged_anno <- RNAannotationMerge(annotationA =
+                                "./workplace/reference/ref1_annotation.gff3",
+                  annotationB = "./workplace/reference/ref2_annotation.gff3",
+             out_dir = "./workplace/reference/merge/merged_annotation.gff3")
+
+## or, to set specific changes to chromosome names. annotationA represents
+## the Solanum lycopersicum and the chromosomes will be abbreviated to `SL`,
+## and annotationB represents Solanum melongena and the chromosomes will be
+## abbreviated to `SM`.
+
+merged_anno_2 <- RNAannotationMerge(annotationA =
+                                "./workplace/reference/ref1_annotation.gff3",
+                  annotationB = "./workplace/reference/ref2_annotation.gff3",
+              out_dir = "./workplace/reference/merge/merged_annotation.gff3",
+             abbreviationAnnoA = "SL",
+            abbreviationAnnoB = "SM")
+
+
+
+}
+
+
+}
