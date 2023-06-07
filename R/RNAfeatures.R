@@ -43,8 +43,8 @@
 #' }
 #'@importFrom rtracklayer "import.gff3"
 #'@importFrom GenomicRanges "setdiff"
-#'@importFrom stats "start"
-#'@importFrom stats "end"
+#'@importFrom GenomicRanges "start"
+#'@importFrom GenomicRanges "end"
 #'@importFrom BiocGenerics "strand"
 #'@importFrom dplyr "select"
 #'@importFrom dplyr "mutate"
@@ -91,17 +91,17 @@ RNAfeatures <- function(data, annotation, repeats = NULL, percentage = TRUE){
                                     ignore.strand=TRUE)
 
   promoters <- genes
-  stats::start(promoters[BiocGenerics::strand(promoters) == "+"]) <-
-    stats::start(promoters[BiocGenerics::strand(promoters) == "+"])-2000
+ GenomicRanges::start(promoters[BiocGenerics::strand(promoters) == "+"]) <-
+   GenomicRanges::start(promoters[BiocGenerics::strand(promoters) == "+"])-2000
 
-  stats::end(promoters[BiocGenerics::strand(promoters) == "+"]) <-
-    stats::start(promoters[BiocGenerics::strand(promoters) == "+"]) + 0
+  GenomicRanges::end(promoters[BiocGenerics::strand(promoters) == "+"]) <-
+    GenomicRanges::start(promoters[BiocGenerics::strand(promoters) == "+"]) + 0
 
-  stats::start(promoters[BiocGenerics::strand(promoters) == "-"]) <-
-    stats::end(promoters[BiocGenerics::strand(promoters) == "-"]) - 0
+  GenomicRanges::start(promoters[BiocGenerics::strand(promoters) == "-"]) <-
+    GenomicRanges::end(promoters[BiocGenerics::strand(promoters) == "-"]) - 0
 
-  stats::end(promoters[BiocGenerics::strand(promoters) == "-"]) <-
-    stats::end(promoters[BiocGenerics::strand(promoters) == "-"]) + 2000
+  GenomicRanges::end(promoters[BiocGenerics::strand(promoters) == "-"]) <-
+    GenomicRanges::end(promoters[BiocGenerics::strand(promoters) == "-"]) + 2000
 
   promoters <-   BiocGenerics::setdiff(promoters, c(TEs, exons,five_UTR,
                                                     three_UTR,introns),
