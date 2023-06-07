@@ -85,6 +85,7 @@ utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "V9", "padj",".", "nt_N", "n", "FPKM_mean", "chr",
                          "key", "Count", "Class", "padjusted", "pvalue", "freq",
                          "value" , "variable" , "repeats_info" , "Genome" ,
-                         "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ))
+                         "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ,
+                         "MajorRNA"))
 
 
