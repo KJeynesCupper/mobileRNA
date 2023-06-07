@@ -1,9 +1,10 @@
 mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 ======================================================================
+<br>
 
 Overview
---------
-
+======================================================================
+<br>
 mobileRNA is an `R` package that provides a pipeline for the rapid 
 identification of endogenous mobile RNA molecules in plant graft systems. The 
 tool provides a pipeline for pre-processing and analysis of sRNA sequencing data,
@@ -63,6 +64,7 @@ To load the data set, use the following command:
 data("sRNA_data")
 ```
 
+<br>
 
 Getting help
 ------------
@@ -78,6 +80,7 @@ with this package:
 ``` r
 vignette("mobileRNA")
 ```
+<br>
 
 Summary
 ------------
@@ -93,6 +96,10 @@ mobile RNA species.
 
 
 
+<br>
+<br>
+<br>
+<br>
 
 Pre-mapping
 --------------------------------------------
@@ -120,11 +127,12 @@ merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
 ```
 
 
+<br>
 
-Mapping 
+Mapping: sRNA-seq data with ShortStack
 --------------------------------------------
+<br>
 
-### Mapping sRNA-seq data with ShortStack
 Here, we recommend a double-mapping process using `ShortStack`, the steps are 
 as follow: 
 
@@ -141,6 +149,8 @@ ShortStack \
 --outdir <./output/directory>
 
 ```
+<br>
+
 #### Step 2 - Uniquely map samples to all loci of identified sRNA clusters
 
 Using the output from Step 1, the `RNAloci()` function can collate all 
@@ -158,9 +168,12 @@ loci_info <- RNAloci(files = folder,
              out = save_folder,
              samples = sample_names)
 ```
+<br>
 
 Each sample is mapped to the merged reference genome with the annotation file 
 containing the cluster loci to analyse. 
+
+<br>
 
 ``` bash
 ShortStack \
@@ -176,7 +189,8 @@ ShortStack \
 
 ```
 
- 
+<br>
+
 Post-mapping analysis 
 --------------------------------------------
 The aligned data can now be analysed in R, and potential mobile sRNA can be 
@@ -200,6 +214,7 @@ sRNA_data <- RNAimport(directory = results_dir,
                            
 ```
 
+<br>
 
 #### Step 2: Calculate the consensus of each sRNA cluster  
 For a given sRNA cluster, each replicate has determined the class (20-24nt) based 
@@ -223,7 +238,7 @@ sRNA_data_summary <- RNAconsensus(data = sRNA_data,
                                  tidy=TRUE)
 
 ```
-
+<br>
 
 #### Step 3: Identify potential mobile sRNA 
 Finally, the `RNAmobile()` function filters the dataset to retain the sRNA 
@@ -248,7 +263,7 @@ write.table(output, "./output.txt")
 
 
 ```
-
+<br>
 
 Output 
 --------------------------------------------
@@ -293,6 +308,7 @@ If the mean RPM and Count was calculated `RNAmean()`:
 - `mean_RPM` : mean RPM, based on parameters 
 - `mean_Count` : mean counts, based on parameters 
 
+<br>
 
 Optional extras and additional applications  
 --------------------------------------------
