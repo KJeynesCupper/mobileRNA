@@ -35,7 +35,8 @@ results are plotted against the principle components 1 and 2.
 In special conditions, regularized log transformation will not suit
 the experimental design. For example, an experimental design without
 replicates. In this instance, it is preferable to change the default setting
-and switch to a variance stabilizing transformation method (\code{`vst=TRUE`}).
+and switch to a variance stabilizing transformation method
+(\code{`vst=TRUE`}).
 }
 \examples{
 data("sRNA_data_consensus")

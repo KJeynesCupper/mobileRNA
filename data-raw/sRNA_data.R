@@ -33,6 +33,8 @@ sRNA_data <- as.data.frame(append(df2, list(Cluster = Cluster), after = 4))
 
 # name columnns
 library(stringr)
+library(dplyr)
+
 sRNA_data <- sRNA_data %>%
   rename_with(~str_replace(., 'spiked_eggplant_1', 'heterograft_1'))%>%
   rename_with(~str_replace(., 'spiked_eggplant_2', 'heterograft_2'))%>%
@@ -41,7 +43,7 @@ sRNA_data <- sRNA_data %>%
   rename_with(~str_replace(., 'eggplant_2', 'selfgraft_2'))%>%
   rename_with(~str_replace(., 'eggplant_3', 'selfgraft_3'))
 
-usethis::use_data(sRNA_data, overwrite = TRUE)
+usethis::use_data(sRNA_data, overwrite = TRUE, compress = "xz")
 
 tools::resaveRdaFiles("./data/",compress="xz")
 tools::checkRdaFiles("data/")

@@ -56,7 +56,7 @@ plotHeatmap <-function (data, colours = NULL, dendogram = TRUE){
   select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
   rownames(select_data) <- data$clusterID
   # remove RPM_
-  for ( col in 1:ncol(select_data)){
+  for (col in 1:ncol(select_data)){
     colnames(select_data)[col] <-  sub("RPM_", "", colnames(select_data)[col])
   }
   select_data[select_data == 0] <- 1e-04
@@ -66,7 +66,7 @@ plotHeatmap <-function (data, colours = NULL, dendogram = TRUE){
   distance <- stats::dist(select_data[v, ], method = "euclidean")
   cluster <- stats::hclust(distance, method = "ward.D")
   dendrogram <- stats::as.dendrogram(cluster)
-  rowv <- base::rowMeans(select_data, na.rm = T)
+  rowv <- base::rowMeans(select_data, na.rm = TRUE)
   drow <- stats::reorder(dendrogram, rowv)
   reorderfun = function(d, w) {
     d

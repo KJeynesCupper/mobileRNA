@@ -37,7 +37,8 @@ plotSampleDistance <- function(data, vst = FALSE){
   data <- as.matrix(data %>% dplyr::select(tidyselect::starts_with("Count")))
 
   if(vst == TRUE){
-    message("Transforming the count data with a variance stabilizing transformation")
+    message("Transforming the count data with a variance stabilizing
+            transformation")
     rld <- DESeq2::varianceStabilizingTransformation(data, blind = TRUE)
     # log transform the data.
   } else
@@ -54,7 +55,8 @@ plotSampleDistance <- function(data, vst = FALSE){
   rownames(distance_matrix) <- paste(sample_names)
   colnames(distance_matrix) <- NULL
   message("Creating sample distance plot")
-  colors <- grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9,"Blues")))(255)
+  colors <- grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(
+    9,"Blues")))(255)
   plot <- pheatmap::pheatmap(distance_matrix,
                              clustering_distance_rows = distance,
                              clustering_distance_cols = distance,

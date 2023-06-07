@@ -17,10 +17,10 @@ the analysis. These should match the sample folder names created in mapping
 step one, outputted by \code{Shortstack}.}
 }
 \value{
-A plain text file (.txt) and when assigned to a variable, the dataframe
-is saved to the global environment. The output contains two columns,
-\code{Locus} containing the genomic coordinates of the dicer-derived cluster and
-\code{Cluster} contains the given name for the dicer-derived cluster.
+A plain text file (.txt) and when assigned to a variable, the
+dataframe is saved to the global environment. The output contains two
+columns,\code{Locus} containing the genomic coordinates of the dicer-derived
+cluster and \code{Cluster} contains the given name for the dicer-derived cluster.
 }
 \description{
 Collates all in the identified sRNA dicer-derived clusters
@@ -28,8 +28,8 @@ across multiple sample replicates.
 }
 \details{
 Based on the output of Shortstack, the function pulls the loci
-of the dicer-derived clusters within each sample, supplied to the function, and
-merges the loci into a single data frame.
+of the dicer-derived clusters within each sample, supplied to the function,
+and merges the loci into a single data frame.
 
 The function utilises the \code{ShortStack_All.gff3} file produced from
 the mapping and clustering analysis by ShortStack.

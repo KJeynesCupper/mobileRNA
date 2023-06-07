@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 URL: https://github.com/KJeynesCupper/mobileRNA.git,
     https://kjeynescupper.github.io/mobileRNA/
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
@@ -56,12 +56,7 @@ Imports:
 biocViews: 
     Visualization,
     RNASeq,
-    sRNASeq,
-    small RNASeq,
-    DifferentialExpression,
-    plant graft, 
-    heterograft, 
-    plant science, 
-    botany
+    Sequencing,
+    SmallRNA
 SystemRequirements: ShortStack (https://github.com/MikeAxtell/ShortStack)
 BiocType: Workflow
