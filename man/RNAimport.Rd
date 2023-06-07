@@ -88,7 +88,8 @@ df_mRNA <- RNAimport(input = "mRNA",
 
 }
 # The output of this function can be explore in the data object sRNA_data
-View(data("sRNA_data"))
+data("sRNA_data")
+head(sRNA_data)
 
 
 }
