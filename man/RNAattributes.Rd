@@ -33,3 +33,29 @@ genome using the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function, alt
 inline with these can be accomplished using the
 \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function.
 }
+\examples{
+\dontrun{
+
+# find all overlapping attributes using a merged reference to the starting
+# data
+data("sRNA_data")
+
+attributes_df <- RNAattributes(data = sRNA_data,
+annotation = "./annotation/merged/merged_annotation.gff3")
+
+
+# find overlaps & annotate potential mobile sRNAs with overlapping regions
+# in genome of destination tissues. The simulated data aims to simulate RNA
+# movement from eggplant to tomato.
+data("sRNA_data_mobile")
+attributes_mobile_destination <- RNAattributes(data = sRNA_data_mobile,
+annotation = "./annotation/tomato_annotation.gff")
+
+# find overlaps & annotate potential mobile sRNAs with overlapping regions in
+# genome of origin to provide insight.
+attributes_mobile_origin <- RNAattributes(data = sRNA_data_mobile,
+annotation = "./annotation/eggplant_annotation.gff")
+
+}
+
+}

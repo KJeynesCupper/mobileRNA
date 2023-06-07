@@ -24,6 +24,7 @@
 #'any sRNA cluster loci. These columns represent the standard columns
 #'in a GFF file.
 #' @export
+#' @examples
 #' \dontrun{
 #'
 #' # find all overlapping attributes using a merged reference to the starting
