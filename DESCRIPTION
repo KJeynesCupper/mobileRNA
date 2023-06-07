@@ -64,3 +64,4 @@ biocViews:
     plant science, 
     botany
 SystemRequirements: ShortStack (https://github.com/MikeAxtell/ShortStack)
+BiocType: Workflow

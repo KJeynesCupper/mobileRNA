@@ -3,7 +3,7 @@ title: "Overview of the mobileRNA R package for mobile sRNA identification betwe
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  BiocStyle::html_document:
   toc: true
 toc_depth: 3
 number_sections: true

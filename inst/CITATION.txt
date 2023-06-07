@@ -1,0 +1,13 @@
+citEntry(entry="article",
+	author = "Jeynes-Cupper, Katie and Catoni, Marco",
+	doi = "",
+	journal = "",
+	pages = "",
+	pmc = "",
+	pmid = "",
+	title = "mobileRNA: An R package to identify mobile RNA molecules traveling between genotypes",
+	volume = "",
+	year = "",
+	textVersion = paste("Katie Jeynes-Cupper, Marco Catoni.",
+	 "mobileRNA: An R package to identify mobile RNA molecules traveling between genotypes.")
+)
