@@ -24,26 +24,15 @@
 #'Produces a list of objects, including the plot.
 #'
 #' @examples
-#' data("sRNA_data_consensus")
-#' # plot heatmap of sRNAs across dataset
-#'  p1 <-  plotHeatmap(sRNA_data_consensus)
 #'
 #'
 #' data("sRNA_data_mobile")
+#'
 #' # plot heatmap of potential mobile sRNAs
 #'  p1 <-  plotHeatmap(sRNA_data_mobile)
 #'
 #'
 #'
-#' ## edgeR example: mobile 24-nt & 21/22-nt sRNA
-#'
-#'  # plot heatmap of likely mobile 24-nt sRNA
-#'  data("sRNA_24_mobile_edgeR")
-#'  p3 <-  plotHeatmap(sRNA_24_mobile_edgeR)
-#'
-#'  # plot heatmap of likely mobile 24-nt sRNA
-#'  data("sRNA_2122_mobile_edgeR")
-#'  p4 <-  plotHeatmap(sRNA_2122_mobile_edgeR)
 #'
 #' @export
 #' @importFrom dplyr "%>%"

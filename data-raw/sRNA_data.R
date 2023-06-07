@@ -42,3 +42,6 @@ sRNA_data <- sRNA_data %>%
   rename_with(~str_replace(., 'eggplant_3', 'selfgraft_3'))
 
 usethis::use_data(sRNA_data, overwrite = TRUE)
+
+tools::resaveRdaFiles("./data/",compress="xz")
+tools::checkRdaFiles("data/")
