@@ -51,11 +51,13 @@
 #'@importFrom BiocGenerics "strand"
 #'@importFrom dplyr "select"
 #'@importFrom dplyr "mutate"
+#'@importFrom dplyr "filter"
 #'@importFrom GenomicRanges "makeGRangesFromDataFrame"
 #'@importFrom scales "label_percent"
 #'@importFrom dplyr "%>%"
 #'@importFrom IRanges "overlapsAny"
 #'@importFrom BiocGenerics "width"
+#'@importFrom Repitools "annoGR2DF"
 #'@export
 RNAfeatures <- function(data, annotation, repeats = NULL, percentage = TRUE){
   annotation_info <-rtracklayer::import.gff3(annotation)
@@ -93,18 +95,19 @@ RNAfeatures <- function(data, annotation, repeats = NULL, percentage = TRUE){
   introns <- GenomicRanges::setdiff(genes, c(exons, five_UTR, three_UTR),
                                     ignore.strand=TRUE)
 
-  promoters <- genes
-  stats::start(promoters[BiocGenerics::strand(promoters) == "+"]) <-
-    stats::start(promoters[BiocGenerics::strand(promoters) == "+"])-2000
+  # define promoter regions
+  gene_promoters <-Repitools::annoGR2DF(genes)
+  pos_strand_promoter <- gene_promoters %>%
+    dplyr::filter(strand == "+") %>% dplyr::mutate(end=start) %>%
+    dplyr::filter(strand == "+") %>% dplyr::mutate(start=start-2000)
 
-  stats::end(promoters[BiocGenerics::strand(promoters) == "+"]) <-
-    stats::start(promoters[BiocGenerics::strand(promoters) == "+"]) + 0
+  neg_strand_promoter <- gene_promoters %>%
+    dplyr::filter(strand == "-") %>% dplyr::mutate(end=start) %>%
+    dplyr::filter(strand == "-") %>% dplyr::mutate(start=start-2000)
 
-  stats::start(promoters[BiocGenerics::strand(promoters) == "-"]) <-
-    stats::end(promoters[BiocGenerics::strand(promoters) == "-"]) - 0
+  promoters <- rbind(pos_strand_promoter, neg_strand_promoter)
+  promoters <- GenomicRanges::makeGRangesFromDataFrame(promoters)
 
-  stats::end(promoters[BiocGenerics::strand(promoters) == "-"]) <-
-    stats::end(promoters[BiocGenerics::strand(promoters) == "-"]) + 2000
 
   promoters <-   BiocGenerics::setdiff(promoters, c(TEs, exons,five_UTR,
                                                     three_UTR,introns),
