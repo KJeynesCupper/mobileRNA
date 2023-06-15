@@ -45,9 +45,9 @@ their data. Notably, \code{DESeq2} cannot compute the analysis when there only
 one replicate per condition, but, \code{edgeR} can. Simply set a suitable
 dispersion value, based on similar data, to use this feature. The dispersion
 value is other wise known as the common Biological squared coefficient
-of variation. A typical dispersion value is 0.4 for human data sets, 0.1  for
-data on genetically identical model organisms or 0.01 for technical replicate.
-See the User’s Guide for the  ‘EdgeR’ package for more details,
+of variation. A typical dispersion value is 0.4 for human data sets, 0.1 for
+data on genetically identical model organisms or 0.01 for technical
+replicate. See the User’s Guide for the  ‘EdgeR’ package for more details,
 \link[edgeR:edgeR-package]{edgeR::edgeR}.
 }
 \examples{

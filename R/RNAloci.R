@@ -57,6 +57,7 @@
 #' @importFrom stats "start"
 #' @importFrom stats "end"
 #' @importFrom utils "write.table"
+#' @importFrom xfun "file_ext"
 
 RNAloci <- function(files, out, samples ){
 
@@ -69,7 +70,8 @@ RNAloci <- function(files, out, samples ){
                cooresponding to the folders of each sample replicate containing
                results"))
   }
-  if (base::missing(out) || tools::file_ext(out == "txt")) {
+  extension_out <- xfun::file_ext(out)
+  if (base::missing(out) ||  !extension_out == "txt") {
     stop(paste("Please specify out, a connection to a local directory to
                store output, including name and file extention (.txt)"))
   }

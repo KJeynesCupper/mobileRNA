@@ -9,16 +9,15 @@ RNAmergeAnnotations(
   annotationB,
   out_dir,
   abbreviationAnnoA = "A",
-  abbreviationAnnoB = "B",
-  replace_chr_names = TRUE
+  abbreviationAnnoB = "B"
 )
 }
 \arguments{
-\item{annotationA}{the path  \code{base::connection()} to a genome annotation
-file in GFF3 format}
+\item{annotationA}{GRanges object; a genome annotation assembly file in
+GFF format.}
 
-\item{annotationB}{the path  \code{base::connection()} to a genome annotation
-file in GFF3 format}
+\item{annotationB}{GRanges object; a genome annotation assembly file in
+GFF format.}
 
 \item{out_dir}{either a character string or a \code{base::connections()} open
 for writing. Place path to output directory in "", including file output name
@@ -29,25 +28,21 @@ within \code{annotationA}.Default set as "A".}
 
 \item{abbreviationAnnoB}{a string placed in "", to replace chromosome names
 within \code{annotationB}.Default set as "B".}
-
-\item{replace_chr_names}{a logical value indicating whether the chromosome
-names of the supplied annotation files are to be altered or not. As default,
-chromosome names are altered.}
 }
 \value{
 The function output the individually altered annotation files, plus, a merged
-annotation file made up of the two altered files. The altered annotation files
-contain either default or custom alterations to the chromosome names and are
-written to the original file connection with the addition of "_altered.gff3"
-at the end of the file name.
-
-The  merged annotation file is outputted to the global object variable when
-assigned, as well as writing the merged annotation file in
-GFF format to a give output directory.
+annotation file to the global environment and the given directory.
+The altered annotation files contain either default or custom alterations to
+the chromosome names and are written to the same directory as the merged file,
+with the given names addition of \code{annotationA_altered.gff} and
+\code{annotationB_altered.gff}, respectively.
 }
 \description{
 Merges two genomes annotation files (\verb{GFF format}) into one
-single GFF file saved to desired directory.
+single GFF file saved to desired directory. Adds prefix to each chromosome
+name in the genome annotations to ensure each assembly is distinguishable
+within the merged file, and saved the individually altered references to
+local directory.
 }
 \details{
 The functions primary goal is to merge two GFF files, however, when
@@ -56,16 +51,20 @@ by the chromosome names. As a default setting, the function extracts the
 chromosome names for a given GFF file and adds an ID before each chromosome
 name and removes any periods.
 
-The function requires the input of two reference annotation genomes, where
-one represents \code{annotationA} and the other represents \code{annotationB}.
 As default, the function will rename the chromosome names in \code{annotationA}
 to "A". For example, A0, A1, A2 etc. To set a custom chromosome name for
 \code{annotationA} alter the argument \code{abbreviationAnnoA}. While, for
 \code{annotationB} as default the chromosome names will be named "B", for example,
 B0, B1, B2 etc. To set a custom chromosome name for \code{annotationB} alter the
-argument \code{abbreviationAnnoB}. The function can do so by  draw the
-chromosome number within the given GFF file, remove all prior character or
-numerical values, and replace it with the supplied string.
+argument \code{abbreviationAnnoB}.
+
+The merged genome is saved to the specified output directory, and requires
+the user to set the name with a \code{gff} extension. The user must load the
+annotations into the R Global Environment, hence, the alterations made by
+this function will alter the variable. The altered annotations will also
+be saved to the same directory as supplied for the output file, with a fixed
+output name of \code{annotationA_altered.gff} and \code{annotationB_altered.gff},
+respectively.
 
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
@@ -73,27 +72,35 @@ the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a me
 genome,that you treat the input annotations in the same way.
 }
 \examples{
-\dontrun{
-merged_anno <- RNAannotationMerge(annotationA =
-                                "./workplace/reference/ref1_annotation.gff3",
-                  annotationB = "./workplace/reference/ref2_annotation.gff3",
-             out_dir = "./workplace/reference/merge/merged_annotation.gff3")
 
-## or, to set specific changes to chromosome names. annotationA represents
-## the Solanum lycopersicum and the chromosomes will be abbreviated to `SL`,
-## and annotationB represents Solanum melongena and the chromosomes will be
-## abbreviated to `SM`.
+# import GFF files into R
 
-merged_anno_2 <- RNAannotationMerge(annotationA =
-                                "./workplace/reference/ref1_annotation.gff3",
-                  annotationB = "./workplace/reference/ref2_annotation.gff3",
-              out_dir = "./workplace/reference/merge/merged_annotation.gff3",
-             abbreviationAnnoA = "SL",
-            abbreviationAnnoB = "SM")
+# Read reference genomes
+url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
+
+import_anno1_url <- paste0(url_remote, "chr12_Eggplant_V4.1_function_IPR_final.gff")
+
+import_anno2_url <- paste0(url_remote, "chr2_ITAG4.0_gene_models.gff")
+
+ # Read in GFF files
+anno1 <- rtracklayer::import(import_anno1_url)
+anno2 <- rtracklayer::import(import_anno2_url)
+
+# edit and merge
+merged_anno <- RNAmergeAnnotations(annotationA = anno1,
+                                 annotationB = anno2,
+             out_dir = "../references/merged_annotation.gff3")
+
+## Set specific pre-fixes:
+###  annotationA represents Solanum melongena, so abbreviated to `SM`
+###  annotationB represents Solanum lycopersicum, so abbreviated to `SL`
+
+merged_anno_2 <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
+              out_dir = "../references/merged_annotation.gff3",
+              abbreviationAnnoA = "SM",abbreviationAnnoB = "SL")
 
 
 
-}
 
 
 }

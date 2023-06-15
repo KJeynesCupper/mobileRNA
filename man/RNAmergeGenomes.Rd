@@ -2,42 +2,38 @@
 % Please edit documentation in R/RNAmergeGenomes.R
 \name{RNAmergeGenomes}
 \alias{RNAmergeGenomes}
-\title{Merge two FASTA reference genomes into one}
+\title{Merge two FASTA genome assemblies}
 \usage{
 RNAmergeGenomes(
   genomeA,
   genomeB,
   out_dir,
   abbreviationGenomeA = "A",
-  abbreviationGenomeB = "B",
-  replace_chr_names = TRUE
+  abbreviationGenomeB = "B"
 )
 }
 \arguments{
-\item{genomeA}{the path  \code{base::connection()} to a genome reference
-file in FASTA format (.fa/.fasta). File may be supplied as compressed with a
-.gzip extension.}
+\item{genomeA}{a large DNAStringSet; a genome reference assembly file in
+FASTA format (.fa/.fasta).}
 
-\item{genomeB}{the path  \code{base::connection()} to a genome reference
-file in FASTA format (.fa/.fasta). File may be supplied as compressed with a
-.gzip extension.}
+\item{genomeB}{a large DNAStringSet; a genome reference assembly file in
+FASTA format (.fa/.fasta).}
 
 \item{out_dir}{either a character string or a \code{base::connections()} open
-for writing. Place path to output directory in "", including file output name.}
+for writing. Place path to output directory in "", including file output name.
+Output name must have a ".fa" extension.}
 
 \item{abbreviationGenomeA}{a string placed in "", to replace chromosome names
 within \code{genomeA}.Default set as "A".}
 
 \item{abbreviationGenomeB}{a string placed in "", to replace chromosome names
 within \code{genomeB}.Default set as "B".}
-
-\item{replace_chr_names}{a logical value indicating whether the chromosome
-names of the supplied annotation files are to be altered or not. As default,
-chromosome names are altered.}
 }
 \value{
-A FASTA format file containing two genome assemblies with edited
-chromosome names (prefixes, and removal of periods)
+Returns a single FASTA format file containing both  genome assemblies
+with edited chromosome names (prefixes, and removal of periods) to the give
+directory, as well as the individual edited genomes assemblies named
+"genomeA_altered.fa" and "genomeB_altered.fa", respectively.
 }
 \description{
 Merges two reference genomes (.fa/.fasta). into one single
@@ -67,23 +63,39 @@ the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function to to cre
 annotation,that you treat the input references in the same way.
 }
 \examples{
-\dontrun{
-merged_ref <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
-            genomeB = "./workplace/reference/ref2.fa",
-            out_dir = "./workplace/reference/merge/merged_ref.fa")
 
-## or, to set specific changes to chromosome names. annotationA represents
-## the Solanum lycopersicum and the chromosomes will be abbreviated to `SL`,
-## and annotationB represents Solanum melongena and the chromosomes will be
-## abbreviated to `SM`.
+# import FASTA files into R
 
-merged_ref2 <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
-            genomeB = "./workplace/reference/ref2.fa",
-            out_dir = "./workplace/reference/merge/merged_ref.fa",
-            abbreviationGenomeA = "SL",
-            abbreviationGenomeB = "SM")
 
-}
+ # URL for example genome assemblies
+ url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
 
+ fasta_url_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+
+ fasta_url_2 <- paste0(url_remote, "chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
+
+
+ # load into R
+ ref1 <- Biostrings::readDNAStringSet(fasta_url_1,format = "fasta")
+ ref2 <- Biostrings::readDNAStringSet(fasta_url_2,format = "fasta")
+
+# run function to merge
+merged_ref <- RNAmergeGenomes(genomeA = ref1, genomeB = ref2,
+                               out_dir = "../references/merged_ref.fa")
+
+
+
+
+## or, to set specific changes to chromosome names:
+ # genomeA represents Solanum melongena and the chromosomes will be
+ # abbreviated to `SM.
+# genomeB represents Solanum lycopersicum and the chromosomes will be
+# abbreviated to `SL`.
+
+merged_ref2 <- RNAmergeGenomes(genomeA = ref1,
+            genomeB = ref2 ,
+            out_dir = "../references/merged_ref.fa",
+            abbreviationGenomeA = "SM",
+            abbreviationGenomeB = "SL")
 
 }

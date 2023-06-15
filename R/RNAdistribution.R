@@ -67,9 +67,9 @@
 #'together, overlapped on a single graph \code{total="TRUE"}. This is not an
 #'option for bar plots.
 #'
-#'The final option, is to plot the total consensus of dicer-derived sRNA clusters
-#'across the experimental conditions, the function pulls the consensus call
-#'from the column created by the [RNAconsensus()] function in the working
+#'The final option, is to plot the total consensus of dicer-derived sRNA
+#'clusters across the experimental conditions, the function pulls the consensus
+#'call from the column created by the [RNAconsensus()] function in the working
 #'data frame.
 #'
 #'
@@ -128,7 +128,7 @@
 #' @importFrom ggplot2 "ylab"
 #' @importFrom ggplot2 "labs"
 #'
-RNAdistribution <- RNAdistribution2 <- function(data, samples =NULL,
+RNAdistribution  <- function(data, samples =NULL,
                                                 style = c("bar", "line",
                                                           "consensus"),
                                                 facet = TRUE,
@@ -289,7 +289,7 @@ RNAdistribution <- RNAdistribution2 <- function(data, samples =NULL,
                 counts.df <- counts.df %>% select(!all_of(samples))
                 p <- print(ggplot2::ggplot(tidyr::gather(counts.df, key, Count,
                                                          -Class),
-                                           ggplot2::aes(Class, Count, group=1)) +
+                                           ggplot2::aes(Class, Count, group=1))+
                              ggplot2::geom_point() +
                              ggplot2::geom_line() +
                              ggplot2::theme_classic()+

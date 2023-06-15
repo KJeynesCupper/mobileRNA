@@ -1,20 +1,18 @@
-#' Merge two FASTA reference genomes into one
+#' Merge two FASTA genome assemblies
 #'
 #' @description Merges two reference genomes (.fa/.fasta). into one single
 #' reference with modified chromosome names to ensure distinguishability.
 #'
 #'
-#'@param genomeA the path  \code{base::connection()} to a genome reference
-#'file in FASTA format (.fa/.fasta). File may be supplied as compressed with a
-#'.gzip extension.
+#'@param genomeA a large DNAStringSet; a genome reference assembly file in
+#'FASTA format (.fa/.fasta).
 #'
-#'@param genomeB the path  \code{base::connection()} to a genome reference
-#'file in FASTA format (.fa/.fasta). File may be supplied as compressed with a
-#'.gzip extension.
+#'@param genomeB a large DNAStringSet; a genome reference assembly file in
+#'FASTA format (.fa/.fasta).
 #'
 #'@param out_dir either a character string or a \code{base::connections()} open
 #'for writing. Place path to output directory in "", including file output name.
-#'
+#'Output name must have a ".fa" extension.
 #'
 #'@param abbreviationGenomeA a string placed in "", to replace chromosome names
 #'within \code{genomeA}.Default set as "A".
@@ -22,13 +20,11 @@
 #'@param abbreviationGenomeB a string placed in "", to replace chromosome names
 #'within \code{genomeB}.Default set as "B".
 #'
-#'@param replace_chr_names a logical value indicating whether the chromosome
-#'names of the supplied annotation files are to be altered or not. As default,
-#'chromosome names are altered.
 #'
-#'
-#'@return A FASTA format file containing two genome assemblies with edited
-#'chromosome names (prefixes, and removal of periods)
+#'@return Returns a single FASTA format file containing both  genome assemblies
+#'with edited chromosome names (prefixes, and removal of periods) to the give
+#'directory, as well as the individual edited genomes assemblies named
+#'"genomeA_altered.fa" and "genomeB_altered.fa", respectively.
 #'@details
 #'
 #' The functions primary goal is to merge two FASTA files, however, when
@@ -54,27 +50,43 @@
 #'the [mobileRNA::RNAmergeAnnotations()] function to to create a merged genome
 #'annotation,that you treat the input references in the same way.
 #'
-#' @examples \dontrun{
-#' merged_ref <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
-#'             genomeB = "./workplace/reference/ref2.fa",
-#'             out_dir = "./workplace/reference/merge/merged_ref.fa")
+#' @examples
 #'
-#' ## or, to set specific changes to chromosome names. annotationA represents
-#' ## the Solanum lycopersicum and the chromosomes will be abbreviated to `SL`,
-#' ## and annotationB represents Solanum melongena and the chromosomes will be
-#' ## abbreviated to `SM`.
+#'# import FASTA files into R
 #'
-#' merged_ref2 <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
-#'             genomeB = "./workplace/reference/ref2.fa",
-#'             out_dir = "./workplace/reference/merge/merged_ref.fa",
-#'             abbreviationGenomeA = "SL",
-#'             abbreviationGenomeB = "SM")
 #'
-#'}
+#'  # URL for example genome assemblies
+#'  url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
 #'
+#'  fasta_url_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+#'
+#'  fasta_url_2 <- paste0(url_remote, "chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
+#'
+#'
+#'  # load into R
+#'  ref1 <- Biostrings::readDNAStringSet(fasta_url_1,format = "fasta")
+#'  ref2 <- Biostrings::readDNAStringSet(fasta_url_2,format = "fasta")
+#'
+#' # run function to merge
+#' merged_ref <- RNAmergeGenomes(genomeA = ref1, genomeB = ref2,
+#'                                out_dir = "../references/merged_ref.fa")
+#'
+#'
+#'
+#'
+#' ## or, to set specific changes to chromosome names:
+#'  # genomeA represents Solanum melongena and the chromosomes will be
+#'  # abbreviated to `SM.
+#' # genomeB represents Solanum lycopersicum and the chromosomes will be
+#' # abbreviated to `SL`.
+#'
+#' merged_ref2 <- RNAmergeGenomes(genomeA = ref1,
+#'             genomeB = ref2 ,
+#'             out_dir = "../references/merged_ref.fa",
+#'             abbreviationGenomeA = "SM",
+#'             abbreviationGenomeB = "SL")
 #'
 #' @importFrom Biostrings "readDNAStringSet"
-#' @importFrom tools "file_ext"
 #' @importFrom Biostrings "writeXStringSet"
 #'
 #' @export
@@ -82,60 +94,68 @@
 RNAmergeGenomes <- function(genomeA, genomeB,
                             out_dir,
                             abbreviationGenomeA= "A",
-                            abbreviationGenomeB= "B",
-                           replace_chr_names = TRUE) {
+                            abbreviationGenomeB= "B") {
 
-  if (base::missing(genomeA) || !base::inherits(genomeA, c("character"))) {
+  if (base::missing(genomeA)) {
     stop(paste("Please specify genomeA, a connection to a FASTA file in local"))
   }
 
-  if (base::missing(genomeB) || !base::inherits(genomeB, c("character"))) {
+  if (base::missing(genomeB)) {
     stop(paste("Please specify annotationA, a connection to a FASTA file in local"))
   }
 
-  if (base::missing(out_dir) || !base::inherits(out_dir, c("character")) || tools::file_ext(out_dir == c("fa", "fasta"))) {
+  if (base::missing(out_dir) || !grepl("\\.fa$", out_dir)) {
     stop(paste("Please specify out_dir, a connection to a local directory to
                write and save merged annotation. Ensure file name with extension
                (.fa or .fasta) is supplied."))
   }
 
-
-  message("Loading reference genomes")
-
-  # Read reference genomes
-  ref1 <- Biostrings::readDNAStringSet(file.path(genomeA), format = "fasta")
-  ref2 <- Biostrings::readDNAStringSet(file.path(genomeB), format = "fasta")
-
   # Replace chromosome names in reference genomes
-
-
-  if (replace_chr_names) {
     message("Replacing chromosome names")
     ref1_names <- names(ref1)
     ref1_newnames <- paste0(abbreviationGenomeA,"_", ref1_names )
     ref1_newnames <- sub("\\.", "", ref1_newnames)
     names(ref1) <- ref1_newnames
 
-    ref2_names <- names(ref1)
-    ref2_newnames <- paste0(abbreviationGenomeB,"_", ref1_names )
+    ref2_names <- names(ref2)
+    ref2_newnames <- paste0(abbreviationGenomeB,"_", ref2_names )
     ref2_newnames <- sub("\\.", "", ref2_newnames)
     names(ref2) <- ref2_newnames
-  }
 
-  ref1_save <- paste0(tools::file_path_sans_ext(genomeA), "_altered.fa")
-  ref2_save <- paste0(tools::file_path_sans_ext(genomeB), "_altered.fa")
+# location to save
+  location <- dirname(out_dir)
+  ref1_save <- paste0(location,"/", "genomeA_altered.fa")
+  ref2_save <- paste0(location,"/", "genomeB_altered.fa")
 
-
-  message("Writting altered reference files")
+  message("Writting altered reference files to output location: ", location)
 
   Biostrings::writeXStringSet(ref1,ref1_save , format = "fasta", append = FALSE)
   Biostrings::writeXStringSet(ref2, ref2_save, format = "fasta", append = TRUE)
 
 
-  message("Writting merged reference file to:", out_dir)
+  message("Writting merged reference file to: ", out_dir)
   system(paste0("cat ", ref1_save, " ", ref2_save, " >", out_dir))
 
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

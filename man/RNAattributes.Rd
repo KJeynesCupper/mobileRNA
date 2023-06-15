@@ -15,8 +15,8 @@ the chromosome number, \code{start} and \code{end} which supply the coordinates.
 reference annotation file (.gff/.gff1/.gff2/.gff3).}
 }
 \value{
-Adds an additional 6 columns containing information which overlaps
-any sRNA cluster loci. These columns represent the standard columns
+Adds an additional columns from GFF containing information which
+overlaps any sRNA cluster loci. These columns represent the standard columns
 in a GFF file.
 }
 \description{

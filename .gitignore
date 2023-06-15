@@ -11,3 +11,5 @@ _pkgdown.yml
 .RDataTmp1
 .DS_Store
 .RDataTmp
+inst/
+.RDataTmp2

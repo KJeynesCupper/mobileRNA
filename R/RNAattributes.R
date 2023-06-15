@@ -20,10 +20,12 @@
 #' reference annotation file (.gff/.gff1/.gff2/.gff3).
 #'
 #'
-#'@return Adds an additional 6 columns containing information which overlaps
-#'any sRNA cluster loci. These columns represent the standard columns
+#'@return Adds an additional columns from GFF containing information which
+#'overlaps any sRNA cluster loci. These columns represent the standard columns
 #'in a GFF file.
 #' @export
+#' @importFrom rtracklayer "import"
+#' @importFrom Repitools "annoGR2DF"
 #' @examples
 #' \dontrun{
 #'
@@ -50,7 +52,8 @@
 #' }
 #'
 RNAattributes <- function(data, annotation){
-  anno_data <- .import_annotations(annotation)
+  anno_data <- rtracklayer::import(annotation)
+  conversion <- Repitools::annoGR2DF(anno_data)
   res <- merge(data,anno_data, by=c("chr","start", "end"),all.x=TRUE)
   return(res)
 }

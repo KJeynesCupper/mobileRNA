@@ -99,8 +99,8 @@
 #' @importFrom stats "setNames"
 
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
-                       report = TRUE,
-                       tidy = TRUE) {
+                        report = TRUE,
+                        tidy = TRUE) {
 
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
@@ -169,7 +169,8 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       dplyr::mutate(dplyr::across(dplyr::contains('DicerCall_'),
                                   ~tidyr::replace_na(.,"N")))%>%
       dplyr::mutate(dplyr::across(dplyr::contains('MajorRNA_'),
-                                  ~tidyr::replace_na(.,"N")))
+                                  ~tidyr::replace_na(.,"N"))) %>%
+      dplyr::mutate_all(~ ifelse(. == "*", "N", .)) # remove any astriks to "N"
 
 
     # Convert loci_all back to a data.frame and return it
@@ -191,6 +192,9 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     cluster_names <-  paste0("cluster_", 1:nrow(df_final))
     df_final <- as.data.frame(append(df_final, list(Cluster = cluster_names),
                                      after = 4))
+
+
+
     # return values
     return(df_final)
 

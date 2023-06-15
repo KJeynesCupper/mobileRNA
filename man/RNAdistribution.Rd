@@ -91,9 +91,9 @@ Alternatively, the function allows you to plot the line graph for each sample
 together, overlapped on a single graph \code{total="TRUE"}. This is not an
 option for bar plots.
 
-The final option, is to plot the total consensus of dicer-derived sRNA clusters
-across the experimental conditions, the function pulls the consensus call
-from the column created by the \code{\link[=RNAconsensus]{RNAconsensus()}} function in the working
+The final option, is to plot the total consensus of dicer-derived sRNA
+clusters across the experimental conditions, the function pulls the consensus
+call from the column created by the \code{\link[=RNAconsensus]{RNAconsensus()}} function in the working
 data frame.
 }
 \examples{

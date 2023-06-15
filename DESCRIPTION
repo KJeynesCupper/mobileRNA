@@ -51,7 +51,7 @@ Imports:
     IRanges,
     stats,
     Biostrings, 
-    tools,
+    xfun,
     magrittr
 biocViews: 
     Visualization,

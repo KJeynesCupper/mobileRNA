@@ -4,25 +4,9 @@
 # Date:   01.02.23                                           #
 #------------------------------------------------------------#
 
-.import_annotations <- function(data){
-  x <- utils::read.table(data ,header = FALSE, sep="\t",stringsAsFactors=FALSE,
-                         quote="")
-  x <- x %>% dplyr::rename(chr = V1,
-                           source = V2,
-                           feature = V3,
-                           start=V4,
-                           end = V5,
-                           score= V6 ,
-                           strand = V7,
-                           frame =V8,
-                           attribute = V9)
-  return(x)
-}
 
 
-
-
-# remove mapping errors during RNAmobile
+################ remove mapping errors (RNAmobile function) ####################
 .remove_mapping_errors <- function(data, controls) {
   class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
 
@@ -49,14 +33,7 @@
 }
 
 
-
-# This is a modified version of the base match function, which instead of
-# returning an NA value if it does not work, it returns false.
-.match_vec <- function (x, table, nomatch = FALSE) {
-  (match(x, table, nomatch))
-}
-
-
+################ DESE2 function (RNAanalysis function) #########################
 .DESeq_normalise <- function(data, conditions){
   column.data <- data.frame(conditions=as.factor(conditions))
   base::rownames(column.data) <- base::colnames(data)
@@ -69,7 +46,7 @@
   return(out)
 }
 
-
+################ EDGER function (RNAanalysis function) #########################
 .edgeR_normalise <- function(data, conditions){
   d <- edgeR::DGEList(counts = data, group = factor(conditions))
   result <- edgeR::calcNormFactors(d)
@@ -79,7 +56,42 @@
   return(result)
 }
 
+################ Find RNA complementary sequence (RNAsequence function) ########
 
+find_complementary_sequenceRNA <- function(seq) {
+  # conversions
+  conversion_nucleotides <- c(A = "U", U = "A", C = "G", G = "C")
+
+  # calculate complementary nt for each
+  complementary_calc <- sapply(strsplit(seq, ""), function(nucleotide) {
+    conversion_nucleotides[nucleotide]
+  })
+
+  # Combine into string
+  output <- paste0(complementary_calc, collapse = "")
+  return(output)
+}
+
+
+################ Find DNA complementary sequence (RNAsequence function) #######
+
+find_complementary_sequenceDNA <- function(seq) {
+  # conversions
+  conversion_nucleotides <- c(A = "T", U = "A", C = "G", G = "C")
+
+  # calc complementary nt for each in string
+  complementary_calc <- sapply(strsplit(seq, ""), function(nucleotide) {
+    conversion_nucleotides[nucleotide]
+  })
+
+  # Combine into string
+  output <- paste0(complementary_calc, collapse = "")
+  return(output)
+}
+
+
+
+################## global variable storage #####################################
 utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "nt_23", "nt_24", "group", "qc", "score", "phase",
                          "type", "V1", "V10", "V11", "V12", "V13", "V14", "V15",
