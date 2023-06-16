@@ -86,14 +86,14 @@
 #'# edit and merge
 #' merged_anno <- RNAmergeAnnotations(annotationA = anno1,
 #'                                  annotationB = anno2,
-#'              out_dir = "../references/merged_annotation.gff3")
+#'              out_dir = "./merged_annotation.gff3")
 #'
 #' ## Set specific pre-fixes:
 #' ###  annotationA represents Solanum melongena, so abbreviated to `SM`
 #' ###  annotationB represents Solanum lycopersicum, so abbreviated to `SL`
 #'
 #' merged_anno_2 <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-#'               out_dir = "../references/merged_annotation.gff3",
+#'               out_dir = "./merged_annotation.gff3",
 #'               abbreviationAnnoA = "SM",abbreviationAnnoB = "SL")
 #'
 #'
