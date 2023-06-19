@@ -148,6 +148,8 @@ RNAdistribution  <- function(data, samples =NULL,
   # PLOT CONSENSUS
   if (consensus == TRUE){
     x <- data %>% dplyr::count(sRNA_Consensus)
+    x$sRNA_Consensus <- gsub("nt_","", x$sRNA_Consensus)
+
     if(!relative == FALSE){
       x <- x %>% dplyr::mutate(freq = n / sum(n))
       p1 <- ggplot2::ggplot(x, ggplot2::aes(x = sRNA_Consensus,

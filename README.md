@@ -42,8 +42,8 @@ Table of Contents
 - [Output](#Output)
 - [Functional Analysis](#Functional-Analysis)
 - [Optional Extras](#Optional-Extras)
-
 <br>
+
 Installation
 ------------
 
@@ -53,7 +53,8 @@ The latest version of the package can be install directly from this GitHub repo:
 if (!require("devtools")) install.packages("devtools")
 devtools::install_github("KJeynesCupper/mobileRNA", branch = "main")
 ```
-<br>
+
+
 Loading Test Data
 -----------------
 
@@ -101,12 +102,9 @@ mobile RNA species.
 
 Going forward,we assume standard quality control steps on raw samples has been
 completed (i.e. trimming of adapters and low quality reads)
-  
+<br>
 
-<br>
-<br>
-<br>
-<br>
+
 
 Merging Genome Assemblies
 --------------------------------------------
@@ -127,7 +125,6 @@ merged_reference <- RNAmergeGenomes(genomeA = "./workplace/reference/ref1.fa",
 
 Auto-Detection of sRNA Cluster  
 --------------------------------------------
-<br>
 
 Here we identify and build a list sRNA clusters within each sample to assist
 the mapping step later on to ensure consistency across the analysis.
@@ -292,7 +289,6 @@ and more.
 overlap this locus.
 - `RPM` : Reads per Million
 
-<br>
 ### Other information
 - `sRNA_Consensus` : Consensus sRNA class calculated by `RNAconsensus()`
 

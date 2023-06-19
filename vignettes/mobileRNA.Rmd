@@ -19,7 +19,7 @@ vignette: >
  %\usepackage[utf8]{inputenc}
 
 ---
-
+<br>
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -30,8 +30,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-
 
 
 # Introduction
@@ -55,7 +53,7 @@ results, and supports functional analysis. The package generates
 mobile molecules through a consensus classification system, in hand with the 
 optional use of differential expression analysis and can quickly achieve 
 results.
-
+<br>
 
 # Methods
 This manual offers a pipeline for the analysis of sRNAseq data from plant
@@ -76,13 +74,15 @@ here we have incorporated this into the analysis options. This adds greater
 flexibility and control to the user. By the end of the analysis using mobileRNA,
 the user could have produced a number of figures to represent the data. This
 includes plots to represent the:
-  * Distribution of sRNA sizes across samples, total dataset consensus sRNA,
-or across the potential mobile sRNA.
-* Distribution of sRNA across genomic features
-* Sample distance, including a PCA and heatmap
-* Heatmap of mobile sRNA expression
 
+- Distribution of sRNA sizes across samples, total dataset consensus sRNA,or across the potential mobile sRNA.
 
+- Distribution of sRNA across genomic features
+
+- Sample distance, including a PCA and heatmap
+
+- Heatmap of mobile sRNA expression
+<br>
 
 # Installation
 
@@ -104,27 +104,29 @@ data("sRNA_data")
 ```
 
 Once installed, you will have access to the following functions:
+<br>
 
-  **Pre-processing**
-* `RNAmergeGenomes()`
-* `RNAmergeAnnotations()`
-* `RNAloci()`
+**Pre-processing**
+
+- 1: `RNAmergeGenomes()`
+- 2: `RNAmergeAnnotations()`
+- 3: `RNAloci()`
 
 **Analysis**
-* `RNAimport()`
-* `RNAconsensus()`
-* `RNAsubset()`
-* `RNAdistribution()`
-* `plotSamplePCA()`
-* `plotSampleDistribution()`
-* `RNAanalysis()`
-* `RNAmobile()`
-* `plotHeatmap()`
-* `RNAmean()`
-* `RNAfeatures()`
-* `RNAattributes()`
-* `RNAsequences()`
 
+- 1: `RNAimport()`
+- 2: `RNAconsensus()`
+- 3: `RNAsubset()`
+- 4: `RNAdistribution()`
+- 5: `plotSamplePCA()`
+- 6: `plotSampleDistribution()`
+- 7: `RNAanalysis()`
+- 8: `RNAmobile()`
+- 9: `plotHeatmap()`
+- 10: `RNAmean()`
+- 11: `RNAfeatures()`
+- 12: `RNAattributes()`
+- 13: `RNAsequences()`
 
 Further details on how each function operates will be provided later on in the
 documentation. For some functions there are recurring arguments.
@@ -142,7 +144,7 @@ function how to process the data from the choice of two analytical methods
 (i.e.`"DESeq"`, or `"edgeR"`). All other arguments are discussed
 in further detail by looking at the a functions help file.
 
-
+<br>
 The workflow is shown below. It begin in R-Studio to merge the two genome 
 assemblies into one, then the pre-processing moves into Linux to align each 
 replicate to the merged reference and then back into R-Studio to undertake the 
@@ -154,23 +156,23 @@ knitr::include_graphics("../man/figures/program_flow.png")
 ```
 
 
-Going forward,we assume standard quality control steps on raw samples has been
+Going forward, we assume standard quality control steps on raw samples has been
 completed (i.e. trimming of adapters and low quality reads)
-  
+<br>
 
 ## An overview of the data used
+
 For the following examples, a semi-synthetic small RNA-seq data set has been 
 utilised to simulate the movement of sRNA molecules from an Tomato 
 (**Solanium lycopersicum**) rootstock to a Eggplant (**Solanium melongena**) 
-scion, a grafting system known to be compatible. 
-The three heterograft replicates, known as "heterograft_1",
-"heterograft_2" and "heterograft_3" are individual tomato replicates spiked with 
-150 tomato sRNA clusters. While the selfgraft replicates, known as "selfgraft_1",
-"selfgraft_2" and "selfgraft_3", are the individual tomato replicates without 
-the spiked tomato sRNA clusters. Moreover, the replicates mirror each other where,
-for instance, "heterograft_1" and "selfgraft_1" are the same replicate, either with 
-or without the spiked clusters. These replicates serve for the aim to analyse 
-sRNA mobility. 
+scion, a grafting system known to be compatible. The three heterograft 
+replicates, known as `heterograft_1`, `heterograft_2` and `heterograft_3` are 
+individual tomato replicates spiked with 150 tomato sRNA clusters. While the 
+selfgraft replicates, known as `selfgraft_1`, `selfgraft_2` and `selfgraft_3`, 
+are the individual tomato replicates without the spiked tomato sRNA clusters. 
+Moreover, the replicates mirror each other where, for instance, `heterograft_1` 
+and `selfgraft_1` are the same replicate, either with or without the spiked 
+clusters. These replicates serve for the aim to analyse sRNA mobility. 
 
 The data set, called `sRNA_data`, stores a matrix containing the
 pre-processed data from the experiment. As a
@@ -190,48 +192,53 @@ build on the "sRNA_data" dataset where "sRNA_data_consensus" contains the
 RNA consensus results formed by the function [RNAconsensus()]. While, the 
 "sRNA_data_mobile" contains only the likely mobile sRNAs selected by the 
 function [RNAmobile()] under the default parameters. 
-
-
+<br>
 
 ## Data organisation
 There are Two key elements required for the pipeline analysis:
-* sRNA-seq sample replicates  (.fasta/.fq)
+* sRNA-seq sample replicates  (.fastq/.fq)
 * Two reference genomes (.fasta/.fa)
 
 And one additional element; to improve functional analysis:
   * Two reference genome annotations (.gff/.gff3)
+<br>
+<br>
 
-### The raw data files
+### Naming data files
 
 It is recommended to rename your files to names you wish for them to
 be represented as within the analysis and shown as labels in plots.
 Plus, it makes the analysis easier!
 
-  For example, instead of names such as:
-* `sample_1.fq`
-* `sample_2.fq`
-* `sample_3.fq`
-* `sample_4.fq`
-* `sample_5.fq`
-* `sample_6.fq`
+For example, instead of names such as:
+
+- 1: `sample_1.fq`
+- 2: `sample_2.fq`
+- 3: `sample_3.fq`
+- 4: `sample_4.fq`
+- 5: `sample_5.fq`
+- 6: `sample_6.fq`
 
 For the example data set included in the package, here we have renamed the
-files based on the condition (treatment or control).
-For the hetero-grafts, where the is a eggplant scion and an tomato rootstock:
-* `heterograft_1.fq`
-* `heterograft_2.fq`
-* `heterograft_3.fq`
+files based on the condition (treatment or control).For the hetero-grafts, where 
+the is a eggplant scion and an tomato rootstock:
+
+- 1: `heterograft_1.fq`
+- 2: `heterograft_2.fq`
+- 3: `heterograft_3.fq`
 
 and for the eggplant self-grafts:
-* `selfgraft_1.fq`
-* `selfgraft_2.fq`
-* `selfgraft_3.fq`
 
+- 4: `selfgraft_1.fq`
+- 5: `selfgraft_2.fq`
+- 6: `selfgraft_3.fq`
+<br>
 
 
 ### The reference genomes and annotation files (.fasta/.fa)
 The pipeline is designed to analyse grafting systems with two
 distinct genomes, here tomato and eggplant.
+<br>
 
 
 # Pre-Processing
@@ -253,13 +260,14 @@ To distinguish between the reference genomes in a merged file, it is important
 to make sure the chromosome names between the genomes are different and
 distinguishable. The function below added a particular character string to the
 start of each chromosome name in each reference genome. As standard, the string
-"A_" is added to the reference genome supplied to "genomeA" and "B_" is added
-to the reference genome supplied to "genomeB". These can be customised to the
+`A_` is added to the reference genome supplied to `genomeA` and `B_` is added
+to the reference genome supplied to `genomeB.` These can be customised to the
 users preference, see manual for more information.
 
 
 Going forward, the pipeline has assumed that the sRNA-seq samples have met 
 quality control standards.
+<br>
 
 ## Pre-mapping
 
@@ -270,19 +278,15 @@ chromosome names of each genome to ensure they are distinguishable. To do so,
 the function requires an input of the initials of each organism's Latin name.
 But why do this:
 
-* If the two genomes use the same pattern to name the chromosomes, the user will
-not be able to differentiate the chromosomes from one another in the merged
-genome. This could be solves by adding letters to the chromosomes of one of the
-genomes, for example, "SM" to represent the Latin name of eggplant.
+* If the two genomes use the same pattern to name the chromosomes, the user will not be able to differentiate the chromosomes from one another in the merged genome. This could be solves by adding letters to the chromosomes of one of the genomes, for example, `SM` to represent the Latin name of eggplant.
 
-* If a chromosome naming pattern contains punctuation, the mapping step will not
-work.
+* If a chromosome naming pattern contains punctuation, the mapping step will not work.
 
 
-In the example, the **Solanum lycopersicum** (version 4) genome contains a
+In the example, the *Solanum lycopersicum* (version 4) genome contains a
 full-stop/period within each chromosome name which needs to be removed as well.
 Here we rename the chromosomes of the tomato genome to `SL` and the chromosomes
-related to the eggplant genome (**Solanum melongena**) to `SM`.
+related to the eggplant genome (*Solanum melongena*) to `SM`.
 
 ```{r, eval = FALSE}
 RNAmergeGenomes(genomeA ="/Users/user1/projectname/workplace/reference/ref1.fa",
@@ -292,6 +296,7 @@ RNAmergeGenomes(genomeA ="/Users/user1/projectname/workplace/reference/ref1.fa",
                out_dir = "/Users/user1/projectname/workplace/reference/merge/
                ref_merged.fa")
 ```
+
 
 
 
@@ -318,6 +323,7 @@ RNAmergeAnnotation(annotationA = "/Users/user1/projectname/workplace/
 
 
 
+
 ## Auto-Detection of sRNA Cluster
 Here we identify and build a list sRNA clusters within each sample to assist
 the mapping step later on to ensure consistency across the analysis.
@@ -325,6 +331,7 @@ the mapping step later on to ensure consistency across the analysis.
 We recommend installing the `ShortStack` 
 (https://github.com/MikeAxtell/ShortStack) program to detect sRNA clusters and 
 align sRNAseq samples. 
+<br>
 
 #### Step 1 - Cluster analysis with ShortStack
 
@@ -362,12 +369,12 @@ loci_info <- RNAloci(files = folder,
 ```
 
 
+
 ## Mapping   
 
 Each sample is mapped to the merged reference genome with the list of sRNA 
 clusters. 
 
-<br>
 
 ``` bash
 ShortStack \
@@ -383,11 +390,13 @@ ShortStack \
 
 ```
 
+<br>
 
 # Analysis
 Here, the analysis of the pre-processed data occurs, with the aim to
 identify if any mobile sRNA molecules are traveling from one genotype to
 the other in your grafting system.
+<br>
 
 ## Import Data
 In the pre-processing steps, the data was cleaned and aligned to
@@ -430,6 +439,8 @@ sRNA_data <- RNAimport(input = "sRNA",
 head(sRNA_data)
 ```
 
+<br>
+
 ## Sample-level quality control
 A handy step in the analysis is to assess the overall similarity between
 sample replicates to understand which samples are the most similar and which are
@@ -457,6 +468,8 @@ undertake regularized log transformation (rlog) which controls the variance
 across the mean, and in this package we have utilized this for the quality
 control steps.
 
+<br>
+
 ### Plot the distribution of RNA classes within each sample
 Explore the number of each RNA class identified within each sample using the
 `RNAdistribution` function which produces a table and plots the results. The
@@ -480,16 +493,14 @@ sample_distribution_line <- RNAdistribution(sRNA_data,
                                             together = FALSE,
                                           facet = TRUE)
 
-#view plot
-sample_distribution_line
 
 sample_distribution_bar <- RNAdistribution(sRNA_data,
                                            style = "bar",
                                            facet = TRUE)
 
-# view plots 
-sample_distribution_bar
 ```
+
+<br>
 
 ### Principle component analysis to assess sample distance
 Principal Component Analysis (PCA) is a useful technique to illustrate sample
@@ -509,6 +520,8 @@ plotSamplePCA(sRNA_data, group)
 
 ```
 
+<br>
+
 ### Hierarchical clustered heatmap to assess sample distance
 
 Similarly, to a PCA plot, the `plotSampleDistance()` function undertakes
@@ -523,6 +536,8 @@ cap4 <-"An example of a heatmap,illustracting the sRNA data set sample similarit
 plotSampleDistance(sRNA_data)
 
 ```
+<br>
+
 
 ## Define the consensus RNA class
 Have a look at the `sRNA_data` object, you will see that for each sample the
@@ -578,6 +593,8 @@ sRNA_2122 <- RNAsubset(sRNA_data_consensus, type = c(21, 22))
 
 ```
 
+<br>
+
 ### Plot consensus classification of sRNA
 
 Use `RNAdistriution()` to visualize the distribution of the consensus sRNA
@@ -596,6 +613,7 @@ consensus_plot
 ```
 
 
+<br>
 
 ## Differential Expression analysis with DESeq2 or edgeR
 Differential expression (DE) analysis is undertaken to identify sRNA which are
@@ -661,6 +679,7 @@ head(sRNA_edgeR)
 
 ```
 
+<br>
 
 ## Identify the mobile molecules
 It is essential to remove the noise from the data to isolate potential mobile
@@ -741,6 +760,7 @@ mobile_sRNA_sig2122 <- RNAmobile(data = sRNA_2122_DESeq2,
 head(mobile_sRNA)
 ```
 
+<br>
 
 ### Heatmap plots to represent mobile molecules
 Here we can use a hierarchical clustering heatmap to analysis the potential
@@ -749,33 +769,30 @@ It is expected that the log2 fold changes should be opposite between your
 treatment and controls where the treatment samples shows up-regulation and the
 control samples show down-regulation.
 
+<br>
 
 ### Mobile molecules from the 24-nt sRNA dataset
 ```{r, echo=FALSE}
-cap7 <- "An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method
-A). Class of 24-nt sRNAs B) Class of 21/22-nt sRNAs."
+cap7 <- "An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method Class of 24-nt sRNAs (left) and Class of 21/22-nt sRNAs (right). Where the rows represents the sRNA cluster number and the columns represents replicates."
 
 
 
 ```
 
 ```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A","B") }
-
 p10 <- plotHeatmap(mobile_sRNA_sig24)
 p11 <- plotHeatmap(mobile_sRNA_sig2122)
-
-
 ```
 
+<br>
 
 ### Save output 
 
 ```{r, eval = FALSE}
-
 write.table(mobile_sRNA, "./output.txt")
-
 ```
 
+<br>
 
 ## Functional Analysis 
 By now you will have retrieved a list of potentially mobile sRNA molecules and 
@@ -801,6 +818,8 @@ function, the chromosome names will by default be altered. The
 [mobileRNA::RNAmergeAnnotations()] function can be utilsed to alter both 
 genome annotation files in the same way. This functions alters the names, saves
 each altered genome annotation and then merges them into one. 
+
+<br>
 
 ### Add genomic attributes to sRNA clusters   
 Each sRNA cluster contains coordinates, these can be matches with coordinates in
@@ -835,7 +854,7 @@ a merge annotation file using the function [mobileRNA::RNAmergeAnnotations()].
 mobile_df_attributes <- RNAattributes(data = mobile_sRNA,
                             annotation = "./annotation/origin_annotation.gff3")
 ```
-
+<br>
 
 ### Summarise overlaps with genomic features 
 We can also locate specific genomic features which overlap with the the sRNA 
@@ -867,7 +886,7 @@ this features can be utilsed across different data sets. For example, across
 the total data set or specific mobile sRNA subsets.
 <br>
 
-### Retrieve sRNA sequence and complementary sequences   
+### Retrieve sRNA sequence & complementary sequences   
 Lastly, lets extract the sRNA cluster sequences.These can utilised with `BLAST`, 
 or plant sRNA target prediction tools such as `TargetFinder` 
 (https://github.com/carringtonlab/TargetFinder) or overlapped with `mRNAseq` 
@@ -891,6 +910,7 @@ head(mobile_sequences)
 
 
 
+<br>
 
 # Additional features
 
@@ -898,6 +918,8 @@ The *mobileRNA* package offers several optional extra-helpful functions to aid
 analysis. This includes a function to calculate the mean RPM and counts across
 specific samples and also calculate the overlap between genomic features and
 sRNA clusters.
+
+<br>
 
 ## Calculate RPM and Count means for specific samples
 This function calculates the RPM mean and Count mean across specific samples.The 
@@ -919,7 +941,8 @@ selected_samples <- c("heterograft_1", "heterograft_2", "heterograft_3")
 means <- RNAmean(data = sRNA_data_consensus, conditions = selected_samples)
 
 ```
- 
+ <br>
+
 # Session information
 ```{r}
 sessionInfo()
