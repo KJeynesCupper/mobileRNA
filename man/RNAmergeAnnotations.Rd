@@ -73,18 +73,15 @@ genome,that you treat the input annotations in the same way.
 }
 \examples{
 
-# import GFF files into R
-
-# Read reference genomes
-url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-
-import_anno1_url <- paste0(url_remote, "chr12_Eggplant_V4.1_function_IPR_final.gff")
-
-import_anno2_url <- paste0(url_remote, "chr2_ITAG4.0_gene_models.gff")
 
  # Read in GFF files
-anno1 <- rtracklayer::import(import_anno1_url)
-anno2 <- rtracklayer::import(import_anno2_url)
+anno1 <- rtracklayer::import(system.file("extdata",
+"chr12_Eggplant_V4.1_function_IPR_final.gff.gz", package="mobileRNA"),
+format = "gff")
+
+anno2 <- rtracklayer::import(system.file("extdata",
+"chr2_ITAG4.0_gene_models.gff.gz", package="mobileRNA"),
+format = "gff")
 
 # edit and merge
 merged_anno <- RNAmergeAnnotations(annotationA = anno1,

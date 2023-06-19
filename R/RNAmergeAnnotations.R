@@ -70,18 +70,16 @@
 #'
 #' @examples
 #'
-#' # import GFF files into R
-#'
-#'# Read reference genomes
-#' url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-#'
-#' import_anno1_url <- paste0(url_remote, "chr12_Eggplant_V4.1_function_IPR_final.gff")
-#'
-#' import_anno2_url <- paste0(url_remote, "chr2_ITAG4.0_gene_models.gff")
+
 #'
 #'  # Read in GFF files
-#' anno1 <- rtracklayer::import(import_anno1_url)
-#' anno2 <- rtracklayer::import(import_anno2_url)
+#' anno1 <- rtracklayer::import(system.file("extdata",
+#' "chr12_Eggplant_V4.1_function_IPR_final.gff.gz", package="mobileRNA"),
+#' format = "gff")
+#'
+#' anno2 <- rtracklayer::import(system.file("extdata",
+#' "chr2_ITAG4.0_gene_models.gff.gz", package="mobileRNA"),
+#' format = "gff")
 #'
 #'# edit and merge
 #' merged_anno <- RNAmergeAnnotations(annotationA = anno1,
@@ -101,7 +99,7 @@
 #'
 #'
 #' @importFrom Repitools "annoGR2DF"
-#' @importFrom utils "write.table"
+#' @importFrom data.table "fwrite"
 #' @importFrom dplyr "bind_rows"
 #' @export
 #'
@@ -143,12 +141,12 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
     annoA_save <- paste0(location,"/", "annotationA_altered.gff")
     annoB_save <- paste0(location,"/", "annotationB_altered.gff")
 
-      utils::write.table(annotationA, file = annoA_save,sep = "\t",
+    data.table::fwrite(annotationA, file = annoA_save,sep = "\t",
                          quote = FALSE,row.names = FALSE, col.names = FALSE)
 
       message("New annotation file created: ", annoA_save)
 
-      utils::write.table(annotationB, file = annoB_save,sep = "\t",
+      data.table::fwrite(annotationB, file = annoB_save,sep = "\t",
                          quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 
@@ -157,7 +155,9 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
 
     # merge gff files
     concatenated_gff <- dplyr::bind_rows(annotationA, annotationB)
-    utils::write.table(concatenated_gff, file = out_dir,sep = "\t",
+    concatenated_gff <- data.frame(lapply(concatenated_gff, as.character), stringsAsFactors=FALSE)
+
+    data.table::fwrite(concatenated_gff, file = out_dir,sep = "\t",
                        quote = FALSE, row.names = FALSE, col.names = FALSE)
 
     return(concatenated_gff)

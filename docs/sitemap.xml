@@ -7,10 +7,16 @@
     <loc>https://kjeynescupper.github.io/mobileRNA/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>https://kjeynescupper.github.io/mobileRNA/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/articles/index.html</loc>
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/articles/mobileRNA.html</loc>
+  </url>
+  <url>
+    <loc>https://kjeynescupper.github.io/mobileRNA/articles/mobileRNA_local.html</loc>
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/authors.html</loc>
@@ -50,6 +56,9 @@
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/reference/RNAmobile.html</loc>
+  </url>
+  <url>
+    <loc>https://kjeynescupper.github.io/mobileRNA/reference/RNAsequences.html</loc>
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/reference/RNAsubset.html</loc>

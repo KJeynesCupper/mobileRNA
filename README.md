@@ -41,7 +41,7 @@ Table of Contents
 - [Analysis](#Analysis)
 - [Output](#Output)
 - [Functional Analysis](#Functional-Analysis)
-- [Optional extras](#Optional-extras)
+- [Optional Extras](#Optional-Extras)
 
 <br>
 Installation
@@ -373,7 +373,9 @@ write.table(output, "./output.txt")
 ```
 
 <br> 
-Optional extras
+
+
+Optional Extras
 --------------------------------------------
 The package also includes functions for: 
 

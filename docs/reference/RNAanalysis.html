@@ -30,6 +30,12 @@ analysis with DESeq2 or edgeR."><meta property="og:image" content="https://kjeyn
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/mobileRNA_local.html">Analyse local sRNA populations using mobileRNA</a>
+  </div>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -106,9 +112,9 @@ their data. Notably, <code>DESeq2</code> cannot compute the analysis when there 
 one replicate per condition, but, <code>edgeR</code> can. Simply set a suitable
 dispersion value, based on similar data, to use this feature. The dispersion
 value is other wise known as the common Biological squared coefficient
-of variation. A typical dispersion value is 0.4 for human data sets, 0.1  for
-data on genetically identical model organisms or 0.01 for technical replicate.
-See the User’s Guide for the  ‘EdgeR’ package for more details,
+of variation. A typical dispersion value is 0.4 for human data sets, 0.1 for
+data on genetically identical model organisms or 0.01 for technical
+replicate. See the User’s Guide for the  ‘EdgeR’ package for more details,
 <a href="https://rdrr.io/pkg/edgeR/man/edgeR-package.html" class="external-link">edgeR::edgeR</a>.</p>
     </div>
 
