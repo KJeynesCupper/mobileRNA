@@ -13,10 +13,6 @@ Portis, E., ... & Giuliano, G. (2021). Improved genome assembly and pan‐genome
 provide key insights into eggplant domestication and breeding.
 The Plant Journal, 107(2), 579-596.
 }
-\usage{
-system.file("extdata",
-"chr12_Eggplant_V4.1_function_IPR_final.gff.gz", package="mobileRNA")
-}
 \description{
 Chromosome 12 of genome annotation Solanium melongena
 Version 4.1

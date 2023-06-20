@@ -8,17 +8,10 @@
 FASTA gzip
 }
 \source{
-Barchi, L., Rabanus‐Wallace, M. T., Prohens, J., Toppino, L., Padmarasu, S.,
-Portis, E., ... & Giuliano, G. (2021). Improved genome assembly and pan‐genome
-provide key insights into eggplant domestication and breeding.
-The Plant Journal, 107(2), 579-596.
-}
-\usage{
-system.file("extdata",
-"chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
-
-system.file("extdata",
-"chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
+Barchi, L., Rabanus‐Wallace, M. T., Prohens, J., Toppino, L.,
+Padmarasu, S., Portis, E., ... & Giuliano, G. (2021). Improved genome
+assembly and pan‐genome provide key insights into eggplant domestication and
+breeding. The Plant Journal, 107(2), 579-596.
 }
 \description{
 Simulated sRNAseq dataset - potentially mobile RNAs
@@ -34,8 +27,7 @@ these heterografts to three Eggplant self-grafts which are the original
 un-spiked Eggplant replicates.
 }
 \examples{
-system.file("extdata",
-"chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
+system.file("extdata","chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
 system.file("extdata",
 "chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
 }

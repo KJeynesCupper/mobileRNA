@@ -7,10 +7,6 @@
 \format{
 GFF gzip
 }
-\usage{
-system.file("extdata",
-"chr2_ITAG4.0_gene_models.gff.gz", package="mobileRNA")
-}
 \description{
 Chromosome 2 of genome annotation Solanium lycopersicum (Heinz)
 Version SL4.0
