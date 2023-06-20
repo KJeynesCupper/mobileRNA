@@ -166,7 +166,7 @@ Here we introduce the R Package , to aid the identification of mobile RNA molecu
 <h3 id="an-overview-of-the-data-used">An overview of the data used<a class="anchor" aria-label="anchor" href="#an-overview-of-the-data-used"></a>
 </h3>
 <p>For the following examples, a semi-synthetic small RNA-seq data set has been utilised to simulate the movement of sRNA molecules from an Tomato (<strong>Solanium lycopersicum</strong>) rootstock to a Eggplant (<strong>Solanium melongena</strong>) scion, a grafting system known to be compatible. The three heterograft replicates, known as <code>heterograft_1</code>, <code>heterograft_2</code> and <code>heterograft_3</code> are individual tomato replicates spiked with 150 tomato sRNA clusters. While the selfgraft replicates, known as <code>selfgraft_1</code>, <code>selfgraft_2</code> and <code>selfgraft_3</code>, are the individual tomato replicates without the spiked tomato sRNA clusters. Moreover, the replicates mirror each other where, for instance, <code>heterograft_1</code> and <code>selfgraft_1</code> are the same replicate, either with or without the spiked clusters. These replicates serve for the aim to analyse sRNA mobility.</p>
-<p>The data set, called <code>sRNA_data</code>, stores a matrix containing the pre-processed data from the experiment. As a user, this allows you to see what a full data set might look like and how you might expect it to change across the analysis.</p>
+<p>The data set, called <code>sRNA_data</code>, stores a matrix containing the pre-processed data from the experiment. As a user, this allows you to see what a full data set might look like and how you might expect it to change across the analysis. Please not that the data has been doctored to reduce the size of the file.</p>
 <p>These can be loaded in these R workspace by using the following command:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sRNA_data"</span><span class="op">)</span></span></code></pre></div>
@@ -435,17 +435,17 @@ Here we introduce the R Package , to aid the identification of mobile RNA molecu
 <span>                                           style <span class="op">=</span> <span class="st">"bar"</span>,</span>
 <span>                                           facet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Class heterograft_1 heterograft_2 heterograft_3 selfgraft_1 selfgraft_2</span></span>
-<span><span class="co">#&gt; 1:    20          1720          2102          1306        1719        2101</span></span>
-<span><span class="co">#&gt; 2:    21          4940          5655          4278        4938        5653</span></span>
-<span><span class="co">#&gt; 3:    22          3655          4883          3422        3655        4883</span></span>
-<span><span class="co">#&gt; 4:    23          6657          6909          7469        6650        6902</span></span>
-<span><span class="co">#&gt; 5:    24         99330         85514        101771       99191       85374</span></span>
+<span><span class="co">#&gt; 1:    20             9            14             7           8          13</span></span>
+<span><span class="co">#&gt; 2:    21            27            28            24          25          26</span></span>
+<span><span class="co">#&gt; 3:    22            19            27            26          19          27</span></span>
+<span><span class="co">#&gt; 4:    23            25            38            42          18          31</span></span>
+<span><span class="co">#&gt; 5:    24           597           491           575         459         353</span></span>
 <span><span class="co">#&gt;    selfgraft_3</span></span>
-<span><span class="co">#&gt; 1:        1305</span></span>
-<span><span class="co">#&gt; 2:        4276</span></span>
-<span><span class="co">#&gt; 3:        3422</span></span>
-<span><span class="co">#&gt; 4:        7462</span></span>
-<span><span class="co">#&gt; 5:      101630</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:           6</span></span>
+<span><span class="co">#&gt; 2:          22</span></span>
+<span><span class="co">#&gt; 3:          26</span></span>
+<span><span class="co">#&gt; 4:          35</span></span>
+<span><span class="co">#&gt; 5:         437</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="mobileRNA_files/figure-html/unnamed-chunk-8-1.png" alt="An example line graph (A) and bar graph (B), to show the distribution of
 RNA classes within each sample" width="700"><img src="mobileRNA_files/figure-html/unnamed-chunk-8-2.png" alt="An example line graph (A) and bar graph (B), to show the distribution of
@@ -586,12 +586,12 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <p><img src="mobileRNA_files/figure-html/unnamed-chunk-14-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt;   sRNA_Consensus      n</span></span>
-<span><span class="co">#&gt; 1             20   2545</span></span>
-<span><span class="co">#&gt; 2             21   6116</span></span>
-<span><span class="co">#&gt; 3             22   4320</span></span>
-<span><span class="co">#&gt; 4             23   6510</span></span>
-<span><span class="co">#&gt; 5             24 101647</span></span></code></pre>
+<span><span class="co">#&gt;   sRNA_Consensus   n</span></span>
+<span><span class="co">#&gt; 1             20  15</span></span>
+<span><span class="co">#&gt; 2             21  40</span></span>
+<span><span class="co">#&gt; 3             22  31</span></span>
+<span><span class="co">#&gt; 4             23  32</span></span>
+<span><span class="co">#&gt; 5             24 566</span></span></code></pre>
 <p><br></p>
 </div>
 </div>
@@ -610,8 +610,6 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <span><span class="va">sRNA_DESeq2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>,</span>
 <span>                              group <span class="op">=</span> <span class="va">groups</span>,</span>
 <span>                              method <span class="op">=</span> <span class="st">"DESeq2"</span> <span class="op">)</span></span>
-<span></span>
-<span></span>
 <span></span>
 <span><span class="co">## Differential analysis: DEseq2 method</span></span>
 <span><span class="co"># 24-nt sRNA data-set</span></span>
@@ -707,13 +705,13 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <span><span class="co">#&gt; 4                11           1.083 AUUCCUCUGACUAAAUGACAAUUU          nt_24</span></span>
 <span><span class="co">#&gt; 5                 5           0.492 AAUCACAAUGGGUAGACACUUAGA          nt_24</span></span>
 <span><span class="co">#&gt; 6                 3           0.295   UUGACAAACUAUAACUUAAAUU          nt_22</span></span>
-<span><span class="co">#&gt;   CountMean log2FoldChange pvalue padjusted    logCPM</span></span>
-<span><span class="co">#&gt; 1 21.000000  -6.349360e-04      1         1 3.1418030</span></span>
-<span><span class="co">#&gt; 2  3.000000  -3.297740e-03      1         1 0.9823983</span></span>
-<span><span class="co">#&gt; 3  6.666667  -1.671208e-03      1         1 1.7404592</span></span>
-<span><span class="co">#&gt; 4  4.000000   4.340157e-05      1         1 1.1317553</span></span>
-<span><span class="co">#&gt; 5  6.000000  -2.400719e-04      1         1 1.5852815</span></span>
-<span><span class="co">#&gt; 6  4.666667  -3.249351e-04      1         1 1.3337822</span></span></code></pre></div>
+<span><span class="co">#&gt;   CountMean log2FoldChange    pvalue padjusted    logCPM</span></span>
+<span><span class="co">#&gt; 1 21.000000     0.08765943 0.8497385         1 10.800052</span></span>
+<span><span class="co">#&gt; 2  3.000000     0.18787558 0.8840677         1  8.641415</span></span>
+<span><span class="co">#&gt; 3  6.666667     0.07812583 0.8917425         1  9.405739</span></span>
+<span><span class="co">#&gt; 4  4.000000     0.01144398 1.0000000         1  8.814411</span></span>
+<span><span class="co">#&gt; 5  6.000000     0.06700701 1.0000000         1  9.253072</span></span>
+<span><span class="co">#&gt; 6  4.666667     0.07663817 1.0000000         1  9.000413</span></span></code></pre></div>
 <p><br></p>
 </div>
 <div class="section level3">
@@ -732,7 +730,8 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <span><span class="va">mobile_sRNA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_DESeq2</span>, </span>
 <span>                         controls <span class="op">=</span> <span class="va">control_names</span>,</span>
 <span>                         id <span class="op">=</span> <span class="st">"SL40"</span>,</span>
-<span>                         task <span class="op">=</span> <span class="st">"keep"</span><span class="op">)</span></span>
+<span>                         task <span class="op">=</span> <span class="st">"keep"</span>, </span>
+<span>                         statistical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># or identify within specific classes </span></span>
 <span><span class="co"># within 24-nt sRNA datset </span></span>
@@ -767,69 +766,76 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <span><span class="co"># view part of the total data set</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mobile_sRNA</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                         Locus      chr    start      end        Cluster</span></span>
-<span><span class="co">#&gt; 16   SL40ch01:2354374-2354700 SL40ch01  2354374  2354700 cluster_133430</span></span>
-<span><span class="co">#&gt; 20     SL40ch01:281585-281652 SL40ch01   281585   281652 cluster_133435</span></span>
-<span><span class="co">#&gt; 24     SL40ch01:618187-618375 SL40ch01   618187   618375 cluster_133450</span></span>
-<span><span class="co">#&gt; 25 SL40ch01:64072258-64072464 SL40ch01 64072258 64072464 cluster_133451</span></span>
-<span><span class="co">#&gt; 26 SL40ch01:65062584-65062714 SL40ch01 65062584 65062714 cluster_133452</span></span>
-<span><span class="co">#&gt; 28 SL40ch01:66152385-66152584 SL40ch01 66152385 66152584 cluster_133455</span></span>
-<span><span class="co">#&gt;    DicerCall_heterograft_1 Count_heterograft_1 RPM_heterograft_1</span></span>
-<span><span class="co">#&gt; 16                      24                  14             1.406</span></span>
-<span><span class="co">#&gt; 20                      24                  24             2.410</span></span>
-<span><span class="co">#&gt; 24                      24                  22             2.209</span></span>
-<span><span class="co">#&gt; 25                      24                  12             1.205</span></span>
-<span><span class="co">#&gt; 26                      24                  18             1.808</span></span>
-<span><span class="co">#&gt; 28                      24                  35             3.515</span></span>
-<span><span class="co">#&gt;      MajorRNA_heterograft_1 DicerCall_heterograft_2 Count_heterograft_2</span></span>
-<span><span class="co">#&gt; 16 UCCGCUAUAUAAAGCCAUUGCCAA                      24                  14</span></span>
-<span><span class="co">#&gt; 20 AUGUAACUGAUUGAGUAUAUAUUU                      24                  24</span></span>
-<span><span class="co">#&gt; 24  CCCGGACUGUCGGACACUACACA                      24                  22</span></span>
-<span><span class="co">#&gt; 25  ACGGCCUAUUGCACACCUGAAUU                      24                  12</span></span>
-<span><span class="co">#&gt; 26 AGGAUUACUUACCACUCCACCAUA                      24                  18</span></span>
-<span><span class="co">#&gt; 28 ACACUUGUAGGUCUGAGUGAAACU                      24                  35</span></span>
-<span><span class="co">#&gt;    RPM_heterograft_2   MajorRNA_heterograft_2 DicerCall_heterograft_3</span></span>
-<span><span class="co">#&gt; 16             1.803 AGAACUCUCUCGAUUAUACUGUGU                      24</span></span>
-<span><span class="co">#&gt; 20             3.090 AUGUAACUGAUUGAGUAUAUAUUU                      24</span></span>
-<span><span class="co">#&gt; 24             2.833  CCCGGACUGUCGGACACUACACA                      24</span></span>
-<span><span class="co">#&gt; 25             1.545  ACGGCCUAUUGCACACCUGAAUU                      24</span></span>
-<span><span class="co">#&gt; 26             2.318 AGGAUUACUUACCACUCCACCAUA                      24</span></span>
-<span><span class="co">#&gt; 28             4.507 ACACUUGUAGGUCUGAGUGAAACU                      24</span></span>
-<span><span class="co">#&gt;    Count_heterograft_3 RPM_heterograft_3   MajorRNA_heterograft_3</span></span>
-<span><span class="co">#&gt; 16                  14             1.378       CGAAGAGUAGGAUGUAUG</span></span>
-<span><span class="co">#&gt; 20                  24             2.362 AUGUAACUGAUUGAGUAUAUAUUU</span></span>
-<span><span class="co">#&gt; 24                  22             2.166  CCCGGACUGUCGGACACUACACA</span></span>
-<span><span class="co">#&gt; 25                  12             1.181  ACGGCCUAUUGCACACCUGAAUU</span></span>
-<span><span class="co">#&gt; 26                  18             1.772 AGGAUUACUUACCACUCCACCAUA</span></span>
-<span><span class="co">#&gt; 28                  35             3.445 ACACUUGUAGGUCUGAGUGAAACU</span></span>
-<span><span class="co">#&gt;    DicerCall_selfgraft_1 Count_selfgraft_1 RPM_selfgraft_1 MajorRNA_selfgraft_1</span></span>
-<span><span class="co">#&gt; 16                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 20                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 24                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 25                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 26                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 28                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt;    DicerCall_selfgraft_2 Count_selfgraft_2 RPM_selfgraft_2 MajorRNA_selfgraft_2</span></span>
-<span><span class="co">#&gt; 16                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 20                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 24                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 25                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 26                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 28                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt;    DicerCall_selfgraft_3 Count_selfgraft_3 RPM_selfgraft_3 MajorRNA_selfgraft_3</span></span>
-<span><span class="co">#&gt; 16                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 20                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 24                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 25                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 26                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt; 28                     N                 0               0                    N</span></span>
-<span><span class="co">#&gt;    sRNA_Consensus  baseMean log2FoldChange       pvalue    padjusted</span></span>
-<span><span class="co">#&gt; 16          nt_24  7.538054      -6.327241 5.181896e-06 5.145198e-03</span></span>
-<span><span class="co">#&gt; 20          nt_24 12.922378      -7.108850 6.879236e-08 1.207715e-04</span></span>
-<span><span class="co">#&gt; 24          nt_24 11.845513      -6.982577 1.426551e-07 2.304089e-04</span></span>
-<span><span class="co">#&gt; 25          nt_24  6.461189      -6.103991 1.622151e-05 1.383809e-02</span></span>
-<span><span class="co">#&gt; 26          nt_24  9.691784      -6.691479 7.325720e-07 9.645744e-04</span></span>
-<span><span class="co">#&gt; 28          nt_24 18.845135      -7.656902 2.604860e-09 7.012053e-06</span></span></code></pre></div>
+<span><span class="co">#&gt;                           Locus      chr    start      end        Cluster</span></span>
+<span><span class="co">#&gt; 1610   SL40ch01:2354374-2354700 SL40ch01  2354374  2354700 cluster_133430</span></span>
+<span><span class="co">#&gt; 2010     SL40ch01:281585-281652 SL40ch01   281585   281652 cluster_133435</span></span>
+<span><span class="co">#&gt; 2410     SL40ch01:618187-618375 SL40ch01   618187   618375 cluster_133450</span></span>
+<span><span class="co">#&gt; 2510 SL40ch01:64072258-64072464 SL40ch01 64072258 64072464 cluster_133451</span></span>
+<span><span class="co">#&gt; 2610 SL40ch01:65062584-65062714 SL40ch01 65062584 65062714 cluster_133452</span></span>
+<span><span class="co">#&gt; 2810 SL40ch01:66152385-66152584 SL40ch01 66152385 66152584 cluster_133455</span></span>
+<span><span class="co">#&gt;      DicerCall_heterograft_1 Count_heterograft_1 RPM_heterograft_1</span></span>
+<span><span class="co">#&gt; 1610                      24                  14             1.406</span></span>
+<span><span class="co">#&gt; 2010                      24                  24             2.410</span></span>
+<span><span class="co">#&gt; 2410                      24                  22             2.209</span></span>
+<span><span class="co">#&gt; 2510                      24                  12             1.205</span></span>
+<span><span class="co">#&gt; 2610                      24                  18             1.808</span></span>
+<span><span class="co">#&gt; 2810                      24                  35             3.515</span></span>
+<span><span class="co">#&gt;        MajorRNA_heterograft_1 DicerCall_heterograft_2 Count_heterograft_2</span></span>
+<span><span class="co">#&gt; 1610 UCCGCUAUAUAAAGCCAUUGCCAA                      24                  14</span></span>
+<span><span class="co">#&gt; 2010 AUGUAACUGAUUGAGUAUAUAUUU                      24                  24</span></span>
+<span><span class="co">#&gt; 2410  CCCGGACUGUCGGACACUACACA                      24                  22</span></span>
+<span><span class="co">#&gt; 2510  ACGGCCUAUUGCACACCUGAAUU                      24                  12</span></span>
+<span><span class="co">#&gt; 2610 AGGAUUACUUACCACUCCACCAUA                      24                  18</span></span>
+<span><span class="co">#&gt; 2810 ACACUUGUAGGUCUGAGUGAAACU                      24                  35</span></span>
+<span><span class="co">#&gt;      RPM_heterograft_2   MajorRNA_heterograft_2 DicerCall_heterograft_3</span></span>
+<span><span class="co">#&gt; 1610             1.803 AGAACUCUCUCGAUUAUACUGUGU                      24</span></span>
+<span><span class="co">#&gt; 2010             3.090 AUGUAACUGAUUGAGUAUAUAUUU                      24</span></span>
+<span><span class="co">#&gt; 2410             2.833  CCCGGACUGUCGGACACUACACA                      24</span></span>
+<span><span class="co">#&gt; 2510             1.545  ACGGCCUAUUGCACACCUGAAUU                      24</span></span>
+<span><span class="co">#&gt; 2610             2.318 AGGAUUACUUACCACUCCACCAUA                      24</span></span>
+<span><span class="co">#&gt; 2810             4.507 ACACUUGUAGGUCUGAGUGAAACU                      24</span></span>
+<span><span class="co">#&gt;      Count_heterograft_3 RPM_heterograft_3   MajorRNA_heterograft_3</span></span>
+<span><span class="co">#&gt; 1610                  14             1.378       CGAAGAGUAGGAUGUAUG</span></span>
+<span><span class="co">#&gt; 2010                  24             2.362 AUGUAACUGAUUGAGUAUAUAUUU</span></span>
+<span><span class="co">#&gt; 2410                  22             2.166  CCCGGACUGUCGGACACUACACA</span></span>
+<span><span class="co">#&gt; 2510                  12             1.181  ACGGCCUAUUGCACACCUGAAUU</span></span>
+<span><span class="co">#&gt; 2610                  18             1.772 AGGAUUACUUACCACUCCACCAUA</span></span>
+<span><span class="co">#&gt; 2810                  35             3.445 ACACUUGUAGGUCUGAGUGAAACU</span></span>
+<span><span class="co">#&gt;      DicerCall_selfgraft_1 Count_selfgraft_1 RPM_selfgraft_1</span></span>
+<span><span class="co">#&gt; 1610                     N                 0               0</span></span>
+<span><span class="co">#&gt; 2010                     N                 0               0</span></span>
+<span><span class="co">#&gt; 2410                     N                 0               0</span></span>
+<span><span class="co">#&gt; 2510                     N                 0               0</span></span>
+<span><span class="co">#&gt; 2610                     N                 0               0</span></span>
+<span><span class="co">#&gt; 2810                     N                 0               0</span></span>
+<span><span class="co">#&gt;      MajorRNA_selfgraft_1 DicerCall_selfgraft_2 Count_selfgraft_2</span></span>
+<span><span class="co">#&gt; 1610                    N                     N                 0</span></span>
+<span><span class="co">#&gt; 2010                    N                     N                 0</span></span>
+<span><span class="co">#&gt; 2410                    N                     N                 0</span></span>
+<span><span class="co">#&gt; 2510                    N                     N                 0</span></span>
+<span><span class="co">#&gt; 2610                    N                     N                 0</span></span>
+<span><span class="co">#&gt; 2810                    N                     N                 0</span></span>
+<span><span class="co">#&gt;      RPM_selfgraft_2 MajorRNA_selfgraft_2 DicerCall_selfgraft_3</span></span>
+<span><span class="co">#&gt; 1610               0                    N                     N</span></span>
+<span><span class="co">#&gt; 2010               0                    N                     N</span></span>
+<span><span class="co">#&gt; 2410               0                    N                     N</span></span>
+<span><span class="co">#&gt; 2510               0                    N                     N</span></span>
+<span><span class="co">#&gt; 2610               0                    N                     N</span></span>
+<span><span class="co">#&gt; 2810               0                    N                     N</span></span>
+<span><span class="co">#&gt;      Count_selfgraft_3 RPM_selfgraft_3 MajorRNA_selfgraft_3 sRNA_Consensus</span></span>
+<span><span class="co">#&gt; 1610                 0               0                    N          nt_24</span></span>
+<span><span class="co">#&gt; 2010                 0               0                    N          nt_24</span></span>
+<span><span class="co">#&gt; 2410                 0               0                    N          nt_24</span></span>
+<span><span class="co">#&gt; 2510                 0               0                    N          nt_24</span></span>
+<span><span class="co">#&gt; 2610                 0               0                    N          nt_24</span></span>
+<span><span class="co">#&gt; 2810                 0               0                    N          nt_24</span></span>
+<span><span class="co">#&gt;       baseMean log2FoldChange       pvalue    padjusted</span></span>
+<span><span class="co">#&gt; 1610  7.589467      -6.321382 4.406532e-06 2.532830e-05</span></span>
+<span><span class="co">#&gt; 2010 13.010515      -7.105744 7.274102e-08 7.538615e-07</span></span>
+<span><span class="co">#&gt; 2410 11.926305      -6.979001 1.447566e-07 1.375187e-06</span></span>
+<span><span class="co">#&gt; 2510  6.505257      -6.097397 1.315218e-05 6.472009e-05</span></span>
+<span><span class="co">#&gt; 2610  9.757886      -6.686876 6.834490e-07 5.252574e-06</span></span>
+<span><span class="co">#&gt; 2810 18.973667      -7.655606 3.308819e-09 5.263330e-08</span></span></code></pre></div>
 <p><br></p>
 <div class="section level4">
 <h4 id="heatmap-plots-to-represent-mobile-molecules">Heatmap plots to represent mobile molecules<a class="anchor" aria-label="anchor" href="#heatmap-plots-to-represent-mobile-molecules"></a>
@@ -915,20 +921,20 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <span><span class="va">mobile_sequences</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsequences.html">RNAsequences</a></span><span class="op">(</span><span class="va">mobile_sRNA</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mobile_sequences</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           Cluster Match                 Sequence width        Complementary_RNA</span></span>
-<span><span class="co">#&gt; 16 cluster_133430 FALSE                     &lt;NA&gt;    NA                       NA</span></span>
-<span><span class="co">#&gt; 20 cluster_133435  TRUE AUGUAACUGAUUGAGUAUAUAUUU    24 UACAUUGACUAACUCAUAUAUAAA</span></span>
-<span><span class="co">#&gt; 24 cluster_133450  TRUE  CCCGGACUGUCGGACACUACACA    23  GGGCCUGACAGCCUGUGAUGUGU</span></span>
-<span><span class="co">#&gt; 25 cluster_133451  TRUE  ACGGCCUAUUGCACACCUGAAUU    23  UGCCGGAUAACGUGUGGACUUAA</span></span>
-<span><span class="co">#&gt; 26 cluster_133452  TRUE AGGAUUACUUACCACUCCACCAUA    24 UCCUAAUGAAUGGUGAGGUGGUAU</span></span>
-<span><span class="co">#&gt; 28 cluster_133455  TRUE ACACUUGUAGGUCUGAGUGAAACU    24 UGUGAACAUCCAGACUCACUUUGA</span></span>
-<span><span class="co">#&gt;           Complementary_DNA</span></span>
-<span><span class="co">#&gt; 16                       NA</span></span>
-<span><span class="co">#&gt; 20 TACATTGACTAACTCATATATAAA</span></span>
-<span><span class="co">#&gt; 24  GGGCCTGACAGCCTGTGATGTGT</span></span>
-<span><span class="co">#&gt; 25  TGCCGGATAACGTGTGGACTTAA</span></span>
-<span><span class="co">#&gt; 26 TCCTAATGAATGGTGAGGTGGTAT</span></span>
-<span><span class="co">#&gt; 28 TGTGAACATCCAGACTCACTTTGA</span></span></code></pre></div>
+<span><span class="co">#&gt;             Cluster Match                 Sequence width</span></span>
+<span><span class="co">#&gt; 1610 cluster_133430 FALSE                     &lt;NA&gt;    NA</span></span>
+<span><span class="co">#&gt; 2010 cluster_133435  TRUE AUGUAACUGAUUGAGUAUAUAUUU    24</span></span>
+<span><span class="co">#&gt; 2410 cluster_133450  TRUE  CCCGGACUGUCGGACACUACACA    23</span></span>
+<span><span class="co">#&gt; 2510 cluster_133451  TRUE  ACGGCCUAUUGCACACCUGAAUU    23</span></span>
+<span><span class="co">#&gt; 2610 cluster_133452  TRUE AGGAUUACUUACCACUCCACCAUA    24</span></span>
+<span><span class="co">#&gt; 2810 cluster_133455  TRUE ACACUUGUAGGUCUGAGUGAAACU    24</span></span>
+<span><span class="co">#&gt;             Complementary_RNA        Complementary_DNA</span></span>
+<span><span class="co">#&gt; 1610                       NA                       NA</span></span>
+<span><span class="co">#&gt; 2010 UACAUUGACUAACUCAUAUAUAAA TACATTGACTAACTCATATATAAA</span></span>
+<span><span class="co">#&gt; 2410  GGGCCUGACAGCCUGUGAUGUGU  GGGCCTGACAGCCTGTGATGTGT</span></span>
+<span><span class="co">#&gt; 2510  UGCCGGAUAACGUGUGGACUUAA  TGCCGGATAACGTGTGGACTTAA</span></span>
+<span><span class="co">#&gt; 2610 UCCUAAUGAAUGGUGAGGUGGUAU TCCTAATGAATGGTGAGGTGGTAT</span></span>
+<span><span class="co">#&gt; 2810 UGUGAACAUCCAGACUCACUUUGA TGTGAACATCCAGACTCACTTTGA</span></span></code></pre></div>
 <p><br></p>
 </div>
 </div>

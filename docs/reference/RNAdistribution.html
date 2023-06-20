@@ -189,17 +189,17 @@ data frame.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Printing plots as facet for samples: heterograft_1, heterograft_2, heterograft_3, selfgraft_1, selfgraft_2, selfgraft_3</span>
 <span class="r-plt img"><img src="RNAdistribution-4.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Class heterograft_1 heterograft_2 heterograft_3 selfgraft_1 selfgraft_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20          1720          2102          1306        1719        2101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21          4940          5655          4278        4938        5653</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22          3655          4883          3422        3655        4883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23          6657          6909          7469        6650        6902</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24         99330         85514        101771       99191       85374</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20             9            14             7           8          13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21            27            28            24          25          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22            19            27            26          19          27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23            25            38            42          18          31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24           597           491           575         459         353</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    selfgraft_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:        1305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:        4276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:        3422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:        7462</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:      101630</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:          22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:          35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:         437</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p3.2</span> <span class="op">&lt;-</span> <span class="fu">RNAdistribution</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>, style <span class="op">=</span> <span class="st">"bar"</span>,</span></span>
 <span class="r-in"><span>                       samples <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"heterograft_1"</span>, <span class="st">"heterograft_2"</span>,</span></span>
@@ -207,11 +207,11 @@ data frame.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Printing plots as facet for samples: heterograft_1, heterograft_2, heterograft_3, selfgraft_1, selfgraft_2, selfgraft_3</span>
 <span class="r-plt img"><img src="RNAdistribution-5.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Class selfgraft_1 selfgraft_2 selfgraft_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20        1719        2101        1305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21        4938        5653        4276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22        3655        4883        3422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23        6650        6902        7462</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24       99191       85374      101630</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20           8          13           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21          25          26          22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22          19          27          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23          18          31          35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24         459         353         437</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu">RNAdistribution</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>, style <span class="op">=</span> <span class="st">"bar"</span>, facet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Printing plots for samples: heterograft_1, heterograft_2, heterograft_3, selfgraft_1, selfgraft_2, selfgraft_3</span>
@@ -234,34 +234,34 @@ data frame.</p>
 <span class="r-plt img"><img src="RNAdistribution-11.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Class heterograft_1 heterograft_2 heterograft_3 selfgraft_1 selfgraft_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20          1720          2102          1306        1719        2101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21          4940          5655          4278        4938        5653</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22          3655          4883          3422        3655        4883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23          6657          6909          7469        6650        6902</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24         99330         85514        101771       99191       85374</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20             9            14             7           8          13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21            27            28            24          25          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22            19            27            26          19          27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23            25            38            42          18          31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24           597           491           575         459         353</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    selfgraft_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:        1305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:        4276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:        3422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:        7462</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:      101630</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:          22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:          35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:         437</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p5</span> <span class="op">&lt;-</span> <span class="fu">RNAdistribution</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>, style <span class="op">=</span> <span class="st">"bar"</span>,</span></span>
 <span class="r-in"><span>                      facet <span class="op">=</span> <span class="cn">TRUE</span>, facet.arrange <span class="op">=</span> <span class="fl">2</span> <span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Printing plots as facet for samples: heterograft_1, heterograft_2, heterograft_3, selfgraft_1, selfgraft_2, selfgraft_3</span>
 <span class="r-plt img"><img src="RNAdistribution-12.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Class heterograft_1 heterograft_2 heterograft_3 selfgraft_1 selfgraft_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20          1720          2102          1306        1719        2101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21          4940          5655          4278        4938        5653</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22          3655          4883          3422        3655        4883</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23          6657          6909          7469        6650        6902</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24         99330         85514        101771       99191       85374</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:    20             9            14             7           8          13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:    21            27            28            24          25          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:    22            19            27            26          19          27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:    23            25            38            42          18          31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:    24           597           491           575         459         353</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    selfgraft_3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:        1305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2:        4276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:        3422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4:        7462</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5:      101630</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:          22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:          26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:          35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:         437</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sRNA_data_consensus"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p6</span> <span class="op">&lt;-</span> <span class="fu">RNAdistribution</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>, style <span class="op">=</span> <span class="st">"consensus"</span>,</span></span>

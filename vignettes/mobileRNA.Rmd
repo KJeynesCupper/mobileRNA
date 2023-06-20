@@ -177,7 +177,8 @@ clusters. These replicates serve for the aim to analyse sRNA mobility.
 The data set, called `sRNA_data`, stores a matrix containing the
 pre-processed data from the experiment. As a
 user, this allows you to see what a full data set might look like and how
-you might expect it to change across the analysis.
+you might expect it to change across the analysis. Please not that the data 
+has been doctored to reduce the size of the file. 
 
 These can be loaded in these R workspace by using the following command:
 
@@ -645,8 +646,6 @@ sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
                               group = groups,
                               method = "DESeq2" )
 
-
-
 ## Differential analysis: DEseq2 method
 # 24-nt sRNA data-set
 sRNA_24_DESeq2 <- RNAanalysis(data = sRNA_24,
@@ -723,7 +722,8 @@ control_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 mobile_sRNA <- RNAmobile(data = sRNA_DESeq2, 
                          controls = control_names,
                          id = "SL40",
-                         task = "keep")
+                         task = "keep", 
+                         statistical = FALSE)
 
 # or identify within specific classes 
 # within 24-nt sRNA datset 

@@ -145,16 +145,19 @@ genome,that you treat the input annotations in the same way.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># import GFF files into R</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Read reference genomes</span></span></span>
+<span class="r-in"><span><span class="va">url_remote</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/KJeynesCupper/assemblies/raw/main/"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">anno1_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url_remote</span>,<span class="st">"chr12_Eggplant_V4.1_function_IPR_final.gff"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">anno2_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url_remote</span>, <span class="st">"chr2_ITAG4.0_gene_models.gff"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># Read in GFF files</span></span></span>
-<span class="r-in"><span><span class="va">anno1</span> <span class="op">&lt;-</span> <span class="fu">rtracklayer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/export.html" class="external-link">import</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span></span>
-<span class="r-in"><span><span class="st">"chr12_Eggplant_V4.1_function_IPR_final.gff.gz"</span>, package<span class="op">=</span><span class="st">"mobileRNA"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>format <span class="op">=</span> <span class="st">"gff"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">anno1</span> <span class="op">&lt;-</span> <span class="fu">rtracklayer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/export.html" class="external-link">import</a></span><span class="op">(</span><span class="va">anno1_url</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">anno2</span> <span class="op">&lt;-</span> <span class="fu">rtracklayer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/export.html" class="external-link">import</a></span><span class="op">(</span><span class="va">anno2_url</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">anno2</span> <span class="op">&lt;-</span> <span class="fu">rtracklayer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/export.html" class="external-link">import</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span></span>
-<span class="r-in"><span><span class="st">"chr2_ITAG4.0_gene_models.gff.gz"</span>, package<span class="op">=</span><span class="st">"mobileRNA"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>format <span class="op">=</span> <span class="st">"gff"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># edit and merge</span></span></span>
 <span class="r-in"><span><span class="va">merged_anno</span> <span class="op">&lt;-</span> <span class="fu">RNAmergeAnnotations</span><span class="op">(</span>annotationA <span class="op">=</span> <span class="va">anno1</span>,</span></span>

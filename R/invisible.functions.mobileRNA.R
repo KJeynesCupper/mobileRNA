@@ -28,7 +28,11 @@
         }
       }
     }
+  if(is.null(x)){
+    data <- data
+  } else
   data <- data[-x,]
+
   return(data)
 }
 

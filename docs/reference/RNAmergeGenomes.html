@@ -132,16 +132,17 @@ annotation,that you treat the input references in the same way.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># import FASTA files into R</span></span></span>
+<span class="r-in"><span><span class="co"># URL for example genome assemblies</span></span></span>
+<span class="r-in"><span> <span class="va">url_remote</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/KJeynesCupper/assemblies/raw/main/"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">fasta_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url_remote</span>, <span class="st">"chr12_Eggplant_V4.1.fa.gz"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">fasta_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">url_remote</span>,<span class="st">"chr2_S_lycopersicum_chromosomes.4.00.fa.gz"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># load into R</span></span></span>
-<span class="r-in"><span> <span class="va">ref1</span> <span class="op">&lt;-</span> <span class="fu">Biostrings</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html" class="external-link">readDNAStringSet</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span></span>
-<span class="r-in"><span>                           <span class="st">"chr12_Eggplant_V4.1.fa.gz"</span>, package<span class="op">=</span><span class="st">"mobileRNA"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            format <span class="op">=</span> <span class="st">"fasta"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="va">ref2</span> <span class="op">&lt;-</span> <span class="fu">Biostrings</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html" class="external-link">readDNAStringSet</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"chr2_S_lycopersicum_chromosomes.4.00.fa.gz"</span>, package<span class="op">=</span><span class="st">"mobileRNA"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>     format <span class="op">=</span> <span class="st">"fasta"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">ref1</span> <span class="op">&lt;-</span> <span class="fu">Biostrings</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html" class="external-link">readDNAStringSet</a></span><span class="op">(</span><span class="va">fasta_1</span>,format <span class="op">=</span> <span class="st">"fasta"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">ref2</span> <span class="op">&lt;-</span> <span class="fu">Biostrings</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-io.html" class="external-link">readDNAStringSet</a></span><span class="op">(</span><span class="va">fasta_2</span>,format <span class="op">=</span> <span class="st">"fasta"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># run function to merge</span></span></span>
 <span class="r-in"><span><span class="va">merged_ref</span> <span class="op">&lt;-</span> <span class="fu">RNAmergeGenomes</span><span class="op">(</span>genomeA <span class="op">=</span> <span class="va">ref1</span>, genomeB <span class="op">=</span> <span class="va">ref2</span>,</span></span>

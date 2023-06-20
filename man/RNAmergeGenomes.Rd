@@ -64,16 +64,17 @@ annotation,that you treat the input references in the same way.
 }
 \examples{
 
-# import FASTA files into R
+# URL for example genome assemblies
+ url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
+
+ fasta_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+
+ fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
+
 
  # load into R
- ref1 <- Biostrings::readDNAStringSet(system.file("extdata",
-                           "chr12_Eggplant_V4.1.fa.gz", package="mobileRNA"),
-                            format = "fasta")
-
- ref2 <- Biostrings::readDNAStringSet(system.file("extdata",
-    "chr2_S_lycopersicum_chromosomes.4.00.fa.gz", package="mobileRNA"),
-     format = "fasta")
+ ref1 <- Biostrings::readDNAStringSet(fasta_1,format = "fasta")
+ ref2 <- Biostrings::readDNAStringSet(fasta_2,format = "fasta")
 
 # run function to merge
 merged_ref <- RNAmergeGenomes(genomeA = ref1, genomeB = ref2,
