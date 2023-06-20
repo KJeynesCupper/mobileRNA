@@ -65,7 +65,7 @@
 #'
 #' # run function to merge
 #' merged_ref <- RNAmergeGenomes(genomeA = ref1, genomeB = ref2,
-#'                                out_dir = "../references/merged_ref.fa")
+#'                                out_dir = "./merged_ref.fa")
 #'
 #'
 #'
@@ -78,7 +78,7 @@
 #'
 #' merged_ref2 <- RNAmergeGenomes(genomeA = ref1,
 #'             genomeB = ref2 ,
-#'             out_dir = "../references/merged_ref.fa",
+#'             out_dir = "./merged_ref.fa",
 #'             abbreviationGenomeA = "SM",
 #'             abbreviationGenomeB = "SL")
 #'
