@@ -4,7 +4,6 @@ mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/log
 
 Overview
 ======================================================================
-<br>
 mobileRNA is an `R` package that provides a pipeline for the rapid 
 identification of endogenous mobile small RNA (sRNA) molecules in plant graft 
 systems. The tool provides a pipeline for pre-processing and analysis of 
@@ -22,12 +21,14 @@ graft system. While, here we introduce a new mapping method where we align
 each sample replicates to a merge genome reference comprised of both genome 
 assemblies relating to the genotypes in the heterograft system. 
 
-**Look-out for Version 2 which accommodates mRNA movement**
+*Look-out for Version 2 which accommodates mRNA movement*
+<br>
+
 
 Author
 --------
 Katie Jeynes-Cupper, University of Birmingham, kej031@student.bham.ac.uk
-
+<br>
 
 Table of Contents
 --------
@@ -44,6 +45,7 @@ Table of Contents
 - [Optional Extras](#Optional-Extras)
 <br>
 
+
 Installation
 ------------
 
@@ -51,9 +53,9 @@ The latest version of the package can be install directly from this GitHub repo:
 
 ``` r
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("KJeynesCupper/mobileRNA", branch = "main")
+devtools::install_github("KJeynesCupper/mobileRNA", ref = "main")
 ```
-
+<br>
 
 Loading Test Data
 -----------------
@@ -102,7 +104,7 @@ mobile RNA species.
 
 Going forward,we assume standard quality control steps on raw samples has been
 completed (i.e. trimming of adapters and low quality reads)
-<br>
+<br> <br>
 
 
 
@@ -148,7 +150,7 @@ ShortStack \
 --outdir <./output/directory>
 
 ```
-<br>
+
 
 #### Step 2 - Build sRNA cluster list 
 
@@ -176,7 +178,6 @@ Mapping
 Each sample is mapped to the merged reference genome with the list of sRNA 
 clusters. 
 
-<br>
 
 ``` bash
 ShortStack \
@@ -198,7 +199,7 @@ Analysis
 --------------------------------------------
 The aligned data can now be analysed in R, and potential mobile sRNA can be 
 identified. 
-
+<br>
 
 #### Step 1: Import data 
 State the location of the mapping results, the sample names and sRNA cluster loci
@@ -276,20 +277,20 @@ A dataframe where rows represent potential mobile sRNA clusters.
 The columns include information on the cluster, individual sample replicates, 
 and more. 
 
-### Information on the cluster:
+#### Information on the cluster:
 - `chr`: Name of the chromosome or scaffold
 - `start` : Start position of the cluster
 - `end` : End position of the cluster
 - `width` : Length of the locus (base-pairs)
 
-### Information on each sample replicate:
+#### Information on each sample replicate:
 - `cluster`: Cluster Name
 - `Dicer-call` : The size of most abundant small RNA size
 - `Count` : Number of uniquely aligned (*e.g.* not multi-mapping) reads that 
 overlap this locus.
 - `RPM` : Reads per Million
 
-### Other information
+#### Other information
 - `sRNA_Consensus` : Consensus sRNA class calculated by `RNAconsensus()`
 
 If an annotation file was imported and overlapped using `RNAattributes()`:
@@ -346,7 +347,6 @@ mobile_df_features <- RNAfeatures(data = mobile_df,
                       repeats = "./annotation/origin_annotation_repeats.gff3")
 
 ```
-<br>
 
 
 Lastly, lets extract the sRNA cluster sequences.These can utilised with `BLAST`, 
@@ -381,7 +381,9 @@ The package also includes functions for:
 * Statistical analysis using differential methods from either DESeq2 or edgeR. 
 
 The package workflow can easily be manipulated to enable the identification of local populations of RNA species. 
-
+<br>
+<br>
+<br>
 ------------------------------------------------------------------------
 
 *Last updated:* 06-06-2023

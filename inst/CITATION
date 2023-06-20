@@ -1,0 +1,4 @@
+citEntry(
+	textVersion = paste("Katie Jeynes-Cupper, Marco Catoni.",
+	 "mobileRNA: An R package to identify mobile RNA molecules traveling between genotypes.")
+)
