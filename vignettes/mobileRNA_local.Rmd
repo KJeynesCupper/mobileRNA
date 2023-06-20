@@ -1,0 +1,81 @@
+---
+title: "Analyse local sRNA populations using mobileRNA"
+author: Katie Jeynes-Cupper, Marco Catoni
+date: "`r Sys.Date()`"
+output:
+  BiocStyle::html_document:
+  toc: true
+toc_depth: 3
+number_sections: true
+theme: united
+highlight: tango
+fig_width: 7
+vignette: >
+ %\VignetteIndexEntry{mobileRNA_local}
+ %\VignetteEngine{knitr::rmarkdown}}
+ %\VignetteEncoding{UTF-8}
+ %\VignettePackage{mobileRNA}
+ %\VignetteDepends{mobileRNA}
+ %\usepackage[utf8]{inputenc}
+
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.align='center',
+  external=TRUE,
+  echo=TRUE,
+  warning=FALSE,
+  comment = "#>"
+)
+```
+
+
+# Introduction
+
+In plants, systemic signalling is an elaborated molecular system which allows to
+coordinate plant development at the entire organism level, integrating and
+transmitting the information perceived from environment to distant organs.
+RNA molecules play a key role in this extensive network, both across 
+short and long distances. Of which, small RNAs (sRNA) have been shown to be
+involved in post-transcriptional gene silencing and RNA-directed DNA methylation.
+Alterations such as these have been linked to changes in gene expression and 
+phenotypical changes or trait. Here, we introduce the use of the mobileRNA 
+R package as a tool for the identification of local sRNA molecules in a 
+biological system, regardless of whether the system is chimeric or not. 
+
+While, other RNA molecules, such as messenger RNA, are also renown be play a 
+role in systemic signalling this tool currently focuses on the identification 
+of local sRNA populations. 
+<br>
+
+
+# Method
+
+To locate and identify the role of local sRNA populations we can follow a 
+similar workflow as the workflow described for identifying foreign sRNA species. 
+The following method assumes the experimental design involves a chimeric 
+biological system, such as plant grafting between two genotypes. 
+
+The guide suggests mapping steps, analysis steps, and functional analysis steps.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
