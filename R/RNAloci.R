@@ -59,40 +59,34 @@
 #' @importFrom utils "write.table"
 #' @importFrom xfun "file_ext"
 
-RNAloci <- function(files, out, samples ){
-
+loci <- function (files, out, samples) 
+{
   if (base::missing(files)) {
-    stop(paste("Please specify files, a connection to a local directory
-    containing sample folders"))
+    stop(paste("Please specify files, a connection to a local directory\n    containing sample folders"))
   }
   if (base::missing(samples) || !base::inherits(samples, c("character"))) {
-    stop(paste("Please specify samples, a vector containing individual strings
-               cooresponding to the folders of each sample replicate containing
-               results"))
+    stop(paste("Please specify samples, a vector containing individual strings\n               cooresponding to the folders of each sample replicate containing\n               results"))
   }
   extension_out <- xfun::file_ext(out)
-  if (base::missing(out) ||  !extension_out == "txt") {
-    stop(paste("Please specify out, a connection to a local directory to
-               store output, including name and file extention (.txt)"))
+  if (base::missing(out) || !extension_out == "txt") {
+    stop(paste("Please specify out, a connection to a local directory to\n               store output, including name and file extention (.txt)"))
   }
-
+  
+  
   gff_alignment <- GenomicRanges::GRangesList()
-  for (i in samples){
-    gff_alignment[[i]] <- rtracklayer::import.gff(paste0(files,i,
-                                                      "/ShortStack_All.gff3"))
+  for (i in samples) {
+    gff_alignment[[i]] <- rtracklayer::import.gff(paste0(files, 
+                                                         i, "/ShortStack_All.gff3"))
   }
-
-  gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), ignore.strand=TRUE)
-
-  gff_merged_df <- data.frame(Locus = paste0(as.character(
-    GenomeInfoDb::seqnames(gff_merged)),":",
-    stats::start(gff_merged),
-    "-",stats::end(gff_merged)),
-    Cluster = paste0("cluster_", 1:length(gff_merged)))
-
-
-  utils::write.table(gff_merged_df, file = out,
-              quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+  gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
+                                      ignore.strand = TRUE)
+  gff_merged <- Repitools::annoGR2DF(gff_merged)
+  
+  gff_merged_df <- data.frame(Locus = paste0(gff_merged$chr, ":",gff_merged$start,"-", gff_merged$end), 
+                              Cluster = paste0("cluster_", 1:nrow(gff_merged)))
+  
+  utils::write.table(gff_merged_df, file = out, quote = FALSE, 
+                     sep = "\t", row.names = FALSE, col.names = TRUE)
   message("Writting Loci file to:  ", out)
   return(gff_merged_df)
   message("Loci data frame saved to named object")
