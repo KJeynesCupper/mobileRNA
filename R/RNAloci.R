@@ -58,8 +58,9 @@
 #' @importFrom stats "end"
 #' @importFrom utils "write.table"
 #' @importFrom xfun "file_ext"
+#' @importFrom Repitools "annoGR2DF"
 
-loci <- function (files, out, samples) 
+RNAloci <- function (files, out, samples) 
 {
   if (base::missing(files)) {
     stop(paste("Please specify files, a connection to a local directory\n    containing sample folders"))
