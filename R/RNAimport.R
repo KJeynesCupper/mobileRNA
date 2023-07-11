@@ -163,7 +163,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
 
       # Print progress
       if (report) {
-        cat("Added information from", i, "to the analysis locus dataframe","\n")
+        message("Adding information from sample", i, "to the analysis dataframe","\n")
       }
     }
 
