@@ -164,137 +164,143 @@ RNAdistribution  <- function (data, samples = NULL, style = c("bar", "line", "co
     counts.df <- apply(data.cols, MARGIN = 2, table)
     # if a replicate only has unclassified sRNAs (N), then we need to alter
     # beware that any tables which do not have the required columsn 
-    required_columns <- c("20", "21", "22", "23", "24", "N")
-    for (i in seq_along(counts.df)) {
-      table_i <- counts.df[[i]]  #  current table
+    if(base::inherits(counts.df, c("list"))){
+      required_columns <- c("20", "21", "22", "23", "24", "N")
       
-      if (length(names(table_i)) < 6) {
-        # colmns missing from the table
-        missing_columns <- setdiff(required_columns, names(table_i))
-        # add missing columns to table, and assign a value of 0
-        table_i[missing_columns] <- 0
-        # Update the table in counts.df
-        counts.df[[i]] <- table_i 
-      }
-    }
-    
-    counts.df <- data.frame(t(do.call(rbind, counts.df)))
-    colnames(counts.df) <- gsub("DicerCall_", "", colnames(counts.df))
-    counts.df <- data.table::setDT(counts.df, keep.rownames = "Class")[]
-    counts.df <- counts.df[!(counts.df$Class == "N"), ]
-    style <- base::match.arg(style)
-    if (style == "bar") {
-      plist = sapply(names(counts.df)[-grep("Class", names(counts.df))], 
-                     function(col) {
-                       ggplot2::ggplot(counts.df, ggplot2::aes_string(x = "Class", 
-                                                                      y = col)) + ggplot2::geom_bar(stat = "identity", 
-                                                                                                    fill = colour) + ggplot2::theme_classic() + 
-                         ggplot2::labs(title = col, x = "RNA Class", 
-                                       y = "Count")
-                     }, simplify = FALSE)
-      sn <- names(plist)
-      if (facet == TRUE) {
-        message("Printing plots as facet for samples: ", 
-                paste(sn, collapse = ", "))
-        if (is.null(samples)) {
-          p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
-                                                   key, Count, -Class), ggplot2::aes(Class, 
-                                                                                     Count)) + ggplot2::geom_bar(stat = "identity", 
-                                                                                                                 fill = colour) + ggplot2::theme_classic() + 
-                       ggplot2::facet_wrap(~key, scales = "free_y", 
-                                           ncol = facet.arrange))
-        }
-        else if (!is.null(samples)) {
-          counts.df <- counts.df %>% select(!all_of(samples))
-          p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
-                                                   key, Count, -Class), ggplot2::aes(Class, 
-                                                                                     Count)) + ggplot2::geom_bar(stat = "identity", 
-                                                                                                                 fill = colour) + ggplot2::theme_classic() + 
-                       ggplot2::facet_wrap(~key, scales = "free_y", 
-                                           ncol = facet.arrange))
-        }
-        print(counts.df)
-        out <- list(plot = p, data = counts.df)
-        return(out)
-      }
-      else if (facet == FALSE) {
-        message("Printing plots for samples: ", paste(sn, 
-                                                      collapse = ", "), domain = NULL)
-        save <- list()
-        for (i in 1:length(plist)) {
-          print(plist[i])
-          save <- list(save, plist[i])
-        }
-        print(counts.df)
-        out <- list(plot = save, data = counts.df)
-        return(out)
-      }
-    }
-    if (style == "line") {
-      if (together == TRUE) {
-        if (is.null(samples)) {
-          counts.df <- data.table::melt(counts.df, id.vars = "Class")
-          p <- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class, 
-                                                             value, col = variable, group = 1)) + ggplot2::geom_point() + 
-                       ggplot2::geom_line() + ggplot2::theme_classic() + 
-                       ggplot2::xlab("RNA Class") + ggplot2::ylab("Counts") + 
-                       ggplot2::labs(color = "Samples"))
-        }
-        else if (!is.null(samples)) {
-          counts.df <- counts.df %>% select(!all_of(samples))
-          counts.df <- data.table::melt(counts.df, id.vars = "Class")
-          p <- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class, 
-                                                             value, col = variable, group = 1)) + ggplot2::geom_point() + 
-                       ggplot2::geom_line() + ggplot2::theme_classic() + 
-                       ggplot2::xlab("RNA Class") + ggplot2::ylab("Counts") + 
-                       ggplot2::labs(color = "Samples"))
-          out <- list(plot = p, data = counts.df)
-          return(out)
+      for (i in seq_along(counts.df)) {
+        table_i <- counts.df[[i]]  #  current table
+        
+        if (length(names(table_i)) < 6) {
+          # colmns missing from the table
+          missing_columns <- setdiff(required_columns, names(table_i))
+          # add missing columns to table, and assign a value of 0
+          table_i[missing_columns] <- 0
+          # Update the table in counts.df
+          counts.df[[i]] <- table_i 
         }
       }
-      else if (together == FALSE) {
-        if (facet == TRUE) {
-          message("Printing plots as facet for samples")
-          if (is.null(samples)) {
-            p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
-                                                     key, Count, -Class), ggplot2::aes(Class, 
-                                                                                       Count, group = 1)) + ggplot2::geom_point() + 
-                         ggplot2::geom_line() + ggplot2::theme_classic() + 
-                         ggplot2::facet_wrap(~key, scales = "free_y", 
-                                             ncol = facet.arrange))
+      counts.df <- data.frame(t(do.call(rbind, counts.df)))
+    } 
+    else 
+      if(!base::inherits(counts.df, c("list"))) {
+        counts.df <- data.frame(counts.df)
+        colnames(counts.df) <- gsub("DicerCall_", "", colnames(counts.df))
+        counts.df <- data.table::setDT(counts.df, keep.rownames = "Class")[]
+        counts.df <- counts.df[!(counts.df$Class == "N"), ]
+        style <- base::match.arg(style)
+        if (style == "bar") {
+          plist = sapply(names(counts.df)[-grep("Class", names(counts.df))], 
+                         function(col) {
+                           ggplot2::ggplot(counts.df, ggplot2::aes_string(x = "Class", 
+                                                                          y = col)) + ggplot2::geom_bar(stat = "identity", 
+                                                                                                        fill = colour) + ggplot2::theme_classic() + 
+                             ggplot2::labs(title = col, x = "RNA Class", 
+                                           y = "Count")
+                         }, simplify = FALSE)
+          sn <- names(plist)
+          if (facet == TRUE) {
+            message("Printing plots as facet for samples: ", 
+                    paste(sn, collapse = ", "))
+            if (is.null(samples)) {
+              p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
+                                                       key, Count, -Class), ggplot2::aes(Class, 
+                                                                                         Count)) + ggplot2::geom_bar(stat = "identity", 
+                                                                                                                     fill = colour) + ggplot2::theme_classic() + 
+                           ggplot2::facet_wrap(~key, scales = "free_y", 
+                                               ncol = facet.arrange))
+            }
+            else if (!is.null(samples)) {
+              counts.df <- counts.df %>% select(!all_of(samples))
+              p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
+                                                       key, Count, -Class), ggplot2::aes(Class, 
+                                                                                         Count)) + ggplot2::geom_bar(stat = "identity", 
+                                                                                                                     fill = colour) + ggplot2::theme_classic() + 
+                           ggplot2::facet_wrap(~key, scales = "free_y", 
+                                               ncol = facet.arrange))
+            }
+            print(counts.df)
+            out <- list(plot = p, data = counts.df)
+            return(out)
           }
-          else if (!is.null(samples)) {
-            counts.df <- counts.df %>% select(!all_of(samples))
-            p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
-                                                     key, Count, -Class), ggplot2::aes(Class, 
-                                                                                       Count, group = 1)) + ggplot2::geom_point() + 
-                         ggplot2::geom_line() + ggplot2::theme_classic() + 
-                         ggplot2::facet_wrap(~key, scales = "free_y", 
-                                             ncol = facet.arrange))
-          }
-          out <- list(plot = p, data = counts.df)
-          return(out)
-        }
-        else if (facet == FALSE) {
-          plist2 = sapply(names(counts.df)[-grep("Class", 
-                                                 names(counts.df))], function(col) {
-                                                   ggplot2::ggplot(counts.df, ggplot2::aes_string(x = "Class", 
-                                                                                                  y = col, group = 1)) + ggplot2::geom_point(colour = colour) + 
-                                                     ggplot2::theme_classic() + ggplot2::geom_line(colour = colour) + 
-                                                     ggplot2::labs(title = col, x = "RNA Class", 
-                                                                   y = "Count")
-                                                 }, simplify = FALSE)
-          sn <- names(plist2)
-          p <- plist2
-          out <- list(plot = p, data = counts.df)
-          return(out)
-          message("Printing line plots for samples: ", 
-                  paste(sn, collapse = ", "))
-          for (J in 1:length(plist2)) {
-            print(plist2[J])
+          else if (facet == FALSE) {
+            message("Printing plots for samples: ", paste(sn, 
+                                                          collapse = ", "), domain = NULL)
+            save <- list()
+            for (i in 1:length(plist)) {
+              print(plist[i])
+              save <- list(save, plist[i])
+            }
+            print(counts.df)
+            out <- list(plot = save, data = counts.df)
+            return(out)
           }
         }
+        if (style == "line") {
+          if (together == TRUE) {
+            if (is.null(samples)) {
+              counts.df <- data.table::melt(counts.df, id.vars = "Class")
+              p <- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class, 
+                                                                 value, col = variable, group = 1)) + ggplot2::geom_point() + 
+                           ggplot2::geom_line() + ggplot2::theme_classic() + 
+                           ggplot2::xlab("RNA Class") + ggplot2::ylab("Counts") + 
+                           ggplot2::labs(color = "Samples"))
+            }
+            else if (!is.null(samples)) {
+              counts.df <- counts.df %>% select(!all_of(samples))
+              counts.df <- data.table::melt(counts.df, id.vars = "Class")
+              p <- print(ggplot2::ggplot(counts.df, ggplot2::aes(Class, 
+                                                                 value, col = variable, group = 1)) + ggplot2::geom_point() + 
+                           ggplot2::geom_line() + ggplot2::theme_classic() + 
+                           ggplot2::xlab("RNA Class") + ggplot2::ylab("Counts") + 
+                           ggplot2::labs(color = "Samples"))
+              out <- list(plot = p, data = counts.df)
+              return(out)
+            }
+          }
+          else if (together == FALSE) {
+            if (facet == TRUE) {
+              message("Printing plots as facet for samples")
+              if (is.null(samples)) {
+                p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
+                                                         key, Count, -Class), ggplot2::aes(Class, 
+                                                                                           Count, group = 1)) + ggplot2::geom_point() + 
+                             ggplot2::geom_line() + ggplot2::theme_classic() + 
+                             ggplot2::facet_wrap(~key, scales = "free_y", 
+                                                 ncol = facet.arrange))
+              }
+              else if (!is.null(samples)) {
+                counts.df <- counts.df %>% select(!all_of(samples))
+                p <- print(ggplot2::ggplot(tidyr::gather(counts.df, 
+                                                         key, Count, -Class), ggplot2::aes(Class, 
+                                                                                           Count, group = 1)) + ggplot2::geom_point() + 
+                             ggplot2::geom_line() + ggplot2::theme_classic() + 
+                             ggplot2::facet_wrap(~key, scales = "free_y", 
+                                                 ncol = facet.arrange))
+              }
+              out <- list(plot = p, data = counts.df)
+              return(out)
+            }
+            else if (facet == FALSE) {
+              plist2 = sapply(names(counts.df)[-grep("Class", 
+                                                     names(counts.df))], function(col) {
+                                                       ggplot2::ggplot(counts.df, ggplot2::aes_string(x = "Class", 
+                                                                                                      y = col, group = 1)) + ggplot2::geom_point(colour = colour) + 
+                                                         ggplot2::theme_classic() + ggplot2::geom_line(colour = colour) + 
+                                                         ggplot2::labs(title = col, x = "RNA Class", 
+                                                                       y = "Count")
+                                                     }, simplify = FALSE)
+              sn <- names(plist2)
+              p <- plist2
+              out <- list(plot = p, data = counts.df)
+              return(out)
+              message("Printing line plots for samples: ", 
+                      paste(sn, collapse = ", "))
+              for (J in 1:length(plist2)) {
+                print(plist2[J])
+              }
+            }
+          }
+        }
       }
-    }
-  }
+      }
 }
