@@ -136,7 +136,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     cat("\n") 
     
     # merge first columns to create list of loci across all samples
-    loci <- lapply(dt_list, "[","" , "Locus")
+    loci <- lapply(dt_list, "[", , "Locus")
     loci_all <- unique(Reduce(merge,loci))
 
     # Define a function to update the loci with the matching values from a
