@@ -255,7 +255,7 @@ sRNA_data_summary <- RNAconsensus(data = sRNA_data,
 ```
 
 
-## Step 4: Staticastical analysis using DESeq2 or edgeR
+## Step 4: Statistical analysis using DESeq2 or edgeR
 Statistical analysis can be helpful to understand the differential abundances of 
 sRNA clusters found within your system. Here we can utilize either the DESeq2 or 
 edgeR algorithms to support your analysis, and can be used in the next steps. 
