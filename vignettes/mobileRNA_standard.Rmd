@@ -71,6 +71,25 @@ differences in sRNA abundances between treatment and control conditions.
 This guide suggests mapping steps, analysis steps, and functional analysis 
 steps.
 
+# Installation
+
+The latest version of `mobileRNA` can be installed via GitHub
+using the `devtools` package:
+
+```{r,  eval=FALSE, message=FALSE}
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github("KJeynesCupper/mobileRNA", ref = "main")
+```
+
+
+Load into Library:
+
+```{r Load, message=FALSE}
+library(mobileRNA)
+data("sRNA_data")
+
+```
+
 # Pre-processing 
 Assuming your sRNAseq raw samples have been cleaned to remove low quality reads 
 and remove adapter sequences, we can align the samples to the genome assembly
