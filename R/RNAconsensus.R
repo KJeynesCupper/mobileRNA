@@ -58,7 +58,7 @@
 #' @importFrom stringr "str_detect"
 #' @importFrom Repitools "annoGR2DF"
 
-RNAconsensus <- function(data, conditions, tidy=TRUE) {
+RNAconsensus <- function(data, conditions=NULL, tidy=TRUE) {
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix,
          data.frame, DataFrame")
@@ -71,14 +71,20 @@ RNAconsensus <- function(data, conditions, tidy=TRUE) {
          define the consensus from.")
   }
   data[is.na(data)] <- "N"
-  class_colnames <- c()
-  for (i in colnames(data)){
-    if (stringr::str_detect(i, "DicerCall_" )){
-      class_colnames <- c(class_colnames, i)
+  
+  if(!is.null(conditions)){
+    class_colnames <- c()
+    for (i in colnames(data)){
+      if (stringr::str_detect(i, "DicerCall_" )){
+        class_colnames <- c(class_colnames, i)
+      }
     }
-  }
-  onlyconditions <- base::unique(grep(paste(conditions,collapse="|"),
-                             class_colnames, value=TRUE))
+    onlyconditions <- base::unique(grep(paste(conditions,collapse="|"),
+                                        class_colnames, value=TRUE))
+  }else 
+    if(is.null(conditions)){
+      onlyconditions <- data %>% dplyr::select(dplyr::starts_with("DicerCall_"))
+    }
   data <- data %>%
     dplyr::mutate(nt_20 = base::rowSums(.[onlyconditions] == "20"))%>%
     dplyr::mutate(nt_21 = base::rowSums(.[onlyconditions] == "21"))%>%

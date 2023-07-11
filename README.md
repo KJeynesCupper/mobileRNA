@@ -5,21 +5,36 @@ mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/log
 Overview
 ======================================================================
 mobileRNA is an `R` package that provides a pipeline for the rapid 
-identification of endogenous mobile small RNA (sRNA) molecules in plant graft 
-systems. The tool provides a pipeline for pre-processing and analysis of 
-sRNA sequencing data, and soon mRNA sequencing data. 
+identification of small RNA molecules. It has been designed for two key 
+purposes; to undertaken typical sRNAseq between treatment and control and/or
+to identify endogenous mobile small RNA (sRNA) molecules in plant graft 
+systems. The tool provides a pipeline for each, in seperate vignettes, both 
+include pre-processing and analysis of sRNA sequencing data, 
+and soon mRNA sequencing data. 
 
 It has been established that many different substances and molecules 
-including RNAs can travel across the graft junction. Plant heterograft systems are 
-comprised of two genotypes joined at the graft junction; hence, molecules produces
-and encoded by each genotype can move across the graft junction and be exchanged. 
-These molecules could have implications to the regulation of gene expression and 
-traitacquisition. 
+including RNAs can travel between the shoot and roots in plants. Many of these 
+studies utilied grafting, and this method has can be used to also join different
+species together. Plant heterograft systems are chimeric, comprised of two 
+genotypes joined at the graft junction; hence, molecules produces and encoded by 
+each genotype might be exchanged across the graft junction. These molecules 
+could have implications to the regulation of gene expression and trait 
+acquisition. for instance, sRNAs are linked to epigenetic pathways, such as 
+the RNA-directed DNA methylation pathway and post-transcriptional gene 
+silencing, which have implications to gene regulatory patterns. Changes in these
+sRNA populations could instigaste or faciliate grafting-induced traits, such as
+imporved plant vigour. 
 
-Current methods utilise a step-wise mapping of samples to each genome within the
+For the identification of mobile sRNAs between genotypes, current methods 
+utilise a step-wise mapping of samples to each genome within the
 graft system. While, here we introduce a new mapping method where we align 
 each sample replicates to a merge genome reference comprised of both genome 
 assemblies relating to the genotypes in the heterograft system. 
+
+**Below is a quick-start guide to the identification of mobile sRNAs in a 
+chimeric system**
+To undertake sRNAseq analysis for treatment vs control, please see vignettes. 
+
 
 *Look-out for Version 2 which accommodates mRNA movement*
 <br>
@@ -202,8 +217,8 @@ identified.
 <br>
 
 #### Step 1: Import data 
-State the location of the mapping results, the sample names and sRNA cluster loci
-annotation file. 
+State the location of the mapping results, the sample names and the type of 
+data.
 
 ``` r
 # Directory containing results

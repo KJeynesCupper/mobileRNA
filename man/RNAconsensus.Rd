@@ -4,7 +4,7 @@
 \alias{RNAconsensus}
 \title{Define the sRNA consensus for each dicer-derived cluster}
 \usage{
-RNAconsensus(data, conditions, tidy = TRUE)
+RNAconsensus(data, conditions = NULL, tidy = TRUE)
 }
 \arguments{
 \item{data}{a data frame object containing sample data where rows
