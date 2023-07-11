@@ -66,10 +66,7 @@ RNAconsensus <- function(data, conditions=NULL, tidy=TRUE) {
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
   }
-  if (base::missing(conditions) || !base::inherits(conditions, "character")) {
-    stop("conditions must be an vector of characters to define conditions to
-         define the consensus from.")
-  }
+  
   data[is.na(data)] <- "N"
   
   if(!is.null(conditions)){
