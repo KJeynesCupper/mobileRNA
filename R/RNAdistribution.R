@@ -161,6 +161,7 @@ RNAdistribution  <- function (data, samples = NULL, style = c("bar", "line", "co
   }
   else {
     data.cols <- data %>% dplyr::select(tidyselect::starts_with("DicerCall_"))
+            }
     counts.df <- apply(data.cols, MARGIN = 2, table)
     # if a replicate only has unclassified sRNAs (N), then we need to alter
     # beware that any tables which do not have the required columsn 
@@ -301,6 +302,5 @@ RNAdistribution  <- function (data, samples = NULL, style = c("bar", "line", "co
             }
           }
         }
-      }
-      }
+    }
 }
