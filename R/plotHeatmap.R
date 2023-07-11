@@ -46,18 +46,16 @@
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "heat.colors"
 
-plotHeatmap <-function (data, colours = NULL, dendogram = TRUE){
-  if (base::missing(data) || !base::inherits(data, c("matrix",
-                                                     "data.frame",
-                                                     "DataFrame"))) {
-    stop("data must be an object of class matrix, data.frame,\n DataFrame.
-         See ?plotHeatmap for more information.")
+plotHeatmap <- function (data, colours = NULL, dendogram = TRUE, cellheight = NULL) 
+{
+  if (base::missing(data) || !base::inherits(data, c("matrix", 
+                                                     "data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame,\n DataFrame.\n         See ?plotHeatmap for more information.")
   }
   select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
   rownames(select_data) <- data$clusterID
-  # remove RPM_
-  for (col in 1:ncol(select_data)){
-    colnames(select_data)[col] <-  sub("RPM_", "", colnames(select_data)[col])
+  for (col in 1:ncol(select_data)) {
+    colnames(select_data)[col] <- sub("RPM_", "", colnames(select_data)[col])
   }
   select_data[select_data == 0] <- 1e-04
   select_data <- base::log(select_data, 2)
@@ -77,24 +75,22 @@ plotHeatmap <-function (data, colours = NULL, dendogram = TRUE){
   else {
     plot.colours <- colours
   }
-
   if (dendogram == TRUE) {
-
-   p1 <-  pheatmap::pheatmap(as.matrix(select_data[v, ]),
-                       border_color = FALSE,cellheight = 10,
-                       color = plot.colours)
-
+    if (is.null(cellheight)){
+      p1 <- pheatmap::pheatmap(as.matrix(select_data[v, ]), 
+                               border_color = FALSE, color = plot.colours)
+    } else 
+      if(!is.null(cellheight)){
+        cellheight_val <- cellheight
+        p1 <- pheatmap::pheatmap(as.matrix(select_data[v, ]), 
+                                 border_color = FALSE, cellheight = cellheight_val, color = plot.colours)
+      }
   }
   else if (dendogram == FALSE) {
-    p2 <-  pheatmap::pheatmap(as.matrix(select_data[v, ]),
-                              border_color = FALSE,
-                              treeheight_row = 0,
-                              treeheight_col = 0 ,
-                              cluster_rows=FALSE, cluster_cols=FALSE,
-                              color = plot.colours)
+    p1 <- pheatmap::pheatmap(as.matrix(select_data[v, ]), 
+                             border_color = FALSE, treeheight_row = 0, treeheight_col = 0, 
+                             cluster_rows = FALSE, cluster_cols = FALSE, color = plot.colours)
   }
-
   out <- list(plot = p1, data = as.matrix(select_data[v, ]))
   return(out)
 }
-
