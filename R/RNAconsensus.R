@@ -68,19 +68,18 @@ RNAconsensus <- function(data, conditions=NULL, tidy=TRUE) {
   }
   
   data[is.na(data)] <- "N"
-  
-  if(!is.null(conditions)){
-    class_colnames <- c()
+  class_colnames <- c()
     for (i in colnames(data)){
       if (stringr::str_detect(i, "DicerCall_" )){
         class_colnames <- c(class_colnames, i)
       }
     }
+  if(!is.null(conditions)){
     onlyconditions <- base::unique(grep(paste(conditions,collapse="|"),
                                         class_colnames, value=TRUE))
   }else 
     if(is.null(conditions)){
-      onlyconditions <- data %>% dplyr::select(dplyr::starts_with("DicerCall_"))
+      onlyconditions <- class_colnames
     }
   data <- data %>%
     dplyr::mutate(nt_20 = base::rowSums(.[onlyconditions] == "20"))%>%
