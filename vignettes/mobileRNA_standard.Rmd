@@ -11,7 +11,7 @@ theme: united
 highlight: tango
 fig_width: 7
 vignette: >
- %\VignetteIndexEntry{mobileRNA_local}
+ %\VignetteIndexEntry{mobileRNA_standard}
  %\VignetteEngine{knitr::rmarkdown}}
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
@@ -188,6 +188,7 @@ the data set. Here, we introduce the function plotSamplePCA():
 
 group <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
+
 
 plotSamplePCA(sRNA_data, group)
 ```
