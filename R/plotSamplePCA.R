@@ -32,8 +32,8 @@
 #' @examples
 #' data("sRNA_data_consensus")
 #'
-#' groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-#'             "Eggplant/Eggplant",   "Eggplant/Eggplant", "Eggplant/Eggplant")
+#' group <- c("Heterograft", "Heterograft", "Heterograft",
+#'             "Selfgraft", "Selfgraft", "Selfgraft")
 #' p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 #'
 #'

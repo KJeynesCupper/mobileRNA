@@ -105,13 +105,24 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
     dt_list <- list()
+    total_files <- length(samples)
     for (file in samples) {
+      options(datatable.showProgress = FALSE)
       dt_list[[file]] <- data.table::fread(paste0(directory, file,
                                                   "/Results.txt"),header = TRUE)
+      progress_counter <- file
+      progress_message <- paste0("Processing file ", progress_counter, " of ", total_files)
+      cat(sprintf("\r%s", progress_message))
+      flush.console()
     }
+    cat("\n")  # Print a newline after progress is complete
+    message("Completed importation of data from directory.")
+    
+    
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
+    message("Checking data content...")
     required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -121,9 +132,11 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                    line of the input file(s)"))
       }
     }
-
+    message("Data content is correct.")
+    cat("\n") 
+    
     # merge first columns to create list of loci across all samples
-    loci <- lapply(dt_list, "[", , "Locus")
+    loci <- lapply(dt_list, "[","" , "Locus")
     loci_all <- unique(Reduce(merge,loci))
 
     # Define a function to update the loci with the matching values from a
