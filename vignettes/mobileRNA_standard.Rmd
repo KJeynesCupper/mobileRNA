@@ -309,28 +309,32 @@ plotHeatmap(significant_sRNAs)
 ```
 
 ## Step 6: Identify absolute sRNA population difference 
-Finally, the  `RNApopulations()` function can be utilised to identify unique 
+Finally, the  `RNApopulation()` function can be utilised to identify unique 
 sRNA populations found in the treatment or control condition.
 
 ```{r}
-# select sRNA clusters only found in heterografts & not in the control samples
+# select sRNA clusters only found in treatment & not in the control samples
 treatment_reps <- c("heterograft_1", "heterograft_2" , "heterograft_3")
-unique_treatment <- RNApopulations(data = sRNA_data_consensus, 
+unique_treatment <- RNApopulation(data = sRNA_data_consensus, 
                                    conditions = treatment_reps)
 
+# look at number of sRNA cluster only found in treatment 
+nrow(unique_treatment)
 
-# select sRNA clusters only found in control & not in the heterografts samples
+# select sRNA clusters only found in control & not in the treatment samples
 control_reps <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
-unique_control <- RNApopulations(data = sRNA_data_consensus, 
+unique_control <- RNApopulation(data = sRNA_data_consensus, 
                                    conditions = control_reps)
+# look at number of sRNA cluster only found in control  
+nrow(unique_control) 
 ```
 
 ### Plotting heterograft-only sRNA populations 
 ```{r}
-# plot distribution of sRNA classes only found in heterografts 
+# plot distribution of sRNA classes only found in treatment 
 p1 <- RNAdistribution(data = unique_treatment, together = TRUE)
 
-# plot heatmap of heterograft-only sRNA clusters
+# plot heatmap of treatment-only sRNA clusters
 p2 <- plotHeatmap(data = unique_treatment)
 
 ```
@@ -338,7 +342,7 @@ p2 <- plotHeatmap(data = unique_treatment)
 ### Plotting control-only sRNA populations 
 ```{r}
 # plot distribution of sRNA classes only found in controls 
-p3 <- RNAdistribution(data = unique_control, together = TRUE)
+p3 <- RNAdistribution(data = unique_control, together = FALSE, style = "line")
 
 # plot heatmap of control-only sRNA clusters
 p4 <- plotHeatmap(data = unique_control)
