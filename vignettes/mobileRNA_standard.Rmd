@@ -243,13 +243,13 @@ For a given sRNA cluster, each replicate has determined the class (20-24nt)
 based on the most abundant small RNA size. Replicates within the same condition 
 are expected to class a given sRNA similarly. 
 
-The `RNAconsensus()` function is used to define the class of a sRNA cluster 
+The `RNAdicercall()` function is used to define the class of a sRNA cluster 
 based on the consensus across specific replicates. 
 
 
 ```{r}
 
-sRNA_data_summary <- RNAconsensus(data = sRNA_data,  
+sRNA_data_summary <- RNAdicercall(data = sRNA_data,  
                                  tidy=TRUE)
 
 ```

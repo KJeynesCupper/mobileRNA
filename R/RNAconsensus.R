@@ -46,7 +46,7 @@
 #' conditions <- c("heterograft_1", "heterograft_2", "heterograft_3")
 #'
 #' # Run function to define sRNA class for each cluster.
-#' sRNA_data_consensus <- RNAconsensus(data = sRNA_data,
+#' sRNA_data_consensus <- RNAdicercall(data = sRNA_data,
 #'                                   conditions = conditions,
 #'                                   tidy=TRUE)
 #'
@@ -58,7 +58,7 @@
 #' @importFrom stringr "str_detect"
 #' @importFrom Repitools "annoGR2DF"
 
-RNAconsensus <- function(data, conditions=NULL, tidy=TRUE) {
+RNAdicercall <- function(data, conditions=NULL, tidy=TRUE) {
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix,
          data.frame, DataFrame")

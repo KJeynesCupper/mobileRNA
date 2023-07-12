@@ -18,7 +18,7 @@ RNAdistribution(
 }
 \arguments{
 \item{data}{a dataframe, on which one of the following functions has already
-been called: \code{\link[=RNAimport]{RNAimport()}},\code{\link[=RNAconsensus]{RNAconsensus()}}.}
+been called: \code{\link[=RNAimport]{RNAimport()}},\code{\link[=RNAdicercall]{RNAdicercall()}}.}
 
 \item{samples}{character vector. Store names of samples to analyse and plot.
 Argument is required for plotting individual sample replicates, either
@@ -55,7 +55,7 @@ to represent the sample replicates. Default \code{together=TRUE}.}
 
 \item{consensus}{Logical; plots the distribution of sRNA classes across all
 identified dicer-derived clusters based on the consensus. See
-\code{\link[=RNAconsensus]{RNAconsensus()}}
+\code{\link[=RNAdicercall]{RNAdicercall()}}
 function to calculate consensus RNA class based the experimental replicates.
 Default \code{consensus=FALSE}.}
 
@@ -74,7 +74,7 @@ This can encourage closer comparison between sample replicates.
 \description{
 \code{RNAdistribution} plots the distribution of dicer-derived
 sRNA classes (20-24nt) across samples or across the sRNA consensus
-determined by the function \code{\link[=RNAconsensus]{RNAconsensus()}}.
+determined by the function \code{\link[=RNAdicercall]{RNAdicercall()}}.
 }
 \details{
 The function can be used to plot a variety of different comparisons and plots.
@@ -93,7 +93,7 @@ option for bar plots.
 
 The final option, is to plot the total consensus of dicer-derived sRNA
 clusters across the experimental conditions, the function pulls the consensus
-call from the column created by the \code{\link[=RNAconsensus]{RNAconsensus()}} function in the working
+call from the column created by the \code{\link[=RNAdicercall]{RNAdicercall()}} function in the working
 data frame.
 }
 \examples{

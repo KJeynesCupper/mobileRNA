@@ -8,13 +8,13 @@ mobileRNA is an `R` package that provides a pipeline for the rapid
 identification of small RNA molecules. It has been designed for two key 
 purposes; to undertaken typical sRNAseq between treatment and control and/or
 to identify endogenous mobile small RNA (sRNA) molecules in plant graft 
-systems. The tool provides a pipeline for each, in seperate vignettes, both 
+systems. The tool provides a pipeline for each, in separate vignettes, both 
 include pre-processing and analysis of sRNA sequencing data, 
 and soon mRNA sequencing data. 
 
 It has been established that many different substances and molecules 
 including RNAs can travel between the shoot and roots in plants. Many of these 
-studies utilied grafting, and this method has can be used to also join different
+studies utilized grafting, and this method has can be used to also join different
 species together. Plant heterograft systems are chimeric, comprised of two 
 genotypes joined at the graft junction; hence, molecules produces and encoded by 
 each genotype might be exchanged across the graft junction. These molecules 
@@ -22,11 +22,11 @@ could have implications to the regulation of gene expression and trait
 acquisition. for instance, sRNAs are linked to epigenetic pathways, such as 
 the RNA-directed DNA methylation pathway and post-transcriptional gene 
 silencing, which have implications to gene regulatory patterns. Changes in these
-sRNA populations could instigaste or faciliate grafting-induced traits, such as
-imporved plant vigour. 
+sRNA populations could instigate or facilitate grafting-induced traits, such as
+improved plant vigour. 
 
 For the identification of mobile sRNAs between genotypes, current methods 
-utilise a step-wise mapping of samples to each genome within the
+utilize a step-wise mapping of samples to each genome within the
 graft system. While, here we introduce a new mapping method where we align 
 each sample replicates to a merge genome reference comprised of both genome 
 assemblies relating to the genotypes in the heterograft system. 
@@ -111,17 +111,35 @@ Summary
     <img src="./man/figures/program_flow.png" width="400" height="350" align="right" />
 </p>
 
-The workflow is shown in the figure to the right. 
-It begin in R-Studio to merge the two genome assemblies into one, then the 
-pre-processing moves into Linux to align each replicate to the merged reference 
-and then back into R-Studio to undertake the analysis to identify potentially 
-mobile RNA species.  
+To identify potentially mobile sRNA molecules between genotypes, the workflow is 
+shown in the figure to the right. It begin in R-Studio to merge the two genome 
+assemblies into one, then the pre-processing moves into Linux to align each 
+replicate to the merged reference and then back into R-Studio to undertake the 
+analysis to identify potentially mobile RNA species. Here we demonstrate a 
+simple 3-step process involving importation of data, calculation of the 
+dicercall consensus for each sRNA cluster, and then filtering for potentially 
+mobile molecules.
+
+While if your analysis is to observe sRNA difference between a treatment and 
+control in a single genotype, this workflow will have some slight modification. 
+Firstly, you will only be working with a single genome, hence, the step to 
+merge two assemblies together is not required. We recommend the pre-process 
+still follows the two-steps for auto-detection of sRNA cluster and mapping with
+`ShortStack`. For the analysis, we recommend undertaking the statistical 
+analysis (function: `RNAanalysis()`), then exploring differences in 
+sRNA abundance and whether there are unique populations within the treatment or
+control replicates. 
+
+For either analysis, there are also optional extras which can be explores in the
+vignettes. For an advanced analysis of mobile sRNAs in chimeric systems, 
+view the "mobileRNA" - "Identify sRNAseq data to locate potentially mobile sRNAs 
+between genotypes using mobileRNA" vignette. While, for an advanced analysis of 
+sRNA populations in non-grafted or grafted system with the same species, view
+"mobileRNA_standard" - "Analyse sRNA populations using mobileRNA" vignette.
 
 Going forward,we assume standard quality control steps on raw samples has been
 completed (i.e. trimming of adapters and low quality reads)
 <br> <br>
-
-
 
 Merging Genome Assemblies
 --------------------------------------------
@@ -144,7 +162,7 @@ Auto-Detection of sRNA Cluster
 --------------------------------------------
 
 Here we identify and build a list sRNA clusters within each sample to assist
-the mapping step later on to ensure consistency across the analysis.
+the mapping step later on to ensure consistency across the analysis. 
 
 We recommend installing the `ShortStack` 
 (https://github.com/MikeAxtell/ShortStack) program to detect sRNA clusters and 
@@ -236,16 +254,17 @@ sRNA_data <- RNAimport(input = "sRNA",
 
 <br>
 
-#### Step 2: Calculate the consensus of each sRNA cluster  
-For a given sRNA cluster, each replicate has determined the class (20-24nt) 
-based on the most abundant small RNA size. Replicates within the same condition 
-are expected to class a given sRNA similarly. 
+#### Step 2: Calculate the consensus of each sRNA cluster dicercall
+For a given sRNA cluster, each replicate has determined the dicercall, also 
+known as the sRNA class (20-24nt), based on the most abundant small RNA size. 
+Replicates within the same condition are expected to class a given sRNA 
+similarly. 
 
-The `RNAconsensus()` function is used to define the class of a sRNA cluster 
-based on the consensus across specific replicates. To identify forigen mobile 
-sRNAs, it is recommended to base the consensus call on the heterograft samples. 
-This will ensure that the sRNA class is more accurately defined by the genotype 
-it originates from. 
+The `RNAdicercall()` function is used to define the class of each sRNA cluster 
+based on the consensus across specific replicates. To identify foreign mobile 
+sRNAs, it is recommended to base the consensus dicercall on the heterograft 
+samples. This will ensure that the sRNA class is more accurately defined by 
+the genotype it originates from. 
 
 Below, replicates "treatment_1" and "treatment_2" represent two heterograft 
 samples, while "control_1" and "control_2" represent self-graft samples.
@@ -254,12 +273,13 @@ samples, while "control_1" and "control_2" represent self-graft samples.
 
 samples <- c("<treatment_1>", "<treatment_2>")
 
-sRNA_data_summary <- RNAconsensus(data = sRNA_data, 
+sRNA_data_summary <- RNAdicercall(data = sRNA_data, 
                                  conditions = samples, 
                                  tidy=TRUE)
 
 ```
 <br>
+
 
 #### Step 3: Identify potential mobile sRNA 
 Finally, the `RNAmobile()` function filters the dataset to retain the sRNA 
@@ -306,7 +326,7 @@ overlap this locus.
 - `RPM` : Reads per Million
 
 #### Other information
-- `sRNA_Consensus` : Consensus sRNA class calculated by `RNAconsensus()`
+- `sRNA_Consensus` : Consensus sRNA class calculated by `RNAdicercall()`
 
 If an annotation file was imported and overlapped using `RNAattributes()`:
 
@@ -329,6 +349,7 @@ If the mean RPM and Count was calculated `RNAmean()`:
 - `mean_Count` : mean counts, based on parameters 
 
 <br>
+
 
 Functional Analysis 
 --------------------------------------------

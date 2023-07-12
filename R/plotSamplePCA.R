@@ -5,7 +5,7 @@
 #'  an unbiased manner (\code{blind=TRUE}).
 #'
 #' @param data class data.frame; data set containing the raw data produced as
-#' output from [mobileRNA::RNAconsensus()] and/or [mobileRNA::RNAsubset()].
+#' output from [mobileRNA::RNAdicercall()] and/or [mobileRNA::RNAsubset()].
 #'
 #' @param group character vector; contains experimental conditions for each
 #' replicate. IMPORTANT: Ensure this is in the same order as the replicates are

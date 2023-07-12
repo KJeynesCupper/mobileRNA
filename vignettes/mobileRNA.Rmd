@@ -1,5 +1,5 @@
 ---
-title: "Overview of the mobileRNA R package for mobile sRNA identification between genotypes"
+title: "Identify sRNAseq data to locate potentially mobile sRNAs between genotypes using mobileRNA"
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output:
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-
+ 
 # Introduction
 In plants, systemic signalling is an elaborated molecular system which allows to
 coordinate plant development at the entire organism level, integrating and
@@ -115,7 +115,7 @@ Once installed, you will have access to the following functions:
 **Analysis**
 
 - 1: `RNAimport()`
-- 2: `RNAconsensus()`
+- 2: `RNAdicercall()`
 - 3: `RNAsubset()`
 - 4: `RNAdistribution()`
 - 5: `plotSamplePCA()`
@@ -190,7 +190,7 @@ data("sRNA_data")
 In addition, there are two further datasets called "sRNA_data_consensus" and 
 "sRNA_data_mobile" which are utilised in the function documentations. Both 
 build on the "sRNA_data" dataset where "sRNA_data_consensus" contains the 
-RNA consensus results formed by the function [RNAconsensus()]. While, the 
+RNA consensus results formed by the function [RNAdicercall()]. While, the 
 "sRNA_data_mobile" contains only the likely mobile sRNAs selected by the 
 function [RNAmobile()] under the default parameters. 
 <br>
@@ -327,7 +327,17 @@ RNAmergeAnnotation(annotationA = "/Users/user1/projectname/workplace/
 
 ## Auto-Detection of sRNA Cluster
 Here we identify and build a list sRNA clusters within each sample to assist
-the mapping step later on to ensure consistency across the analysis.
+the mapping step later on to ensure consistency across the analysis. This step
+is very important to consider in the analysis as it prevents false assumptions. 
+This step aligns a replicate to the given genome assembly and the
+outputs contains loci where sRNA clusters were found. Across your replicates,
+there will be difference in the cluster identified. In some instance, it might 
+be the case that the abundance of reads at a given sRNA locus was not 
+significant enough to record as a sRNA cluster, while in another replicate it 
+was recorded. Therefore, it would be wrong to assume there are zero reads at the 
+loci. Here, we identify all the potential sRNA cluster loci and use this 
+information to improve the mapping. 
+
 
 We recommend installing the `ShortStack` 
 (https://github.com/MikeAxtell/ShortStack) program to detect sRNA clusters and 
@@ -548,7 +558,7 @@ the nucleotide length of the sRNA, or, state NA/N which represents that the
 sRNA was unclassified in the sample. There is usually some discrepancies between
 the classification of a sRNA, therefore, a consensus class can be
 assigned based off the information from the treatment samples.
-The `RNAconsensus()` function is used to compute this by counting the number
+The `RNAdicercall()` function is used to compute this by counting the number
 of occurrences of classifications for a sRNA. The consensus is determined
 based on the class with the most counts.
 
@@ -581,7 +591,7 @@ specific groups, use the `type` argument.
 samples <- c("heterograft_1","heterograft_2", "heterograft_3")
 
 # define consensus, store as a data summary file.
-sRNA_data_consensus <- RNAconsensus(data = sRNA_data,
+sRNA_data_consensus <- RNAdicercall(data = sRNA_data,
                                   conditions = samples,
                                   tidy=TRUE)
 
