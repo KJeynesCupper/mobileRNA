@@ -7,7 +7,7 @@
 RNAdistribution(
   data,
   samples = NULL,
-  style = c("bar", "line", "consensus"),
+  style,
   facet = TRUE,
   facet.arrange = 3,
   colour = "black",
@@ -118,7 +118,6 @@ p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
 data("sRNA_data_consensus")
-p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus",
-consensus = TRUE)
+p6 <- RNAdistribution(data = sRNA_data_consensus, consensus = TRUE)
 
 }
