@@ -9,7 +9,7 @@ RNAsubset(data, type, sig = FALSE, ...)
 \arguments{
 \item{data}{A numerical data-frame containing the sample data, with a
 defined consensus sRNA class/type for each sRNA dicer-derived cluster
-(see \code{\link[=RNAconsensus]{RNAconsensus()}}.}
+(see \code{\link[=RNAdicercall]{RNAdicercall()}}.}
 
 \item{type}{A number to represent the type of small RNA population to subset
 for.}
@@ -32,7 +32,7 @@ Creates a data-frame containing the desired sRNA class(s) based
 on the consensus sRNA determination.
 }
 \details{
-See \code{\link[=RNAconsensus]{RNAconsensus()}} for information on defining the sRNA type
+See \code{\link[=RNAdicercall]{RNAdicercall()}} for information on defining the sRNA type
 for each cluster. The function allows the choice to filtered the data by
 statistical significance based on differential expression analysis, see
 \code{\link[=RNAanalysis]{RNAanalysis()}}. Set \code{sig=TRUE} to filtered by significance

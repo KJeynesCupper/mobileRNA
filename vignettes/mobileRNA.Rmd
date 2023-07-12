@@ -164,7 +164,7 @@ completed (i.e. trimming of adapters and low quality reads)
 
 For the following examples, a semi-synthetic small RNA-seq data set has been 
 utilised to simulate the movement of sRNA molecules from an Tomato 
-(**Solanium lycopersicum**) rootstock to a Eggplant (**Solanium melongena**) 
+(*Solanium lycopersicum*) rootstock to a Eggplant (*Solanium melongena*) 
 scion, a grafting system known to be compatible. The three heterograft 
 replicates, known as `heterograft_1`, `heterograft_2` and `heterograft_3` are 
 individual tomato replicates spiked with 150 tomato sRNA clusters. While the 
@@ -493,23 +493,39 @@ for each sample in either format.
 
 ```{r, echo=FALSE}
 cap9 <- "An example line graph (A) and bar graph (B), to show the distribution of
-RNA classes within each sample"
+RNA classes within each sample. Figure C shows all replicates plotted on a 
+single plot and the accompanying data."
 
 ```
 
-```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B")}
+```{r, message=FALSE, fig.cap=cap9, fig.show="hold", fig.subcap= c("A","B", "C", "D")}
 
+# plot each replicate as a line, separately, and facet 
 sample_distribution_line <- RNAdistribution(sRNA_data,
                                             style = "line",
                                             together = FALSE,
-                                          facet = TRUE)
+                                          facet = FALSE)
+# View plot (only)
+sample_distribution_line$plot
 
-
+# plot each replicate as a bar, separately, and facet 
 sample_distribution_bar <- RNAdistribution(sRNA_data,
                                            style = "bar",
                                            facet = TRUE)
 
+# View plot (only)
+sample_distribution_bar$plot
+
+# plot each replicate on a single plot
+sample_distribution <- RNAdistribution(sRNA_data,
+                                           style = "line",
+                                           together = TRUE)
+# View plot
+sample_distribution$plot
+# View data 
+sample_distribution$data
 ```
+
 
 <br>
 
@@ -531,6 +547,18 @@ plotSamplePCA(sRNA_data, group)
 
 ```
 
+This PCA is somewhat not what we would expect to see in a real dataset. This is
+because PC1 is showing the variation between the non-spiked and spiked version 
+of the replicate while PC2 shows the natural variation between the replicates. 
+In a real dataset, we would expect there to be little difference between the 
+treatment and control. There should be much more natural variation between the 
+replicates, but it is unlikely that there will be a huge distinctive variation
+between the samples across the conditions. This is because it is likely that 
+only a very small number of endogenous mobile sRNAs are present in the 
+heterograft system compared to the self-graft controls while the population 
+of sRNAs present in the destination tissue is expected to be largely similar. 
+Although, there is likely to be some difference in this too due to the 
+endogenous changes. 
 <br>
 
 ### Hierarchical clustered heatmap to assess sample distance

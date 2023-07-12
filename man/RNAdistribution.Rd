@@ -10,7 +10,7 @@ RNAdistribution(
   style = c("bar", "line", "consensus"),
   facet = TRUE,
   facet.arrange = 3,
-  colour = "darkblue",
+  colour = "black",
   together = TRUE,
   consensus = FALSE,
   relative = FALSE
@@ -48,7 +48,7 @@ to include in the facet. This argument is piped into the \code{ ncol}  argument 
 \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} to define the number of columns. By default, this is
 set to 3.}
 
-\item{colour}{bar plot fill colour. Default colour is "darkblue".}
+\item{colour}{bar plot fill colour. Default colour is "black".}
 
 \item{together}{Logical; forms a single line graph with multiple lines each
 to represent the sample replicates. Default \code{together=TRUE}.}

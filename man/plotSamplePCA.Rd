@@ -8,7 +8,7 @@ plotSamplePCA(data, group, vst = FALSE)
 }
 \arguments{
 \item{data}{class data.frame; data set containing the raw data produced as
-output from \code{\link[=RNAconsensus]{RNAconsensus()}} and/or \code{\link[=RNAsubset]{RNAsubset()}}.}
+output from \code{\link[=RNAdicercall]{RNAdicercall()}} and/or \code{\link[=RNAsubset]{RNAsubset()}}.}
 
 \item{group}{character vector; contains experimental conditions for each
 replicate. IMPORTANT: Ensure this is in the same order as the replicates are
@@ -41,8 +41,8 @@ and switch to a variance stabilizing transformation method
 \examples{
 data("sRNA_data_consensus")
 
-groups <- c("Tomato/Eggplant", "Tomato/Eggplant", "Tomato/Eggplant",
-            "Eggplant/Eggplant",   "Eggplant/Eggplant", "Eggplant/Eggplant")
+group <- c("Heterograft", "Heterograft", "Heterograft",
+            "Selfgraft", "Selfgraft", "Selfgraft")
 p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 
 

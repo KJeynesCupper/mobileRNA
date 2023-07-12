@@ -2,7 +2,7 @@
 
 export(RNAanalysis)
 export(RNAattributes)
-export(RNAconsensus)
+export(RNAdicercall)
 export(RNAdistribution)
 export(RNAfeatures)
 export(RNAimport)

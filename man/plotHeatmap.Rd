@@ -4,7 +4,7 @@
 \alias{plotHeatmap}
 \title{Heatmap using hierarchical clustering}
 \usage{
-plotHeatmap(data, colours = NULL, dendogram = TRUE)
+plotHeatmap(data, colours = NULL, dendogram = TRUE, cellheight = NULL)
 }
 \arguments{
 \item{data}{Data frame containing FPKM values for each samples on
