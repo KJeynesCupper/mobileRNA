@@ -32,7 +32,7 @@ each sample replicates to a merge genome reference comprised of both genome
 assemblies relating to the genotypes in the heterograft system. 
 
 **Below is a quick-start guide to the identification of mobile sRNAs in a 
-chimeric system**
+chimeric system** <br>
 To undertake sRNAseq analysis for treatment vs control, please see vignettes. 
 
 
@@ -132,10 +132,10 @@ control replicates.
 
 For either analysis, there are also optional extras which can be explores in the
 vignettes. For an advanced analysis of mobile sRNAs in chimeric systems, 
-view the "mobileRNA" - "Identify sRNAseq data to locate potentially mobile sRNAs 
-between genotypes using mobileRNA" vignette. While, for an advanced analysis of 
+view the `mobileRNA - Identify sRNAseq data to locate potentially mobile sRNAs 
+between genotypes using mobileRNA` vignette. While, for an advanced analysis of 
 sRNA populations in non-grafted or grafted system with the same species, view
-"mobileRNA_standard" - "Analyse sRNA populations using mobileRNA" vignette.
+`mobileRNA_standard - Analyse sRNA populations using mobileRNA` vignette.
 
 Going forward,we assume standard quality control steps on raw samples has been
 completed (i.e. trimming of adapters and low quality reads)
@@ -416,7 +416,8 @@ The package also includes functions for:
 * Plot the distribution of sRNA classes (20-24nt) across individual replicates or across the dataset. 
 * Statistical analysis using differential methods from either DESeq2 or edgeR. 
 
-The package workflow can easily be manipulated to enable the identification of local populations of RNA species. 
+**The package workflow can easily be manipulated to enable the identification of local populations of RNA species.** 
+
 <br>
 <br>
 <br>
