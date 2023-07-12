@@ -109,15 +109,15 @@ RNAmergeGenomes <- function(genomeA, genomeB,
 
   # Replace chromosome names in reference genomes
     message("Replacing chromosome names")
-    ref1_names <- names(ref1)
+    ref1_names <- names(genomeA)
     ref1_newnames <- paste0(abbreviationGenomeA,"_", ref1_names )
     ref1_newnames <- sub("\\.", "", ref1_newnames)
-    names(ref1) <- ref1_newnames
+    names(genomeA) <- ref1_newnames
 
-    ref2_names <- names(ref2)
+    ref2_names <- names(genomeB)
     ref2_newnames <- paste0(abbreviationGenomeB,"_", ref2_names )
     ref2_newnames <- sub("\\.", "", ref2_newnames)
-    names(ref2) <- ref2_newnames
+    names(genomeB) <- ref2_newnames
 
 # location to save
   location <- dirname(out_dir)
@@ -126,8 +126,8 @@ RNAmergeGenomes <- function(genomeA, genomeB,
 
   message("Writting altered reference files to output location: ", location)
 
-  Biostrings::writeXStringSet(ref1,ref1_save , format = "fasta", append = FALSE)
-  Biostrings::writeXStringSet(ref2, ref2_save, format = "fasta", append = TRUE)
+  Biostrings::writeXStringSet(genomeA,ref1_save , format = "fasta", append = FALSE)
+  Biostrings::writeXStringSet(genomeB, ref2_save, format = "fasta", append = TRUE)
 
 
   message("Writting merged reference file to: ", out_dir)
