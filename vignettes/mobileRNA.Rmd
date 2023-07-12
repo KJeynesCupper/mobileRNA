@@ -848,6 +848,14 @@ the local functionality. As well as, retrieving the nucleotide sequence of
 the most abundant sRNA within a cluster and locating complementary sequences in 
 both the genome of origin and genome of destination using BLAST. 
 
+If you have different datatypes, for example RNAseq and BSseq, and want to 
+overlap your data it might be interesting to see whether there are complementary
+DNA sequences at the promoter regions of your deferentially expressed genes of 
+interest to the identified potential mobile sRNAs. Moreover, in theory, if these 
+regions also show differential methylation it could be a potential indication of 
+a molecular pathway. 
+
+
 
 IMPORTANT: If chromosome names were altered in either of genome assemblies used
 in the mapping steps, the chromosome names in the genome annotation files must 

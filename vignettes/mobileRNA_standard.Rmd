@@ -79,15 +79,8 @@ using the `devtools` package:
 ```{r,  eval=FALSE, message=FALSE}
 if (!require("devtools")) install.packages("devtools")
 devtools::install_github("KJeynesCupper/mobileRNA", ref = "main")
-```
 
-
-Load into Library:
-
-```{r Load, message=FALSE}
 library(mobileRNA)
-data("sRNA_data")
-
 ```
 
 # Pre-processing 
@@ -155,8 +148,19 @@ ShortStack \
 
 # Analysis 
 The aligned data can now be analysed in R, and the native population of sRNAs
-can be explored. This following analysis workflow is designed to facilate a 
+can be explored. This following analysis workflow is designed to facilitate a 
 treatment vs control experimental design. 
+
+For the analysis we will use the semi-synthetic data, although there are two 
+different genotypes in this analysis it can still be utilised to show 
+different sRNA population dynamics. 
+
+
+```{r Load, message=FALSE}
+
+data("sRNA_data")
+
+```
 
 
 ## Step 1: Import data 
@@ -174,11 +178,6 @@ sRNA_data <- RNAimport(input = "sRNA",
                        directory = results_dir,
                        samples = sample_names)
                            
-```
-
-Why not use our data:
-```{r}
-data("sRNA_data")
 ```
 
 <br>
@@ -204,10 +203,8 @@ distance as it emphasizes the variation through the reduction of dimensions in
 the data set. Here, we introduce the function plotSamplePCA():
 
 ```{r}
-
 group <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
-
 
 plotSamplePCA(sRNA_data, group)
 ```
@@ -248,10 +245,14 @@ based on the consensus across specific replicates.
 
 
 ```{r}
-
+# calculate dicercall consensus 
 sRNA_data_summary <- RNAdicercall(data = sRNA_data,  
                                  tidy=TRUE)
-
+# plot results 
+plot_distribution <- RNAdistribution(data = sRNA_data_consensus, 
+                        consensus = TRUE)
+# View figure
+plot_distribution$plot
 ```
 
 
@@ -329,23 +330,16 @@ unique_control <- RNApopulation(data = sRNA_data_consensus,
 nrow(unique_control) 
 ```
 
-### Plotting heterograft-only sRNA populations 
+### Plotting heterograft-only sRNA populations
+Here we located 148 sRNA clusters which are uniquely present to the 
+heterografts, and not found in the self-graft controls. These results can 
+be plotted as a distribution plot and heatmap. 
 ```{r}
 # plot distribution of sRNA classes only found in treatment 
-p1 <- RNAdistribution(data = unique_treatment, together = TRUE)
+p1 <- RNAdistribution(data = unique_treatment, style = "line", together = FALSE)
 
 # plot heatmap of treatment-only sRNA clusters
 p2 <- plotHeatmap(data = unique_treatment)
-
-```
-
-### Plotting control-only sRNA populations 
-```{r}
-# plot distribution of sRNA classes only found in controls 
-p3 <- RNAdistribution(data = unique_control, together = FALSE, style = "line")
-
-# plot heatmap of control-only sRNA clusters
-p4 <- plotHeatmap(data = unique_control)
 
 ```
 
@@ -363,7 +357,7 @@ target_sequences <- RNAsequences(unique_treatment)
 
 This dataframe can be exported the results loaded into BLAST to identify 
 regions within the genome that these complementary sequences are present. There 
-are tools, such as TargetFinder, which use a predictive algorithm to identify 
+are tools, such as `TargetFinder`, which use a predictive algorithm to identify 
 the most likely locations in the genome where the sRNAs might target. 
 
 ### Overlapping regions
