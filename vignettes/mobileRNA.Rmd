@@ -1,5 +1,5 @@
 ---
-title: "Identify sRNAseq data to locate potentially mobile sRNAs between genotypes using mobileRNA"
+title: "Identify potential mobile sRNAs between genotypes using mobileRNA"
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output:
