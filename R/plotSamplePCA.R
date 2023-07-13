@@ -32,7 +32,7 @@
 #' @examples
 #' data("sRNA_data_consensus")
 #'
-#' group <- c("Heterograft", "Heterograft", "Heterograft",
+#' groups <- c("Heterograft", "Heterograft", "Heterograft",
 #'             "Selfgraft", "Selfgraft", "Selfgraft")
 #' p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 #'

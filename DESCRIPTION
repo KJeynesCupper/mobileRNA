@@ -53,7 +53,10 @@ Imports:
     stats,
     Biostrings, 
     xfun,
-    magrittr
+    magrittr,
+    foreach,
+    doParallel,
+    parallel
 biocViews: 
     Visualization,
     RNASeq,

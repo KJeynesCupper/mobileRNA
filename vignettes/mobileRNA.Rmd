@@ -504,7 +504,7 @@ single plot and the accompanying data."
 sample_distribution_line <- RNAdistribution(sRNA_data,
                                             style = "line",
                                             together = FALSE,
-                                          facet = FALSE)
+                                             facet = TRUE)
 # View plot (only)
 sample_distribution_line$plot
 

@@ -157,7 +157,7 @@ different sRNA population dynamics.
 
 
 ```{r Load, message=FALSE}
-
+library(mobileRNA)
 data("sRNA_data")
 
 ```
@@ -233,6 +233,13 @@ sample in either format.
 sample_distribution <- RNAdistribution(sRNA_data,
                                             style = "line",
                                             together = TRUE)
+
+# view plot 
+sample_distribution$plot
+
+# view data 
+sample_distribution$data
+
 ```
 
 ## Step 3: Calculate the consensus of each sRNA cluster  

@@ -97,6 +97,7 @@
 #' @importFrom dplyr "if_any"
 #' @importFrom dplyr "where"
 #' @importFrom stats "setNames"
+#' @importFrom utils "flush.console"
 
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                         report = TRUE,
@@ -113,7 +114,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       progress_counter <- file
       progress_message <- paste0("Processing file ", progress_counter, " of ", total_files)
       cat(sprintf("\r%s", progress_message))
-      flush.console()
+      utils::flush.console()
     }
     cat("\n")  # Print a newline after progress is complete
     message("Completed importation of data from directory.")

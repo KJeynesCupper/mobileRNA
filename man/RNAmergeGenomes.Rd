@@ -9,14 +9,16 @@ RNAmergeGenomes(
   genomeB,
   out_dir,
   abbreviationGenomeA = "A",
-  abbreviationGenomeB = "B"
+  abbreviationGenomeB = "B",
+  cores = TRUE,
+  number_cores = 4
 )
 }
 \arguments{
-\item{genomeA}{a large DNAStringSet; a genome reference assembly file in
+\item{genomeA}{path; directory path to a genome reference assembly file in
 FASTA format (.fa/.fasta).}
 
-\item{genomeB}{a large DNAStringSet; a genome reference assembly file in
+\item{genomeB}{path; directory path to a genome reference assembly file in
 FASTA format (.fa/.fasta).}
 
 \item{out_dir}{either a character string or a \code{base::connections()} open
@@ -28,18 +30,29 @@ within \code{genomeA}.Default set as "A".}
 
 \item{abbreviationGenomeB}{a string placed in "", to replace chromosome names
 within \code{genomeB}.Default set as "B".}
+
+\item{cores}{logical;  the number of CPU cores for parallel computation.
+By default, \code{cores = TRUE} which tells the system to detect the number of CPU
+cores on the current host.While, \code{cores = FALSE} allows a user defined number
+of cores which is stored in the variable \code{number_cores}.}
+
+\item{number_cores}{numeric; number of CPU cores to use during parallel
+computation.}
 }
 \value{
 Returns a single FASTA format file containing both  genome assemblies
 with edited chromosome names (prefixes, and removal of periods) to the give
-directory, as well as the individual edited genomes assemblies named
-"genomeA_altered.fa" and "genomeB_altered.fa", respectively.
+directory.
 }
 \description{
 Merges two reference genomes (.fa/.fasta). into one single
 reference with modified chromosome names to ensure distinguishability.
 }
 \details{
+Please be aware that this function will take a very long time to process if
+you are working with large genomes which together take up more than 1Gb
+storage. Please be patient and allow the function to run.
+
 The functions primary goal is to merge two FASTA files, however, when
 merging genomic files it is critical that the two genomes are distinguishable
 by the chromosome names. As a default setting, the function extracts the
@@ -57,6 +70,13 @@ custom chromosome name for \code{Genome-A} alter the argument
 number within the given GFF file, remove all prior character or numerical
 values, and replace it with the supplied string.
 
+Please note that this function uses parallel computation using the packages
+(\code{parallel}, \code{foreach} & \code{doParallel}) to improve the processing speed. Hence
+common errors may occur is you have some parallel computing going on in the
+background. To improve the handling, the function will create a number of
+temporary files in your output directory, which are then merged into a single
+file and deleted.
+
 IMPORTANT:  The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
 the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function to to create a merged genome
@@ -72,13 +92,10 @@ annotation,that you treat the input references in the same way.
  fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
 
 
- # load into R
- ref1 <- Biostrings::readDNAStringSet(fasta_1,format = "fasta")
- ref2 <- Biostrings::readDNAStringSet(fasta_2,format = "fasta")
-
 # run function to merge
-merged_ref <- RNAmergeGenomes(genomeA = ref1, genomeB = ref2,
-                               out_dir = "./merged_ref.fa")
+merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
+                               out_dir = "../../merged_ref.fa", 
+                               cores = FALSE,number_cores = 1)
 
 
 
@@ -89,10 +106,14 @@ merged_ref <- RNAmergeGenomes(genomeA = ref1, genomeB = ref2,
 # genomeB represents Solanum lycopersicum and the chromosomes will be
 # abbreviated to `SL`.
 
-merged_ref2 <- RNAmergeGenomes(genomeA = ref1,
-            genomeB = ref2 ,
+merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,
+            genomeB = fasta_2 ,
             out_dir = "./merged_ref.fa",
             abbreviationGenomeA = "SM",
-            abbreviationGenomeB = "SL")
+            abbreviationGenomeB = "SL",  
+           cores = FALSE, number_cores = 1)
+            
+            
+             
 
 }

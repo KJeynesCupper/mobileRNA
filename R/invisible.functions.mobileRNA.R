@@ -94,7 +94,6 @@ find_complementary_sequenceDNA <- function(seq) {
 }
 
 
-
 ################## global variable storage #####################################
 utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "nt_23", "nt_24", "group", "qc", "score", "phase",
@@ -104,6 +103,6 @@ utils::globalVariables(c("ID", "sRNA_Consensus", "nt_20", "nt_21", "nt_22",
                          "key", "Count", "Class", "padjusted", "pvalue", "freq",
                          "value" , "variable" , "repeats_info" , "Genome" ,
                          "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ,
-                         "MajorRNA"))
+                         "MajorRNA", "i"))
 
 

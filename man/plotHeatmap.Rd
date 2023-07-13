@@ -16,6 +16,9 @@ Defaults to \code{\link[grDevices:palettes]{grDevices::heat.colors()}} (heat.col
 \item{dendogram}{Logical; indicating whether to include the dendrogram and
 clustering, and retain clustering. Default, \code{dendogram = TRUE} to
 include.}
+
+\item{cellheight}{individual cell height in points. If left as NA, then the
+values depend on the size of plotting window.}
 }
 \value{
 Produces a list of objects, including the plot.
