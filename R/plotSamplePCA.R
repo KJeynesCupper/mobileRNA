@@ -68,8 +68,8 @@ plotSamplePCA <- function(data, group, vst = FALSE){
   count.data.set$conditions <- stats::relevel(count.data.set$conditions,
                                               group[1])
   dds <- DESeq2::estimateSizeFactors(count.data.set)
-  message("Transforming the count data to the log2 scale")
-  # log transform the data.
+
+    # log transform the data.
 
   if(vst ==TRUE){
     message("Transforming the count data with a variance stabilizing
