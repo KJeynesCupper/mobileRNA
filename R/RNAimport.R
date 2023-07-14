@@ -48,7 +48,6 @@
 #' to outputted folders located in the \code{`directory`} argument path.
 #'
 #'
-#' @param report Logical; prompts progress.
 #'
 #'@param tidy Logical; removes genes from analysis where there are zero counts
 #'across all replicates.
@@ -100,8 +99,7 @@
 #' @importFrom utils "flush.console"
 
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
-                        report = TRUE,
-                        tidy = TRUE) {
+                       tidy = TRUE) {
 
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
@@ -162,10 +160,6 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       # Merge the aggregated values back into df1
       loci_all[dt_agg, on = join_cols, (col_names) := mget(col_names)]
 
-      # Print progress
-      if (report) {
-        message("Adding information from sample", i, "to the analysis dataframe","\n")
-      }
     }
 
     # Update loci with the matching values from each input dataframe

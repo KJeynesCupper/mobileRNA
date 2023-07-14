@@ -4,13 +4,7 @@
 \alias{RNAimport}
 \title{Import and organise sRNAseq or mRNA data sets}
 \usage{
-RNAimport(
-  input = c("sRNA", "mRNA"),
-  directory,
-  samples,
-  report = TRUE,
-  tidy = TRUE
-)
+RNAimport(input = c("sRNA", "mRNA"), directory, samples, tidy = TRUE)
 }
 \arguments{
 \item{input}{string; define type of Next-Generation Sequencing dataset
@@ -22,8 +16,6 @@ alignment folders.}
 
 \item{samples}{Vector of characters naming the sample names correlating
 to outputted folders located in the \code{`directory`} argument path.}
-
-\item{report}{Logical; prompts progress.}
 
 \item{tidy}{Logical; removes genes from analysis where there are zero counts
 across all replicates.}
