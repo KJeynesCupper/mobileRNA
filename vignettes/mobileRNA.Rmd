@@ -621,7 +621,7 @@ samples <- c("heterograft_1","heterograft_2", "heterograft_3")
 # define consensus, store as a data summary file.
 sRNA_data_consensus <- RNAdicercall(data = sRNA_data,
                                   conditions = samples,
-                                  tidy=TRUE)
+                                  tidy=TRUE, )
 
 head(sRNA_data_consensus)
 

@@ -11,6 +11,7 @@ RNAmobile(
   task = NULL,
   statistical = FALSE,
   padj = 0.05,
+  threshold = NULL,
   p.value = NULL
 )
 }
@@ -38,14 +39,19 @@ be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistic
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
 molecules with adjusted p-values equal or lower than specified are returned.}
 
+\item{threshold}{numeric; set a threshold level for the the number of
+replicates that defined the dicer-consensus.}
+
 \item{p.value}{A user defined numeric value to represent the p-value
 threshold to define statistic significance. There is no default value, set
 this instead of using an adjusted p-value to filter molecules. Only mobile
 molecules with p-values equal or lower than specified are returned.}
 }
 \value{
-A data-frame containing statistically significant mobile small
-RNA molecules.
+A data-frame containing candidate mobile sRNAs, which could be
+further filtered based on statistical significance and the ability to
+by-pass the threshold which determines the number of replicates that
+defined the dicer-consensus.
 }
 \description{
 A function to identify potential mobile small RNA molecules
@@ -68,6 +74,12 @@ The function also allows for statistical analysis based on the results
 collect from differential analysis of the total dataset using the function
 \code{\link[=RNAanalysis]{RNAanalysis()}}. This features enables the filtering of sRNA
 clusters which meet a specific p-value or adjusted p-values.
+
+A greater confidence in the mobile sRNA candidates can be achieved by setting
+a threshold that considers the number of replicates which contributed to
+defining the consensus dicer-call (ie. consensus sRNA classification). This
+parameter filters based on the \code{DicerCount} column introduced by the
+\code{\link[=RNAdicercall]{RNAdicercall()}} function.
 }
 \examples{
 

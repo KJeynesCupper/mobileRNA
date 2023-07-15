@@ -53,8 +53,7 @@
 #' @importFrom dplyr "filter"
 
 RNAsubset <- function(data, type,  sig=FALSE, ...){
-    type <- paste0("nt_", type)
-    x <- data %>% dplyr::filter(sRNA_Consensus %in% type)
+    x <- data %>% dplyr::filter(DicerConsensus %in% type)
     if(sig){
       x<- x %>%
         dplyr::filter(padj < 0.05)

@@ -326,7 +326,7 @@ overlap this locus.
 - `RPM` : Reads per Million
 
 #### Other information
-- `sRNA_Consensus` : Consensus sRNA class calculated by `RNAdicercall()`
+- `DicerConsensus` : Consensus sRNA class calculated by `RNAdicercall()`
 
 If an annotation file was imported and overlapped using `RNAattributes()`:
 

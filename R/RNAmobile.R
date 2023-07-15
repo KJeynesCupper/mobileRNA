@@ -21,6 +21,14 @@
 #' [mobileRNA::RNAanalysis()]. This features enables the filtering of sRNA
 #' clusters which meet a specific p-value or adjusted p-values.
 #'
+#'
+#' A greater confidence in the mobile sRNA candidates can be achieved by setting 
+#' a threshold that considers the number of replicates which contributed to 
+#' defining the consensus dicer-call (ie. consensus sRNA classification). This
+#' parameter filters based on the `DicerCount` column introduced by the 
+#' [mobileRNA::RNAdicercall()] function.  
+#' 
+#' 
 #' @param data Numeric data frame
 #'
 #' @param controls Character vector; containing names of control samples.
@@ -50,9 +58,13 @@
 #' this instead of using an adjusted p-value to filter molecules. Only mobile
 #' molecules with p-values equal or lower than specified are returned.
 #'
+#'@param threshold numeric; set a threshold level for the the number of 
+#'replicates that defined the dicer-consensus. 
 #'
-#' @return A data-frame containing statistically significant mobile small
-#' RNA molecules.
+#' @return A data-frame containing candidate mobile sRNAs, which could be 
+#' further filtered based on statistical significance and the ability to 
+#' by-pass the threshold which determines the number of replicates that 
+#' defined the dicer-consensus. 
 #'
 #' @examples
 #'
@@ -119,12 +131,12 @@
 #' @importFrom dplyr "case_when"
 
 RNAmobile <- function(data,controls, id, task = NULL ,
-                             statistical = FALSE,
-                             padj = 0.05,
-                             p.value = NULL){
+                      statistical = FALSE,
+                      padj = 0.05, threshold = NULL, 
+                      p.value = NULL){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
-  stop("data must be an object of class matrix, data.frame, DataFrame")
-    }
+    stop("data must be an object of class matrix, data.frame, DataFrame")
+  }
   if (base::missing(controls) || !base::inherits(controls, "character")) {
     stop(paste("Please specify a character vector storing names of control
                replicates"))
@@ -134,7 +146,7 @@ RNAmobile <- function(data,controls, id, task = NULL ,
                the all the chromosomes within the genome you wish to keep
                or remove"))
   }
-
+  
   x <- data %>%
     dplyr::filter(dplyr::case_when(
       is.null(task) & base::grepl(id, chr) ~ TRUE,
@@ -142,18 +154,20 @@ RNAmobile <- function(data,controls, id, task = NULL ,
       task == "keep" & base::grepl(id, chr) ~ TRUE,
       TRUE ~ FALSE
     ))
-
+  
   y <- .remove_mapping_errors(data = x, controls = controls)
-
+  
   if (statistical) {
     if (is.null(p.value)) {
       res <- y %>% filter(padjusted <= padj)
     } else
       res <- y %>% filter(pvalue <= p.value)
-  } else
-    if (statistical == FALSE){
-      res <- y
-    }
+  } 
+  
+  res <- y
+  if(!is.null(threshold)){
+    res <- res %>% filter(!DicerCounts == threshold)
+  }
   return(res)
 }
 

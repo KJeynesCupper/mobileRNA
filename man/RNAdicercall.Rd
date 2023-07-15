@@ -2,9 +2,9 @@
 % Please edit documentation in R/RNAdicercall.R
 \name{RNAdicercall}
 \alias{RNAdicercall}
-\title{Define the sRNA consensus for each dicer-derived cluster}
+\title{Define the sRNA dicer consensus for each dicer-derived sRNA cluster}
 \usage{
-RNAdicercall(data, conditions = NULL, tidy = TRUE)
+RNAdicercall(data, conditions = NULL, ties.method = NULL, tidy = FALSE)
 }
 \arguments{
 \item{data}{a data frame object containing sample data where rows
@@ -12,37 +12,61 @@ represent sRNA dicer-derived clusters, and where columns represent sample
 data. See \code{\link[=RNAimport]{RNAimport()}} to load data, extract the required
 information for each sample and organise it as required.}
 
-\item{conditions}{a character vector containing names sample replicates to
-base the consensus on. Each string should represent a sample name already
-utilised in the analysis and present in the data frame supplied to the \code{data}
-argument.}
+\item{conditions}{character vector; containing names of sample replicates.
+Named replicates will be used to calculate dicercall consensus.
+Each string should represent a sample name present in the dataframe supplied
+to \code{data}argument.}
+
+\item{ties.method}{a character string specifying how ties are handled,
+"exclude" by default. Options include "random", or
+"exclude"; see ‘Details’}
 
 \item{tidy}{use of this argument will remove sRNA clusters with a unknown or
-unclassified consensus result. By default, the function will tidy the data
-and remove unclassified clusters to remove excess noise in the data set. To
-retain background background noise, set \code{tidy=FALSE}.}
+unclassified consensus result. By default, the function will not tidy the
+data. When \code{tidy=TRUE}, unclassified clusters will be to remove from
+the output dataframe in an effort to remove excess background noise.}
 }
 \value{
 A data frame containing all existing columns in the input data object,
-plus, an additional column labeled \code{sRNA_Consensus} stating the consensus
-small RNA type/class between 20-24 nucleotides in length.
+plus, two additional columns of data:
+
+The first column, \code{DicerCounts} contains the number of replicates which had
+a defined dicer-derived sRNA class (based on the \code{conditions}). This can be
+utilised within the \code{RNAmobile} function as a threshold parameter.
+
+The second, labeled \code{DicerConsensus} states the consensus sRNA class between
+20-24 nucleotides in length or "N" if unclassified.
 }
 \description{
-Using the data, the function uses the supplied data frame and
-adds an additional column stating the consensus sRNA class/type for each
+Using the data, the function uses the supplied dataframe and
+adds an additional column stating the consensus sRNA class for each
 dicer-derived cluster.
 }
 \details{
 The function calculates the consensus sRNA class based on the conditions
-supplied. Depending on your reasons for analysis, different conditions should
+supplied.
+
+Depending on your reasons for analysis, different conditions should
 be supplied. For instance, if you wish to identify mobile sRNAs in a
-heterograft condition, where you compare replicates in either a heterograft
-or control condition, you should supply the names of the replicates in the
-heterograft condition. This means that the function will draw a consensus of
-the sRNA class based only on these replicates. This method is suggested
-because any mobile sRNA from the donor will not be found in the control
+interspecific heterograft condition via the comparison of replicates in a
+heterograft between two species and a self-graft control condition, you
+should consider supplying only the replicates in the heterograft condition.
+This means that the function will draw a consensus of the sRNA class based
+only on these replicates. This method is suggested because any mobile sRNA
+from the donor genotype should not be found in the control
 samples, and hence, any class determination in the control samples for
 this sRNA cluster would be irrelevant.
+
+When ties.method = "random", as per default, ties are broken at random.
+In this case, the determination of a tie assumes that the entries are
+probabilities: there is a relative tolerance of 1e-5, relative to the
+largest (in magnitude, omitting infinity) entry in the row.
+
+When ties.method = "exclude", ties between sRNA classification are ruled as
+unclassified ("N").
+
+To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassified
+("N") sRNA clsuters, resulting in a reduced dataset size.
 }
 \examples{
 

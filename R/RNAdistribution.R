@@ -135,16 +135,16 @@ RNAdistribution  <- function (data, samples = NULL, style,
   }
 
   if (consensus == TRUE) {
-    x <- data %>% dplyr::count(sRNA_Consensus)
-    x$sRNA_Consensus <- gsub("nt_", "", x$sRNA_Consensus)
+    x <- data %>% dplyr::count(DicerConsensus)
     if (!relative == FALSE) {
       x <- x %>% dplyr::mutate(freq = n/sum(n))
-      p1 <- ggplot2::ggplot(x, ggplot2::aes(x = sRNA_Consensus, 
+      p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                             y = freq, group = 1)) + ggplot2::geom_point() + 
         ggplot2::geom_line() + ggplot2::theme_classic() + 
         ggplot2::xlab("RNA Class") + ggplot2::ylab("Relative frequency")
     }
-    else p1 <- ggplot2::ggplot(x, ggplot2::aes(x = sRNA_Consensus, 
+    else 
+      p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                                y = n, group = 1)) + ggplot2::geom_point() + ggplot2::geom_line() + 
       ggplot2::theme_classic() + ggplot2::xlab("RNA Class") + 
       ggplot2::ylab("Counts")

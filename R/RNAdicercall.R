@@ -1,41 +1,64 @@
-#' Define the sRNA consensus for each dicer-derived cluster
+#' Define the sRNA dicer consensus for each dicer-derived sRNA cluster
 #'
-#' @description Using the data, the function uses the supplied data frame and
-#' adds an additional column stating the consensus sRNA class/type for each
+#' @description Using the data, the function uses the supplied dataframe and
+#' adds an additional column stating the consensus sRNA class for each
 #' dicer-derived cluster.
-#'
 #'
 #' @details
 #' The function calculates the consensus sRNA class based on the conditions
-#' supplied. Depending on your reasons for analysis, different conditions should
+#' supplied. 
+#' 
+#' Depending on your reasons for analysis, different conditions should
 #' be supplied. For instance, if you wish to identify mobile sRNAs in a
-#' heterograft condition, where you compare replicates in either a heterograft
-#' or control condition, you should supply the names of the replicates in the
-#' heterograft condition. This means that the function will draw a consensus of
-#' the sRNA class based only on these replicates. This method is suggested
-#' because any mobile sRNA from the donor will not be found in the control
+#' interspecific heterograft condition via the comparison of replicates in a
+#' heterograft between two species and a self-graft control condition, you 
+#' should consider supplying only the replicates in the heterograft condition. 
+#' This means that the function will draw a consensus of the sRNA class based 
+#' only on these replicates. This method is suggested because any mobile sRNA 
+#' from the donor genotype should not be found in the control
 #' samples, and hence, any class determination in the control samples for
 #' this sRNA cluster would be irrelevant.
+#' 
+#' When ties.method = "random", as per default, ties are broken at random. 
+#' In this case, the determination of a tie assumes that the entries are 
+#' probabilities: there is a relative tolerance of 1e-5, relative to the 
+#' largest (in magnitude, omitting infinity) entry in the row.
+#' 
+#' When ties.method = "exclude", ties between sRNA classification are ruled as 
+#' unclassified ("N"). 
+#' 
+#' To remove excess data noise, `tidy=TRUE` can be used to removed unclassified 
+#' ("N") sRNA clsuters, resulting in a reduced dataset size. 
+#' 
 #'
 #' @param data a data frame object containing sample data where rows
 #' represent sRNA dicer-derived clusters, and where columns represent sample
 #' data. See [mobileRNA::RNAimport()] to load data, extract the required
 #' information for each sample and organise it as required.
 #'
-#' @param conditions a character vector containing names sample replicates to
-#' base the consensus on. Each string should represent a sample name already
-#' utilised in the analysis and present in the data frame supplied to the `data`
-#' argument.
+#' @param conditions character vector; containing names of sample replicates.
+#' Named replicates will be used to calculate dicercall consensus. 
+#'Each string should represent a sample name present in the dataframe supplied 
+#'to `data`argument.
 #'
 #' @param tidy use of this argument will remove sRNA clusters with a unknown or
-#'  unclassified consensus result. By default, the function will tidy the data
-#'  and remove unclassified clusters to remove excess noise in the data set. To
-#'  retain background background noise, set \code{tidy=FALSE}.
+#'  unclassified consensus result. By default, the function will not tidy the 
+#'  data. When \code{tidy=TRUE}, unclassified clusters will be to remove from 
+#'  the output dataframe in an effort to remove excess background noise. 
+#'  
+#' @param ties.method a character string specifying how ties are handled, 
+#' "exclude" by default. Options include "random", or 
+#' "exclude"; see ‘Details’
 #'
 #'@return A data frame containing all existing columns in the input data object,
-#'plus, an additional column labeled \code{sRNA_Consensus} stating the consensus
-#'small RNA type/class between 20-24 nucleotides in length.
+#'plus, two additional columns of data: 
 #'
+#'The first column, `DicerCounts` contains the number of replicates which had 
+#'a defined dicer-derived sRNA class (based on the `conditions`). This can be 
+#'utilised within the \code{RNAmobile} function as a threshold parameter. 
+#'
+#'The second, labeled `DicerConsensus` states the consensus sRNA class between 
+#'20-24 nucleotides in length or "N" if unclassified. 
 #'
 #'
 #' @examples
@@ -56,51 +79,108 @@
 #' @importFrom dplyr "select"
 #' @importFrom dplyr "filter"
 #' @importFrom stringr "str_detect"
-#' @importFrom Repitools "annoGR2DF"
+#' @importFrom tidyr "replace_na"
 
-RNAdicercall <- function(data, conditions=NULL, tidy=TRUE) {
+RNAdicercall <- function (data, conditions = NULL, ties.method = NULL, tidy = FALSE) 
+{
   if (base::missing(data)) {
-    stop("data is missing. data must be an object of class matrix,
-         data.frame, DataFrame")
+    stop("data is missing. data must be an object of class matrix, data.frame, 
+         DataFrame")
   }
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
   }
-  
+  if(is.null(ties.method)){
+    ties.method <-  "exclude"
+  }
   data[is.na(data)] <- "N"
+  
   class_colnames <- c()
-    for (i in colnames(data)){
-      if (stringr::str_detect(i, "DicerCall_" )){
-        class_colnames <- c(class_colnames, i)
+  for (i in colnames(data)) {
+    if (stringr::str_detect(i, "DicerCall_")) {
+      class_colnames <- c(class_colnames, i)
+    }
+  }
+  if (!is.null(conditions)) {
+    onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
+                                        class_colnames, value = TRUE))
+  }
+  else if (is.null(conditions)) {
+    onlyconditions <- class_colnames
+  }
+  
+  other_exclude <- c("20", "21", "22", "23", "24", "N", "NA")
+  data <- data %>% 
+    dplyr::mutate(nt_20 = rowSums(.[onlyconditions] =="20")) %>% 
+    dplyr::mutate(nt_21 = rowSums(.[onlyconditions] == "21")) %>% 
+    dplyr::mutate(nt_22 = rowSums(.[onlyconditions] ==  "22")) %>% 
+    dplyr::mutate(nt_23 = rowSums(.[onlyconditions] == "23")) %>% 
+    dplyr::mutate(nt_24 = rowSums(.[onlyconditions] == "24"))%>% 
+    dplyr::mutate(other = rowSums(!sapply(dplyr::select(.,onlyconditions), 
+                                          `%in%`, other_exclude)))
+  
+  # search columns based on location 
+  col_q <- grep("^nt", base::names(data))
+  col_qp <- grep("^other", base::names(data))
+  t <-c(col_q,col_qp)
+  
+  if (ties.method == "random"){
+    new_df <- data %>% 
+      dplyr::mutate(DicerConsensus = base::names(data)[t]
+                    [max.col(data[t], ties.method = "random")* NA^(
+                      rowSums(data[t]) ==0)]) %>%
+      dplyr::mutate(DicerConsensus = tidyr::replace_na(DicerConsensus, "N")) 
+  }
+  else 
+    if(ties.method == "exclude"){
+      new_df <- data
+      
+      # Initialize result vector
+      result <- vector("character", nrow(new_df))
+      result[] <- "N"
+      dicer_counts <- vector("character", nrow(new_df))
+      dicer_counts[] <- "N"
+      # For loop to check for two matching non-zero numbers within the same row
+      for (i in 1:nrow(new_df)) {
+        row_values <- new_df[t][i, ]
+        if(rowSums(row_values) == 0){
+          classification <- "N"
+        } else {
+          non_zero_values <- as.numeric(row_values[row_values != 0])
+          values_table <- table(non_zero_values)
+          max_value <- max(non_zero_values)
+          
+          # Check if the maximum value is duplicated
+          if (!is.na(values_table[max_value]) && values_table[max_value] > 1) {
+            
+            classification <- "N"
+          } else {
+            
+            classification <- names(row_values)[max.col(row_values)*NA^(
+              rowSums(row_values) == 0)]
+            
+            if (is.na(classification)){
+              classification <- "N"
+            }
+          }
+        }
+        result[i] <- classification
+        dicer_counts[i] <- rowSums(row_values)
       }
+      new_df$DicerCounts <- as.numeric(dicer_counts)
+      new_df$DicerConsensus <- result
     }
-  if(!is.null(conditions)){
-    onlyconditions <- base::unique(grep(paste(conditions,collapse="|"),
-                                        class_colnames, value=TRUE))
-  }else 
-    if(is.null(conditions)){
-      onlyconditions <- class_colnames
-    }
-  data <- data %>%
-    dplyr::mutate(nt_20 = base::rowSums(.[onlyconditions] == "20"))%>%
-    dplyr::mutate(nt_21 = base::rowSums(.[onlyconditions] == "21"))%>%
-    dplyr::mutate(nt_22 = base::rowSums(.[onlyconditions] == "22"))%>%
-    dplyr::mutate(nt_23 = base::rowSums(.[onlyconditions] == "23"))%>%
-    dplyr::mutate(nt_24 = base::rowSums(.[onlyconditions] == "24"))%>%
-    dplyr::mutate(nt_N = base::rowSums(.[onlyconditions] == "N"))
-  t <-grep('^nt', base::names(data))
-  new_df <- data %>%
-    dplyr::mutate(sRNA_Consensus = base::names(data)[t]
-    [max.col(data[t], ties.method = 'first')*NA^(base::rowSums(data[t])==0)])
-  new_df <- new_df %>% dplyr::select(-nt_20,-nt_21,-nt_22,-nt_23, -nt_24,-nt_N)
-
-  if(tidy==TRUE){
-    new_df_tidy <- new_df %>% dplyr::filter(sRNA_Consensus != "nt_N")
+  
+  
+  new_df <- new_df %>% dplyr::select(-nt_20, -nt_21, -nt_22, 
+   -nt_23, -nt_24, -other)
+  new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
+  
+  if (tidy == TRUE) {
+    new_df_tidy <- new_df %>% dplyr::filter(DicerConsensus != "N")
     return(new_df_tidy)
   }
-  else{
-    return(new_df) }
+  else {
+    return(new_df)
+  }
 }
-
-
-
