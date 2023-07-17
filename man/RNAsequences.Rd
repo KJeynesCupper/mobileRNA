@@ -4,7 +4,13 @@
 \alias{RNAsequences}
 \title{Extract sRNA cluster sequences}
 \usage{
-RNAsequences(data, original = FALSE)
+RNAsequences(
+  data,
+  original = FALSE,
+  match.threshold = 1,
+  duplicates = "random",
+  tidy = FALSE
+)
 }
 \arguments{
 \item{data}{dataframe; containing columns starting with \code{Cluster} & \code{MajorRNA}}
@@ -12,13 +18,24 @@ RNAsequences(data, original = FALSE)
 \item{original}{logical; output results to working date as additional
 columns (\code{original=TRUE}), or output as new dataframe (\code{original=FALSE}).
 by default, FALSE}
+
+\item{match.threshold}{numeric; the minimum number of replicates
+required to share the sRNA sequence to count as a match}
+
+\item{duplicates}{character string to define how to deal with a tie,
+\code{"random"} as default. Options include \code{"random"} and \code{"exclude"}}
+
+\item{tidy}{use of this argument will remove sRNA clusters with a unknown or
+unclassified consensus major sRNA sequence result. By default,
+\code{tidy=FALSE}, but while \code{tidy=TRUE} sRNA clusters with
+undetermined consensus will be removed.}
 }
 \value{
 The results can be stored in the the working dataframe supplied to the
 function or stored as a new dataframe containing only the results from the
 function. The results includes:
 \itemize{
-\item Match:  logical; whether the sRNA sequence is consistent across replicates
+\item Match: whether the sRNA sequence is consistent across replicates
 \item Sequence:  character; sequence of the most abundant sRNA within a cluster
 \item Complementary_RNA: character; complementary RNA nucleotide sequence
 \item Complementary_DNA: character; complementary DNA nucleotide sequence
@@ -27,8 +44,8 @@ function. The results includes:
 }
 \description{
 Extract sRNA cluster sequences; identifies whether the most
-abundant sRNA for a sRNA cluster id consistent across the replicates, and if
-so extracts the sRNA nucleotide sequence.
+abundant sRNA for a sRNA cluster is consistent across a defined number of
+replicates, and if so extracts the sRNA nucleotide sequence.
 
 The function also calculates the RNA & DNA complementary sequences, as well
 as stating the length of the sequence.
@@ -37,12 +54,33 @@ The results can be stored in the the working dataframe supplied to the
 function or stored as a new dataframe containing only the results from the
 function. This includes:
 \itemize{
-\item Match:  logical; whether the sRNA sequence is consistent across replicates
+\item Match:  whether the sRNA sequence is consistent across replicates
 \item Sequence:  character; sequence of the most abundant sRNA within a cluster
 \item Complementary_RNA: character; complementary RNA nucleotide sequence
 \item Complementary_DNA: character; complementary DNA nucleotide sequence
 \item Width: numeric; length of nucleotide sequence
 }
+}
+\details{
+As default, the function checks whether each sample in the dataset shares
+the same major sRNA sequence for a given sRNA cluster. If at least two
+replicates share the same sRNA sequence, the sequence is pulled and the
+complementary DNA and RNA sequences are calculated. Using the
+\code{match.threshold} parameter, we can alter the minimum number of replicates
+required to share the sRNA sequence to count as a match. For example, if set
+as \code{match.threshold=3}, at least 3 replicates must contain the same sequence.
+As a general rule, if only one replicate has determined a sRNA sequence it is
+noted that there is no match, but the sequence is pulled and the
+complementary sequences calculated.
+
+The match column can either return "Yes", "No" or "Duplicate". If a match
+between replicates is found, "Yes" is supplied, if not, "No". While if
+there is a tie between sequences "Duplicate" is supplied. For examples,
+if an equal number of replicates have sequence "x" and sequence "y".
+
+In the situation where duplicates are identified, as default, at random
+a consensus sRNA sequence is selected. This parameter can be changed to
+"exclude", and under this parameter no consensus sequence is pulled.
 }
 \examples{
 

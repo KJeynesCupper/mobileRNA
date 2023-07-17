@@ -6,3 +6,7 @@ Changes in version  1.0.0 (2023-07-15)
 + alterations to RNAdicercall algorithm, including tie options, altered default tidy method. 
 + RNAdicercall introduced new column "DicerCount" 
 + RNAmobile introduced new parameter, "threshold"
+
+Changes in version  1.0.0 (2023-07-16)
++ improved RNAsequences selection algorithm to consider a threshold value, and 
+handling ties. 
