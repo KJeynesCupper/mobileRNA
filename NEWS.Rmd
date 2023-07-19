@@ -10,3 +10,8 @@ Changes in version  1.0.0 (2023-07-15)
 Changes in version  1.0.0 (2023-07-16)
 + improved RNAsequences selection algorithm to consider a threshold value, and 
 handling ties. 
+
+Changes in version  1.0.0 (2023-07-19)
++ improved error calling on functions
++ found error in RNAattributes
+

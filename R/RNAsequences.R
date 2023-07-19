@@ -83,14 +83,28 @@
 #'@export
 RNAsequences <- function(data, original = FALSE, match.threshold = 1, 
                          duplicates  = "random", tidy = FALSE){
+  if (base::missing(data)) {
+    stop("data is missing. data must be an object of class matrix, data.frame, 
+         DataFrame")
+  }
   # select only columns with RNA seqs, remove columns with only NA values
   df <- data %>%
     dplyr::select(dplyr::starts_with("MajorRNA")) %>%
     dplyr::select(-dplyr::where(~all(. == "N")))
-  # add cluster names
-  # FIND any match 
-  
-  if(!is.null(match.threshold)){ 
+
+    message("The minimum number of matches required to form a consensus sRNA 
+    sequence is... ", match.threshold)
+    
+    if(duplicates == "random"){
+      message("The consensus sRNA sequences will be choose at random in the 
+              case of a tie")
+    } else 
+      if(duplicates == "exclude"){
+        message("The consensus sRNA sequences will be excluded in the 
+              case of a tie") 
+      }
+    cat("\n")
+
     # Initialize result vector
     match_res <- vector("character", nrow(df))
     sequence_res <- vector("character", nrow(df))
@@ -152,7 +166,7 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     df$Match <- match_res
     df$Sequence <- sequence_res
     df$Width <- width_res
-  } 
+
   # if sequences column contains only NA
   if (length(unique(is.na(df$Sequence))) == 2){
     # calculate complementary sequences
@@ -182,7 +196,10 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     }
   
   if(tidy){
+    message("Removing sRNA clusters with no consensus sRNA sequence...")
+    
     data_output <-  data_output %>%  dplyr::filter(Sequence != "NA")
+    
   }
   
   return(data_output)

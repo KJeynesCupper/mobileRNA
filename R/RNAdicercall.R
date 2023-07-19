@@ -39,7 +39,7 @@
 #' @param conditions character vector; containing names of sample replicates.
 #' Named replicates will be used to calculate dicercall consensus. 
 #'Each string should represent a sample name present in the dataframe supplied 
-#'to `data`argument.
+#'to `data` argument.
 #'
 #' @param tidy use of this argument will remove sRNA clusters with a unknown or
 #'  unclassified consensus result. By default, the function will not tidy the 
@@ -81,7 +81,7 @@
 #' @importFrom stringr "str_detect"
 #' @importFrom tidyr "replace_na"
 
-RNAdicercall <- function (data, conditions = NULL, ties.method = NULL, tidy = FALSE) 
+RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, tidy = FALSE) 
 {
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
@@ -102,10 +102,14 @@ RNAdicercall <- function (data, conditions = NULL, ties.method = NULL, tidy = FA
     }
   }
   if (!is.null(conditions)) {
+    message("Calculating consensus dicercall based on information from select
+            replicates...")
     onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
+    message("Calculating consensus dicercall based on information from all
+            replicates...")
     onlyconditions <- class_colnames
   }
   
@@ -125,6 +129,8 @@ RNAdicercall <- function (data, conditions = NULL, ties.method = NULL, tidy = FA
   t <-c(col_q,col_qp)
   
   if (ties.method == "random"){
+    message("The consensus dicercall will be choose at random in the 
+              case of a tie")
     new_df <- data %>% 
       dplyr::mutate(DicerConsensus = base::names(data)[t]
                     [max.col(data[t], ties.method = "random")* NA^(
@@ -133,6 +139,8 @@ RNAdicercall <- function (data, conditions = NULL, ties.method = NULL, tidy = FA
   }
   else 
     if(ties.method == "exclude"){
+      message("The consensus dicercall will be excluded in the 
+              case of a tie") 
       new_df <- data
       
       # Initialize result vector
@@ -176,7 +184,9 @@ RNAdicercall <- function (data, conditions = NULL, ties.method = NULL, tidy = FA
    -nt_23, -nt_24, -other)
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
   
-  if (tidy == TRUE) {
+  if (tidy) {
+    cat("\n")
+    message("Removing sRNA clusters with no consensus dicercall...")
     new_df_tidy <- new_df %>% dplyr::filter(DicerConsensus != "N")
     return(new_df_tidy)
   }

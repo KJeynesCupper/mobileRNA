@@ -179,8 +179,9 @@ sRNA_data <- RNAimport(input = "sRNA",
                        samples = sample_names)
                            
 ```
-
 <br>
+
+
 ## Step 2: Quality control 
 A handy step in the analysis is to assess the overall similarity and difference
 between samples within a conditions and between the conditions. This is to 
@@ -202,7 +203,7 @@ Principal Component Analysis (PCA) is a useful technique to illustrate sample
 distance as it emphasizes the variation through the reduction of dimensions in 
 the data set. Here, we introduce the function plotSamplePCA():
 
-```{r}
+```{r, results='hide', message=FALSE}
 group <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
 
@@ -215,7 +216,7 @@ Similarly, to a PCA plot, the plotSampleDistance() function undertakes
 hierarchical clustering with an unbiased log transformation to calculate sample 
 distance and is plotted in the form of a heatmap.
 
-```{r}
+```{r, results='hide', message=FALSE}
 plotSampleDistance(sRNA_data)
 ```
 
@@ -232,8 +233,11 @@ sample in either format.
 ```{r}
 sample_distribution <- RNAdistribution(sRNA_data,
                                             style = "line",
-                                            together = TRUE)
+                                            together = FALSE)
+```
 
+Lets look at the plot and the data:
+```{r, figures-side, fig.show="hold", out.width="50%"}
 # view plot 
 sample_distribution$plot
 
@@ -247,8 +251,8 @@ For a given sRNA cluster, each replicate has determined the class (20-24nt)
 based on the most abundant small RNA size. Replicates within the same condition 
 are expected to class a given sRNA similarly. 
 
-The `RNAdicercall()` function is used to define the class of a sRNA cluster 
-based on the consensus across specific replicates. 
+The `RNAdicercall()` function is used to define the dicer class of a sRNA 
+cluster based on the consensus across (specific) replicates. 
 
 
 ```{r}
@@ -269,7 +273,7 @@ sRNA clusters found within your system. Here we can utilize either the DESeq2 or
 edgeR algorithms to support your analysis, and can be used in the next steps. 
 
 
-```{r}
+```{r, results='hide', message=FALSE}
 # sample conditions in order within dataframe
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
@@ -308,18 +312,29 @@ also calculated in the previous step.
 Here we will filter the data to select sRNA clusters which are statistically 
 significant, and then plot the results as a heatmap to compare the conditions. 
 
-```{r}
+```{r, fig.show='hide'}
 # select only signifcant sRNAs
 significant_sRNAs <- RNAsignificant(sRNA_DESeq2)
 
 #plot
-plotHeatmap(significant_sRNAs)
+p1 <- plotHeatmap(significant_sRNAs)
+
 ```
+
+
+Lets look at the plot:
+
+```{r}
+p1$plot 
+```
+<br>
+
 
 ## Step 6: Identify absolute sRNA population difference 
 Finally, the  `RNApopulation()` function can be utilised to identify unique 
 sRNA populations found in the treatment or control condition.
 
+First lets look at the sRNA clusters unique to the treatment condition:
 ```{r}
 # select sRNA clusters only found in treatment & not in the control samples
 treatment_reps <- c("heterograft_1", "heterograft_2" , "heterograft_3")
@@ -328,7 +343,11 @@ unique_treatment <- RNApopulation(data = sRNA_data_consensus,
 
 # look at number of sRNA cluster only found in treatment 
 nrow(unique_treatment)
+```
 
+
+Now, the sRNA clusters unique to the control condition:
+```{r}
 # select sRNA clusters only found in control & not in the treatment samples
 control_reps <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 unique_control <- RNApopulation(data = sRNA_data_consensus, 
@@ -336,18 +355,30 @@ unique_control <- RNApopulation(data = sRNA_data_consensus,
 # look at number of sRNA cluster only found in control  
 nrow(unique_control) 
 ```
+<br>
+
 
 ### Plotting heterograft-only sRNA populations
 Here we located 148 sRNA clusters which are uniquely present to the 
 heterografts, and not found in the self-graft controls. These results can 
 be plotted as a distribution plot and heatmap. 
-```{r}
+
+```{r, fig.show='hide'}
 # plot distribution of sRNA classes only found in treatment 
-p1 <- RNAdistribution(data = unique_treatment, style = "line", together = FALSE)
+p2 <- RNAdistribution(data = unique_treatment, style = "line", together = FALSE)
 
 # plot heatmap of treatment-only sRNA clusters
-p2 <- plotHeatmap(data = unique_treatment)
+p3 <- plotHeatmap(data = unique_treatment)
 
+```
+
+
+Lets look at the plots:
+
+```{r, fig.show="hold", out.width="50%"}
+p2$plot 
+
+p3$plot
 ```
 
 
@@ -364,8 +395,16 @@ target_sequences <- RNAsequences(unique_treatment)
 
 This dataframe can be exported the results loaded into BLAST to identify 
 regions within the genome that these complementary sequences are present. There 
-are tools, such as `TargetFinder`, which use a predictive algorithm to identify 
-the most likely locations in the genome where the sRNAs might target. 
+are tools, such as `TargetFinder` or `sRNATargetDigger`, which use a predictive 
+algorithm to identify the most likely locations in the genome where the sRNAs 
+might target. 
+
+Lets export the data frame :
+```{r, eval=FALSE}
+
+write.table(target_sequences, "./data/mobile_sequences.txt")
+
+```
 
 ### Overlapping regions
 Finally, we can identify regions in the genome annotation where the sRNA cluster
@@ -384,7 +423,7 @@ attributes <- RNAattributes(data = unique_treatment,
 ```
 
 The `RNAfeatures` functions is similar to the `RNAattributes` function, but 
-instead it returns either the absolte number or percentage of sRNA clusters 
+instead it returns either the absolute number or percentage of sRNA clusters 
 which overlap with specific regions in the genome such as repeats, introns, 
 exons,  UTR and promoter regions. It could be helpful to subset your dataset
 to only explore a specific sRNA class, see [mobileRNA::RNAsubset()] for more
@@ -397,7 +436,7 @@ features <- RNAfeatures(data = unique_treatment,
                       repeats = "./annotation/origin_annotation_repeats.gff3")
 
 ```
-
+<br>
 
 
 

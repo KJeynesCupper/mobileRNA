@@ -105,12 +105,15 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     # LOad sample data as list of data frames, with index as file name.
     dt_list <- list()
     total_files <- length(samples)
+    file_n <- 0
     for (file in samples) {
+      file_n <- file_n + 1
       options(datatable.showProgress = FALSE)
       dt_list[[file]] <- data.table::fread(paste0(directory, file,
                                                   "/Results.txt"),header = TRUE)
       progress_counter <- file
-      progress_message <- paste0("Processing file ", progress_counter, " of ", total_files)
+      progress_message <- paste0("Processing sample: ", progress_counter,".", "\n",
+                                 "File ", file_n, " of ", total_files)
       cat(sprintf("\r%s", progress_message))
       utils::flush.console()
     }

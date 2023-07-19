@@ -166,7 +166,7 @@ RNAmobile <- function(data,controls, id, task = NULL ,
   
   res <- y
   if(!is.null(threshold)){
-    res <- res %>% filter(!DicerCounts == threshold)
+    res <- res %>% filter(!DicerCounts < threshold)
   }
   return(res)
 }
