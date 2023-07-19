@@ -15,7 +15,7 @@ information for each sample and organise it as required.}
 \item{conditions}{character vector; containing names of sample replicates.
 Named replicates will be used to calculate dicercall consensus.
 Each string should represent a sample name present in the dataframe supplied
-to \code{data}argument.}
+to \code{data} argument.}
 
 \item{ties.method}{a character string specifying how ties are handled,
 "exclude" by default. Options include "random", or
