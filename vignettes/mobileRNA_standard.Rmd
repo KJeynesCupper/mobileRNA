@@ -171,7 +171,8 @@ results in your directory, and the sample names.
 results_dir <-  "<./output/directory/step2/>"
 
 # Sample names and total number of reads, in the same order. 
-sample_names <- c("<treatment_1>", "<treatment_2>", "<control_1>","<control_2>")
+sample_names <- c("heterograft_1", "heterograft_2" , "heterograft_3", 
+                  "selfgraft_1", "selfgraft_2", "selfgraft_3")
 
 
 sRNA_data <- RNAimport(input = "sRNA", 

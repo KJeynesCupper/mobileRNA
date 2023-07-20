@@ -39,16 +39,16 @@
 
 ################ Remove mapping errors  #########################
 ################ RNAsignificant, RNAdicercall, RNApopulation
-.remove_mapping_errors_V2 <- function(data,  controls, id) {
+.remove_mapping_errors_V2 <- function(data,  controls, genome.ID) {
   if (base::missing(controls) || !base::inherits(controls, "character")) {
     stop(paste("Please specify a character vector storing names of control replicates"))
   }
-  if (base::missing(id) || id %in% "") {
+  if (base::missing(genome.ID) || genome.ID %in% "") {
     stop(paste("Please specify a single character string which is present in the all the chromosomes within the foriegn genome"))
   }
-  data_native <- data %>% dplyr::filter(!grepl(id,chr))
+  data_native <- data %>% dplyr::filter(!grepl(genome.ID,chr))
   # subset data to find all rows of forign genome
-  data_select <- data %>% dplyr::filter(grepl(id,chr))
+  data_select <- data %>% dplyr::filter(grepl(genome.ID,chr))
   
   class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
   

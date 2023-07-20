@@ -24,8 +24,8 @@
 #' eliminated by supplying some extra parameter information. State 
 #' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
 #' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `id` parameter 
-#' and the control condition samples names to the `controls` parameter.  
+#' potential mobile molecules could be traveling from) to the `genome.ID` 
+#' parameter & the control condition samples names to the `controls` parameter.  
 #' 
 #'
 #' @param data a data frame object containing sample data where rows
@@ -53,7 +53,7 @@
 #'
 #'@param controls character; vector of control condition sample names. 
 #'
-#'@param id character; chromosome identifier of foreign genome in chimeric 
+#'@param genome.ID character; chromosome identifier of foreign genome in chimeric 
 #'system
 #'
 #'@return A data frame containing all existing columns in the input data object,
@@ -89,7 +89,7 @@
 
 RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, 
                          tidy = FALSE, chimeric = FALSE, controls = NULL, 
-                         id = NULL) {
+                         genome.ID = NULL) {
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
          DataFrame")
@@ -105,7 +105,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   # remove mapping errors:
   if(chimeric){
     data <- .remove_mapping_errors_V2(data = data,controls = controls, 
-                                        id = id)
+                                      genome.ID = genome.ID)
   }
   class_colnames <- c()
   for (i in colnames(data)) {

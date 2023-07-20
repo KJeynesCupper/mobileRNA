@@ -23,8 +23,8 @@
 #' eliminated by supplying some extra parameter information. State 
 #' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
 #' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `id` parameter 
-#' and the control condition samples names to the `controls` parameter.  
+#' potential mobile molecules could be traveling from) to the `genome.ID` 
+#' parameter & the control condition samples names to the `controls` parameter.  
 #' 
 #'
 #' @param data Numeric data frame
@@ -56,8 +56,11 @@
 #'
 #'@param controls character; vector of control condition sample names. 
 #'
-#'@param id character; chromosome identifier of foreign genome in chimeric 
+#'@param genome.ID character; chromosome identifier of foreign genome in chimeric 
 #'system
+#'
+#'@param dual logical; works in corporation when `chimeric=TRUE` and removes 
+#'sRNA clusters mapped to the foreign genome. 
 #'
 #' @return A refined version of the working dataframe supplied to the function.
 #' The function selects sRNA clusters which are only found in replicates within 
@@ -90,7 +93,7 @@
 
 RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
                           p.value = NULL, chimeric = FALSE, controls = NULL, 
-                          id = NULL){
+                          genome.ID = NULL, dual = TRUE){
   
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
@@ -107,9 +110,14 @@ RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
   
   if(chimeric){
     data <- .remove_mapping_errors_V2(data = new_df,controls = controls, 
-                                        id = id)
+                                      genome.ID = genome.ID)
+    if(dual == FALSE){
+      data <- data %>% dplyr::filter(!grepl(genome.ID,chr))
+    }
   } 
-  
+  if(chimeric == FALSE && !is.null(genome.ID)){
+    data <- data %>% dplyr::filter(!grepl(genome.ID,chr))
+  }
   output <- data[0,]
   for(i in 1:nrow(data)){
     sum_conditions <- sum(stats::na.omit(as.numeric(data[

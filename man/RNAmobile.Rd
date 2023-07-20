@@ -7,7 +7,7 @@
 RNAmobile(
   data,
   controls,
-  id,
+  genome.ID,
   task = NULL,
   statistical = FALSE,
   padj = 0.05,
@@ -20,7 +20,7 @@ RNAmobile(
 
 \item{controls}{Character vector; containing names of control samples.}
 
-\item{id}{a character string related to the chromosomes in a particular
+\item{genome.ID}{a character string related to the chromosomes in a particular
 genome. A distinguishing feature of the genome of interest or non-interest in
 the chromosome name (\code{chr} column).}
 
@@ -94,7 +94,7 @@ controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 # statistical analysis
 mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
                     controls = controls,
-                    id = "SL40",
+                    genome.ID = "SL40",
                     task = "keep",
                     statistical = FALSE)
 
@@ -115,14 +115,14 @@ analysis_df <- RNAanalysis(data = sRNA_data_consensus,
 ## locate mobile sRNA using p-adjusted value
 mobile_df2 <- RNAmobile(data = analysis_df,
                     controls = controls,
-                    id = "SL40",
+                    genome.ID = "SL40",
                     task = "keep",
                     statistical = TRUE)
 
 ## or, locate mobile sRNA using p-value value
 mobile_df3 <- RNAmobile(data = analysis_df,
                     controls = controls,
-                    id = "SL40",
+                    genome.ID = "SL40",
                     task = "keep",
                     statistical = TRUE,
                     p.value = 0.05)
@@ -133,7 +133,7 @@ mobile_df3 <- RNAmobile(data = analysis_df,
 # analysis
 mobile_df4 <- RNAmobile(data = sRNA_data_consensus,
                     controls = controls,
-                    id = "SL40",
+                    genome.ID = "SL40",
                     task = "remove",
                     statistical = FALSE)
 

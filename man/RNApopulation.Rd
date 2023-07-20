@@ -12,7 +12,8 @@ RNApopulation(
   p.value = NULL,
   chimeric = FALSE,
   controls = NULL,
-  id = NULL
+  genome.ID = NULL,
+  dual = TRUE
 )
 }
 \arguments{
@@ -42,8 +43,11 @@ genomes/genotypes.}
 
 \item{controls}{character; vector of control condition sample names.}
 
-\item{id}{character; chromosome identifier of foreign genome in chimeric
+\item{genome.ID}{character; chromosome identifier of foreign genome in chimeric
 system}
+
+\item{dual}{logical; works in corporation when \code{chimeric=TRUE} and removes
+sRNA clusters mapped to the foreign genome.}
 }
 \value{
 A refined version of the working dataframe supplied to the function.
@@ -79,8 +83,8 @@ mapping errors can easily be recognised and eliminated. Here, these can be
 eliminated by supplying some extra parameter information. State
 \code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
 (ie. not the tissue sample genotype, but the genotype from which any
-potential mobile molecules could be traveling from) to the \code{id} parameter
-and the control condition samples names to the \code{controls} parameter.
+potential mobile molecules could be traveling from) to the \code{genome.ID}
+parameter & the control condition samples names to the \code{controls} parameter.
 }
 \examples{
 

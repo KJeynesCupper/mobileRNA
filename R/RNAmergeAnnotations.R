@@ -105,9 +105,6 @@
 #' @importFrom dplyr "bind_rows"
 #' @export
 #'
-
-
-
 RNAmergeAnnotations <- function(annotationA, annotationB,
                                out_dir,
                                abbreviationAnnoA = "A",

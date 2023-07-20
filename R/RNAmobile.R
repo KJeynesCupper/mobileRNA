@@ -33,7 +33,7 @@
 #'
 #' @param controls Character vector; containing names of control samples.
 #'
-#' @param id a character string related to the chromosomes in a particular
+#' @param genome.ID a character string related to the chromosomes in a particular
 #' genome. A distinguishing feature of the genome of interest or non-interest in
 #' the chromosome name (`chr` column).
 #'
@@ -79,7 +79,7 @@
 #' # statistical analysis
 #' mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
 #'                     controls = controls,
-#'                     id = "SL40",
+#'                     genome.ID = "SL40",
 #'                     task = "keep",
 #'                     statistical = FALSE)
 #'
@@ -100,14 +100,14 @@
 #' ## locate mobile sRNA using p-adjusted value
 #' mobile_df2 <- RNAmobile(data = analysis_df,
 #'                     controls = controls,
-#'                     id = "SL40",
+#'                     genome.ID = "SL40",
 #'                     task = "keep",
 #'                     statistical = TRUE)
 #'
 #' ## or, locate mobile sRNA using p-value value
 #' mobile_df3 <- RNAmobile(data = analysis_df,
 #'                     controls = controls,
-#'                     id = "SL40",
+#'                     genome.ID = "SL40",
 #'                     task = "keep",
 #'                     statistical = TRUE,
 #'                     p.value = 0.05)
@@ -118,7 +118,7 @@
 #'# analysis
 #' mobile_df4 <- RNAmobile(data = sRNA_data_consensus,
 #'                     controls = controls,
-#'                     id = "SL40",
+#'                     genome.ID = "SL40",
 #'                     task = "remove",
 #'                     statistical = FALSE)
 #'
@@ -130,7 +130,7 @@
 #' @importFrom tidyselect "starts_with"
 #' @importFrom dplyr "case_when"
 
-RNAmobile <- function(data,controls, id, task = NULL ,
+RNAmobile <- function(data,controls, genome.ID, task = NULL ,
                       statistical = FALSE,
                       padj = 0.05, threshold = NULL, 
                       p.value = NULL){
@@ -141,7 +141,7 @@ RNAmobile <- function(data,controls, id, task = NULL ,
     stop(paste("Please specify a character vector storing names of control
                replicates"))
   }
-  if (base::missing(id) || id %in% "") {
+  if (base::missing(genome.ID) || genome.ID %in% "") {
     stop(paste("Please specify a single character string which is present in
                the all the chromosomes within the genome you wish to keep
                or remove"))
@@ -149,9 +149,9 @@ RNAmobile <- function(data,controls, id, task = NULL ,
   
   x <- data %>%
     dplyr::filter(dplyr::case_when(
-      is.null(task) & base::grepl(id, chr) ~ TRUE,
-      task == "remove" & !base::grepl(id, chr) ~ TRUE,
-      task == "keep" & base::grepl(id, chr) ~ TRUE,
+      is.null(task) & base::grepl(genome.ID, chr) ~ TRUE,
+      task == "remove" & !base::grepl(genome.ID, chr) ~ TRUE,
+      task == "keep" & base::grepl(genome.ID, chr) ~ TRUE,
       TRUE ~ FALSE
     ))
   

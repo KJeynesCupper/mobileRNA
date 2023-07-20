@@ -16,8 +16,8 @@
 #' eliminated by supplying some extra parameter information. State 
 #' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
 #' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `id` parameter 
-#' and the control condition samples names to the `controls` parameter.  
+#' potential mobile molecules could be traveling from) to the `genome.ID` 
+#' parameter & the control condition samples names to the `controls` parameter.  
 #' 
 #' @param data Numeric data frame
 #'
@@ -42,7 +42,7 @@
 #'
 #'@param controls character; vector of control condition sample names. 
 #'
-#'@param id character; chromosome identifier of foreign genome in chimeric 
+#'@param genome.ID character; chromosome identifier of foreign genome in chimeric 
 #'system
 #'
 #' @return A refined version of the working dataframe supplied to the function.
@@ -66,7 +66,8 @@
 #'                           method = "DESeq2")
 #'                           
 #'  ## Select significant based on padjusted                        
-#' significant_sRNAs <- RNAsignificant(sRNA_DESeq2, chimeric = TRUE, id = "SL", 
+#' significant_sRNAs <- RNAsignificant(sRNA_DESeq2, chimeric = TRUE, 
+#'                                     genome.ID = "SL", 
 #'                                     controls = c("selfgraft_1", "selfgraft_2", 
 #'                                     "selfgraft_3"))
 #'                                  
@@ -78,13 +79,13 @@
 
 RNAsignificant <- function(data, statistical = FALSE, padj = 0.05,
                            p.value = NULL, chimeric = FALSE, controls = NULL, 
-                           id = NULL){
+                           genome.ID = NULL){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
   }
   if(chimeric){
     data <- .remove_mapping_errors_V2(data = data,controls = controls, 
-                                      id = id)
+                                      genome.ID = genome.ID)
   }  
     if (is.null(p.value)) {
       res <- data %>% filter(padjusted <= padj)
