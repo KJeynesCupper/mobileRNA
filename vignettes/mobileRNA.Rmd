@@ -54,7 +54,7 @@ sequencing pipelines to the specific study of mobile molecules. Several genomic
 studies used grafting to explore and characterise mobile sRNAs in chimeric 
 systems, however, it is clear that there is not a  standardised approach.
 
-Here we introduce the R Package \code[mobileRNA], to aid the identification of 
+Here we introduce the R Package *mobileRNA*, to aid the identification of 
 mobile RNA molecules and  explore population-scale changes in chimeric systems 
 in comparison to its non-chimeric control. The tool offers a workflow for 
 pre-processing and analysis. Ultimately, the pipeline offers an optimised 
@@ -110,13 +110,13 @@ the core steps, there is the ability to remove mapping errors by comparing
 controls to the treatment. This is a step not obviously described by other 
 workflows but adds huge value to the analysis. Similarly, an important core step 
 to understand is consensus dicer classification (see function 
-\code[mobileRNA::RNAdicercall()]). For a given sRNA cluster, each replicate at 
+`RNAdicercall()`). For a given sRNA cluster, each replicate at 
 the mapping and clustering pre-processing step will have predicted the class
 (default: 20-24nt). The consensus dicer classification step uses this 
 information to define the classification of the cluster. There is a range of 
 parameters to control how these are drawn, making it either stringent or loose, 
 which will alter the downstream analysis. Finally, the step to identify
-the candidate mobile molecules (see function \code[mobileRNA::RNAmobile()]) also 
+the candidate mobile molecules (see function `RNAmobile()`) also 
 has a parameter which can either result in stringent or looser outcomes. This
 parameter utilses the number of replicates which contributed to the consensus 
 dicer classification as a threshold value. For instance, it would be more 
@@ -128,7 +128,7 @@ molecules in chimeric systems, and it should be emphasized that this is an
 optional step. However, statistical analysis for the exploration of population
 dynamics should be a mandatory step. Here we include a single 
 function which can be instructed to undertake differential analysis using either 
-the edgeR or DESeq2 method (see function \code[mobileRNA::RNAanalysis()]). The
+the edgeR or DESeq2 method (see function `RNAanalysis()`). The
 function outputs additional columns to your working dataset, including the 
 raw count mean, log2FoldChange, p-value and adjusted p-value. 
 
@@ -1053,7 +1053,7 @@ nrow(unique_control)
 <br>
 
 The plotting functions within the package can be used to display these results, 
-specifically \code[RNAdistribution()] and \code[plotHeatmap()]. Similarly, the
+specifically `RNAdistribution()` and `plotHeatmap()`. Similarly, the
 functions to assist with functional analysis can also be utilsied to pull 
 the consensus sRNA sequence for each cluster in the population, or find 
 overlaps with known annotations in the native genome.
