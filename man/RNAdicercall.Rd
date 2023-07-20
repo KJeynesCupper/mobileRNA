@@ -62,17 +62,6 @@ dicer-derived cluster.
 The function calculates the consensus sRNA class based on the conditions
 supplied.
 
-Depending on your reasons for analysis, different conditions should
-be supplied. For instance, if you wish to identify mobile sRNAs in a
-interspecific heterograft condition via the comparison of replicates in a
-heterograft between two species and a self-graft control condition, you
-should consider supplying only the replicates in the heterograft condition.
-This means that the function will draw a consensus of the sRNA class based
-only on these replicates. This method is suggested because any mobile sRNA
-from the donor genotype should not be found in the control
-samples, and hence, any class determination in the control samples for
-this sRNA cluster would be irrelevant.
-
 When ties.method = "random", as per default, ties are broken at random.
 In this case, the determination of a tie assumes that the entries are
 probabilities: there is a relative tolerance of 1e-5, relative to the
