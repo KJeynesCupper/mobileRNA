@@ -113,6 +113,11 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   }
   data[is.na(data)] <- "N"
   
+  # remove mapping errors:
+  if(chimeric){
+    data <- .remove_mapping_errors_V2(data = data,controls = controls, 
+                                        id = id)
+  }
   class_colnames <- c()
   for (i in colnames(data)) {
     if (stringr::str_detect(i, "DicerCall_")) {
@@ -199,11 +204,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   # remove nt from output values
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
   
-  # remove mapping errors:
-  if(chimeric){
-    new_df <- .remove_mapping_errors_V2(data = new_df,controls = controls, 
-                                      id = id)
-  } 
+   
   if (tidy) {
     cat("\n")
     message("Removing sRNA clusters with no consensus dicercall...")
