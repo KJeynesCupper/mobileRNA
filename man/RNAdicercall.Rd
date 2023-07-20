@@ -4,7 +4,15 @@
 \alias{RNAdicercall}
 \title{Define the sRNA dicer consensus for each dicer-derived sRNA cluster}
 \usage{
-RNAdicercall(data, conditions = NULL, ties.method = NULL, tidy = FALSE)
+RNAdicercall(
+  data,
+  conditions = NULL,
+  ties.method = NULL,
+  tidy = FALSE,
+  chimeric = FALSE,
+  controls = NULL,
+  id = NULL
+)
 }
 \arguments{
 \item{data}{a data frame object containing sample data where rows
@@ -25,6 +33,14 @@ to \code{data} argument.}
 unclassified consensus result. By default, the function will not tidy the
 data. When \code{tidy=TRUE}, unclassified clusters will be to remove from
 the output dataframe in an effort to remove excess background noise.}
+
+\item{chimeric}{logical; state whether system is chimeric: contains multiple
+genomes/genotypes.}
+
+\item{controls}{character; vector of control condition sample names.}
+
+\item{id}{character; chromosome identifier of foreign genome in chimeric
+system}
 }
 \value{
 A data frame containing all existing columns in the input data object,
@@ -67,6 +83,14 @@ unclassified ("N").
 
 To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassified
 ("N") sRNA clsuters, resulting in a reduced dataset size.
+
+When working with a chimeric system, for example interspecific grafting,
+mapping errors can easily be recognised and eliminated. Here, these can be
+eliminated by supplying some extra parameter information. State
+\code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
+(ie. not the tissue sample genotype, but the genotype from which any
+potential mobile molecules could be traveling from) to the \code{id} parameter
+and the control condition samples names to the \code{controls} parameter.
 }
 \examples{
 

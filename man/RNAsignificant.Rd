@@ -2,9 +2,17 @@
 % Please edit documentation in R/RNAsignificant.R
 \name{RNAsignificant}
 \alias{RNAsignificant}
-\title{Extract statistically significant sRNA clusters}
+\title{Extract statistically significant sRNA clusters within a population.}
 \usage{
-RNAsignificant(data, statistical = FALSE, padj = 0.05, p.value = NULL)
+RNAsignificant(
+  data,
+  statistical = FALSE,
+  padj = 0.05,
+  p.value = NULL,
+  chimeric = FALSE,
+  controls = NULL,
+  id = NULL
+)
 }
 \arguments{
 \item{data}{Numeric data frame}
@@ -24,6 +32,14 @@ molecules with adjusted p-values equal or lower than specified are returned.}
 threshold to define statistic significance. There is no default value, set
 this instead of using an adjusted p-value to filter molecules. Only mobile
 molecules with p-values equal or lower than specified are returned.}
+
+\item{chimeric}{logical; state whether system is chimeric: contains multiple
+genomes/genotypes.}
+
+\item{controls}{character; vector of control condition sample names.}
+
+\item{id}{character; chromosome identifier of foreign genome in chimeric
+system}
 }
 \value{
 A refined version of the working dataframe supplied to the function.
@@ -32,8 +48,8 @@ given the statistical analysis has been undertaken using the
 \code{\link[=RNAanalysis]{RNAanalysis()}} function.
 }
 \description{
-Based on a given threshold, filter dataset for statistically
-significant sRNA clusters.
+sRNA clusters which are more abundant, show a statistically
+significant logfc.
 }
 \details{
 Filters the data based on statistical significance
@@ -42,6 +58,14 @@ optional features enables the user to select sRNA clusters which meet a
 specific p-value or adjusted p-values threshold.
 
 Requires either or both columns: \code{pvalue}, \code{padjusted} to undertake.
+
+When working with a chimeric system, for example interspecific grafting,
+mapping errors can easily be recognised and eliminated. Here, these can be
+eliminated by supplying some extra parameter information. State
+\code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
+(ie. not the tissue sample genotype, but the genotype from which any
+potential mobile molecules could be traveling from) to the \code{id} parameter
+and the control condition samples names to the \code{controls} parameter.
 }
 \examples{
 
@@ -58,7 +82,9 @@ sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
                           method = "DESeq2")
                           
  ## Select significant based on padjusted                        
-significant_sRNAs <- RNAsignificant(sRNA_DESeq2)
+significant_sRNAs <- RNAsignificant(sRNA_DESeq2, chimeric = TRUE, id = "SL", 
+                                    controls = c("selfgraft_1", "selfgraft_2", 
+                                    "selfgraft_3"))
                                  
                                  
 

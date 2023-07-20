@@ -30,6 +30,14 @@
 #' To remove excess data noise, `tidy=TRUE` can be used to removed unclassified 
 #' ("N") sRNA clsuters, resulting in a reduced dataset size. 
 #' 
+#' When working with a chimeric system, for example interspecific grafting, 
+#' mapping errors can easily be recognised and eliminated. Here, these can be 
+#' eliminated by supplying some extra parameter information. State 
+#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
+#' (ie. not the tissue sample genotype, but the genotype from which any 
+#' potential mobile molecules could be traveling from) to the `id` parameter 
+#' and the control condition samples names to the `controls` parameter.  
+#' 
 #'
 #' @param data a data frame object containing sample data where rows
 #' represent sRNA dicer-derived clusters, and where columns represent sample
@@ -49,6 +57,15 @@
 #' @param ties.method a character string specifying how ties are handled, 
 #' "exclude" by default. Options include "random", or 
 #' "exclude"; see ‘Details’
+#' 
+#' 
+#'@param chimeric logical; state whether system is chimeric: contains multiple 
+#'genomes/genotypes. 
+#'
+#'@param controls character; vector of control condition sample names. 
+#'
+#'@param id character; chromosome identifier of foreign genome in chimeric 
+#'system
 #'
 #'@return A data frame containing all existing columns in the input data object,
 #'plus, two additional columns of data: 
@@ -81,8 +98,9 @@
 #' @importFrom stringr "str_detect"
 #' @importFrom tidyr "replace_na"
 
-RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, tidy = FALSE) 
-{
+RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, 
+                         tidy = FALSE, chimeric = FALSE, controls = NULL, 
+                         id = NULL) {
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
          DataFrame")
@@ -102,14 +120,12 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, tidy = FAL
     }
   }
   if (!is.null(conditions)) {
-    message("Calculating consensus dicercall based on information from select
-            replicates...")
+    message("Calculating consensus dicercall based on information from select replicates")
     onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
-    message("Calculating consensus dicercall based on information from all
-            replicates...")
+    message("Calculating consensus dicercall based on information from all replicates")
     onlyconditions <- class_colnames
   }
   
@@ -129,8 +145,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, tidy = FAL
   t <-c(col_q,col_qp)
   
   if (ties.method == "random"){
-    message("The consensus dicercall will be choose at random in the 
-              case of a tie")
+    message("The consensus dicercall will be choose at random in the case of a tie")
     new_df <- data %>% 
       dplyr::mutate(DicerConsensus = base::names(data)[t]
                     [max.col(data[t], ties.method = "random")* NA^(
@@ -139,8 +154,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, tidy = FAL
   }
   else 
     if(ties.method == "exclude"){
-      message("The consensus dicercall will be excluded in the 
-              case of a tie") 
+      message("The consensus dicercall will be excluded in the case of a tie") 
       new_df <- data
       
       # Initialize result vector
@@ -179,11 +193,17 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, tidy = FAL
       new_df$DicerConsensus <- result
     }
   
-  
+  # remove calulation columns 
   new_df <- new_df %>% dplyr::select(-nt_20, -nt_21, -nt_22, 
    -nt_23, -nt_24, -other)
+  # remove nt from output values
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
   
+  # remove mapping errors:
+  if(chimeric){
+    new_df <- .remove_mapping_errors_V2(data = new_df,controls = controls, 
+                                      id = id)
+  } 
   if (tidy) {
     cat("\n")
     message("Removing sRNA clusters with no consensus dicercall...")

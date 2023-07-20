@@ -1,16 +1,24 @@
-#' Extract statistically significant sRNA clusters
+#' Extract statistically significant sRNA clusters within a population. 
 #'
-#' @description Based on a given threshold, filter dataset for statistically 
-#' significant sRNA clusters.
+#' @description sRNA clusters which are more abundant, show a statistically 
+#' significant logfc. 
 #'
-#' @details
-#'  Filters the data based on statistical significance
+#' @details Filters the data based on statistical significance
 #'which has been calculated by the [mobileRNA::RNAanalysis()] function. This 
 #'optional features enables the user to select sRNA clusters which meet a 
 #'specific p-value or adjusted p-values threshold.
 #'
 #'Requires either or both columns: `pvalue`, `padjusted` to undertake. 
 #'
+#'
+#' When working with a chimeric system, for example interspecific grafting, 
+#' mapping errors can easily be recognised and eliminated. Here, these can be 
+#' eliminated by supplying some extra parameter information. State 
+#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
+#' (ie. not the tissue sample genotype, but the genotype from which any 
+#' potential mobile molecules could be traveling from) to the `id` parameter 
+#' and the control condition samples names to the `controls` parameter.  
+#' 
 #' @param data Numeric data frame
 #'
 #' @param statistical If TRUE, will undertake statistical filtering based on the
@@ -29,6 +37,13 @@
 #' this instead of using an adjusted p-value to filter molecules. Only mobile
 #' molecules with p-values equal or lower than specified are returned.
 #'
+#'@param chimeric logical; state whether system is chimeric: contains multiple 
+#'genomes/genotypes. 
+#'
+#'@param controls character; vector of control condition sample names. 
+#'
+#'@param id character; chromosome identifier of foreign genome in chimeric 
+#'system
 #'
 #' @return A refined version of the working dataframe supplied to the function.
 #' The function selects sRNA clusters which meet the statistical threshold, 
@@ -51,20 +66,29 @@
 #'                           method = "DESeq2")
 #'                           
 #'  ## Select significant based on padjusted                        
-#' significant_sRNAs <- RNAsignificant(sRNA_DESeq2)
+#' significant_sRNAs <- RNAsignificant(sRNA_DESeq2, chimeric = TRUE, id = "SL", 
+#'                                     controls = c("selfgraft_1", "selfgraft_2", 
+#'                                     "selfgraft_3"))
 #'                                  
 #'                                  
 #'
 #' @export
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "filter"
-#' @importFrom dplyr "select"
 
 RNAsignificant <- function(data, statistical = FALSE, padj = 0.05,
-                           p.value = NULL){
+                           p.value = NULL, chimeric = FALSE, controls = NULL, 
+                           id = NULL){
+  if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame, DataFrame")
+  }
+  if(chimeric){
+    data <- .remove_mapping_errors_V2(data = data,controls = controls, 
+                                      id = id)
+  }  
     if (is.null(p.value)) {
       res <- data %>% filter(padjusted <= padj)
     } else
       res <- data %>% filter(pvalue <= p.value)
-  return(res)
+    return(res)
 }

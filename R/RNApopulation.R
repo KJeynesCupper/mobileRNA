@@ -3,6 +3,9 @@
 #' @description Identify unique sRNA populations between two conditions. 
 #'
 #' @details
+#' Please be aware that if you have a large dataset, this function may take a 
+#' couple of minutes. 
+#' 
 #' The function undertakes two different roles. First, it identified whether 
 #' there are unique sRNA clusters within one condition in comparison to another.
 #' For instance, if there are additional sRNA clusters in your treatment 
@@ -14,6 +17,15 @@
 #'which has been calculated by the [mobileRNA::RNAanalysis()] function. This 
 #'optional features enables the user to select sRNA clusters which meet a 
 #'specific p-value or adjusted p-values threshold.
+#'
+#'When working with a chimeric system, for example interspecific grafting, 
+#' mapping errors can easily be recognised and eliminated. Here, these can be 
+#' eliminated by supplying some extra parameter information. State 
+#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
+#' (ie. not the tissue sample genotype, but the genotype from which any 
+#' potential mobile molecules could be traveling from) to the `id` parameter 
+#' and the control condition samples names to the `controls` parameter.  
+#' 
 #'
 #' @param data Numeric data frame
 #'
@@ -37,6 +49,15 @@
 #' this instead of using an adjusted p-value to filter molecules. Only mobile
 #' molecules with p-values equal or lower than specified are returned.
 #'
+#'
+#'
+#'@param chimeric logical; state whether system is chimeric: contains multiple 
+#'genomes/genotypes. 
+#'
+#'@param controls character; vector of control condition sample names. 
+#'
+#'@param id character; chromosome identifier of foreign genome in chimeric 
+#'system
 #'
 #' @return A refined version of the working dataframe supplied to the function.
 #' The function selects sRNA clusters which are only found in replicates within 
@@ -67,11 +88,9 @@
 #' @importFrom tidyselect "starts_with"
 #' @importFrom dplyr "case_when"
 
-RNApopulation <- function(data, 
-                          conditions,
-                          statistical = FALSE,
-                          padj = 0.05,
-                          p.value = NULL){
+RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
+                          p.value = NULL, chimeric = FALSE, controls = NULL, 
+                          id = NULL){
   
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
@@ -85,7 +104,12 @@ RNApopulation <- function(data,
   opposite_cols <- data %>% 
     dplyr::select(dplyr::starts_with("Count_")) %>%
     dplyr::select(!colnames(conditions_cols))
-    
+  
+  if(chimeric){
+    data <- .remove_mapping_errors_V2(data = new_df,controls = controls, 
+                                        id = id)
+  } 
+  
   output <- data[0,]
   for(i in 1:nrow(data)){
     sum_conditions <- sum(stats::na.omit(as.numeric(data[
@@ -96,6 +120,7 @@ RNApopulation <- function(data,
       output <- rbind(output, data[i,])
       }
   }
+  
     if (statistical) {
       if (is.null(p.value)) {
         res <- output %>% filter(padjusted <= padj)

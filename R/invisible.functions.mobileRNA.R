@@ -37,6 +37,50 @@
 }
 
 
+################ Remove mapping errors  #########################
+################ RNAsignificant, RNAdicercall, RNApopulation
+.remove_mapping_errors_V2 <- function(data,  controls, id) {
+  if (base::missing(controls) || !base::inherits(controls, "character")) {
+    stop(paste("Please specify a character vector storing names of control replicates"))
+  }
+  if (base::missing(id) || id %in% "") {
+    stop(paste("Please specify a single character string which is present in the all the chromosomes within the foriegn genome"))
+  }
+  data_native <- data %>% dplyr::filter(!grepl(id,chr))
+  # subset data to find all rows of forign genome
+  data_select <- data %>% dplyr::filter(grepl(id,chr))
+  
+  class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
+  
+  if (length(colnames(class_colnames)) > 1){
+    x <- c()
+    for (j in 1:nrow(data_select)){
+      if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
+                                        na.rm=TRUE)))>0){
+        x <- c(x,j)
+      }
+    }
+  } else
+    if (length(colnames(class_colnames)) == 1){
+      x <- c()
+      for (k in 1:nrow(data_select)){
+        if(stats::na.omit(as.numeric(data_select[k,colnames(class_colnames)],
+                                     na.rm=TRUE))!= 0){
+          x <- c(x,k)
+        }
+      }
+    }
+  if(is.null(x)){
+    data_id <- data_select
+  } else
+    if(!is.null(x)){ 
+      data_id <- data_select[-x,]
+    }
+  data <- rbind(data_native,data_id)
+}
+
+
+
 ################ DESE2 function (RNAanalysis function) #########################
 .DESeq_normalise <- function(data, conditions){
   column.data <- data.frame(conditions=as.factor(conditions))
@@ -103,6 +147,7 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "key", "Count", "Class", "padjusted", "pvalue", "freq",
                          "value" , "variable" , "repeats_info" , "Genome" ,
                          "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ,
-                         "MajorRNA", "i"))
+                         "MajorRNA", "i", "other", "report", "DicerCounts", 
+                         "Sequence", "new_df"))
 
 

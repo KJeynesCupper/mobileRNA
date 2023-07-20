@@ -84,24 +84,20 @@
 RNAsequences <- function(data, original = FALSE, match.threshold = 1, 
                          duplicates  = "random", tidy = FALSE){
   if (base::missing(data)) {
-    stop("data is missing. data must be an object of class matrix, data.frame, 
-         DataFrame")
+    stop("data is missing. data must be an object of class matrix, data.frame, DataFrame")
   }
   # select only columns with RNA seqs, remove columns with only NA values
   df <- data %>%
     dplyr::select(dplyr::starts_with("MajorRNA")) %>%
     dplyr::select(-dplyr::where(~all(. == "N")))
 
-    message("The minimum number of matches required to form a consensus sRNA 
-    sequence is... ", match.threshold)
+    message("The minimum number of matches required to form a consensus sRNA sequence is... ", match.threshold)
     
     if(duplicates == "random"){
-      message("The consensus sRNA sequences will be choose at random in the 
-              case of a tie")
+      message("The consensus sRNA sequences will be choose at random in the case of a tie")
     } else 
       if(duplicates == "exclude"){
-        message("The consensus sRNA sequences will be excluded in the 
-              case of a tie") 
+        message("The consensus sRNA sequences will be excluded in the case of a tie") 
       }
     cat("\n")
 

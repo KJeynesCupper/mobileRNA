@@ -9,7 +9,10 @@ RNApopulation(
   conditions,
   statistical = FALSE,
   padj = 0.05,
-  p.value = NULL
+  p.value = NULL,
+  chimeric = FALSE,
+  controls = NULL,
+  id = NULL
 )
 }
 \arguments{
@@ -33,6 +36,14 @@ molecules with adjusted p-values equal or lower than specified are returned.}
 threshold to define statistic significance. There is no default value, set
 this instead of using an adjusted p-value to filter molecules. Only mobile
 molecules with p-values equal or lower than specified are returned.}
+
+\item{chimeric}{logical; state whether system is chimeric: contains multiple
+genomes/genotypes.}
+
+\item{controls}{character; vector of control condition sample names.}
+
+\item{id}{character; chromosome identifier of foreign genome in chimeric
+system}
 }
 \value{
 A refined version of the working dataframe supplied to the function.
@@ -48,6 +59,9 @@ included, given the statistical analysis has been undertaken using the
 Identify unique sRNA populations between two conditions.
 }
 \details{
+Please be aware that if you have a large dataset, this function may take a
+couple of minutes.
+
 The function undertakes two different roles. First, it identified whether
 there are unique sRNA clusters within one condition in comparison to another.
 For instance, if there are additional sRNA clusters in your treatment
@@ -59,6 +73,14 @@ The second role involves filtering the data based on statistical significance
 which has been calculated by the \code{\link[=RNAanalysis]{RNAanalysis()}} function. This
 optional features enables the user to select sRNA clusters which meet a
 specific p-value or adjusted p-values threshold.
+
+When working with a chimeric system, for example interspecific grafting,
+mapping errors can easily be recognised and eliminated. Here, these can be
+eliminated by supplying some extra parameter information. State
+\code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
+(ie. not the tissue sample genotype, but the genotype from which any
+potential mobile molecules could be traveling from) to the \code{id} parameter
+and the control condition samples names to the \code{controls} parameter.
 }
 \examples{
 
