@@ -155,16 +155,16 @@ RNAmobile <- function(data,controls, genome.ID, task = NULL ,
       TRUE ~ FALSE
     ))
   
-  y <- .remove_mapping_errors(data = x, controls = controls)
+  res <- .remove_mapping_errors(data = x, controls = controls)
   
   if (statistical) {
     if (is.null(p.value)) {
-      res <- y %>% filter(padjusted <= padj)
+      res <- res %>% filter(padjusted <= padj)
     } else
-      res <- y %>% filter(pvalue <= p.value)
+      res <- res %>% filter(pvalue <= p.value)
   } 
   
-  res <- y
+
   if(!is.null(threshold)){
     res <- res %>% filter(!DicerCounts < threshold)
   }
