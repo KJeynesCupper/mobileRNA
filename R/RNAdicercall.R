@@ -160,7 +160,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
         row_values <- new_df[t][i, ]
         if(rowSums(row_values) == 0){
           classification <- "N"
-          dicer_counts_val <- ncol(row_values)
+          dicer_counts_val <- length(onlyconditions)
         } else {
           non_zero_values <- as.numeric(row_values[row_values != 0])
           values_table <- table(non_zero_values)
