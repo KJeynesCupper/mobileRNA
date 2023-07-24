@@ -56,7 +56,8 @@ Imports:
     magrittr,
     foreach,
     doParallel,
-    parallel
+    parallel,
+    viridis
 biocViews: 
     Visualization,
     RNASeq,

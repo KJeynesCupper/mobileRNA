@@ -58,7 +58,7 @@
 #' @importFrom stats "reorder"
 #' @importFrom pheatmap "pheatmap"
 #' @importFrom stats "na.omit"
-#' @importFrom grDevices "heat.colors"
+#' @importFrom viridis "viridis"
 plotHeatmap <- function (data, pseudocount = 1e-6, 
                          colours = viridis::viridis(100), 
                          cluster = TRUE, scale = "none", 
