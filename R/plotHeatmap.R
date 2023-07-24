@@ -1,28 +1,39 @@
-#' Heatmap using hierarchical clustering
+#' Heatmap of log-transformed RPM data
 #'
-#' @description Plots a heatmap with hierarchical clustering via an rlog
-#' transformation of RPM data and euclidean statistics.
-#'
-#'
-#' @param data Data frame containing FPKM values for each samples on
-#' each sRNA dicer-derived cluster of interest.
+#' @description Undertakes RPM normalisation using a pseudocount and transforms 
+#' the data using log-scale, to enable visualization of the differences and 
+#' patterns in expression across samples using a heatmap. 
 #'
 #'
-#' @param colours  Colours to display and represent the heatmap.
-#' Defaults to [grDevices::heat.colors()] (heat.colors(100)).
+#' @param data Dataframe; Must follow the structure created by 
+#' `mobileRNA::RNAimport()`. 
 #'
+#' @param colours vector of colors. Default is `viridis::viridis(100)`
 #'
-#' @param dendogram Logical; indicating whether to include the dendrogram and
-#' clustering, and retain clustering. Default, \code{dendogram = TRUE} to
-#' include.
+#' @param pseudocount numeric; pseudocount, default is `1e-6`
 #' 
-#' @param cellheight individual cell height in points. If left as NA, then the 
-#' values depend on the size of plotting window.
+#' @param cluster logical; include hierarchical clustering when default 
+#' `cluster= TRUE`
+#' 
+#' @param scale character; indicating whether the values should be centered & 
+#' scaled in either the row direction or the column direction, or none. 
+#' Respective options are "row", "column" & "none". Default, `scale="none"`.
+#' @param clustering_method Character; clustering method used. Accepts the same 
+#' values as hclust. Default `clustering_method= "complete"`
+#' @param row.names logical; indicated whether to include cluster names as 
+#' rownames. Default `row.names=TRUE`
 #'
-#'
-#' @details The function create a heatmap based on the hierarchical clustering
-#' of FPKM values using euclidean statistics.
-#'
+#' @details Undertakes RPM normalisation using a pseudocount and then transforms 
+#' the normalised-RPM data using log-scale. The data is then plotted as a 
+#' heatmao, utilising the `pheatmaps` package.  
+#' 
+#' This function expects to receive a dataframe containing RPM data from 
+#' sRNA-seq studies. This function employs the use of a pseudocount during 
+#' normalisation as the function is expected to be used when identifying mobile 
+#' sRNAs in a chimeric system. In such system, it is expected that control 
+#' replicates will contain zero values for the candidate mobile sRNA clusters. 
+#' 
+#' 
 #'@return
 #'Produces a list of objects, including the plot.
 #'
@@ -48,52 +59,49 @@
 #' @importFrom pheatmap "pheatmap"
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "heat.colors"
-
-plotHeatmap <- function (data, colours = NULL, dendogram = TRUE, cellheight = NULL) 
+plotHeatmap <- function (data, pseudocount = 1e-6, 
+                         colours = viridis::viridis(100), 
+                         cluster = TRUE, scale = "none", 
+                         clustering_method = "complete", 
+                         row.names = TRUE) 
 {
   if (base::missing(data) || !base::inherits(data, c("matrix", 
                                                      "data.frame", "DataFrame"))) {
-    stop("data must be an object of class matrix, data.frame,\n DataFrame.\n         See ?plotHeatmap for more information.")
+    stop("data must be an object of class matrix, data.frame,\n DataFrame. See ?plotHeatmap for more information.")
   }
   select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
   rownames(select_data) <- data$clusterID
-  for (col in 1:ncol(select_data)) {
-    colnames(select_data)[col] <- sub("RPM_", "", colnames(select_data)[col])
+  names(select_data) <- sub('^RPM_', '', names(select_data))
+  # RPM normalization with pseudocount addition
+  total_reads_per_sample <- colSums(select_data)
+  rpm_matrix <- (select_data / (total_reads_per_sample + pseudocount)) * 1e6
+  # log transform. 
+  log_rpm_matrix <- log2(rpm_matrix + 1)
+  # add cluster names
+  data_rownames <- data$Cluster
+  # add row names 
+  rownames(log_rpm_matrix) <- data_rownames
+  if(cluster == FALSE){
+    p1 <- pheatmap::pheatmap(log_rpm_matrix,
+                             scale = scale,               
+                             cluster_rows = FALSE, 
+                             cluster_cols = FALSE, 
+                             show_row_dendrogram = FALSE, 
+                             show_col_dendrogram = FALSE,  
+                             color = colours,
+                             show_rownames = row.names,
+                             fontsize_row = 10,            
+                             fontsize_col = 10)
+  } else {
+    p1 <- pheatmap::pheatmap(log_rpm_matrix,
+                             scale = scale,               
+                             clustering_method = clustering_method,  
+                             color = colours,
+                             show_rownames = row.names,
+                             fontsize_row = 10,            
+                             fontsize_col = 10, 
+                             cluster_cols = FALSE)
   }
-  select_data[select_data == 0] <- 1e-04
-  select_data <- base::log(select_data, 2)
-  select_data <- stats::na.omit(select_data)
-  v <- seq(1, nrow(select_data), by = 1)
-  distance <- stats::dist(select_data[v, ], method = "euclidean")
-  cluster <- stats::hclust(distance, method = "ward.D")
-  dendrogram <- stats::as.dendrogram(cluster)
-  rowv <- base::rowMeans(select_data, na.rm = TRUE)
-  drow <- stats::reorder(dendrogram, rowv)
-  reorderfun = function(d, w) {
-    d
-  }
-  if (is.null(colours)) {
-    plot.colours <- grDevices::heat.colors(100)
-  }
-  else {
-    plot.colours <- colours
-  }
-  if (dendogram == TRUE) {
-    if (is.null(cellheight)){
-      p1 <- pheatmap::pheatmap(as.matrix(select_data[v, ]), 
-                               border_color = FALSE, color = plot.colours)
-    } else 
-      if(!is.null(cellheight)){
-        cellheight_val <- cellheight
-        p1 <- pheatmap::pheatmap(as.matrix(select_data[v, ]), 
-                                 border_color = FALSE, cellheight = cellheight_val, color = plot.colours)
-      }
-  }
-  else if (dendogram == FALSE) {
-    p1 <- pheatmap::pheatmap(as.matrix(select_data[v, ]), 
-                             border_color = FALSE, treeheight_row = 0, treeheight_col = 0, 
-                             cluster_rows = FALSE, cluster_cols = FALSE, color = plot.colours)
-  }
-  out <- list(plot = p1, data = as.matrix(select_data[v, ]))
+  out <- list(plot = p1, data = log_rpm_matrix)
   return(out)
 }
