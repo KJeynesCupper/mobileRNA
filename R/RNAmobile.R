@@ -129,7 +129,6 @@
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
 #' @importFrom dplyr "case_when"
-
 RNAmobile <- function(data,controls, genome.ID, task = NULL ,
                       statistical = FALSE,
                       padj = 0.05, threshold = NULL, 
@@ -155,19 +154,18 @@ RNAmobile <- function(data,controls, genome.ID, task = NULL ,
       TRUE ~ FALSE
     ))
   
-  y <- .remove_mapping_errors(data = x, controls = controls)
+  res <- .remove_mapping_errors(data = x, controls = controls)
   
   if (statistical) {
     if (is.null(p.value)) {
-      res <- y %>% filter(padjusted <= padj)
+      res <- res %>% filter(padjusted <= padj)
     } else
-      res <- y %>% filter(pvalue <= p.value)
+      res <- res %>% filter(pvalue <= p.value)
   } 
   
-  res <- y
+
   if(!is.null(threshold)){
     res <- res %>% filter(!DicerCounts < threshold)
   }
   return(res)
 }
-
