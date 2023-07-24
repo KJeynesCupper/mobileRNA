@@ -127,9 +127,14 @@ system</p></dd>
 plus, two additional columns of data:</p>
 
 
-<p>The first column, <code>DicerCounts</code> contains the number of replicates which had
-a defined dicer-derived sRNA class (based on the <code>conditions</code>). This can be
-utilised within the <code>RNAmobile</code> function as a threshold parameter.</p>
+<p>The first column, <code>DicerCounts</code> contains the number of replicates which
+contributed to defining the dicer-derived sRNA class. This can be
+utilised within the <code>RNAmobile</code> function as a threshold parameter.
+While, utilising <code>exclude</code> ties methods, the <code>DicerCounts</code> value for a tie
+will be 0 as no consensus classification was concluded. While, if the majority
+of replicates contributed unclassified for a cluster, the <code>DicerCounts</code> value
+represents the number of replicates which which contributed to the
+unclassified consensus in <code>DicerConsensus</code>.</p>
 
 
 <p>The second, labeled <code>DicerConsensus</code> states the consensus sRNA class between
@@ -137,16 +142,8 @@ utilised within the <code>RNAmobile</code> function as a threshold parameter.</p
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The function calculates the consensus sRNA class based on the conditions
-supplied.</p>
-<p>When ties.method = "random", as per default, ties are broken at random.
-In this case, the determination of a tie assumes that the entries are
-probabilities: there is a relative tolerance of 1e-5, relative to the
-largest (in magnitude, omitting infinity) entry in the row.</p>
-<p>When ties.method = "exclude", ties between sRNA classification are ruled as
-unclassified ("N").</p>
-<p>To remove excess data noise, <code>tidy=TRUE</code> can be used to removed unclassified
-("N") sRNA clsuters, resulting in a reduced dataset size.</p>
+    <p>The function calculates the consensus sRNA class. Changes in parameter
+settings will yield varying results.</p>
 <p>When working with a chimeric system, for example interspecific grafting,
 mapping errors can easily be recognised and eliminated. Here, these can be
 eliminated by supplying some extra parameter information. State
@@ -154,6 +151,14 @@ eliminated by supplying some extra parameter information. State
 (ie. not the tissue sample genotype, but the genotype from which any
 potential mobile molecules could be traveling from) to the <code>genome.ID</code>
 parameter &amp; the control condition samples names to the <code>controls</code> parameter.</p>
+<p>When ties.method = "random", as per default, ties are broken at random.
+In this case, the determination of a tie assumes that the entries are
+probabilities: there is a relative tolerance of 1e-5, relative to the
+largest (in magnitude, omitting infinity) entry in the row.</p>
+<p>When ties.method = "exclude", ties between sRNA classification are ruled as
+unclassified ("N").</p>
+<p>To remove excess data noise, <code>tidy=TRUE</code> can be used to removed unclassified
+("N") sRNA clusters, resulting in a reduced dataset size.</p>
     </div>
 
     <div class="section level2">

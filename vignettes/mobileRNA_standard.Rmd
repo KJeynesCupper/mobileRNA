@@ -321,7 +321,7 @@ significant, and then plot the results as a heatmap to compare the conditions.
 significant_sRNAs <- RNAsignificant(sRNA_DESeq2)
 
 #plot
-p1 <- plotHeatmap(significant_sRNAs, cluster = FALSE, row.names = FALSE)
+p1 <- plotHeatmap(significant_sRNAs, row.names = FALSE)
 
 ```
 
@@ -372,16 +372,21 @@ be plotted as a distribution plot and heatmap.
 p2 <- RNAdistribution(data = unique_treatment, style = "line", together = FALSE)
 
 # plot heatmap of treatment-only sRNA clusters
-p3 <- plotHeatmap(data = unique_treatment)
+p3 <- plotHeatmap(data = unique_treatment, row.names = FALSE)
 
 ```
 
 
 Lets look at the plots:
 
-```{r, fig.show="hold", out.width="50%"}
-p2$plot 
+Here we can see the distribution of sRNA classes only found in treatment 
+```{r}
+p2$plot
+```
 
+Here we can compare the difference and similarities between the treatment 
+and controls using a heatmap: 
+```{r}
 p3$plot
 ```
 

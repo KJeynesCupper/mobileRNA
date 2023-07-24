@@ -82,7 +82,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Analyse sRNA populations using mobileRNA</h1>
                         <h4 data-toc-skip class="author">Katie Jeynes-Cupper, Marco Catoni</h4>
             
-            <h4 data-toc-skip class="date">2023-07-20</h4>
+            <h4 data-toc-skip class="date">2023-07-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/KJeynesCupper/mobileRNA.git/blob/HEAD/vignettes/mobileRNA_standard.Rmd" class="external-link"><code>vignettes/mobileRNA_standard.Rmd</code></a></small>
       <div class="d-none name"><code>mobileRNA_standard.Rmd</code></div>
@@ -230,9 +230,10 @@
 <p>Lets look at the plot and the data:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># view plot </span></span>
-<span><span class="va">sample_distribution</span><span class="op">$</span><span class="va">plot</span></span>
-<span></span>
-<span><span class="co"># view data </span></span>
+<span><span class="va">sample_distribution</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># view data </span></span>
 <span><span class="va">sample_distribution</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt;    Class heterograft_1 heterograft_2 heterograft_3 selfgraft_1 selfgraft_2</span></span>
 <span><span class="co">#&gt; 1:    20             9            14             7           8          13</span></span>
@@ -246,7 +247,6 @@
 <span><span class="co">#&gt; 3:          26</span></span>
 <span><span class="co">#&gt; 4:          35</span></span>
 <span><span class="co">#&gt; 5:         437</span></span></code></pre></div>
-<p><img src="mobileRNA_standard_files/figure-html/figures-side-1.png" width="50%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3">
@@ -254,7 +254,7 @@
 </h3>
 <p>For a given sRNA cluster, each replicate has determined the class (20-24nt) based on the most abundant small RNA size. Replicates within the same condition are expected to class a given sRNA similarly.</p>
 <p>The <code><a href="../reference/RNAdicercall.html">RNAdicercall()</a></code> function is used to define the dicer class of a sRNA cluster based on the consensus across (specific) replicates.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate dicercall consensus </span></span>
 <span><span class="va">sRNA_data_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdicercall.html">RNAdicercall</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>,  </span>
 <span>                                 tidy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
@@ -266,13 +266,13 @@
 <span>                        consensus <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># View figure</span></span>
 <span><span class="va">plot_distribution</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
-<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-9-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="step-4-statistical-analysis-using-deseq2-or-edger">Step 4: Statistical analysis using DESeq2 or edgeR<a class="anchor" aria-label="anchor" href="#step-4-statistical-analysis-using-deseq2-or-edger"></a>
 </h3>
 <p>Statistical analysis can be helpful to understand the differential abundances of sRNA clusters found within your system. Here we can utilize either the DESeq2 or edgeR algorithms to support your analysis, and can be used in the next steps.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># sample conditions in order within dataframe</span></span>
 <span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>,</span>
 <span>            <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span><span class="op">)</span></span>
@@ -295,23 +295,23 @@
 <p>When comparing treatment to control conditions, it might be the case that the same sRNA clusters are found within both yet there could be difference in the total abundance of the shared clusters. For instance, for a given sRNA cluster the samples in the treatment condition might have a greater abundance than the samples in the control condition. These difference could attribute to observed differences.</p>
 <p>The statistical analysis calculated the log2FC values for each sRNA cluster by comparing the normalised counts between treatment and control. Here, a positive log2FC indicates an increased abundance of transcripts for a given sRNA cluster in the treatment compared to the control, while negative log2FC indicates decreased abundance of transcripts for a given sRNA cluster. The statistical significance of the log2FC is determined by the (adjusted) pvalue also calculated in the previous step.</p>
 <p>Here we will filter the data to select sRNA clusters which are statistically significant, and then plot the results as a heatmap to compare the conditions.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select only signifcant sRNAs</span></span>
 <span><span class="va">significant_sRNAs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsignificant.html">RNAsignificant</a></span><span class="op">(</span><span class="va">sRNA_DESeq2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#plot</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">significant_sRNAs</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">significant_sRNAs</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Lets look at the plot:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span><span class="op">$</span><span class="va">plot</span> </span></code></pre></div>
-<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-10-1.png" width="700" style="display: block; margin: auto;"><br></p>
+<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;"><br></p>
 </div>
 <div class="section level3">
 <h3 id="step-6-identify-absolute-srna-population-difference">Step 6: Identify absolute sRNA population difference<a class="anchor" aria-label="anchor" href="#step-6-identify-absolute-srna-population-difference"></a>
 </h3>
 <p>Finally, the <code><a href="../reference/RNApopulation.html">RNApopulation()</a></code> function can be utilised to identify unique sRNA populations found in the treatment or control condition.</p>
 <p>First lets look at the sRNA clusters unique to the treatment condition:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select sRNA clusters only found in treatment &amp; not in the control samples</span></span>
 <span><span class="va">treatment_reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"heterograft_1"</span>, <span class="st">"heterograft_2"</span> , <span class="st">"heterograft_3"</span><span class="op">)</span></span>
 <span><span class="va">unique_treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNApopulation.html">RNApopulation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>, </span>
@@ -321,7 +321,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">unique_treatment</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 148</span></span></code></pre></div>
 <p>Now, the sRNA clusters unique to the control condition:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select sRNA clusters only found in control &amp; not in the treatment samples</span></span>
 <span><span class="va">control_reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"selfgraft_1"</span>, <span class="st">"selfgraft_2"</span> , <span class="st">"selfgraft_3"</span><span class="op">)</span></span>
 <span><span class="va">unique_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNApopulation.html">RNApopulation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>, </span>
@@ -334,18 +334,21 @@
 <h4 id="plotting-heterograft-only-srna-populations">Plotting heterograft-only sRNA populations<a class="anchor" aria-label="anchor" href="#plotting-heterograft-only-srna-populations"></a>
 </h4>
 <p>Here we located 148 sRNA clusters which are uniquely present to the heterografts, and not found in the self-graft controls. These results can be plotted as a distribution plot and heatmap.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot distribution of sRNA classes only found in treatment </span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdistribution.html">RNAdistribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">unique_treatment</span>, style <span class="op">=</span> <span class="st">"line"</span>, together <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot heatmap of treatment-only sRNA clusters</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">unique_treatment</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">unique_treatment</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Lets look at the plots:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p2</span><span class="op">$</span><span class="va">plot</span> </span>
-<span></span>
-<span><span class="va">p3</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
-<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;"></p>
+<p>Here we can see the distribution of sRNA classes only found in treatment</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p2</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Here we can compare the difference and similarities between the treatment and controls using a heatmap:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p3</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<p><img src="mobileRNA_standard_files/figure-html/unnamed-chunk-17-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level3">
@@ -355,13 +358,13 @@
 <h4 id="target-sequences">Target sequences<a class="anchor" aria-label="anchor" href="#target-sequences"></a>
 </h4>
 <p>sRNAs target complementary sequences in the genome to mediate silencing via post-transcriptional or pre-transcriptional mechanisms. Here we will identify the complementary sequences matching the most abundant sRNA within a cluster.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">target_sequences</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsequences.html">RNAsequences</a></span><span class="op">(</span><span class="va">unique_treatment</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The minimum number of matches required to form a consensus sRNA sequence is... 1</span></span>
 <span><span class="co">#&gt; The consensus sRNA sequences will be choose at random in the case of a tie</span></span></code></pre></div>
 <p>This dataframe can be exported the results loaded into BLAST to identify regions within the genome that these complementary sequences are present. There are tools, such as <code>TargetFinder</code> or <code>sRNATargetDigger</code>, which use a predictive algorithm to identify the most likely locations in the genome where the sRNAs might target.</p>
 <p>Lets export the data frame :</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">target_sequences</span>, <span class="st">"./data/mobile_sequences.txt"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -370,11 +373,11 @@
 </h4>
 <p>Finally, we can identify regions in the genome annotation where the sRNA cluster overlaps with based on the chromosome and the start/end coordinated. This can be explored using two functions: [RNAattributes()] and [RNAfeatures()].</p>
 <p>The <code>RNAattributes</code> function compared a genome annotation with the sRNA clusters and, if an overlap is present, the information is joined. This is accomplished by adding the the information from the annotation file to the sRNA working dataframe as additional columns.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAattributes.html">RNAattributes</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">unique_treatment</span>,</span>
 <span>                            annotation <span class="op">=</span> <span class="st">"./annotation/origin_annotation.gff3"</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>RNAfeatures</code> functions is similar to the <code>RNAattributes</code> function, but instead it returns either the absolute number or percentage of sRNA clusters which overlap with specific regions in the genome such as repeats, introns, exons, UTR and promoter regions. It could be helpful to subset your dataset to only explore a specific sRNA class, see [mobileRNA::RNAsubset()] for more information.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">features</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAfeatures.html">RNAfeatures</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">unique_treatment</span>,</span>
 <span>                            annotation <span class="op">=</span> <span class="st">"./annotation/origin_annotation.gff3"</span>, </span>
 <span>                      repeats <span class="op">=</span> <span class="st">"./annotation/origin_annotation_repeats.gff3"</span><span class="op">)</span></span></code></pre></div>
@@ -385,7 +388,7 @@
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.0.2 (2020-06-22)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
@@ -440,39 +443,40 @@
 <span><span class="co">#&gt;  [65] ragg_1.2.2                  parallel_4.0.2             </span></span>
 <span><span class="co">#&gt;  [67] SummarizedExperiment_1.18.2 RColorBrewer_1.1-2         </span></span>
 <span><span class="co">#&gt;  [69] yaml_2.3.5                  curl_4.3.2                 </span></span>
-<span><span class="co">#&gt;  [71] pbapply_1.7-0               memoise_2.0.1              </span></span>
-<span><span class="co">#&gt;  [73] ggplot2_3.4.2               sass_0.4.0                 </span></span>
-<span><span class="co">#&gt;  [75] stringi_1.7.6               RSQLite_2.2.10             </span></span>
-<span><span class="co">#&gt;  [77] highr_0.9                   genefilter_1.70.0          </span></span>
-<span><span class="co">#&gt;  [79] S4Vectors_0.26.1            desc_1.4.1                 </span></span>
-<span><span class="co">#&gt;  [81] foreach_1.5.2               Ringo_1.52.0               </span></span>
-<span><span class="co">#&gt;  [83] caTools_1.18.2              BiocGenerics_0.34.0        </span></span>
-<span><span class="co">#&gt;  [85] BiocParallel_1.22.0         truncnorm_1.0-8            </span></span>
-<span><span class="co">#&gt;  [87] GenomeInfoDb_1.24.2         rlang_1.1.0                </span></span>
-<span><span class="co">#&gt;  [89] pkgconfig_2.0.3             systemfonts_1.0.4          </span></span>
-<span><span class="co">#&gt;  [91] matrixStats_0.61.0          bitops_1.0-7               </span></span>
-<span><span class="co">#&gt;  [93] Rsolnp_1.16                 evaluate_0.15              </span></span>
-<span><span class="co">#&gt;  [95] lattice_0.20-45             purrr_1.0.1                </span></span>
-<span><span class="co">#&gt;  [97] labeling_0.4.2              GenomicAlignments_1.24.0   </span></span>
-<span><span class="co">#&gt;  [99] bit_4.0.4                   tidyselect_1.2.0           </span></span>
-<span><span class="co">#&gt; [101] parallelly_1.30.0           magrittr_2.0.3             </span></span>
-<span><span class="co">#&gt; [103] bookdown_0.32               DESeq2_1.28.1              </span></span>
-<span><span class="co">#&gt; [105] R6_2.5.1                    IRanges_2.22.2             </span></span>
-<span><span class="co">#&gt; [107] gplots_3.1.1                generics_0.1.2             </span></span>
-<span><span class="co">#&gt; [109] DelayedArray_0.14.1         DBI_1.1.2                  </span></span>
-<span><span class="co">#&gt; [111] withr_2.5.0                 pillar_1.9.0               </span></span>
-<span><span class="co">#&gt; [113] gsmoothr_0.1.7              RPushbullet_0.3.4          </span></span>
-<span><span class="co">#&gt; [115] survival_3.3-1              RCurl_1.98-1.6             </span></span>
-<span><span class="co">#&gt; [117] future.apply_1.8.1          tibble_3.2.1               </span></span>
-<span><span class="co">#&gt; [119] crayon_1.5.0                KernSmooth_2.23-20         </span></span>
-<span><span class="co">#&gt; [121] utf8_1.2.2                  rmarkdown_2.20             </span></span>
-<span><span class="co">#&gt; [123] locfit_1.5-9.4              grid_4.0.2                 </span></span>
-<span><span class="co">#&gt; [125] data.table_1.14.2           blob_1.2.2                 </span></span>
-<span><span class="co">#&gt; [127] SimDesign_2.10.1            digest_0.6.29              </span></span>
-<span><span class="co">#&gt; [129] xtable_1.8-4                tidyr_1.3.0                </span></span>
-<span><span class="co">#&gt; [131] textshaping_0.3.6           stats4_4.0.2               </span></span>
-<span><span class="co">#&gt; [133] munsell_0.5.0               bslib_0.3.1                </span></span>
-<span><span class="co">#&gt; [135] sessioninfo_1.2.2</span></span></code></pre></div>
+<span><span class="co">#&gt;  [71] gridExtra_2.3               pbapply_1.7-0              </span></span>
+<span><span class="co">#&gt;  [73] memoise_2.0.1               ggplot2_3.4.2              </span></span>
+<span><span class="co">#&gt;  [75] sass_0.4.0                  stringi_1.7.6              </span></span>
+<span><span class="co">#&gt;  [77] RSQLite_2.2.10              highr_0.9                  </span></span>
+<span><span class="co">#&gt;  [79] genefilter_1.70.0           S4Vectors_0.26.1           </span></span>
+<span><span class="co">#&gt;  [81] desc_1.4.1                  foreach_1.5.2              </span></span>
+<span><span class="co">#&gt;  [83] Ringo_1.52.0                caTools_1.18.2             </span></span>
+<span><span class="co">#&gt;  [85] BiocGenerics_0.34.0         BiocParallel_1.22.0        </span></span>
+<span><span class="co">#&gt;  [87] truncnorm_1.0-8             GenomeInfoDb_1.24.2        </span></span>
+<span><span class="co">#&gt;  [89] rlang_1.1.0                 pkgconfig_2.0.3            </span></span>
+<span><span class="co">#&gt;  [91] systemfonts_1.0.4           matrixStats_0.61.0         </span></span>
+<span><span class="co">#&gt;  [93] bitops_1.0-7                Rsolnp_1.16                </span></span>
+<span><span class="co">#&gt;  [95] evaluate_0.15               lattice_0.20-45            </span></span>
+<span><span class="co">#&gt;  [97] purrr_1.0.1                 labeling_0.4.2             </span></span>
+<span><span class="co">#&gt;  [99] GenomicAlignments_1.24.0    bit_4.0.4                  </span></span>
+<span><span class="co">#&gt; [101] tidyselect_1.2.0            parallelly_1.30.0          </span></span>
+<span><span class="co">#&gt; [103] magrittr_2.0.3              bookdown_0.32              </span></span>
+<span><span class="co">#&gt; [105] DESeq2_1.28.1               R6_2.5.1                   </span></span>
+<span><span class="co">#&gt; [107] IRanges_2.22.2              gplots_3.1.1               </span></span>
+<span><span class="co">#&gt; [109] generics_0.1.2              DelayedArray_0.14.1        </span></span>
+<span><span class="co">#&gt; [111] DBI_1.1.2                   withr_2.5.0                </span></span>
+<span><span class="co">#&gt; [113] pillar_1.9.0                gsmoothr_0.1.7             </span></span>
+<span><span class="co">#&gt; [115] RPushbullet_0.3.4           survival_3.3-1             </span></span>
+<span><span class="co">#&gt; [117] RCurl_1.98-1.6              future.apply_1.8.1         </span></span>
+<span><span class="co">#&gt; [119] tibble_3.2.1                crayon_1.5.0               </span></span>
+<span><span class="co">#&gt; [121] KernSmooth_2.23-20          utf8_1.2.2                 </span></span>
+<span><span class="co">#&gt; [123] rmarkdown_2.20              viridis_0.6.2              </span></span>
+<span><span class="co">#&gt; [125] locfit_1.5-9.4              grid_4.0.2                 </span></span>
+<span><span class="co">#&gt; [127] data.table_1.14.2           blob_1.2.2                 </span></span>
+<span><span class="co">#&gt; [129] SimDesign_2.10.1            digest_0.6.29              </span></span>
+<span><span class="co">#&gt; [131] xtable_1.8-4                tidyr_1.3.0                </span></span>
+<span><span class="co">#&gt; [133] textshaping_0.3.6           stats4_4.0.2               </span></span>
+<span><span class="co">#&gt; [135] munsell_0.5.0               viridisLite_0.4.0          </span></span>
+<span><span class="co">#&gt; [137] bslib_0.3.1                 sessioninfo_1.2.2</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
