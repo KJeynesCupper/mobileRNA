@@ -46,9 +46,14 @@ system}
 A data frame containing all existing columns in the input data object,
 plus, two additional columns of data:
 
-The first column, \code{DicerCounts} contains the number of replicates which had
-a defined dicer-derived sRNA class (based on the \code{conditions}). This can be
+The first column, \code{DicerCounts} contains the number of replicates which
+contributed to defining the dicer-derived sRNA class. This can be
 utilised within the \code{RNAmobile} function as a threshold parameter.
+While, utilising \code{exclude} ties methods, the \code{DicerCounts} value for a tie
+will be 0 as no consensus classification was concluded. While, if the majority
+of replicates contributed unclassified for a cluster, the \code{DicerCounts} value
+represents the number of replicates which which contributed to the
+unclassified consensus in \code{DicerConsensus}.
 
 The second, labeled \code{DicerConsensus} states the consensus sRNA class between
 20-24 nucleotides in length or "N" if unclassified.
@@ -59,8 +64,16 @@ adds an additional column stating the consensus sRNA class for each
 dicer-derived cluster.
 }
 \details{
-The function calculates the consensus sRNA class based on the conditions
-supplied.
+The function calculates the consensus sRNA class. Changes in parameter
+settings will yield varying results.
+
+When working with a chimeric system, for example interspecific grafting,
+mapping errors can easily be recognised and eliminated. Here, these can be
+eliminated by supplying some extra parameter information. State
+\code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
+(ie. not the tissue sample genotype, but the genotype from which any
+potential mobile molecules could be traveling from) to the \code{genome.ID}
+parameter & the control condition samples names to the \code{controls} parameter.
 
 When ties.method = "random", as per default, ties are broken at random.
 In this case, the determination of a tie assumes that the entries are
@@ -71,15 +84,7 @@ When ties.method = "exclude", ties between sRNA classification are ruled as
 unclassified ("N").
 
 To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassified
-("N") sRNA clsuters, resulting in a reduced dataset size.
-
-When working with a chimeric system, for example interspecific grafting,
-mapping errors can easily be recognised and eliminated. Here, these can be
-eliminated by supplying some extra parameter information. State
-\code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
-(ie. not the tissue sample genotype, but the genotype from which any
-potential mobile molecules could be traveling from) to the \code{genome.ID}
-parameter & the control condition samples names to the \code{controls} parameter.
+("N") sRNA clusters, resulting in a reduced dataset size.
 }
 \examples{
 

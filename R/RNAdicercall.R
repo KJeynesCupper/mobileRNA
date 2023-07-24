@@ -5,8 +5,16 @@
 #' dicer-derived cluster.
 #'
 #' @details
-#' The function calculates the consensus sRNA class based on the conditions
-#' supplied. 
+#' The function calculates the consensus sRNA class. Changes in parameter 
+#' settings will yield varying results. 
+#'
+#' When working with a chimeric system, for example interspecific grafting, 
+#' mapping errors can easily be recognised and eliminated. Here, these can be 
+#' eliminated by supplying some extra parameter information. State 
+#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
+#' (ie. not the tissue sample genotype, but the genotype from which any 
+#' potential mobile molecules could be traveling from) to the `genome.ID` 
+#' parameter & the control condition samples names to the `controls` parameter. 
 #' 
 #' When ties.method = "random", as per default, ties are broken at random. 
 #' In this case, the determination of a tie assumes that the entries are 
@@ -17,15 +25,9 @@
 #' unclassified ("N"). 
 #' 
 #' To remove excess data noise, `tidy=TRUE` can be used to removed unclassified 
-#' ("N") sRNA clsuters, resulting in a reduced dataset size. 
+#' ("N") sRNA clusters, resulting in a reduced dataset size. 
 #' 
-#' When working with a chimeric system, for example interspecific grafting, 
-#' mapping errors can easily be recognised and eliminated. Here, these can be 
-#' eliminated by supplying some extra parameter information. State 
-#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
-#' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `genome.ID` 
-#' parameter & the control condition samples names to the `controls` parameter.  
+ 
 #' 
 #'
 #' @param data a data frame object containing sample data where rows
@@ -59,9 +61,15 @@
 #'@return A data frame containing all existing columns in the input data object,
 #'plus, two additional columns of data: 
 #'
-#'The first column, `DicerCounts` contains the number of replicates which had 
-#'a defined dicer-derived sRNA class (based on the `conditions`). This can be 
+#'The first column, `DicerCounts` contains the number of replicates which 
+#'contributed to defining the dicer-derived sRNA class. This can be 
 #'utilised within the \code{RNAmobile} function as a threshold parameter. 
+#'While, utilising `exclude` ties methods, the `DicerCounts` value for a tie 
+#'will be 0 as no consensus classification was concluded. While, if the majority 
+#' of replicates contributed unclassified for a cluster, the `DicerCounts` value 
+#' represents the number of replicates which which contributed to the 
+#' unclassified consensus in `DicerConsensus`. 
+#' 
 #'
 #'The second, labeled `DicerConsensus` states the consensus sRNA class between 
 #'20-24 nucleotides in length or "N" if unclassified. 
@@ -140,11 +148,14 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   
   if (ties.method == "random"){
     message("The consensus dicercall will be choose at random in the case of a tie")
-    new_df <- data %>% 
+    new_df <- data 
+    new_df$DicerCounts <- apply(new_df[t], 1, max)
+    new_df <- new_df %>% 
       dplyr::mutate(DicerConsensus = base::names(data)[t]
                     [max.col(data[t], ties.method = "random")* NA^(
                       rowSums(data[t]) ==0)]) %>%
       dplyr::mutate(DicerConsensus = tidyr::replace_na(DicerConsensus, "N")) 
+    
   } else 
     if(ties.method == "exclude"){
       message("The consensus dicercall will be excluded in the case of a tie") 
@@ -194,7 +205,6 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
                                      -nt_23, -nt_24, -other)
   # remove nt from output values
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
-  
   
   if (tidy) {
     cat("\n")

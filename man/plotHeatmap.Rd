@@ -2,34 +2,57 @@
 % Please edit documentation in R/plotHeatmap.R
 \name{plotHeatmap}
 \alias{plotHeatmap}
-\title{Heatmap using hierarchical clustering}
+\title{Heatmap of log-transformed RPM data}
 \usage{
-plotHeatmap(data, colours = NULL, dendogram = TRUE, cellheight = NULL)
+plotHeatmap(
+  data,
+  pseudocount = 1e-06,
+  colours = viridis::viridis(100),
+  cluster = TRUE,
+  scale = "none",
+  clustering_method = "complete",
+  row.names = TRUE
+)
 }
 \arguments{
-\item{data}{Data frame containing FPKM values for each samples on
-each sRNA dicer-derived cluster of interest.}
+\item{data}{Dataframe; Must follow the structure created by
+\code{mobileRNA::RNAimport()}.}
 
-\item{colours}{Colours to display and represent the heatmap.
-Defaults to \code{\link[grDevices:palettes]{grDevices::heat.colors()}} (heat.colors(100)).}
+\item{pseudocount}{numeric; pseudocount, default is \code{1e-6}}
 
-\item{dendogram}{Logical; indicating whether to include the dendrogram and
-clustering, and retain clustering. Default, \code{dendogram = TRUE} to
-include.}
+\item{colours}{vector of colors. Default is \code{viridis::viridis(100)}}
 
-\item{cellheight}{individual cell height in points. If left as NA, then the
-values depend on the size of plotting window.}
+\item{cluster}{logical; include hierarchical clustering when default
+\code{cluster= TRUE}}
+
+\item{scale}{character; indicating whether the values should be centered &
+scaled in either the row direction or the column direction, or none.
+Respective options are "row", "column" & "none". Default, \code{scale="none"}.}
+
+\item{clustering_method}{Character; clustering method used. Accepts the same
+values as hclust. Default \code{clustering_method= "complete"}}
+
+\item{row.names}{logical; indicated whether to include cluster names as
+rownames. Default \code{row.names=TRUE}}
 }
 \value{
 Produces a list of objects, including the plot.
 }
 \description{
-Plots a heatmap with hierarchical clustering via an rlog
-transformation of RPM data and euclidean statistics.
+Undertakes RPM normalisation using a pseudocount and transforms
+the data using log-scale, to enable visualization of the differences and
+patterns in expression across samples using a heatmap.
 }
 \details{
-The function create a heatmap based on the hierarchical clustering
-of FPKM values using euclidean statistics.
+Undertakes RPM normalisation using a pseudocount and then transforms
+the normalised-RPM data using log-scale. The data is then plotted as a
+heatmao, utilising the \code{pheatmaps} package.
+
+This function expects to receive a dataframe containing RPM data from
+sRNA-seq studies. This function employs the use of a pseudocount during
+normalisation as the function is expected to be used when identifying mobile
+sRNAs in a chimeric system. In such system, it is expected that control
+replicates will contain zero values for the candidate mobile sRNA clusters.
 }
 \examples{
 
