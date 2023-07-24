@@ -238,10 +238,13 @@ sample_distribution <- RNAdistribution(sRNA_data,
 ```
 
 Lets look at the plot and the data:
-```{r, figures-side, fig.show="hold", out.width="50%"}
+```{r, fig.show="hold"}
 # view plot 
 sample_distribution$plot
+```
 
+
+```{r, fig.show="hold"}
 # view data 
 sample_distribution$data
 
@@ -318,7 +321,7 @@ significant, and then plot the results as a heatmap to compare the conditions.
 significant_sRNAs <- RNAsignificant(sRNA_DESeq2)
 
 #plot
-p1 <- plotHeatmap(significant_sRNAs)
+p1 <- plotHeatmap(significant_sRNAs, cluster = FALSE, row.names = FALSE)
 
 ```
 

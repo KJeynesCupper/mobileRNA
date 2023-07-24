@@ -1004,19 +1004,19 @@ also calculated in the previous step.
 
 Here we will filter the data to select sRNA clusters which are statistically 
 significant, and then plot the results as a heatmap to compare the conditions. 
-```{r, eval=FALSE}
+```{r}
 # select only significant sRNAs
 significant_sRNAs <- RNAsignificant(sRNA_edgeR)
 
 
 #plot
-p1 <- plotHeatmap(significant_sRNAs)
+p1 <- plotHeatmap(significant_sRNAs, cluster = FALSE, row.names = FALSE)
 
 ```
 
 Lets look at the plot:
 
-```{r , eval=FALSE}
+```{r}
 p1$plot 
 ```
 <br>
