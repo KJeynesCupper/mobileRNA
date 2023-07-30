@@ -211,54 +211,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
 
   } else
     if(input == "mRNA"){
-      # load data as list
-      sample_data <- list()
-      for (file in samples) {
-        sample_data[[file]] <- data.table::fread(paste0(directory, file,
-                                                        ".txt"), header = FALSE)
-        colnames(sample_data[[file]])[1] <- "Gene"
-        colnames(sample_data[[file]])[2] <- "Count"
-      }
-
-      # check each file has two columns
-      for (df in sample_data) {
-        if (!all(ncol(df) == 2)) {
-          stop("mRNA dataset(s) does not contain required columns")
-        }
-      }
-      # merge first columns to create list of genes across all samples
-      genes <- lapply(sample_data, "[", , "Gene")
-      genes_all <- unique(Reduce(merge,genes))
-
-      # ADDs sample information to the genes_all object
-      for (i in seq_along(sample_data)){
-        matches <- genes_all[sample_data[[i]], on = "Gene", nomatch = 0]
-        matches_values <- matches[, .(Count=sum(Count)),by = "Gene"]
-        # Rename the aggregated columns
-        col_name <- paste0("Count_", names(sample_data)[i])
-        data.table::setnames(matches_values, c("Gene", col_name))
-        # Merge the aggregated values back into df1
-        genes_all[matches_values, on = "Gene", (col_name) := mget(col_name)]
-        # Print progress
-        if (report) {
-          message(paste0("Added information from", i,
-                         "to the analysis mRNA dataframe" ,"\n"))
-        }
-      }
-
-      # Fill in missing values with 0 or N
-      mRNA_information <- genes_all %>%
-        dplyr::mutate(dplyr::across(dplyr::contains('Count_'),
-                                    ~tidyr::replace_na(.,0)))
-      # Convert data.frame and return it
-      mRNA_information <- as.data.frame(mRNA_information)
-
-      # remove rows with
-      if (tidy){
-        mRNA_information <- mRNA_information %>%
-          dplyr::filter(dplyr::if_any(dplyr::where(is.numeric), ~. != 0))
-      }
-      return(mRNA_information)
+      return(message("This features is under development, and will be available soon.\nPlease see the `devel` branch on github (https://github.com/KJeynesCupper/mobileRNA/tree/devel)."))
     }
 }
 
