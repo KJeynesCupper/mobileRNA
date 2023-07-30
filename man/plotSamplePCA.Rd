@@ -4,7 +4,15 @@
 \alias{plotSamplePCA}
 \title{PCA plot to illustrate sample distance.}
 \usage{
-plotSamplePCA(data, group, vst = FALSE)
+plotSamplePCA(
+  data,
+  group,
+  vst = FALSE,
+  labels = TRUE,
+  boxed = TRUE,
+  legend.title = "Conditions",
+  size.ratio = 2
+)
 }
 \arguments{
 \item{data}{class data.frame; data set containing the raw data produced as
@@ -17,6 +25,18 @@ found in the data frame supplied to the \code{data} argument (from left to right
 \item{vst}{logical; Variance stabilizing transformation. By default, the
 function uses a regularized log transformation on the data set, however, this
 will not suit all experimental designs.}
+
+\item{labels}{logical; include sample name labels on PCA. Default
+\code{labels=TRUE}}
+
+\item{boxed}{logical; add box around each sample name label. Default
+\code{boxed=TRUE}}
+
+\item{legend.title}{character; title for legend key. Default
+\code{legend.title = "Conditions"}}
+
+\item{size.ratio}{numeric; set plot ratio, broadens axis dimensions by ratio.
+Default \code{size.ratio=2}, double the plot dimension.}
 }
 \value{
 A PCA plot to show sample distance.
@@ -45,7 +65,7 @@ groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
 p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 
-
+plot(p)
 
 
 }

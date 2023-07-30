@@ -5,39 +5,28 @@ mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/log
 Overview
 ======================================================================
 mobileRNA is an `R` package that provides a pipeline for the rapid 
-identification of small RNA molecules. It has been designed for two key 
-purposes; to undertaken typical sRNAseq between treatment and control and/or
-to identify endogenous mobile small RNA (sRNA) molecules in plant graft 
-systems. The tool provides a pipeline for each, in separate vignettes, both 
-include pre-processing and analysis of sRNA sequencing data, 
-and soon mRNA sequencing data. 
+identification of small and messenger RNA molecules. The pipeline supports 
+two types of analysis:
 
-It has been established that many different substances and molecules 
-including RNAs can travel between the shoot and roots in plants. Many of these 
-studies utilized grafting, and this method has can be used to also join different
-species together. Plant heterograft systems are chimeric, comprised of two 
-genotypes joined at the graft junction; hence, molecules produces and encoded by 
-each genotype might be exchanged across the graft junction. These molecules 
-could have implications to the regulation of gene expression and trait 
-acquisition. for instance, sRNAs are linked to epigenetic pathways, such as 
-the RNA-directed DNA methylation pathway and post-transcriptional gene 
-silencing, which have implications to gene regulatory patterns. Changes in these
-sRNA populations could instigate or facilitate grafting-induced traits, such as
-improved plant vigour. 
+1. To explore changes in small or messenger RNA-population abundance and 
+unique RNA-populations between treatment and controls. 
 
-For the identification of mobile sRNAs between genotypes, current methods 
-utilize a step-wise mapping of samples to each genome within the
-graft system. While, here we introduce a new mapping method where we align 
-each sample replicates to a merge genome reference comprised of both genome 
-assemblies relating to the genotypes in the heterograft system. 
+2. To identify candidate endogenous mobile small and messenger within a chimeric 
+system. 
+
+The tool provides a pipeline for each, in separate vignettes, both include 
+pre-processing and analysis of sRNA/mRNA sequencing data. 
+
+Both small and messenger RNAs have been demonstrated to systemically through
+a plant, and in many instances, this has been demonstrated through the use of 
+plant grafting. Plant grafting can yield favourable agronomic traits, many of 
+the plant combinations yielding these traits are through the joining of 
+different species, cultivars or accessions. 
+
+
 
 **Below is a quick-start guide to the identification of mobile sRNAs in a 
-chimeric system** <br>
-To undertake sRNAseq analysis for treatment vs control, please see vignettes. 
-
-
-*Look-out for Version 2 which accommodates mRNA movement*
-<br>
+chimeric system** <br> <br>
 
 
 Author
@@ -53,11 +42,11 @@ Table of Contents
 - [Summary](#Summary)
 - [Merging Genome Assemblies](#Merging-Genome-Assemblies)
 - [Auto-Detection of sRNA Cluster](#Auto-Detection-of-sRNA-Cluster)
+- [Auto-Detection of mRNA Loci](#Auto-Detection-of-mRNA-Loci)
 - [Mapping](#Mapping)
-- [Analysis](#Analysis)
+- [sRNA Analysis](#sRNA-Analysis)
+- [mRNA Analysis](#mRNA-Analysis)
 - [Output](#Output)
-- [Functional Analysis](#Functional-Analysis)
-- [Optional Extras](#Optional-Extras)
 <br>
 
 

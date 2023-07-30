@@ -74,8 +74,6 @@ RNAanalysis <- function(data, group, method = c("edgeR", "DESeq2"),
   if (base::missing(data) || !base::inherits(data,  "data.frame")) {
     stop(paste("Please specify a data frame"))
   }
-  counts <- data %>% dplyr::select(tidyselect::starts_with("Count"))
-
   if (base::missing(method) || !method %in% c("edgeR", "DESeq2")) {
     stop(paste("Please specify analysis method", "(\"edgeR\", or \"DESeq2\")"))
   }
@@ -83,6 +81,8 @@ RNAanalysis <- function(data, group, method = c("edgeR", "DESeq2"),
     stop("group must be an vector of characters to specify the treatment
          and control conditions for each replicate")
   }
+  
+  counts <- data %>% dplyr::select(tidyselect::starts_with("Count"))
   method <- base::match.arg(method)
   if(method == "edgeR"){
     res <-  .edgeR_normalise(counts, group)

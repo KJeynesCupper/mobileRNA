@@ -2,9 +2,9 @@
 % Please edit documentation in R/RNAattributes.R
 \name{RNAattributes}
 \alias{RNAattributes}
-\title{Identify specific attributes associated to a sRNA cluster}
+\title{Overlap genome annotation file information with sRNA/mRNA-seq data}
 \usage{
-RNAattributes(data, annotation)
+RNAattributes(data, annotation, input = c("sRNA", "mRNA"))
 }
 \arguments{
 \item{data}{data frame; containing rows of potential dicer-derived clusters

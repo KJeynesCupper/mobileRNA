@@ -34,7 +34,8 @@
 RNAmean <- function(data, conditions = NULL){
   RPM_cols <- dplyr::select(data, starts_with("RPM_"))
   count_cols <- dplyr::select(data, starts_with("Count_"))
-
+  FKPM_cols <- dplyr::select(data, starts_with("RPM_"))
+  
   if (!is.null(conditions)){
     RPM <- grep(paste(conditions, collapse = "|"), colnames(RPM_cols),
                 value = TRUE)
@@ -57,5 +58,7 @@ RNAmean <- function(data, conditions = NULL){
   return(data)
 }
 
+## if any column is all zero, then remove. 
+## add saftey checks at beginning. 
 
 

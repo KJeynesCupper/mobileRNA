@@ -4,7 +4,13 @@
 \alias{RNAimport}
 \title{Import and organise sRNAseq or mRNA data sets}
 \usage{
-RNAimport(input = c("sRNA", "mRNA"), directory, samples, tidy = TRUE)
+RNAimport(
+  input = c("sRNA", "mRNA"),
+  directory,
+  samples,
+  annotation = NULL,
+  tidy = TRUE
+)
 }
 \arguments{
 \item{input}{string; define type of Next-Generation Sequencing dataset
@@ -17,14 +23,26 @@ alignment folders.}
 \item{samples}{Vector of characters naming the sample names correlating
 to outputted folders located in the \code{`directory`} argument path.}
 
+\item{annotation}{Path to GFF genome annotation file. Required only for
+mRNAseq data.}
+
 \item{tidy}{Logical; removes genes from analysis where there are zero counts
 across all replicates.}
 }
 \value{
+\strong{For sRNAseq:}
 A dataframe where rows represent sRNA clusters and columns represent
 replicate information. Replicate information includes Dicercall, Counts, RPM
 and MajorRNA sequence. Each replicate information is distinguishable as
 the replicate name is ajoined as a prefix to each column name.
+
+\strong{For mRNAseq:}
+A dataframe where rows represent gene names and columns representing
+replicate information. Replicate information includes Counts and FPKM.
+Additional columns include SampleCounts (the number of replicates which
+contains counts), chr (chromosome), start and end coordinates are
+also included in the output. Each replicate information is distinguishable as
+the replicate name is adjoined as a prefix to each column name.
 }
 \description{
 Load and organise either sRNAseq or mRNAseq results into a
@@ -32,6 +50,7 @@ single dataframe containing all experimental replicates specified where rows
 represent either a sRNA locus or gene, respectively.
 }
 \details{
+\strong{For sRNAseq:}
 Supply the directory to the folder storing the various sample replicate
 folders produced by ShortStack analysis. Within each sample replicate folder,
 there is "Result.txt". This file contains many different columns, but
@@ -60,6 +79,24 @@ For each replicate included in the analysis, these columns are labeled with
 the type and then then name of the sample, for example, for
 a sample called "Sample1", the information from this sample will be stored in
 columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
+
+\strong{For mRNAseq:}
+
+Supply the directory to the folder storing the various sample replicate
+files outputted by the alignment program. Each file contains many the gene
+name (column 1) and the raw count value (column 2). The function identifies
+all genes across the analysis, and organises the count values for each sample
+replicate into a column. For example, this will look like
+"Counts_heterograft_1" for the sample replicate with the file name
+"heterograft_1". Further columns include the gene locus information (chr,
+start, end, width) are add to the start of the dataframe, and the FPKM
+for each sample replicate is calculated. The FPKM columns are organised and
+titled in the same format at the "Counts_" columns.
+
+When working with mRNAseq data, a GFF genome annotation file is required.
+When working with a chimeric biological system and a merged annotation file,
+ensure the genomes remain distinguishable. The function
+\code{RNAmergeAnnotations()} can help with this.
 }
 \examples{
 \dontrun{

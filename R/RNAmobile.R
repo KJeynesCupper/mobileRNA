@@ -1,33 +1,42 @@
-#' Identify potential mobile sRNA molecules
+#' Identify potential mobile sRNA & mRNA molecules
 #'
-#' @description A function to identify potential mobile small RNA molecules
-#' traveling from one genotype to another in a hetero-grafted system.
+#' @description A function to identify potential mobile sRNA or mRNA moleculea
+#' detected in a tissue which originated from a different genotype, usually 
+#' related to a chimeric system.
 #'
 #' @details
-#' The function undertakes two different roles. First, it selects the sRNA
-#' cluster which are mapped to a particular genome. It does so by either keeping
-#' or removing sRNA mapped to chromosomes. Hence, this function will only work
-#' if the two genomes are distinguishable by their chromosome names.
-#'
-#' The second step, after selecting clusters which are mapped to the genome of
-#' interest, removes sRNA clusters which were incorrectly mapped. These
-#' are clusters which have counts or RPM values in the control samples
-#' (ie. same genome as the destination tissue in the hetero-graft condition).
-#' These samples should not have counts if the sRNA originates from a different
-#' genotype to the control.
-#'
-#' The function also allows for statistical analysis based on the results
-#' collect from differential analysis of the total dataset using the function
-#' [mobileRNA::RNAanalysis()]. This features enables the filtering of sRNA
-#' clusters which meet a specific p-value or adjusted p-values.
-#'
+#' **For sRNAseq:**
+#' The function identifies candidate mobile sRNAs, by selecting sRNA clusters
+#' mapped to the foreign genome. It does so by either keeping or removing sRNA 
+#' mapped to a given genome. To do so, it requires a common pre-fix across 
+#' chromosomes of the same genome. See [mobileRNA::RNAmergeGenomes()] for more
+#' information.
 #'
 #' A greater confidence in the mobile sRNA candidates can be achieved by setting 
 #' a threshold that considers the number of replicates which contributed to 
 #' defining the consensus dicer-call (ie. consensus sRNA classification). This
-#' parameter filters based on the `DicerCount` column introduced by the 
+#' parameter filters based on the `DicerCounts` column introduced by the 
 #' [mobileRNA::RNAdicercall()] function.  
 #' 
+#' **For mRNAseq:**
+#' The function identifies candidate mobile mRNAs, by selecting mRNA molecules
+#' mapped to the foreign genome. It does so by either keeping or removing mRNA 
+#' mapped to a given genome. To do so, it requires a common pre-fix across 
+#' chromosomes of the same genome. See [mobileRNA::RNAmergeGenomes()] and 
+#' [mobileRNA::RNAmergeGAnnotations()] for more information and assistance. 
+#'
+#' A greater confidence in the mobile mRNA candidates can be achieved by setting 
+#' a threshold that considers the number of replicates which contained reads 
+#' for the mRNA molecule. This parameter filters based on the `SampleCounts` 
+#' column introduced by the [mobileRNA::RNAimport()] function. 
+#' 
+#' **Statistical Analysis**
+#' The function also allows for statistical analysis based on the results
+#' collect from differential analysis of the total dataset using the function
+#' [mobileRNA::RNAanalysis()]. When `statistical=TRUE`, the feature is enabled
+#' and selected mobile molecules that meet a specific p-value or 
+#' adjusted p-values.
+#'
 #' 
 #' @param data Numeric data frame
 #'
@@ -58,8 +67,11 @@
 #' this instead of using an adjusted p-value to filter molecules. Only mobile
 #' molecules with p-values equal or lower than specified are returned.
 #'
-#'@param threshold numeric; set a threshold level for the the number of 
-#'replicates that defined the dicer-consensus. 
+#'@param threshold numeric; set a threshold level. For sRNAseq, this represents
+#' filtering by the minimum number of replicates that defined the 
+#' dicer-consensus which is stored in the `DicerCounts` column. For mRNAseq,
+#' this represents the minimum number of replicates which contained reads at the
+#' gene locus, this information is storeds in the `SampleCounts` column.
 #'
 #' @return A data-frame containing candidate mobile sRNAs, which could be 
 #' further filtered based on statistical significance and the ability to 
@@ -162,10 +174,16 @@ RNAmobile <- function(data,controls, genome.ID, task = NULL ,
     } else
       res <- res %>% filter(pvalue <= p.value)
   } 
-  
-
+# thresholds for different 
+if(input == "sRNA"){
   if(!is.null(threshold)){
     res <- res %>% filter(!DicerCounts < threshold)
+  }
+} else 
+  if(input == "mRNA"){
+    if(!is.null(threshold)){
+      res <- res %>% filter(!SampleCounts < threshold)
+    }
   }
   return(res)
 }

@@ -15,3 +15,7 @@ Changes in version  1.0.0 (2023-07-19)
 + improved error calling on functions
 + found error in RNAattributes
 
+Changes in version  1.0.0 (..)
++ introduced mRNA pipeline, altered existing functions to facilitate data-type. 
++ included RNAimport, RNAattributes, RNAanalysis, plotHeatmap, RNAmean & RNAmobile
++ Improve plotting flexability in plotSamplePCA

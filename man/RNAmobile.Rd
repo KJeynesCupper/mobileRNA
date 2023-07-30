@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAmobile.R
 \name{RNAmobile}
 \alias{RNAmobile}
-\title{Identify potential mobile sRNA molecules}
+\title{Identify potential mobile sRNA & mRNA molecules}
 \usage{
 RNAmobile(
   data,
@@ -39,8 +39,11 @@ be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistic
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
 molecules with adjusted p-values equal or lower than specified are returned.}
 
-\item{threshold}{numeric; set a threshold level for the the number of
-replicates that defined the dicer-consensus.}
+\item{threshold}{numeric; set a threshold level. For sRNAseq, this represents
+filtering by the minimum number of replicates that defined the
+dicer-consensus which is stored in the \code{DicerCounts} column. For mRNAseq,
+this represents the minimum number of replicates which contained reads at the
+gene locus, this information is storeds in the \code{SampleCounts} column.}
 
 \item{p.value}{A user defined numeric value to represent the p-value
 threshold to define statistic significance. There is no default value, set
@@ -54,32 +57,42 @@ by-pass the threshold which determines the number of replicates that
 defined the dicer-consensus.
 }
 \description{
-A function to identify potential mobile small RNA molecules
-traveling from one genotype to another in a hetero-grafted system.
+A function to identify potential mobile sRNA or mRNA moleculea
+detected in a tissue which originated from a different genotype, usually
+related to a chimeric system.
 }
 \details{
-The function undertakes two different roles. First, it selects the sRNA
-cluster which are mapped to a particular genome. It does so by either keeping
-or removing sRNA mapped to chromosomes. Hence, this function will only work
-if the two genomes are distinguishable by their chromosome names.
-
-The second step, after selecting clusters which are mapped to the genome of
-interest, removes sRNA clusters which were incorrectly mapped. These
-are clusters which have counts or RPM values in the control samples
-(ie. same genome as the destination tissue in the hetero-graft condition).
-These samples should not have counts if the sRNA originates from a different
-genotype to the control.
-
-The function also allows for statistical analysis based on the results
-collect from differential analysis of the total dataset using the function
-\code{\link[=RNAanalysis]{RNAanalysis()}}. This features enables the filtering of sRNA
-clusters which meet a specific p-value or adjusted p-values.
+\strong{For sRNAseq:}
+The function identifies candidate mobile sRNAs, by selecting sRNA clusters
+mapped to the foreign genome. It does so by either keeping or removing sRNA
+mapped to a given genome. To do so, it requires a common pre-fix across
+chromosomes of the same genome. See \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} for more
+information.
 
 A greater confidence in the mobile sRNA candidates can be achieved by setting
 a threshold that considers the number of replicates which contributed to
 defining the consensus dicer-call (ie. consensus sRNA classification). This
-parameter filters based on the \code{DicerCount} column introduced by the
+parameter filters based on the \code{DicerCounts} column introduced by the
 \code{\link[=RNAdicercall]{RNAdicercall()}} function.
+
+\strong{For mRNAseq:}
+The function identifies candidate mobile mRNAs, by selecting mRNA molecules
+mapped to the foreign genome. It does so by either keeping or removing mRNA
+mapped to a given genome. To do so, it requires a common pre-fix across
+chromosomes of the same genome. See \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} and
+\code{\link[=RNAmergeGAnnotations]{RNAmergeGAnnotations()}} for more information and assistance.
+
+A greater confidence in the mobile mRNA candidates can be achieved by setting
+a threshold that considers the number of replicates which contained reads
+for the mRNA molecule. This parameter filters based on the \code{SampleCounts}
+column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
+
+\strong{Statistical Analysis}
+The function also allows for statistical analysis based on the results
+collect from differential analysis of the total dataset using the function
+\code{\link[=RNAanalysis]{RNAanalysis()}}. When \code{statistical=TRUE}, the feature is enabled
+and selected mobile molecules that meet a specific p-value or
+adjusted p-values.
 }
 \examples{
 

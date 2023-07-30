@@ -6,6 +6,7 @@
 #'
 #'
 #' @details
+#' **For sRNAseq:**
 #' Supply the directory to the folder storing the various sample replicate
 #' folders produced by ShortStack analysis. Within each sample replicate folder,
 #' there is "Result.txt". This file contains many different columns, but
@@ -36,6 +37,24 @@
 #' columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 #'
 #'
+#'**For mRNAseq:**
+#'
+#' Supply the directory to the folder storing the various sample replicate
+#' files outputted by the alignment program. Each file contains many the gene
+#' name (column 1) and the raw count value (column 2). The function identifies 
+#' all genes across the analysis, and organises the count values for each sample
+#' replicate into a column. For example, this will look like 
+#' "Counts_heterograft_1" for the sample replicate with the file name
+#' "heterograft_1". Further columns include the gene locus information (chr, 
+#' start, end, width) are add to the start of the dataframe, and the FPKM 
+#' for each sample replicate is calculated. The FPKM columns are organised and 
+#' titled in the same format at the "Counts_" columns. 
+#' 
+#' When working with mRNAseq data, a GFF genome annotation file is required. 
+#' When working with a chimeric biological system and a merged annotation file, 
+#' ensure the genomes remain distinguishable. The function 
+#' `RNAmergeAnnotations()` can help with this.
+#' 
 #'@param input string; define type of Next-Generation Sequencing dataset
 #'originates from, either "sRNA" or "mRNA" are the only valid inputs.
 #'
@@ -47,17 +66,27 @@
 #' @param samples Vector of characters naming the sample names correlating
 #' to outputted folders located in the \code{`directory`} argument path.
 #'
-#'
+#' @param annotation Path to GFF genome annotation file. Required only for 
+#' mRNAseq data. 
 #'
 #'@param tidy Logical; removes genes from analysis where there are zero counts
 #'across all replicates.
 #'
 #'
-#'@return A dataframe where rows represent sRNA clusters and columns represent
+#'@return 
+#'**For sRNAseq:**
+#'A dataframe where rows represent sRNA clusters and columns represent
 #'replicate information. Replicate information includes Dicercall, Counts, RPM
 #'and MajorRNA sequence. Each replicate information is distinguishable as
 #'the replicate name is ajoined as a prefix to each column name.
 #'
+#'**For mRNAseq:**
+#'A dataframe where rows represent gene names and columns representing
+#'replicate information. Replicate information includes Counts and FPKM. 
+#'Additional columns include SampleCounts (the number of replicates which 
+#'contains counts), chr (chromosome), start and end coordinates are 
+#'also included in the output. Each replicate information is distinguishable as 
+#'the replicate name is adjoined as a prefix to each column name.
 #' @examples
 #' \dontrun{
 #'
@@ -97,10 +126,26 @@
 #' @importFrom dplyr "where"
 #' @importFrom stats "setNames"
 #' @importFrom utils "flush.console"
-
+#' @importFrom stats "complete.cases"
+#' @importFrom rtracklayer "import.gff"
+#' @importFrom S4Vectors "mcols"
+#' @importFrom Repitools "annoGR2DF"
+#' @importFrom dplyr "select"
+#' @importFrom dplyr "rename"
+#' @importFrom dplyr "rename_with"
+#' @importFrom stringr "str_detect"
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
-                       tidy = TRUE) {
-
+                      annotation = NULL, tidy = TRUE) {
+  if (base::missing(input) || !input %in% c("sRNA", "mRNA")) {
+    stop(paste("Please the data-type to the `input` paramter"))
+  }
+  if (base::missing(directory)) {
+    stop(paste("Please specify a accessable directory where files are stored"))
+  }
+  if (base::missing(samples)) {
+    stop(paste("Please specify a vector storing sample names matching files"))
+  }
+  
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
     dt_list <- list()
@@ -118,13 +163,13 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       utils::flush.console()
     }
     cat("\n")  # Print a newline after progress is complete
-    message("Completed importation of data from directory.")
+    cat("Completed importation of data from directory. \n")
     
     
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    message("Checking data content...")
+    cat("Checking data content... \n")
     required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -134,7 +179,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                    line of the input file(s)"))
       }
     }
-    message("Data content is correct.")
+    cat("Data content is correct. \n")
     cat("\n") 
     
     # merge first columns to create list of loci across all samples
@@ -203,14 +248,14 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     cluster_names <-  paste0("cluster_", 1:nrow(df_final))
     df_final <- as.data.frame(append(df_final, list(Cluster = cluster_names),
                                      after = 4))
-
-
-
     # return values
     return(df_final)
 
   } else
     if(input == "mRNA"){
+      if (base::missing(annotation)) {
+        stop(paste("Please specify a accessable path to a GFF file"))
+      }
       # load data as list
       sample_data <- list()
       for (file in samples) {
@@ -218,8 +263,14 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                                                         ".txt"), header = FALSE)
         colnames(sample_data[[file]])[1] <- "Gene"
         colnames(sample_data[[file]])[2] <- "Count"
+     
       }
-
+      # remove rows with extra info 
+      sample_data <- lapply(sample_data, function(x) {
+        x[!grepl("__", x$Gene),]
+      })
+      
+      
       # check each file has two columns
       for (df in sample_data) {
         if (!all(ncol(df) == 2)) {
@@ -229,34 +280,76 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       # merge first columns to create list of genes across all samples
       genes <- lapply(sample_data, "[", , "Gene")
       genes_all <- unique(Reduce(merge,genes))
-
+      
+      # add gene length
+      annotation_file <- rtracklayer::import.gff(annotation)
+      genes_info <- annotation_file[which(S4Vectors::mcols(annotation_file)$type == "gene")]
+      genes_info <- Repitools::annoGR2DF(genes_info)  %>% 
+        dplyr::select(chr, start, end, Name, width)%>% 
+        dplyr::rename(Gene = Name)
+  
+      # merge gene list with annotation info. 
+      merged_gene_info <- merge(genes_all, genes_info, by = "Gene", all.x = TRUE)
+      #merged_gene_info <- merged_gene_info[stats::complete.cases(merged_gene_info), ]
+      gene_widths <- merged_gene_info$width
+      
       # ADDs sample information to the genes_all object
       for (i in seq_along(sample_data)){
-        matches <- genes_all[sample_data[[i]], on = "Gene", nomatch = 0]
+        matches <- merged_gene_info[sample_data[[i]], on = "Gene", nomatch = 0]
         matches_values <- matches[, .(Count=sum(Count)),by = "Gene"]
+        
         # Rename the aggregated columns
         col_name <- paste0("Count_", names(sample_data)[i])
         data.table::setnames(matches_values, c("Gene", col_name))
         # Merge the aggregated values back into df1
-        genes_all[matches_values, on = "Gene", (col_name) := mget(col_name)]
+        merged_gene_info[matches_values, on = "Gene", (col_name) := mget(col_name)]
         # Print progress
         if (report) {
-          message(paste0("Added information from", i,
-                         "to the analysis mRNA dataframe" ,"\n"))
+          cat(paste0("Added information from ", names(sample_data[i]) ," to the analysis mRNA dataframe" ,"\n"))
         }
       }
-
+      
       # Fill in missing values with 0 or N
-      mRNA_information <- genes_all %>%
+      mRNA_information <- merged_gene_info %>%
         dplyr::mutate(dplyr::across(dplyr::contains('Count_'),
                                     ~tidyr::replace_na(.,0)))
-      # Convert data.frame and return it
-      mRNA_information <- as.data.frame(mRNA_information)
-
+      # set genes as rownames 
+      fpkm <- apply(X = subset(mRNA_information, 
+                               select = c(-Gene, -chr, -start, -end, -width)),
+                    MARGIN = 2, 
+                    FUN = function(x) {
+                      sum_x <- sum(as.numeric(x))
+                      if (sum_x == 0) {
+                        t <- 0
+                      } else {
+                        t <- 10^9 * x / gene_widths / sum_x
+                      }
+                      t
+                    })
+      # add prefix to all columns 
+     fpkm <- data.frame(fpkm)
+     names_col <- sub("^Count_", "", colnames(fpkm))
+     colnames(fpkm) <- paste0("FPKM_", names_col)
+     
+      
+      # add result to df to output
+      mRNA_information <- cbind(mRNA_information, fpkm)
+      
+      # add thresholding values - number of replicates with counts 
+      t <- names(mRNA_information)[grep("^Count_", names(mRNA_information))]
+      SampleCounts_vals <- apply(X = subset(mRNA_information, 
+                               select = c(t)),
+                    MARGIN = 1, 
+                    FUN = function(x) {
+                      length(x[x > 0])
+                    })
+      
+      mRNA_information$SampleCounts <- SampleCounts_val
+      
       # remove rows with
       if (tidy){
         mRNA_information <- mRNA_information %>%
-          dplyr::filter(dplyr::if_any(dplyr::where(is.numeric), ~. != 0))
+          dplyr::filter(SampleCounts != 0)
       }
       return(mRNA_information)
     }

@@ -56,7 +56,9 @@ Imports:
     magrittr,
     foreach,
     doParallel,
-    parallel
+    parallel,
+    viridis,
+    S4Vectors
 biocViews: 
     Visualization,
     RNASeq,

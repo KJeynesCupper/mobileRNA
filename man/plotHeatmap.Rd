@@ -39,23 +39,25 @@ rownames. Default \code{row.names=TRUE}}
 Produces a list of objects, including the plot.
 }
 \description{
-Undertakes RPM normalisation using a pseudocount and transforms
-the data using log-scale, to enable visualization of the differences and
-patterns in expression across samples using a heatmap.
+Undertakes RPM/FPKM normalisation using a pseudocount and
+transforms the data using log-scale, to enable visualization of the
+differences and patterns in expression across samples using a heatmap.
 }
 \details{
-Undertakes RPM normalisation using a pseudocount and then transforms
-the normalised-RPM data using log-scale. The data is then plotted as a
-heatmao, utilising the \code{pheatmaps} package.
+Undertakes FPKM/RPM normalisation using a pseudocount and then
+transforms the normalised-RPM data using log-scale. The
+\code{mobileRNA::RNAimport()} function will  include the RPM data
+columns for sRNAseq data processed by ShortStack, while with mRNAseq data
+the function calculates FPKM.
+The data is then plotted as a heatmap, utilising the \code{pheatmaps} package.
 
-This function expects to receive a dataframe containing RPM data from
+This function expects to receive a dataframe containing FPKM/RPM data from
 sRNA-seq studies. This function employs the use of a pseudocount during
 normalisation as the function is expected to be used when identifying mobile
 sRNAs in a chimeric system. In such system, it is expected that control
 replicates will contain zero values for the candidate mobile sRNA clusters.
 }
 \examples{
-
 
 data("sRNA_data_mobile")
 

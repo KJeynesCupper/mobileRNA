@@ -123,7 +123,7 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
                write and save merged annotation. Ensure file name with extension
                (.gff or .gff3) is supplied."))
   }
-  message("Adding abbreviations to chomosome names ... ")
+  cat("Adding abbreviations to chomosome names ... \n")
 
   # Convert granges to dataframe
     annotationA <- Repitools::annoGR2DF(annotationA)
@@ -143,24 +143,24 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
     data.table::fwrite(annotationA, file = annoA_save,sep = "\t",
                          quote = FALSE,row.names = FALSE, col.names = FALSE)
 
-      message("New annotation file created: ", annoA_save)
+      cat("New annotation file created: ", annoA_save, "\n")
 
       data.table::fwrite(annotationB, file = annoB_save,sep = "\t",
                          quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 
-    message("New annotation file created: ", annoB_save)
-    message("Merging altered annotation files ...")
+    cat("New annotation file created: ", annoB_save, "\n")
+    cat("Merging altered annotation files ... \n")
 
     # merge gff files
     concatenated_gff <- dplyr::bind_rows(annotationA, annotationB)
-    concatenated_gff <- data.frame(lapply(concatenated_gff, as.character), stringsAsFactors=FALSE)
+    concatenated_gff <- data.frame(lapply(concatenated_gff, as.character), 
+                                   stringsAsFactors=FALSE)
 
     data.table::fwrite(concatenated_gff, file = out_dir,sep = "\t",
                        quote = FALSE, row.names = FALSE, col.names = FALSE)
 
     return(concatenated_gff)
 
-    message("New merged annnotation with modified chromosome names has been
-    created saved to:", out_dir)
+    cat("New merged annnotation with modified chromosome names has been created saved to:", out_dir, "\n")
 }

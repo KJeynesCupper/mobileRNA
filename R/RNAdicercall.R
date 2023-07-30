@@ -122,12 +122,12 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
     }
   }
   if (!is.null(conditions)) {
-    message("Calculating consensus dicercall based on information from select replicates")
+    cat("Calculating consensus dicercall based on information from select replicates \n")
     onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
-    message("Calculating consensus dicercall based on information from all replicates")
+    cat("Calculating consensus dicercall based on information from all replicates \n")
     onlyconditions <- class_colnames
   }
   
@@ -147,18 +147,18 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   t <-c(col_q,col_qp)
   
   if (ties.method == "random"){
-    message("The consensus dicercall will be choose at random in the case of a tie")
+    cat("The consensus dicercall will be choose at random in the case of a tie \n")
     new_df <- data 
     new_df$DicerCounts <- apply(new_df[t], 1, max)
     new_df <- new_df %>% 
-      dplyr::mutate(DicerConsensus = base::names(data)[t]
+      dplyr::mutate(DicerConsensus = names(data)[t]
                     [max.col(data[t], ties.method = "random")* NA^(
                       rowSums(data[t]) ==0)]) %>%
       dplyr::mutate(DicerConsensus = tidyr::replace_na(DicerConsensus, "N")) 
     
   } else 
     if(ties.method == "exclude"){
-      message("The consensus dicercall will be excluded in the case of a tie") 
+      cat("The consensus dicercall will be excluded in the case of a tie \n") 
       new_df <- data
       
       # Initialize result vector
@@ -208,7 +208,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   
   if (tidy) {
     cat("\n")
-    message("Removing sRNA clusters with no consensus dicercall...")
+    cat("Removing sRNA clusters with no consensus dicercall... \n")
     new_df_tidy <- new_df %>% dplyr::filter(DicerConsensus != "N")
     return(new_df_tidy)
   }

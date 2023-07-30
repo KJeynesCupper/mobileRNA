@@ -1,4 +1,4 @@
-#' Identify specific attributes associated to a sRNA cluster
+#' Overlap genome annotation file information with sRNA/mRNA-seq data 
 #'
 #' Based on genomic coordinates, assign sRNA clusters with an annotation that
 #' has an exact match based on chromosome number, start and end coordinates
@@ -26,6 +26,8 @@
 #' @export
 #' @importFrom rtracklayer "import"
 #' @importFrom Repitools "annoGR2DF"
+#' @importFrom S4Vectors "mcols"
+#' @importFrom stats "complete.cases"
 #' @examples
 #' \dontrun{
 #'
@@ -38,7 +40,7 @@
 #'
 #' }
 #'
-RNAattributes <- function(data, annotation){
+RNAattributes <- function(data, annotation, input= c("sRNA", "mRNA")){
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
          DataFrame")
@@ -49,16 +51,22 @@ RNAattributes <- function(data, annotation){
   cat("Please be patient...")
   anno_data <- rtracklayer::import(annotation)
   conversion <- Repitools::annoGR2DF(anno_data)
-  # check chromosome names match:
-  tryCatch(
-    {  
-      res <- merge(data,conversion, by=c("chr","start", "end"),all.x=TRUE)
-    }, error = function(e) {
-      cat("An error occurred .. :", conditionMessage(e), "\n")
-      cat("An error occurred ... chromosome names.", "\n")
-      
-    }
-  )
+  if(input == "sRNA"){
+    # check chromosome names match:
+    tryCatch(
+      {  
+        res <- merge(data,conversion, by=c("chr","start", "end"),all.x=TRUE)
+      }, error = function(e) {
+        cat("An error occurred .. :", conditionMessage(e), "\n")
+        cat("An error occurred ... chromosome names.", "\n")
+      }
+    )
+    } else
+      if (input == "mRNA"){
+        genes_info <- conversion[which(S4Vectors::mcols(conversion)$type == "gene")]
+        merged_gene_info <- merge(data, genes_info, by = "Gene", all.x = TRUE)
+        res <- merged_gene_info[stats::complete.cases(merged_gene_info), ]
+      }
   return(res)
 }
 
