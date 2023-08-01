@@ -14,6 +14,17 @@
 #' @param vst logical; Variance stabilizing transformation. By default, the
 #' function uses a regularized log transformation on the data set, however, this
 #' will not suit all experimental designs.
+#' 
+#' @param labels logical; include sample name labels on PCA. Default 
+#' `labels=TRUE`
+#' 
+#' @param boxed logical; add box around each sample name label. Default 
+#' `boxed=TRUE`
+#' 
+#' @param legend.title character; title for legend key. Default
+#' `legend.title = "Conditions"`
+#' @param size.ratio numeric; set plot ratio, broadens axis dimensions by ratio.
+#' Default `size.ratio=2`, double the plot dimension. 
 #'
 #' @return A PCA plot to show sample distance.
 #'
@@ -36,7 +47,7 @@
 #'             "Selfgraft", "Selfgraft", "Selfgraft")
 #' p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 #'
-#'
+#' plot(p)
 #'
 #'
 #' @export
@@ -50,14 +61,18 @@
 #' @importFrom ggplot2 "position_nudge"
 #' @importFrom ggrepel "geom_label_repel"
 #' @importFrom ggplot2 "aes"
-plotSamplePCA <- function(data, group, vst = FALSE){
-  message("Checking and organising data")
+#' @importFrom ggplot2 "labs"
+#' @importFrom ggplot2 "coord_fixed"
+#' @importFrom ggrepel "geom_text_repel"
+plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
+                          legend.title = "Conditions", size.ratio = 2){
+  cat("Checking and organising data \n")
+  
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
     stop("data must be an object of class data.frame containing raw count data")
   }
   if (base::missing(group) || !base::inherits(group, c("character"))) {
-    stop("group must be an object of class character vector containing the
-         experimental condition (Treatment vs. Control)")
+    stop("group must be an object of class character vector containing the experimental condition (Treatment vs. Control)")
   }
   data <- data %>% dplyr::select(tidyselect::starts_with("Count"))
   # use DESeq to organise the data.
@@ -68,31 +83,41 @@ plotSamplePCA <- function(data, group, vst = FALSE){
   count.data.set$conditions <- stats::relevel(count.data.set$conditions,
                                               group[1])
   dds <- DESeq2::estimateSizeFactors(count.data.set)
-
-    # log transform the data.
-
+  
+  # log transform the data.
+  
   if(vst ==TRUE){
-    message("Transforming the count data with a variance stabilizing
-            transformation")
+    cat("Transforming the count data with a variance stabilizing transformation \n")
     rld1 <- DESeq2::varianceStabilizingTransformation(dds, blind = TRUE)
     # log transform the data.
   } else
     if(vst == FALSE) {
-      message("Transforming the count data to the log2 scale")
+      cat("Transforming the count data to the log2 scale \n")
       rld1 <- DESeq2::rlog(dds, blind = TRUE) # log transform the data.
     }
-
+  
   # use the DEseq plot pca function, store in an object.
   pca <- DESeq2::plotPCA(rld1, returnData = TRUE, intgroup = "conditions")
   ## change position
-  nudge <- ggplot2::position_nudge(y = 1)
-  df_sample_names <- base::names(data$sizeFactor)
-  sample_names <- colnames(data)
-  sample_names <- sub("Count_", "", sample_names)
+  sample_names <- sub("Count_", "", colnames(data))
   pca["ID"] <- sample_names # create new column with sample names
-  message("Organising principal component analysis")
-  X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
-    ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID),
-                              position = nudge, show.legend = FALSE)
+  cat("Organising principal component analysis \n")
+  if(labels == TRUE){
+    if(boxed == TRUE){
+      X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
+        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), show.legend = FALSE, box.padding = 1)+
+        ggplot2::labs(color=legend.title)+
+        ggplot2::coord_fixed(ratio = size.ratio)
+    } else
+      X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
+        ggrepel::geom_text_repel(data = pca, ggplot2::aes(label = ID), show.legend = FALSE, box.padding = 1)+
+        ggplot2::labs(color=legend.title)+
+        suppressMessages(ggplot2::coord_fixed(ratio = size.ratio)) 
+  } else {
+    X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
+      ggplot2::labs(color=legend.title)+
+      ggplot2::coord_fixed(ratio = size.ratio)
+    
+  }
   return(X)
 }

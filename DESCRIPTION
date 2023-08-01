@@ -57,7 +57,9 @@ Imports:
     foreach,
     doParallel,
     parallel,
-    viridis
+    viridis,
+    S4Vectors,
+    SummarizedExperiment
 biocViews: 
     Visualization,
     RNASeq,
