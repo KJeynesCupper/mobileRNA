@@ -181,7 +181,7 @@ has been doctored to reduce the size of the file.
 These can be loaded in these R workspace by using the following command:
 
 
-```{r Load, message=FALSE}
+```{r Load,eval=FALSE, message=FALSE}
 data("mRNA_data")
 ```
 <br>
@@ -398,7 +398,7 @@ mRNA_data <- RNAimport(input = "mRNA",
 
 ```
 
-```{r}
+```{r, eval=FALSE}
 data(mRNA_data)
 # example dataframe 
 head(mRNA_data)
@@ -443,7 +443,7 @@ cap3 <-"An example of a PCA, illustracting the sRNA data set sample similarity"
 
 ```
 
-```{r ,message=FALSE, fig.cap=cap3, fig.show="hold"}
+```{r, eval=FALSE,message=FALSE, fig.cap=cap3, fig.show="hold"}
 
 group <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
@@ -458,11 +458,11 @@ Similarly, to a PCA plot, the `plotSampleDistance()` function undertakes
 hierarchical clustering with an unbiased log transformation to calculate sample
 distance and is plotted in the form of a heatmap.
 
-```{r, echo=FALSE}
+```{r,eval=FALSE, echo=FALSE}
 cap4 <-"An example of a heatmap,illustracting the sRNA data set sample similarity"
 
 ```
-```{r ,message=FALSE, fig.cap=cap4, fig.show="hold"}
+```{r ,eval=FALSE, message=FALSE, fig.cap=cap4, fig.show="hold"}
 plotSampleDistance(mRNA_data)
 
 ```
@@ -484,7 +484,7 @@ the data set does not contain replicates. This option can be employed by setting
 a custom dispersion value, see argument `dispersionValue`.
 
 
-```{r DEprep, message = FALSE, warning = FALSE}
+```{r DEprep,eval=FALSE, message = FALSE, warning = FALSE}
 # sample conditions in order within dataframe
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
@@ -523,7 +523,7 @@ p-value settings. As default, the function does not consider
 the statistical values and properties of the sRNAs. To consider, use 
 `statistical=TRUE`
 
-```{r , message=FALSE}
+```{r ,eval=FALSE,message=FALSE}
 # vector of control names
 control_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
@@ -549,12 +549,12 @@ plotting.
 <br>
 
 ### Mobile molecules from the 24-nt sRNA dataset
-```{r, echo=FALSE}
+```{r, eval=FALSE,echo=FALSE}
 cap7 <- "An example heatmap of cadidate mobile mRNA molecules"
 
 ```
 
-```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A","B") }
+```{r,eval=FALSE,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A","B") }
 p10 <- plotHeatmap(mobile_mRNA)
 ```
 
@@ -591,7 +591,7 @@ previous step.
 
 Here we will filter the data to select sRNA clusters which are statistically 
 significant, and then plot the results as a heatmap to compare the conditions. 
-```{r}
+```{r, eval=FALSE}
 # select only significant sRNAs
 significant_mRNAs <- RNAsignificant(mRNA_DESeq2)
 
@@ -603,7 +603,7 @@ p1 <- plotHeatmap(significant_mRNAs, cluster = FALSE, row.names = FALSE)
 
 Lets look at the plot:
 
-```{r}
+```{r, eval=FALSE}
 p1$plot 
 ```
 <br>

@@ -297,6 +297,22 @@ sRNA_edgeR <- RNAanalysis(data = sRNA_data_summary,
 This will add differential analysis values for each sRNA cluster to the working
 dataframe. We can then easily manipulate this data and plot it as heatmap. 
 
+
+### Plot a volcano plot 
+A Volcano plots can be plotted to show the relationship between fold change and 
+the adjusted p-value (i.e. FDR) across the dataset. Each point represents an 
+individual sRNA cluster. Pointes are coloured according to their significance 
+level thresholds (0.05, 0.01, and 0.001 or unchanged). 
+
+
+
+```{r}
+# plot with the top 10 clusters labelled
+vol_plot <- plotVolcano(data = sRNA_DESeq2, labels = TRUE)
+
+vol_plot$plot
+```
+
 ## Step 5: Explore difference in sRNA abundances
 When comparing treatment to control conditions, it might be the case that 
 the same sRNA clusters are found within both yet there could be difference in 

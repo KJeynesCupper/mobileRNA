@@ -11,7 +11,7 @@ theme: united
 highlight: tango
 fig_width: 7
 vignette: >
- %\VignetteIndexEntry{mobileRNA}
+ %\VignetteIndexEntry{mobileRNA_chimeric}
  %\VignetteEngine{knitr::rmarkdown}}
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
@@ -832,7 +832,7 @@ cap7 <- "An example heatmap of the potential mobile RNA molecules Identifed by t
 ```
 
 ```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A","B") }
-p10 <- plotHeatmap(mobile_sRNA_sig24)
+p10 <- plotHeatmap(mobile_sRNA_sig24, row.names = FALSE)
 p11 <- plotHeatmap(mobile_sRNA_sig2122)
 ```
 

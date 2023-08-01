@@ -19,7 +19,7 @@
 #' @param annotation A path, URL, connection or GFFFile object. A genome
 #' reference annotation file (.gff/.gff1/.gff2/.gff3).
 #'
-#'
+#' @param input character; must be either "sRNA" or "mRNA"
 #'@return Adds an additional columns from GFF containing information which
 #'overlaps any sRNA cluster loci. These columns represent the standard columns
 #'in a GFF file.

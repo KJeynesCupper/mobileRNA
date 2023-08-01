@@ -287,6 +287,9 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       genes_info <- Repitools::annoGR2DF(genes_info)  %>% 
         dplyr::select(chr, start, end, Name, width)%>% 
         dplyr::rename(Gene = Name)
+      Locus <- paste0(genes_info$chr, ":",genes_info$start,"-",
+                            genes_info$end)
+      genes_info <- cbind(Locus, genes_info)
   
       # merge gene list with annotation info. 
       merged_gene_info <- merge(genes_all, genes_info, by = "Gene", all.x = TRUE)

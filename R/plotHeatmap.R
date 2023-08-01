@@ -71,11 +71,11 @@ plotHeatmap <- function (data, pseudocount = 1e-6,
                                                      "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame,\n DataFrame. See ?plotHeatmap for more information.")
   }
-  if(any(grepl("^FKPM", data, ignore.case = TRUE))){
-    select_data <- data %>% dplyr::select(tidyselect::starts_with("FKPM"))
-    names(select_data) <- sub('^FKPM', '', names(select_data)) 
+  if(any(grepl(paste0("^", "FPKM_"), colnames(data)))){
+    select_data <- data %>% dplyr::select(tidyselect::starts_with("FPKM"))
+    names(select_data) <- sub('^FPKM', '', names(select_data)) 
   } else 
-  if(any(grepl("^RPM", data, ignore.case = TRUE))){
+  if(any(grepl(paste0("^", "RPM_"), colnames(data)))){
     select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
     names(select_data) <- sub('^RPM_', '', names(select_data))
     } else {

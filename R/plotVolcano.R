@@ -33,6 +33,7 @@
 #' @importFrom dplyr "arrange"
 #' @importFrom dplyr "desc"
 #' @importFrom dplyr "count"
+#' @importFrom utils "head"
 plotVolcano <- function(data, labels = FALSE, top.molecules = 10, 
                         colour.scheme = NULL){
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
@@ -72,11 +73,11 @@ if(labels){
     data_val %>% 
       dplyr::filter(expression == 'Upregulated') %>% 
       dplyr::arrange(padjusted, dplyr::desc(abs(log2FoldChange))) %>% 
-      head(top.molecules),
+      utils::head(top.molecules),
     data_val %>% 
       dplyr::filter(expression == 'Downregulated') %>% 
       dplyr::arrange(padjusted, dplyr::desc(abs(log2FoldChange))) %>% 
-      head(top.molecules)
+      utils::head(top.molecules)
   )
   
   plot_out <-  plot_out +

@@ -23,7 +23,7 @@
 #' mapped to the foreign genome. It does so by either keeping or removing mRNA 
 #' mapped to a given genome. To do so, it requires a common pre-fix across 
 #' chromosomes of the same genome. See [mobileRNA::RNAmergeGenomes()] and 
-#' [mobileRNA::RNAmergeGAnnotations()] for more information and assistance. 
+#' [mobileRNA::RNAmergeAnnotations()] for more information and assistance. 
 #'
 #' A greater confidence in the mobile mRNA candidates can be achieved by setting 
 #' a threshold that considers the number of replicates which contained reads 
@@ -37,7 +37,9 @@
 #' and selected mobile molecules that meet a specific p-value or 
 #' adjusted p-values.
 #'
-#' 
+#' @param input character; must be either "sRNA" or "mRNA" to represent the type
+#' of data, required when setting theshold. 
+#'  
 #' @param data Numeric data frame
 #'
 #' @param controls Character vector; containing names of control samples.
@@ -89,49 +91,10 @@
 #'
 #' # Locate potentially mobile sRNA clusters associated to tomato, no
 #' # statistical analysis
-#' mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
+#' mobile_df1 <- RNAmobile(data =  sRNA_data_consensus,
 #'                     controls = controls,
 #'                     genome.ID = "SL40",
 #'                     task = "keep",
-#'                     statistical = FALSE)
-#'
-#'
-#'
-#'  # Locate potentially mobile sRNA clusters associated to tomato, include
-#'  # statistical analysis
-#'
-#' ## undertake statistical analysis with either edgeR or DESeq2, here we use
-#' # # DESeq2
-#' groups <- c("Heterograft", "Heterograft", "Heterograft",
-#'           "Selfgraft", "Selfgraft", "Selfgraft")
-#'
-#' analysis_df <- RNAanalysis(data = sRNA_data_consensus,
-#'                              group = groups,
-#'                              method = "DESeq2" )
-#'
-#' ## locate mobile sRNA using p-adjusted value
-#' mobile_df2 <- RNAmobile(data = analysis_df,
-#'                     controls = controls,
-#'                     genome.ID = "SL40",
-#'                     task = "keep",
-#'                     statistical = TRUE)
-#'
-#' ## or, locate mobile sRNA using p-value value
-#' mobile_df3 <- RNAmobile(data = analysis_df,
-#'                     controls = controls,
-#'                     genome.ID = "SL40",
-#'                     task = "keep",
-#'                     statistical = TRUE,
-#'                     p.value = 0.05)
-#'
-#'
-#'
-#'# Locate local sRNA clusters associated to eggplant, include statistical
-#'# analysis
-#' mobile_df4 <- RNAmobile(data = sRNA_data_consensus,
-#'                     controls = controls,
-#'                     genome.ID = "SL40",
-#'                     task = "remove",
 #'                     statistical = FALSE)
 #'
 #'
@@ -141,9 +104,10 @@
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
 #' @importFrom dplyr "case_when"
-RNAmobile <- function(data,controls, genome.ID, task = NULL ,
+RNAmobile <- function(data, controls, genome.ID,
+                      task = NULL,
                       statistical = FALSE,
-                      padj = 0.05, threshold = NULL, 
+                      padj = 0.05, threshold = NULL, input = NULL, 
                       p.value = NULL){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
@@ -175,15 +139,19 @@ RNAmobile <- function(data,controls, genome.ID, task = NULL ,
       res <- res %>% filter(pvalue <= p.value)
   } 
 # thresholds for different 
-if(input == "sRNA"){
+
   if(!is.null(threshold)){
-    res <- res %>% filter(!DicerCounts < threshold)
-  }
-} else 
-  if(input == "mRNA"){
-    if(!is.null(threshold)){
-      res <- res %>% filter(!SampleCounts < threshold)
+    if (base::missing(input)) {
+      stop(paste("Please specify a character vector of either `sRNA` or `mRNA` 
+                 to input parameter when using the threshold parameter"))
     }
-  }
+    if(input == "sRNA"){
+    res <- res %>% filter(!DicerCounts < threshold)
+  } else 
+    if(input == "mRNA"){
+      res <- res %>% filter(!SampleCounts < threshold)
+      }
+    }  
   return(res)
 }
+

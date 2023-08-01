@@ -13,6 +13,8 @@ the chromosome number, \code{start} and \code{end} which supply the coordinates.
 
 \item{annotation}{A path, URL, connection or GFFFile object. A genome
 reference annotation file (.gff/.gff1/.gff2/.gff3).}
+
+\item{input}{character; must be either "sRNA" or "mRNA"}
 }
 \value{
 Adds an additional columns from GFF containing information which
