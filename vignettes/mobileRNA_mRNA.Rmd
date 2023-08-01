@@ -33,11 +33,11 @@ knitr::opts_chunk$set(
 
  
 # Introduction
-
--- mRNA move systematically around plants 
--- known to move across graft junctions 
--- interspecific grafting could lead to movement of forigen mRNAs
-
+Similarly to sRNAs, messenger RNA (mRNA) molecules have also been believed to 
+move systemically throughout plants, and grafting has been a tool to study this. 
+Interspecific grafting could lead to the movement of foreign endogenous mRNAs 
+from one genotype to another. Here, we describe a pipeline to assist with this 
+specific analysis. 
 
 
 # Methods
@@ -238,8 +238,6 @@ The pre-processing step involves cleaning raw data and aligning data to the
 merged genome.  Going forward, the pipeline has assumed that the mRNA-seq 
 samples have met quality control standards.
 
-We recommend installing and using the ...
-
 Here, we introduce an alternative mapping method for the analysis of plant
 heterograft samples. The heterograft system involves two genotypes; here
 the two genome references are merged into a single reference to which
@@ -314,7 +312,7 @@ is very important to consider in the analysis as it prevents false assumptions.
 This step aligns a replicate to the given genome assembly and the
 output contains loci where mRNA reads aligned. 
 
-#### Step 1 - Cluster analysis with ShortStack
+#### Step 1 
 
 ``` bash
 
@@ -322,7 +320,7 @@ output contains loci where mRNA reads aligned.
 ```
 
 
-#### Step 2 - Build sRNA cluster list 
+#### Step 2 
 
 Now, we collate all the mRNA loci information from each sample into a text file. 
 

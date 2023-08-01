@@ -32,6 +32,7 @@ reference with modified chromosome names to ensure distinguishability."><meta pr
     <h6 class="dropdown-header" data-toc-skip>Tutorials</h6>
     <a class="dropdown-item" href="../articles/mobileRNA_standard.html">Analyse sRNA populations using mobileRNA</a>
     <a class="dropdown-item" href="../articles/mobileRNA_chimeric.html">Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</a>
+    <a class="dropdown-item" href="../articles/mobileRNA_mRNA.html">Explore canditate mobile mRNAs &amp; population-scale mRNA changes in chimeric systems using mobileRNA</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -168,14 +169,14 @@ annotation,that you treat the input references in the same way.</p>
 <span class="r-in"><span><span class="va">merged_ref</span> <span class="op">&lt;-</span> <span class="fu">RNAmergeGenomes</span><span class="op">(</span>genomeA <span class="op">=</span> <span class="va">fasta_1</span>, genomeB <span class="op">=</span> <span class="va">fasta_2</span>,</span></span>
 <span class="r-in"><span>                               out_dir <span class="op">=</span> <span class="st">"../../merged_ref.fa"</span>, </span></span>
 <span class="r-in"><span>                               cores <span class="op">=</span> <span class="cn">FALSE</span>,number_cores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Replacing chromosome names</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Genomes have been successfully merged</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attempting to save merged genome to: ../../merged_ref.fa</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please be patient, this next step may take a long time .. </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> All temporary files have been created</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Merging temporary files ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> At this point get a cup of tea, its going to be a while ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Deleting temporary files ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Replacing chromosome names </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genomes have been successfully merged </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Attempting to save merged genome to:  ../../merged_ref.fa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Please be patient, this next step may take a long time .. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> All temporary files have been created </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Merging temporary files ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At this point get a cup of tea, its going to be a while ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Deleting temporary files ... </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -192,14 +193,14 @@ annotation,that you treat the input references in the same way.</p>
 <span class="r-in"><span>            abbreviationGenomeA <span class="op">=</span> <span class="st">"SM"</span>,</span></span>
 <span class="r-in"><span>            abbreviationGenomeB <span class="op">=</span> <span class="st">"SL"</span>,  </span></span>
 <span class="r-in"><span>           cores <span class="op">=</span> <span class="cn">FALSE</span>, number_cores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Replacing chromosome names</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Genomes have been successfully merged</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attempting to save merged genome to: ./merged_ref.fa</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please be patient, this next step may take a long time .. </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> All temporary files have been created</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Merging temporary files ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> At this point get a cup of tea, its going to be a while ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Deleting temporary files ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Replacing chromosome names </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Genomes have been successfully merged </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Attempting to save merged genome to:  ./merged_ref.fa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Please be patient, this next step may take a long time .. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> All temporary files have been created </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Merging temporary files ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At this point get a cup of tea, its going to be a while ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Deleting temporary files ... </span>
 <span class="r-in"><span>            </span></span>
 <span class="r-in"><span>            </span></span>
 <span class="r-in"><span>             </span></span>

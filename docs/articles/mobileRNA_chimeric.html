@@ -54,6 +54,7 @@
     <h6 class="dropdown-header" data-toc-skip>Tutorials</h6>
     <a class="dropdown-item" href="../articles/mobileRNA_standard.html">Analyse sRNA populations using mobileRNA</a>
     <a class="dropdown-item" href="../articles/mobileRNA_chimeric.html">Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</a>
+    <a class="dropdown-item" href="../articles/mobileRNA_mRNA.html">Explore canditate mobile mRNAs &amp; population-scale mRNA changes in chimeric systems using mobileRNA</a>
   </div>
 </li>
       </ul>
@@ -82,7 +83,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</h1>
                         <h4 data-toc-skip class="author">Katie Jeynes-Cupper, Marco Catoni</h4>
             
-            <h4 data-toc-skip class="date">2023-07-24</h4>
+            <h4 data-toc-skip class="date">2023-08-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/KJeynesCupper/mobileRNA.git/blob/HEAD/vignettes/mobileRNA_chimeric.Rmd" class="external-link"><code>vignettes/mobileRNA_chimeric.Rmd</code></a></small>
       <div class="d-none name"><code>mobileRNA_chimeric.Rmd</code></div>
@@ -457,7 +458,10 @@ An example line graph (A) and bar graph (B), to show the distribution of RNA cla
 <span><span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>,</span>
 <span>            <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plotSamplePCA.html">plotSamplePCA</a></span><span class="op">(</span><span class="va">sRNA_data</span>, <span class="va">group</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plotSamplePCA.html">plotSamplePCA</a></span><span class="op">(</span><span class="va">sRNA_data</span>, <span class="va">group</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Checking and organising data </span></span>
+<span><span class="co">#&gt; Transforming the count data to the log2 scale </span></span>
+<span><span class="co">#&gt; Organising principal component analysis</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="mobileRNA_chimeric_files/figure-html/unnamed-chunk-13-1.png" alt="An example of a PCA, illustracting the sRNA data set sample similarity" width="700"><p class="caption">
 An example of a PCA, illustracting the sRNA data set sample similarity
@@ -470,7 +474,11 @@ An example of a PCA, illustracting the sRNA data set sample similarity
 </h4>
 <p>Similarly, to a PCA plot, the <code><a href="../reference/plotSampleDistance.html">plotSampleDistance()</a></code> function undertakes hierarchical clustering with an unbiased log transformation to calculate sample distance and is plotted in the form of a heatmap.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSampleDistance.html">plotSampleDistance</a></span><span class="op">(</span><span class="va">sRNA_data</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSampleDistance.html">plotSampleDistance</a></span><span class="op">(</span><span class="va">sRNA_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Checking data </span></span>
+<span><span class="co">#&gt; Transforming the count data to the log2 scale </span></span>
+<span><span class="co">#&gt; Calculating distance matrix </span></span>
+<span><span class="co">#&gt; Creating sample distance plot</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="mobileRNA_chimeric_files/figure-html/unnamed-chunk-15-1.png" alt="An example of a heatmap,illustracting the sRNA data set sample similarity" width="700"><p class="caption">
 An example of a heatmap,illustracting the sRNA data set sample similarity
@@ -495,6 +503,10 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <span>                                                  <span class="st">"selfgraft_2"</span>, </span>
 <span>                                                  <span class="st">"selfgraft_3"</span><span class="op">)</span>,</span>
 <span>                                     tidy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Calculating consensus dicercall based on information from all replicates </span></span>
+<span><span class="co">#&gt; The consensus dicercall will be excluded in the case of a tie </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Removing sRNA clusters with no consensus dicercall...</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sRNA_data_consensus</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                   Locus chr     start       end   Cluster</span></span>
@@ -770,7 +782,7 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <h4 id="mobile-molecules-from-the-24-nt-srna-dataset">Mobile molecules from the 24-nt sRNA dataset<a class="anchor" aria-label="anchor" href="#mobile-molecules-from-the-24-nt-srna-dataset"></a>
 </h4>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA_sig24</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">p10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA_sig24</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">p11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA_sig2122</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="mobileRNA_chimeric_files/figure-html/unnamed-chunk-20-1.png" alt="An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method Class of 24-nt sRNAs (left) and Class of 21/22-nt sRNAs (right). Where the rows represents the sRNA cluster number and the columns represents replicates." width="50%"><img src="mobileRNA_chimeric_files/figure-html/unnamed-chunk-20-2.png" alt="An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method Class of 24-nt sRNAs (left) and Class of 21/22-nt sRNAs (right). Where the rows represents the sRNA cluster number and the columns represents replicates." width="50%"><p class="caption">
@@ -843,7 +855,7 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">mobile_sequences</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsequences.html">RNAsequences</a></span><span class="op">(</span><span class="va">mobile_sRNA</span><span class="op">)</span></span>
-<span><span class="co">#&gt; The minimum number of matches required to form a consensus sRNA sequence is... 1</span></span>
+<span><span class="co">#&gt; The minimum number of matches required to form a consensus sRNA sequence is...  1 </span></span>
 <span><span class="co">#&gt; The consensus sRNA sequences will be choose at random in the case of a tie</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mobile_sequences</span><span class="op">)</span></span>

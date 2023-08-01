@@ -4,8 +4,9 @@ pkgdown_sha: ~
 articles:
   mobileRNA: mobileRNA.html
   mobileRNA_chimeric: mobileRNA_chimeric.html
+  mobileRNA_mRNA: mobileRNA_mRNA.html
   mobileRNA_standard: mobileRNA_standard.html
-last_built: 2023-07-24T18:24Z
+last_built: 2023-08-01T08:17Z
 urls:
   reference: https://kjeynescupper.github.io/mobileRNA/reference
   article: https://kjeynescupper.github.io/mobileRNA/articles

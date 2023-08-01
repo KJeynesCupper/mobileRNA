@@ -19,6 +19,9 @@
     <loc>https://kjeynescupper.github.io/mobileRNA/articles/mobileRNA_chimeric.html</loc>
   </url>
   <url>
+    <loc>https://kjeynescupper.github.io/mobileRNA/articles/mobileRNA_mRNA.html</loc>
+  </url>
+  <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/articles/mobileRNA_standard.html</loc>
   </url>
   <url>
@@ -32,6 +35,9 @@
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/reference/RNAattributes.html</loc>
+  </url>
+  <url>
+    <loc>https://kjeynescupper.github.io/mobileRNA/reference/RNAdf2se.html</loc>
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/reference/RNAdicercall.html</loc>
@@ -95,6 +101,9 @@
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/reference/plotSamplePCA.html</loc>
+  </url>
+  <url>
+    <loc>https://kjeynescupper.github.io/mobileRNA/reference/plotVolcano.html</loc>
   </url>
   <url>
     <loc>https://kjeynescupper.github.io/mobileRNA/reference/sRNA_data.html</loc>

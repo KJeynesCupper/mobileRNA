@@ -34,6 +34,7 @@ represent either a sRNA locus or gene, respectively."><meta property="og:image" 
     <h6 class="dropdown-header" data-toc-skip>Tutorials</h6>
     <a class="dropdown-item" href="../articles/mobileRNA_standard.html">Analyse sRNA populations using mobileRNA</a>
     <a class="dropdown-item" href="../articles/mobileRNA_chimeric.html">Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</a>
+    <a class="dropdown-item" href="../articles/mobileRNA_mRNA.html">Explore canditate mobile mRNAs &amp; population-scale mRNA changes in chimeric systems using mobileRNA</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -65,7 +66,13 @@ represent either a sRNA locus or gene, respectively.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RNAimport</span><span class="op">(</span>input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sRNA"</span>, <span class="st">"mRNA"</span><span class="op">)</span>, <span class="va">directory</span>, <span class="va">samples</span>, tidy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RNAimport</span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sRNA"</span>, <span class="st">"mRNA"</span><span class="op">)</span>,</span>
+<span>  <span class="va">directory</span>,</span>
+<span>  <span class="va">samples</span>,</span>
+<span>  annotation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tidy <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -86,6 +93,11 @@ alignment folders.</p></dd>
 to outputted folders located in the <code>`directory`</code> argument path.</p></dd>
 
 
+<dt>annotation</dt>
+<dd><p>Path to GFF genome annotation file. Required only for
+mRNAseq data.</p></dd>
+
+
 <dt>tidy</dt>
 <dd><p>Logical; removes genes from analysis where there are zero counts
 across all replicates.</p></dd>
@@ -95,14 +107,29 @@ across all replicates.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
+<p><strong>For sRNAseq:</strong></p>
+
+
 <p>A dataframe where rows represent sRNA clusters and columns represent
 replicate information. Replicate information includes Dicercall, Counts, RPM
 and MajorRNA sequence. Each replicate information is distinguishable as
 the replicate name is ajoined as a prefix to each column name.</p>
+
+
+<p><strong>For mRNAseq:</strong></p>
+
+
+<p>A dataframe where rows represent gene names and columns representing
+replicate information. Replicate information includes Counts and FPKM.
+Additional columns include SampleCounts (the number of replicates which
+contains counts), chr (chromosome), start and end coordinates are
+also included in the output. Each replicate information is distinguishable as
+the replicate name is adjoined as a prefix to each column name.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Supply the directory to the folder storing the various sample replicate
+    <p><strong>For sRNAseq:</strong>
+Supply the directory to the folder storing the various sample replicate
 folders produced by ShortStack analysis. Within each sample replicate folder,
 there is "Result.txt". This file contains many different columns, but
 for the analysis the columns of interest are  "Locus", "DicerCall", "Reads",
@@ -128,6 +155,21 @@ For each replicate included in the analysis, these columns are labeled with
 the type and then then name of the sample, for example, for
 a sample called "Sample1", the information from this sample will be stored in
 columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.</p>
+<p><strong>For mRNAseq:</strong></p>
+<p>Supply the directory to the folder storing the various sample replicate
+files outputted by the alignment program. Each file contains many the gene
+name (column 1) and the raw count value (column 2). The function identifies
+all genes across the analysis, and organises the count values for each sample
+replicate into a column. For example, this will look like
+"Counts_heterograft_1" for the sample replicate with the file name
+"heterograft_1". Further columns include the gene locus information (chr,
+start, end, width) are add to the start of the dataframe, and the FPKM
+for each sample replicate is calculated. The FPKM columns are organised and
+titled in the same format at the "Counts_" columns.</p>
+<p>When working with mRNAseq data, a GFF genome annotation file is required.
+When working with a chimeric biological system and a merged annotation file,
+ensure the genomes remain distinguishable. The function
+<code><a href="RNAmergeAnnotations.html">RNAmergeAnnotations()</a></code> can help with this.</p>
     </div>
 
     <div class="section level2">
