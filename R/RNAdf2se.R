@@ -5,7 +5,7 @@
 #'Convert any `mobileRNA` output dataframe into a SummarizedExperiment object.
 #'
 #'@param data data.frame produced by the `mobileRNA` package. 
-#' @param input character; must be either "sRNA" or "mRNA"
+#'@param input character; must be either "sRNA" or "mRNA"
 #'@details 
 #'The function relies on the naming structure of columns created by functions
 #'in the `mobileRNA` package, specifically `RNAimport()` and `RNAdicercall()`. 
@@ -24,6 +24,7 @@
 #'* The rowData includes the gene & the SampleCounts. 
 #'* The colnames represents the sample replicate names
 #'
+#'@return A SummarizedExperiment object. 
 #'@examples
 #'
 #'data("sRNA_data")
