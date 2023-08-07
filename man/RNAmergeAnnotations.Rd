@@ -9,7 +9,8 @@ RNAmergeAnnotations(
   annotationB,
   out_dir,
   abbreviationAnnoA = "A",
-  abbreviationAnnoB = "B"
+  abbreviationAnnoB = "B",
+  exportFormat = "GFF"
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ within \code{annotationA}.Default set as "A".}
 
 \item{abbreviationAnnoB}{a string placed in "", to replace chromosome names
 within \code{annotationB}.Default set as "B".}
+
+\item{exportFormat}{The format of the annotation output. If missing or the
+format does not match the file type, an error will occur. Default set to "GFF"
+format.}
 }
 \value{
 The function output the individually altered annotation files, plus, a merged
@@ -87,17 +92,8 @@ anno2 <- rtracklayer::import(anno2_url)
 
 
 # edit and merge
-merged_anno <- RNAmergeAnnotations(annotationA = anno1,
-                                 annotationB = anno2,
+merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
              out_dir = "./merged_annotation.gff3")
-
-## Set specific pre-fixes:
-###  annotationA represents Solanum melongena, so abbreviated to `SM`
-###  annotationB represents Solanum lycopersicum, so abbreviated to `SL`
-
-merged_anno_2 <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-              out_dir = "./merged_annotation.gff3",
-              abbreviationAnnoA = "SM",abbreviationAnnoB = "SL")
 
 
 

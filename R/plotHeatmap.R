@@ -37,8 +37,7 @@
 #' replicates will contain zero values for the candidate mobile sRNA clusters. 
 #' 
 #' 
-#'@return
-#'Produces a list of objects, including the plot.
+#'@return Produces a list of objects, including the plot.
 #'
 #' @examples
 #'

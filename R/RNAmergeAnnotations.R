@@ -65,7 +65,10 @@
 #'
 #'@param abbreviationAnnoB a string placed in "", to replace chromosome names
 #'within \code{annotationB}.Default set as "B".
-#'
+#' 
+#'@param exportFormat The format of the annotation output. If missing or the 
+#'format does not match the file type, an error will occur. Default set to "GFF"
+#'format. 
 #'
 #'
 #' @examples
@@ -84,31 +87,24 @@
 #'
 #'
 #'# edit and merge
-#' merged_anno <- RNAmergeAnnotations(annotationA = anno1,
-#'                                  annotationB = anno2,
+#' merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
 #'              out_dir = "./merged_annotation.gff3")
 #'
-#' ## Set specific pre-fixes:
-#' ###  annotationA represents Solanum melongena, so abbreviated to `SM`
-#' ###  annotationB represents Solanum lycopersicum, so abbreviated to `SL`
-#'
-#' merged_anno_2 <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-#'               out_dir = "./merged_annotation.gff3",
-#'               abbreviationAnnoA = "SM",abbreviationAnnoB = "SL")
 #'
 #'
 #'
 #'
-#'
-#' @importFrom Repitools "annoGR2DF"
 #' @importFrom data.table "fwrite"
 #' @importFrom dplyr "bind_rows"
+#' @importFrom GenomeInfoDb "seqlevels"
+#' @importFrom rtracklayer "export"
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
                                out_dir,
                                abbreviationAnnoA = "A",
-                               abbreviationAnnoB = "B"){
+                               abbreviationAnnoB = "B", 
+                               exportFormat = "GFF"){
 
   if (base::missing(annotationA) || !base::inherits(annotationA, "GRanges")) {
     stop(paste("Please specify annotationA object; GRanges object "))
@@ -123,44 +119,30 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
                write and save merged annotation. Ensure file name with extension
                (.gff or .gff3) is supplied."))
   }
-  message("Adding abbreviations to chomosome names ... ")
-
-  # Convert granges to dataframe
-    annotationA <- Repitools::annoGR2DF(annotationA)
-    annotationB <- Repitools::annoGR2DF(annotationB)
+  cat("Adding abbreviations to chomosome names ...  \n")
   # replace names with prefix and remove punc.
-    annotationA$chr <- paste0(abbreviationAnnoA,"_", annotationA$chr)
-    annotationA$chr <- sub("\\.", "", annotationA$chr)
-
-    annotationB$chr <- paste0(abbreviationAnnoB,"_", annotationB$chr)
-    annotationB$chr <- sub("\\.", "", annotationB$chr)
-
-    # Write out altered GFF files
-    location <- dirname(out_dir)
-    annoA_save <- paste0(location,"/", "annotationA_altered.gff")
-    annoB_save <- paste0(location,"/", "annotationB_altered.gff")
-
-    data.table::fwrite(annotationA, file = annoA_save,sep = "\t",
-                         quote = FALSE,row.names = FALSE, col.names = FALSE)
-
-      message("New annotation file created: ", annoA_save)
-
-      data.table::fwrite(annotationB, file = annoB_save,sep = "\t",
-                         quote = FALSE, row.names = FALSE, col.names = FALSE)
-
-
-    message("New annotation file created: ", annoB_save)
-    message("Merging altered annotation files ...")
-
-    # merge gff files
-    concatenated_gff <- dplyr::bind_rows(annotationA, annotationB)
-    concatenated_gff <- data.frame(lapply(concatenated_gff, as.character), stringsAsFactors=FALSE)
-
-    data.table::fwrite(concatenated_gff, file = out_dir,sep = "\t",
-                       quote = FALSE, row.names = FALSE, col.names = FALSE)
-
-    return(concatenated_gff)
-
-    message("New merged annnotation with modified chromosome names has been
-    created saved to:", out_dir)
+  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_", seqlevels(annotationA)))
+  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_", seqlevels(annotationB)))
+  
+  # rename 
+  GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames
+  GenomeInfoDb::seqlevels(annotationB) <- annotationB_seqnames
+  
+  # Write out altered GFF files
+  location <- dirname(out_dir)
+  annoA_save <- paste0(location,"/", "annotationA_altered.gff")
+  annoB_save <- paste0(location,"/", "annotationB_altered.gff")
+  
+  rtracklayer::export(annotationA, annoA_save, format = exportFormat)
+  cat("New annotation file annotationB: ", annoA_save, "\n")
+  rtracklayer::export(annotationB, annoB_save, format = exportFormat)
+  cat("New annotation file created: ", annoB_save, "\n")
+  
+  cat("Merging altered annotation files ... \n")
+  gr_list <- GRangesList(annotationA, annotationB)
+  concatenated_gff <- unlist(gr_list)
+  
+  rtracklayer::export(concatenated_gff, out_dir, format = exportFormat)
+  cat("New merged annnotation with modified chromosome names has been created saved to: ", out_dir)
+  return(concatenated_gff)
 }
