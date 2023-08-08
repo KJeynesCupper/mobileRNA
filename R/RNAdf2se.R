@@ -23,7 +23,7 @@
 #'* The assays represent the additional information including Count &FPKM. 
 #'* The rowData includes the gene & the SampleCounts. 
 #'* The colnames represents the sample replicate names
-#'
+#'@return A SummarizedExperiment object.
 #'@examples
 #'
 #'data("sRNA_data")

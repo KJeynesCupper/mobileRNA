@@ -11,6 +11,9 @@ RNAdf2se(input = c("sRNA", "mRNA"), data)
 
 \item{data}{data.frame produced by the \code{mobileRNA} package.}
 }
+\value{
+A SummarizedExperiment object.
+}
 \description{
 Convert any \code{mobileRNA} output dataframe into a SummarizedExperiment object.
 }

@@ -20,3 +20,10 @@ Changes in version  0.99.0 (2023-08-01)
 + included RNAimport, RNAattributes, RNAanalysis, plotHeatmap, RNAmean & RNAmobile
 + Improve plotting flexibility in plotSamplePCA
 + added mew functions: RNAdf2se & plotVolcano
+
+Changes in version  0.99.0 (2023-08-01)
++ added RNAdf2e function
++ improvements to plotSamplePCA and plotHeatmap
+
+Changes in version  0.99.0 (2023-08-07)
++ ammended RNAmergeAnnotations function to meet requirements
