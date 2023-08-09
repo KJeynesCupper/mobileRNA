@@ -1,9 +1,9 @@
 Package: mobileRNA
 Type: Package
 Title: Identify mobile RNA molecules in plant graft systems 
-Version: 0.99.1
+Version: 0.99.2
 Authors@R: c(
-    person("Katie", "Jeynes-Cupper", email = "katie.jeynescupper@gmail.com", 
+    person("Katie", "Jeynes-Cupper", email = "kej031@student.bham.ac.uk", 
     role = c("cre","aut")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut"))
 Description: The mobileRNA package allows for the identifcation of mobile small 
@@ -64,6 +64,7 @@ biocViews:
     Visualization,
     RNASeq,
     Sequencing,
-    SmallRNA
+    SmallRNA,
+    GenomeAssembly
 SystemRequirements: ShortStack (https://github.com/MikeAxtell/ShortStack)
 BiocType: Workflow

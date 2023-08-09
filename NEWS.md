@@ -20,4 +20,7 @@ Changes in version 0.99.1 (2023-08-01)
 + improvements to plotSamplePCA and plotHeatmap
 
 Changes in version  0.99.1 (2023-08-07)
-+ ammended RNAmergeAnnotations function to meet requirements
++ amended RNAmergeAnnotations function to meet requirements
+
+Updated to version  0.99.2 (2023-08-07)
++ contained incorrect maintainer email address
