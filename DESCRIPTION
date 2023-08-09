@@ -1,10 +1,9 @@
 Package: mobileRNA
 Type: Package
 Title: Identify mobile RNA molecules in plant graft systems 
-Version: 0.99.2
-Authors@R: c(
-    person("Katie", "Jeynes-Cupper", email = "kej031@student.bham.ac.uk", 
-    role = c("cre","aut")),
+Version: 0.99.3
+Authors@R: c(person("Katie", "Jeynes-Cupper", 
+    email = "kej031@student.bham.ac.uk", role = c("aut", "cre")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut"))
 Description: The mobileRNA package allows for the identifcation of mobile small 
   RNA molecules (20-24 nt) and messenger RNAs (mRNAs) derived from one genotype 
