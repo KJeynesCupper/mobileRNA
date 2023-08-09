@@ -15,9 +15,9 @@ Changes in version  0.99.0 (2023-07-19)
 + improved error calling on functions
 + found error in RNAattributes
 
-Changes in version  0.99.0 (2023-08-01)
+Changes in version 0.99.1 (2023-08-01)
 + added RNAdf2e function
 + improvements to plotSamplePCA and plotHeatmap
 
-Changes in version  0.99.0 (2023-08-07)
+Changes in version  0.99.1 (2023-08-07)
 + ammended RNAmergeAnnotations function to meet requirements

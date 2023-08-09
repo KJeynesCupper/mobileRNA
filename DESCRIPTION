@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
 Title: Identify mobile RNA molecules in plant graft systems 
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person("Katie", "Jeynes-Cupper", email = "katie.jeynescupper@gmail.com", 
     role = c("cre","aut")),
