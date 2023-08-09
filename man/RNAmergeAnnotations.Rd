@@ -102,5 +102,4 @@ merged_anno_2 <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
 
 
 
-
 }

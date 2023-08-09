@@ -99,10 +99,9 @@
 #'
 #'
 #'
-#'
-#' @importFrom Repitools "annoGR2DF"
-#' @importFrom data.table "fwrite"
-#' @importFrom dplyr "bind_rows"
+#' @importFrom GenomeInfoDb "seqlevels"
+#' @importFrom rtracklayer "export"
+#' @importFrom GenomicRanges "GRangesList"
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
@@ -143,7 +142,7 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   cat("New annotation file created: ", annoB_save, "\n")
   
   cat("Merging altered annotation files ... \n")
-  gr_list <- GRangesList(annotationA, annotationB)
+  gr_list <- GenomicRanges::GRangesList(annotationA, annotationB)
   concatenated_gff <- unlist(gr_list)
   
   rtracklayer::export(concatenated_gff, out_dir, format = exportFormat)
