@@ -14,25 +14,12 @@ assembly and pan‐genome provide key insights into eggplant domestication and
 breeding. The Plant Journal, 107(2), 579-596.
 }
 \value{
-Dataframe in global environment
-
-Dataframe in global environment
+Dataframe in global environment.
 }
 \description{
-Simulated sRNAseq dataset - potentially mobile RNAs
-
 Chromosome 12 of genome assembly Solanium melongena Version 4.1
 }
-\details{
-Simulates data is taken from eggplant and tomato sRNAseq samples and
-created to simulate to movement of sRNA molecules from an Tomato rootstock to
-an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
-tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
-these heterografts to three Eggplant self-grafts which are the original
-un-spiked Eggplant replicates.
-}
 \examples{
-system.file("extdata","chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
 system.file("extdata",
 "chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
 }

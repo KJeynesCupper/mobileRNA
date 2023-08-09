@@ -18,18 +18,16 @@
 #' @name sRNA_data
 #' @usage data(sRNA_data)
 #' @description Simulated sRNAseq dataset
+#' @return Dataframe in global environment 
 #' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
 #' created to simulate to movement of sRNA molecules from an Tomato rootstock to
 #' an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
 #' tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
 #' these heterografts to three Eggplant self-grafts which are the original
 #'  un-spiked Eggplant replicates.
-#'  @return Dataframe in global environment 
 #'  @examples
 #'  data("sRNA_data")
 NULL
-
-
 #' sRNA_data_consensus
 #' @docType data
 #' @keywords dataset
@@ -42,34 +40,15 @@ NULL
 #' tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
 #' these heterografts to three Eggplant self-grafts which are the original
 #' un-spiked Eggplant replicates.
-#'@return Dataframe in global environment 
+#' @return Dataframe in global environment 
 #' @examples
 #'  data("sRNA_data_consensus")
 NULL
-
-
 #' sRNA_data_mobile
 #' @docType data
 #' @keywords dataset
 #' @name sRNA_data_mobile
 #' @usage data(sRNA_data_mobile)
-#' @description Simulated sRNAseq dataset - potentially mobile RNAs
-#' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
-#' created to simulate to movement of sRNA molecules from an Tomato rootstock to
-#' an Eggplant Scion. Three Eggplant replicates were spiked with the same 150
-#' tomato sRNA clusters, and named "heterograft_" 1 to 3. The analysis compares
-#' these heterografts to three Eggplant self-grafts which are the original
-#' un-spiked Eggplant replicates.
-#'  @return Dataframe in global environment 
-#' @examples
-#'  data("sRNA_data_mobile")
-NULL
-
-
-#' chr12_Eggplant_V4.1.fa.gz
-#' @docType data
-#' @keywords dataset
-#' @name chr12_Eggplant_V4.1.fa.gz
 #' @description Simulated sRNAseq dataset - potentially mobile RNAs
 #' @return Dataframe in global environment 
 #' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
@@ -79,7 +58,7 @@ NULL
 #' these heterografts to three Eggplant self-grafts which are the original
 #' un-spiked Eggplant replicates.
 #' @examples
-#' system.file("extdata","chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
+#'  data("sRNA_data_mobile")
 NULL
 
 #' chr12_Eggplant_V4.1.fa.gz
@@ -87,7 +66,7 @@ NULL
 #' @keywords dataset
 #' @format FASTA gzip
 #' @name chr12_Eggplant_V4.1.fa.gz
-#' @return Dataframe in global environment 
+#' @return Dataframe in global environment.
 #' @source Barchi, L., Rabanus‐Wallace, M. T., Prohens, J., Toppino, L.,
 #' Padmarasu, S., Portis, E., ... & Giuliano, G. (2021). Improved genome
 #' assembly and pan‐genome provide key insights into eggplant domestication and
@@ -98,7 +77,6 @@ NULL
 #' system.file("extdata",
 #' "chr12_Eggplant_V4.1.fa.gz", package="mobileRNA")
 NULL
-
 #' chr2_S_lycopersicum_chromosomes.4.00.fa.gz
 #' @docType data
 #' @keywords dataset
@@ -116,8 +94,6 @@ NULL
 #' system.file("extdata",
 #' "chr2_S_lycopersicum_chromosomes.4.00.fa.gz", package="mobileRNA")
 NULL
-
-
 #' chr2_ITAG4.0_gene_models.gff.gz
 #' @docType data
 #' @return Dataframe in global environment 
@@ -131,12 +107,11 @@ NULL
 #' system.file("extdata",
 #' "chr2_ITAG4.0_gene_models.gff.gz", package="mobileRNA")
 NULL
-
 #' chr12_Eggplant_V4.1_function_IPR_final.gff.gz
 #' @docType data
-#' @return Dataframe in global environment 
 #' @keywords dataset
 #' @format GFF gzip
+#' @return Dataframe in global environment 
 #' @source Barchi, L., Rabanus‐Wallace, M. T., Prohens, J., Toppino, L., Padmarasu, S.,
 #' Portis, E., ... & Giuliano, G. (2021). Improved genome assembly and pan‐genome
 #' provide key insights into eggplant domestication and breeding.

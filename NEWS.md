@@ -30,3 +30,6 @@ Updated to version  0.99.3 (2023-08-07)
 
 Updated to version  0.99.4 (2023-08-07)
 + Bioc-maintainer checks
+
+Updated to version  0.99.5 (2023-08-07)
++ updated man files for datasets, missing /values.
