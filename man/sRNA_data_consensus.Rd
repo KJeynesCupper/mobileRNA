@@ -7,6 +7,9 @@
 \usage{
 data(sRNA_data_consensus)
 }
+\value{
+Dataframe in global environment
+}
 \description{
 Simulated sRNAseq dataset with RNA consensus
 }

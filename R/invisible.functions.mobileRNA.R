@@ -1,6 +1,6 @@
 #------------------------------------------------------------#
 # Title:  Invisible functions                                #
-# Author: Katie Jeynes-Cupper (katie.jeynescupper@gmail.com) #
+# Author: Katie Jeynes-Cupper (kej031@student.bham.ac.uk) #
 # Date:   01.02.23                                           #
 #------------------------------------------------------------#
 

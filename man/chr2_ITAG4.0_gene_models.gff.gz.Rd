@@ -7,6 +7,9 @@
 \format{
 GFF gzip
 }
+\value{
+Dataframe in global environment
+}
 \description{
 Chromosome 2 of genome annotation Solanium lycopersicum (Heinz)
 Version SL4.0

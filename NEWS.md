@@ -1,7 +1,7 @@
 Changes in version  0.99.0 (2023-06-19)
 + amendments for Bioconductor
 
-Changes in version  0.99.0 (2023-07-15)
+Changes in version 0.99.0 (2023-07-15)
 + RNAconsensus changed to RNAdicercall
 + alterations to RNAdicercall algorithm, including tie options, altered default tidy method. 
 + RNAdicercall introduced new column "DicerCount" 
@@ -15,15 +15,21 @@ Changes in version  0.99.0 (2023-07-19)
 + improved error calling on functions
 + found error in RNAattributes
 
-Changes in version  0.99.0 (2023-08-01)
-+ introduced mRNA pipeline, altered existing functions to facilitate data-type. 
-+ included RNAimport, RNAattributes, RNAanalysis, plotHeatmap, RNAmean & RNAmobile
-+ Improve plotting flexibility in plotSamplePCA
-+ added mew functions: RNAdf2se & plotVolcano
-
-Changes in version  0.99.0 (2023-08-01)
+Changes in version 0.99.1 (2023-08-01)
 + added RNAdf2e function
 + improvements to plotSamplePCA and plotHeatmap
 
-Changes in version  0.99.0 (2023-08-07)
-+ ammended RNAmergeAnnotations function to meet requirements
+Changes in version  0.99.1 (2023-08-07)
++ amended RNAmergeAnnotations function to meet requirements
+
+Updated to version  0.99.2 (2023-08-07)
++ contained incorrect maintainer email address
+
+Updated to version  0.99.3 (2023-08-07)
++ Bioc-maintainer checks
+
+Updated to version  0.99.4 (2023-08-07)
++ Bioc-maintainer checks
+
+Updated to version  0.99.5 (2023-08-07)
++ updated man files for datasets, missing /values.
