@@ -13,6 +13,11 @@ Padmarasu, S., Portis, E., ... & Giuliano, G. (2021). Improved genome
 assembly and pan‐genome provide key insights into eggplant domestication and
 breeding. The Plant Journal, 107(2), 579-596.
 }
+\value{
+Dataframe in global environment
+
+Dataframe in global environment
+}
 \description{
 Simulated sRNAseq dataset - potentially mobile RNAs
 

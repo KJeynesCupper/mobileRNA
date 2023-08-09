@@ -13,6 +13,9 @@ V., Schijlen, E., ... & Saha, S. (2019). An improved de novo assembly and
 annotation of the tomato reference genome using single-molecule sequencing,
 Hi-C proximity ligation and optical maps. biorxiv, 767764.
 }
+\value{
+Dataframe in global environment
+}
 \description{
 Chromosome 2 of genome assembly Solanium lycopersicum (Heinz)
 Version SL4.0
