@@ -94,10 +94,9 @@
 #'
 #'
 #'
-#' @importFrom data.table "fwrite"
-#' @importFrom dplyr "bind_rows"
 #' @importFrom GenomeInfoDb "seqlevels"
 #' @importFrom rtracklayer "export"
+#' @importFrom GenomicRanges "GRangesList"
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
@@ -121,8 +120,8 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   }
   cat("Adding abbreviations to chomosome names ...  \n")
   # replace names with prefix and remove punc.
-  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_", seqlevels(annotationA)))
-  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_", seqlevels(annotationB)))
+  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   GenomeInfoDb::seqlevels(annotationA)))
+  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",   GenomeInfoDb::seqlevels(annotationB)))
   
   # rename 
   GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames
@@ -139,7 +138,7 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   cat("New annotation file created: ", annoB_save, "\n")
   
   cat("Merging altered annotation files ... \n")
-  gr_list <- GRangesList(annotationA, annotationB)
+  gr_list <- GenomicRanges::GRangesList(annotationA, annotationB)
   concatenated_gff <- unlist(gr_list)
   
   rtracklayer::export(concatenated_gff, out_dir, format = exportFormat)
