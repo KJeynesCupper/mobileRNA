@@ -99,7 +99,7 @@
 #' @importFrom utils "flush.console"
 
 RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
-                       tidy = TRUE) {
+                       tidy = FALSE) {
 
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
