@@ -33,3 +33,6 @@ Updated to version  0.99.4 (2023-08-07)
 
 Updated to version  0.99.5 (2023-08-07)
 + updated man files for datasets, missing /values.
+
+Updated to version devel (2023-08-14)
++ ammended and added feature option to RNAattributes 

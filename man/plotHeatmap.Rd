@@ -7,7 +7,7 @@
 plotHeatmap(
   data,
   pseudocount = 1e-06,
-  colours = viridis::viridis(100),
+  colours = grDevices::hsv(1, 1, seq(0, 1, length.out = 12)),
   cluster = TRUE,
   scale = "none",
   clustering_method = "complete",

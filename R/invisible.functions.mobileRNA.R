@@ -150,6 +150,6 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "MajorRNA", "i", "other", "report", "DicerCounts", 
                          "Sequence", "new_df", "Locus", "Name", "SampleCounts",
                          "SampleCounts_val", "log2FoldChange", "significance", 
-                         "Gene"))
+                         "Gene", "ranges"))
 
 

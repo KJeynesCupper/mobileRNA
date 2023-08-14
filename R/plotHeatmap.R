@@ -60,9 +60,9 @@
 #' @importFrom stats "reorder"
 #' @importFrom pheatmap "pheatmap"
 #' @importFrom stats "na.omit"
-#' @importFrom viridis "viridis"
+#' @importFrom grDevices hsv
 plotHeatmap <- function (data, pseudocount = 1e-6, 
-                         colours = viridis::viridis(100), 
+                         colours = grDevices::hsv(1, 1, seq(0,1,length.out = 12)), 
                          cluster = TRUE, scale = "none", 
                          clustering_method = "complete", 
                          row.names = TRUE) 
@@ -81,6 +81,9 @@ plotHeatmap <- function (data, pseudocount = 1e-6,
     } else {
       stop("data must contain columns containing either FPKM or RPM data columns.")
     }
+  # remove cluster with no counts 
+  select_data <- select_data[rowSums(select_data[])>0,]
+  
   rownames(select_data) <- data$clusterID
   # RPM normalization with pseudocount addition
   total_reads_per_sample <- colSums(select_data)

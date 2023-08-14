@@ -65,7 +65,10 @@
 #'
 #'@param abbreviationAnnoB a string placed in "", to replace chromosome names
 #'within \code{annotationB}.Default set as "B".
-#'
+#' 
+#'@param exportFormat The format of the annotation output. If missing or the 
+#'format does not match the file type, an error will occur. Default set to "GFF"
+#'format. 
 #'
 #'
 #' @examples
@@ -84,17 +87,9 @@
 #'
 #'
 #'# edit and merge
-#' merged_anno <- RNAmergeAnnotations(annotationA = anno1,
-#'                                  annotationB = anno2,
+#' merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
 #'              out_dir = "./merged_annotation.gff3")
 #'
-#' ## Set specific pre-fixes:
-#' ###  annotationA represents Solanum melongena, so abbreviated to `SM`
-#' ###  annotationB represents Solanum lycopersicum, so abbreviated to `SL`
-#'
-#' merged_anno_2 <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-#'               out_dir = "./merged_annotation.gff3",
-#'               abbreviationAnnoA = "SM",abbreviationAnnoB = "SL")
 #'
 #'
 #'
@@ -105,18 +100,19 @@
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
-                               out_dir,
-                               abbreviationAnnoA = "A",
-                               abbreviationAnnoB = "B"){
-
+                                out_dir,
+                                abbreviationAnnoA = "A",
+                                abbreviationAnnoB = "B", 
+                                exportFormat = "GFF"){
+  
   if (base::missing(annotationA) || !base::inherits(annotationA, "GRanges")) {
     stop(paste("Please specify annotationA object; GRanges object "))
   }
-
+  
   if (base::missing(annotationB) || !base::inherits(annotationB, "GRanges")){
     stop(paste("Please specify annotationA; GRanges object"))
   }
-
+  
   if (base::missing(out_dir) || grepl("\\.gff$", out_dir)) {
     stop(paste("Please specify out_dir, a connection to a local directory to
                write and save merged annotation. Ensure file name with extension
@@ -124,8 +120,8 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   }
   cat("Adding abbreviations to chomosome names ...  \n")
   # replace names with prefix and remove punc.
-  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_", seqlevels(annotationA)))
-  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_", seqlevels(annotationB)))
+  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   GenomeInfoDb::seqlevels(annotationA)))
+  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",   GenomeInfoDb::seqlevels(annotationB)))
   
   # rename 
   GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames

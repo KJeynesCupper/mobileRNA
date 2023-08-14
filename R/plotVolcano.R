@@ -34,6 +34,7 @@
 #' @importFrom dplyr "desc"
 #' @importFrom dplyr "count"
 #' @importFrom utils "head"
+#' @importFrom dplyr "bind_rows"
 plotVolcano <- function(data, labels = FALSE, top.molecules = 10, 
                         colour.scheme = NULL){
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
@@ -69,7 +70,7 @@ plotVolcano <- function(data, labels = FALSE, top.molecules = 10,
   ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size=1.5)))
 
 if(labels){
-  top_molecules <- bind_rows(
+  top_molecules <- dplyr::bind_rows(
     data_val %>% 
       dplyr::filter(expression == 'Upregulated') %>% 
       dplyr::arrange(padjusted, dplyr::desc(abs(log2FoldChange))) %>% 
