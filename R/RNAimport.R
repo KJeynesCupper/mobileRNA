@@ -205,7 +205,14 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                                      after = 4))
 
 
-
+    
+# Remove rows with no counts 
+count_columns <- grep("^Count", names(df_final))
+# Identify rows where all values in Count columns are zero
+rows_to_remove <- apply(df_final[count_columns], 1, function(row) all(row == 0))
+# Remove rows with all zero values in Count columns
+df_final <- df_final[!rows_to_remove, ]   
+                        
     # return values
     return(df_final)
 
