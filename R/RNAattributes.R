@@ -1,11 +1,16 @@
-#' Identify specific attributes associated to a sRNA cluster
+#' Overlap genome annotation file information with sRNA-seq data 
 #'
 #' Based on genomic coordinates, assign sRNA clusters with an annotation that
-#' has an exact match based on chromosome number, start and end coordinates
+#' has an specified match based on chromosome number, start and end coordinates.
+#' This function can be used to find small interfering RNA molecule clusters 
+#' which overlap with genes. An additional buffer region at the start/end of 
+#' the gene is added improve hits, and align with the assumptions about promoter
+#' regions. 
 #'
 #' @details The function merges an annotation (.gff/.gff3) file with
-#' the sRNA data set based on the chromosome, start and end coordinates. It is
-#' important that any alteration which were made to the genome reference
+#' the sRNA data set based on the chromosome, start and end coordinates. 
+#' 
+#' It is important that any alteration which were made to the genome reference
 #' (FASTA), such as alterations to the chromosome name, must be carried forth
 #' to the genome annotation file. If alterations were made to the reference
 #' genome using the [mobileRNA::RNAmergeGenomes()] function, alteration
@@ -19,26 +24,48 @@
 #' @param annotation A path, URL, connection or GFFFile object. A genome
 #' reference annotation file (.gff/.gff1/.gff2/.gff3).
 #'
-#'
-#'@return Adds an additional columns from GFF containing information which
+#' @param match character; must be either  "within" or "genes". Where 
+#' "within" will return matches where the clusters can be found within any 
+#' annotation, while "genes" will return matches where the clusters can be found 
+#' within only genes. 
+#' 
+#' @param bufferRegion numeric; a buffer region in base-pairs to extend the 
+#' start and end coordinates upstream and downstream respectively. 
+#' 
+#' 
+#'@return Adds additional columns from the GFF containing information which
 #'overlaps any sRNA cluster loci. These columns represent the standard columns
-#'in a GFF file.
+#'in a GFF file. 
+#'
+#'
+#'
 #' @export
 #' @importFrom rtracklayer "import"
-#' @importFrom Repitools "annoGR2DF"
+#' @importFrom GenomicRanges "GRanges"
+#' @importFrom GenomicRanges "findOverlaps"
+#' @importFrom S4Vectors "queryHits"
+#' @importFrom S4Vectors "subjectHits"
+#' @importFrom dplyr "mutate"
+#' @importFrom rlang "sym"
+#' @importFrom dplyr "select_if"
+#' @importFrom IRanges "IRanges"
+#' @importFrom S4Vectors "mcols" 
+#' @importFrom IRanges "ranges"
 #' @examples
 #' \dontrun{
 #'
 #' data("sRNA_data")
 #'
 #' attributes_df <- RNAattributes(data = sRNA_data,
-#'                     annotation = "./annotation/merged_annotation.gff3")
+#'                     annotation = "./annotation/merged_annotation.gff3",
+#'                     match = "genes")
 #'
 #'
 #'
 #' }
 #'
-RNAattributes <- function(data, annotation){
+RNAattributes <- function(data, annotation, match = c("within", "genes"),
+                          bufferRegion = 1000){
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
          DataFrame")
@@ -46,19 +73,101 @@ RNAattributes <- function(data, annotation){
   if (base::missing(annotation)) {
     stop("annotation is missing. annotation must be an object of GFF format.")
   }
-  cat("Please be patient...")
   anno_data <- rtracklayer::import(annotation)
-  conversion <- Repitools::annoGR2DF(anno_data)
-  # check chromosome names match:
-  tryCatch(
-    {  
-      res <- merge(data,conversion, by=c("chr","start", "end"),all.x=TRUE)
-    }, error = function(e) {
-      cat("An error occurred .. :", conditionMessage(e), "\n")
-      cat("An error occurred ... chromosome names.", "\n")
-      
+  
+  if(match == "within"){
+    features_gr <-  anno_data
+    # convert data to granges 
+    data_gr <- GenomicRanges::GRanges(
+      seqnames = data$chr,
+      ranges = IRanges::IRanges(start = data$start, end = data$end)
+    )
+    # Find overlaps between genomic loci and adjusted GRanges
+    overlaps <- GenomicRanges::findOverlaps(data_gr, features_gr)
+    
+    # Get the indices of overlapping genomic loci ie row number 
+    queryHits_ot <- S4Vectors::queryHits(overlaps)
+    subjectHits_ot <- S4Vectors::subjectHits(overlaps)
+    
+    
+    # convert to dataframe 
+    features_gr_df <- as.data.frame(features_gr)
+    # add columns to data 
+    add_cols <- colnames(features_gr_df) 
+    col_diff <- setdiff(add_cols, colnames(data))
+    rm_extra <- c("seqnames", "width","strand","source", "score", "phase")
+    col_diff <- col_diff[!col_diff %in% rm_extra]
+    
+    data[,col_diff] <- NA
+    
+    for (i in seq_along(subjectHits_ot)) {
+      row_index <- subjectHits_ot[i]
+      row_vals <- features_gr_df[row_index, ]
+      row_vals<- row_vals[,col_diff] # only extra columns. 
+      for (j in names(row_vals)) {
+        if (j %in% names(data[queryHits_ot[i],])) {
+          data[queryHits_ot[i],] <- data[queryHits_ot[i],] %>%
+            dplyr::mutate(!!j := ifelse(is.na(!!rlang::sym(j)), row_vals[[j]], 
+                                        !!rlang::sym(j)))
+        }
+      }
     }
-  )
-  return(res)
+    # remove columsn with only NAs
+    data <- data  %>% dplyr::select_if(~sum(!is.na(.)) > 0)
+  }
+  
+  if(match == "genes"){
+    # select genes
+    genes <- anno_data[anno_data$type == "gene"]
+    # amend ranges
+    adjusted_ranges <- IRanges::IRanges(
+      start = start(IRanges::ranges(genes)) - bufferRegion,
+      end = end(IRanges::ranges(genes)) + bufferRegion
+    )
+    
+    #add ranges to genes info  
+    adjusted_grange <- GenomicRanges::GRanges(
+      seqnames(genes),
+      ranges = adjusted_ranges,
+      metadata = S4Vectors::mcols(genes)
+    )
+    
+    # convert data to granges 
+    data_gr <- GenomicRanges::GRanges(
+      seqnames = data$chr,
+     ranges = IRanges(start = data$start, end = data$end)
+    )
+    
+    # Find overlaps between genomic loci and adjusted GRanges
+    overlaps <- GenomicRanges::findOverlaps(data_gr, adjusted_grange)
+    
+    # Get the indices of overlapping genomic loci ie row number 
+    queryHits_ot <- S4Vectors::queryHits(overlaps)
+    subjectHits_ot <- S4Vectors::subjectHits(overlaps)
+    
+    
+    # convert to dataframe 
+    adjusted_grange_df <- as.data.frame(adjusted_grange)
+    # add columns to data 
+    add_cols <- colnames(adjusted_grange_df) 
+    col_diff <- setdiff(add_cols, colnames(data))
+    rm_extra <- c("seqnames", "width","strand","source", "score", "phase")
+    col_diff <- col_diff[!col_diff %in% rm_extra]
+    
+    data[,col_diff] <- NA
+    
+    for (i in seq_along(subjectHits_ot)) {
+      row_index <- subjectHits_ot[i]
+      row_vals <- features_gr_df[row_index, ]
+      row_vals<- row_vals[,col_diff] # only extra columns. 
+      for (j in names(row_vals)) {
+        if (j %in% names(data[queryHits_ot[i],])) {
+          data[queryHits_ot[i],] <- data[queryHits_ot[i],] %>%
+            dplyr::mutate(!!j := ifelse(is.na(!!rlang::sym(j)), row_vals[[j]], 
+                                        !!rlang::sym(j)))
+        }
+      }
+    }
+  }
+  return(data)
 }
-

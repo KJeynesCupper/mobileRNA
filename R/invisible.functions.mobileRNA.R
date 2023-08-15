@@ -148,6 +148,6 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "value" , "variable" , "repeats_info" , "Genome" ,
                          "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ,
                          "MajorRNA", "i", "other", "report", "DicerCounts", 
-                         "Sequence", "new_df"))
+                         "Sequence", "new_df",  "PC1", "PC2", "conditions"))
 
 

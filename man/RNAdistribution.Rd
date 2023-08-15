@@ -101,9 +101,6 @@ data('sRNA_data')
 
 p1 <- RNAdistribution(data = sRNA_data, style = "line")
 
-p1.2 <- RNAdistribution(data = sRNA_data, style = "line",
-                        samples = c("heterograft_1", "heterograft_2",
-                        "heterograft_3"))
 p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
 
 p3 <- RNAdistribution(data = sRNA_data, style = "bar")

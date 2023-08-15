@@ -33,3 +33,8 @@ Updated to version  0.99.4 (2023-08-07)
 
 Updated to version  0.99.5 (2023-08-07)
 + updated man files for datasets, missing /values.
+
+Updated to version  0.99.6 (2023-08-15)
++ fixed bug in RNAdistribution plot, when sample specific
++ improved PCA plot felxability
++ broadened use of RNAattributes function. 

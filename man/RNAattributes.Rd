@@ -2,9 +2,14 @@
 % Please edit documentation in R/RNAattributes.R
 \name{RNAattributes}
 \alias{RNAattributes}
-\title{Identify specific attributes associated to a sRNA cluster}
+\title{Overlap genome annotation file information with sRNA-seq data}
 \usage{
-RNAattributes(data, annotation)
+RNAattributes(
+  data,
+  annotation,
+  match = c("within", "genes"),
+  bufferRegion = 1000
+)
 }
 \arguments{
 \item{data}{data frame; containing rows of potential dicer-derived clusters
@@ -13,20 +18,33 @@ the chromosome number, \code{start} and \code{end} which supply the coordinates.
 
 \item{annotation}{A path, URL, connection or GFFFile object. A genome
 reference annotation file (.gff/.gff1/.gff2/.gff3).}
+
+\item{match}{character; must be either  "within" or "genes". Where
+"within" will return matches where the clusters can be found within any
+annotation, while "genes" will return matches where the clusters can be found
+within only genes.}
+
+\item{bufferRegion}{numeric; a buffer region in base-pairs to extend the
+start and end coordinates upstream and downstream respectively.}
 }
 \value{
-Adds an additional columns from GFF containing information which
+Adds additional columns from the GFF containing information which
 overlaps any sRNA cluster loci. These columns represent the standard columns
 in a GFF file.
 }
 \description{
 Based on genomic coordinates, assign sRNA clusters with an annotation that
-has an exact match based on chromosome number, start and end coordinates
+has an specified match based on chromosome number, start and end coordinates.
+This function can be used to find small interfering RNA molecule clusters
+which overlap with genes. An additional buffer region at the start/end of
+the gene is added improve hits, and align with the assumptions about promoter
+regions.
 }
 \details{
 The function merges an annotation (.gff/.gff3) file with
-the sRNA data set based on the chromosome, start and end coordinates. It is
-important that any alteration which were made to the genome reference
+the sRNA data set based on the chromosome, start and end coordinates.
+
+It is important that any alteration which were made to the genome reference
 (FASTA), such as alterations to the chromosome name, must be carried forth
 to the genome annotation file. If alterations were made to the reference
 genome using the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function, alteration
@@ -39,7 +57,8 @@ inline with these can be accomplished using the
 data("sRNA_data")
 
 attributes_df <- RNAattributes(data = sRNA_data,
-                    annotation = "./annotation/merged_annotation.gff3")
+                    annotation = "./annotation/merged_annotation.gff3",
+                    match = "genes")
 
 
 

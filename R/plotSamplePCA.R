@@ -26,6 +26,16 @@
 #' @param size.ratio numeric; set plot ratio, broadens axis dimensions by ratio.
 #' Default `size.ratio=2`, double the plot dimension. 
 #'
+#'@param colours Vector of HEX colour codes. Must match the number of 
+#'conditions. For example, 
+#'`colours = c("#E69F00", "#56B4E9", "#CC79A7", "#009E73")`
+#'
+#'@param point.shape Logical; set whether the point shapes should be different
+#'for each condition. 
+#'
+#'@param ggplot.theme character; state the `ggplot2` theme (without () 
+#'brackets). For example, `ggplot.theme=theme_classic`. 
+#'
 #' @return A PCA plot to show sample distance.
 #'
 #' @details This function utilises the DESeq2 package to organise and plot the
@@ -45,6 +55,7 @@
 #'
 #' groups <- c("Heterograft", "Heterograft", "Heterograft",
 #'             "Selfgraft", "Selfgraft", "Selfgraft")
+#'             
 #' p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 #'
 #' plot(p)
@@ -64,8 +75,13 @@
 #' @importFrom ggplot2 "labs"
 #' @importFrom ggplot2 "coord_fixed"
 #' @importFrom ggrepel "geom_text_repel"
+#' @importFrom ggplot2 "ggplot"
+#' @importFrom ggplot2 "geom_point"
+#' @importFrom ggplot2 "scale_color_manual"
 plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
-                          legend.title = "Conditions", size.ratio = 2){
+                          legend.title = "Conditions", size.ratio = 2, 
+                          colours = NULL, point.shape = TRUE, 
+                          ggplot.theme = NULL){
   cat("Checking and organising data \n")
   
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
@@ -101,23 +117,51 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   ## change position
   sample_names <- sub("Count_", "", colnames(data))
   pca["ID"] <- sample_names # create new column with sample names
+  percentVar <- round(100 * attr(pca, "percentVar"))
+  
   cat("Organising principal component analysis \n")
   if(labels == TRUE){
     if(boxed == TRUE){
-      X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
-        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), show.legend = FALSE, box.padding = 1)+
-        ggplot2::labs(color=legend.title)+
-        ggplot2::coord_fixed(ratio = size.ratio)
+      X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
+        {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions, 
+                                                          size=3))}+
+        {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
+        xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+        ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+        {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
+        ggplot2::coord_fixed()+
+        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
+                                  show.legend = FALSE, box.padding = 1)+
+        ggplot2::labs(color = legend.title) + 
+        ggplot2::coord_fixed(ratio = size.ratio)+
+        {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
+      
     } else
-      X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
-        ggrepel::geom_text_repel(data = pca, ggplot2::aes(label = ID), show.legend = FALSE, box.padding = 1)+
-        ggplot2::labs(color=legend.title)+
-        suppressMessages(ggplot2::coord_fixed(ratio = size.ratio)) 
-  } else {
-    X <-DESeq2::plotPCA(rld1, intgroup = "conditions")+
-      ggplot2::labs(color=legend.title)+
-      ggplot2::coord_fixed(ratio = size.ratio)
+      X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
+        {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions, 
+                                                          size=3))}+
+        {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
+        xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+        ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+        {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
+        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
+                                  show.legend = FALSE, box.padding = 1)+
+        ggplot2::labs(color = legend.title) + 
+        suppressMessages(ggplot2::coord_fixed(ratio = size.ratio))+
+        {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
     
+    
+  } else {
+    X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
+      {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions,
+                                                        size=3))}+
+      {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
+      xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+      ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+      {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
+      ggplot2::labs(color = legend.title) + 
+      ggplot2::coord_fixed(ratio = size.ratio)+
+      {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
   }
   return(X)
 }
