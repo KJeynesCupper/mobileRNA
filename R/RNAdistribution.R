@@ -211,22 +211,23 @@ RNAdistribution  <- function (data, samples = NULL, style,
                      simplify = FALSE)
       sn <- names(plist)
       if (facet == TRUE) {
-        if (is.null(samples)) 
           p <- ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class), 
                                ggplot2::aes(Class, Count)) + 
             ggplot2::geom_bar(stat = "identity", fill = colour) + 
             ggplot2::theme_classic() + 
             ggplot2::facet_wrap(~key, scales = "free_y", ncol = facet.arrange)
-        }
+          out <- list(plot = p, data = counts.df)
+          
+      }
       else 
         if (facet == FALSE){
-        save <- list()
-        for (i in 1:length(plist)) {
-          print(plist[i])
-          save <- list(save, plist[i])
+          save <- list()
+          for (i in 1:length(plist)) {
+            print(plist[i])
+            save <- list(save, plist[i])
+          }
+          out <- list(plot = save, data = counts.df)
         }
-        }
-      out <- list(plot = save, data = counts.df)
       return(out)
     }
     if (style == "line") {
