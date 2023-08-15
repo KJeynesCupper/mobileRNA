@@ -127,7 +127,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
         ggplot2::geom_point(size=3) +
         xlab(paste0("PC1: ",percentVar[1],"% variance")) +
         ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
-        {if(is.null(colours)) ggplot2::scale_color_manual(values=cbbPalette)}+ 
+        {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
         ggplot2::coord_fixed()+
         ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
                                   show.legend = FALSE, box.padding = 1)+
@@ -141,7 +141,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
         ggplot2::geom_point(size=3) +
         xlab(paste0("PC1: ",percentVar[1],"% variance")) +
         ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
-        {if(is.null(colours)) ggplot2::scale_color_manual(values=cbbPalette)}+ 
+        {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
         ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
                                   show.legend = FALSE, box.padding = 1)+
         ggplot2::labs(color = legend.title) + 
@@ -155,7 +155,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
       ggplot2::geom_point(size=3) +
       xlab(paste0("PC1: ",percentVar[1],"% variance")) +
       ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
-      {if(is.null(colours)) ggplot2::scale_color_manual(values=cbbPalette)}+ 
+      {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
       ggplot2::labs(color = legend.title) + 
       ggplot2::coord_fixed(ratio = size.ratio)+
       {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
