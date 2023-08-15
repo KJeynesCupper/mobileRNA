@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mobileRNA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,9 @@
     <a class="dropdown-item" href="../articles/mobileRNA_chimeric.html">Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</a>
     <a class="dropdown-item" href="../articles/mobileRNA_mRNA.html">Explore canditate mobile mRNAs &amp; population-scale mRNA changes in chimeric systems using mobileRNA</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -83,7 +86,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Analyse sRNA populations using mobileRNA</h1>
                         <h4 data-toc-skip class="author">Katie Jeynes-Cupper, Marco Catoni</h4>
             
-            <h4 data-toc-skip class="date">2023-08-01</h4>
+            <h4 data-toc-skip class="date">2023-08-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/KJeynesCupper/mobileRNA.git/blob/HEAD/vignettes/mobileRNA_standard.Rmd" class="external-link"><code>vignettes/mobileRNA_standard.Rmd</code></a></small>
       <div class="d-none name"><code>mobileRNA_standard.Rmd</code></div>
@@ -418,7 +421,7 @@
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] mobileRNA_0.99.0 BiocStyle_2.16.1</span></span>
+<span><span class="co">#&gt; [1] mobileRNA_0.99.5 BiocStyle_2.16.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] colorspace_2.0-3            rprojroot_2.0.2            </span></span>
@@ -456,40 +459,39 @@
 <span><span class="co">#&gt;  [65] ragg_1.2.2                  parallel_4.0.2             </span></span>
 <span><span class="co">#&gt;  [67] SummarizedExperiment_1.18.2 RColorBrewer_1.1-2         </span></span>
 <span><span class="co">#&gt;  [69] yaml_2.3.5                  curl_4.3.2                 </span></span>
-<span><span class="co">#&gt;  [71] gridExtra_2.3               pbapply_1.7-0              </span></span>
-<span><span class="co">#&gt;  [73] memoise_2.0.1               ggplot2_3.4.2              </span></span>
-<span><span class="co">#&gt;  [75] sass_0.4.0                  stringi_1.7.6              </span></span>
-<span><span class="co">#&gt;  [77] RSQLite_2.2.10              highr_0.9                  </span></span>
-<span><span class="co">#&gt;  [79] genefilter_1.70.0           S4Vectors_0.26.1           </span></span>
-<span><span class="co">#&gt;  [81] desc_1.4.1                  foreach_1.5.2              </span></span>
-<span><span class="co">#&gt;  [83] Ringo_1.52.0                caTools_1.18.2             </span></span>
-<span><span class="co">#&gt;  [85] BiocGenerics_0.34.0         BiocParallel_1.22.0        </span></span>
-<span><span class="co">#&gt;  [87] truncnorm_1.0-8             GenomeInfoDb_1.24.2        </span></span>
-<span><span class="co">#&gt;  [89] rlang_1.1.0                 pkgconfig_2.0.3            </span></span>
-<span><span class="co">#&gt;  [91] systemfonts_1.0.4           matrixStats_0.61.0         </span></span>
-<span><span class="co">#&gt;  [93] bitops_1.0-7                Rsolnp_1.16                </span></span>
-<span><span class="co">#&gt;  [95] evaluate_0.15               lattice_0.20-45            </span></span>
-<span><span class="co">#&gt;  [97] purrr_1.0.1                 labeling_0.4.2             </span></span>
-<span><span class="co">#&gt;  [99] GenomicAlignments_1.24.0    bit_4.0.4                  </span></span>
-<span><span class="co">#&gt; [101] tidyselect_1.2.0            parallelly_1.30.0          </span></span>
-<span><span class="co">#&gt; [103] magrittr_2.0.3              bookdown_0.32              </span></span>
-<span><span class="co">#&gt; [105] DESeq2_1.28.1               R6_2.5.1                   </span></span>
-<span><span class="co">#&gt; [107] IRanges_2.22.2              gplots_3.1.1               </span></span>
-<span><span class="co">#&gt; [109] generics_0.1.2              DelayedArray_0.14.1        </span></span>
-<span><span class="co">#&gt; [111] DBI_1.1.2                   withr_2.5.0                </span></span>
-<span><span class="co">#&gt; [113] pillar_1.9.0                gsmoothr_0.1.7             </span></span>
-<span><span class="co">#&gt; [115] RPushbullet_0.3.4           survival_3.3-1             </span></span>
-<span><span class="co">#&gt; [117] RCurl_1.98-1.6              future.apply_1.8.1         </span></span>
-<span><span class="co">#&gt; [119] tibble_3.2.1                crayon_1.5.0               </span></span>
-<span><span class="co">#&gt; [121] KernSmooth_2.23-20          utf8_1.2.2                 </span></span>
-<span><span class="co">#&gt; [123] rmarkdown_2.20              viridis_0.6.2              </span></span>
-<span><span class="co">#&gt; [125] locfit_1.5-9.4              grid_4.0.2                 </span></span>
-<span><span class="co">#&gt; [127] data.table_1.14.2           blob_1.2.2                 </span></span>
-<span><span class="co">#&gt; [129] SimDesign_2.10.1            digest_0.6.29              </span></span>
-<span><span class="co">#&gt; [131] xtable_1.8-4                tidyr_1.3.0                </span></span>
-<span><span class="co">#&gt; [133] textshaping_0.3.6           stats4_4.0.2               </span></span>
-<span><span class="co">#&gt; [135] munsell_0.5.0               viridisLite_0.4.0          </span></span>
-<span><span class="co">#&gt; [137] bslib_0.3.1                 sessioninfo_1.2.2</span></span></code></pre></div>
+<span><span class="co">#&gt;  [71] pbapply_1.7-0               memoise_2.0.1              </span></span>
+<span><span class="co">#&gt;  [73] ggplot2_3.4.2               sass_0.4.0                 </span></span>
+<span><span class="co">#&gt;  [75] stringi_1.7.6               RSQLite_2.2.10             </span></span>
+<span><span class="co">#&gt;  [77] highr_0.9                   genefilter_1.70.0          </span></span>
+<span><span class="co">#&gt;  [79] S4Vectors_0.26.1            desc_1.4.1                 </span></span>
+<span><span class="co">#&gt;  [81] foreach_1.5.2               Ringo_1.52.0               </span></span>
+<span><span class="co">#&gt;  [83] caTools_1.18.2              BiocGenerics_0.34.0        </span></span>
+<span><span class="co">#&gt;  [85] BiocParallel_1.22.0         truncnorm_1.0-8            </span></span>
+<span><span class="co">#&gt;  [87] GenomeInfoDb_1.24.2         rlang_1.1.0                </span></span>
+<span><span class="co">#&gt;  [89] pkgconfig_2.0.3             systemfonts_1.0.4          </span></span>
+<span><span class="co">#&gt;  [91] matrixStats_0.61.0          bitops_1.0-7               </span></span>
+<span><span class="co">#&gt;  [93] Rsolnp_1.16                 evaluate_0.15              </span></span>
+<span><span class="co">#&gt;  [95] lattice_0.20-45             purrr_1.0.1                </span></span>
+<span><span class="co">#&gt;  [97] labeling_0.4.2              GenomicAlignments_1.24.0   </span></span>
+<span><span class="co">#&gt;  [99] bit_4.0.4                   tidyselect_1.2.0           </span></span>
+<span><span class="co">#&gt; [101] parallelly_1.30.0           magrittr_2.0.3             </span></span>
+<span><span class="co">#&gt; [103] bookdown_0.32               DESeq2_1.28.1              </span></span>
+<span><span class="co">#&gt; [105] R6_2.5.1                    IRanges_2.22.2             </span></span>
+<span><span class="co">#&gt; [107] gplots_3.1.1                generics_0.1.2             </span></span>
+<span><span class="co">#&gt; [109] DelayedArray_0.14.1         DBI_1.1.2                  </span></span>
+<span><span class="co">#&gt; [111] withr_2.5.0                 pillar_1.9.0               </span></span>
+<span><span class="co">#&gt; [113] gsmoothr_0.1.7              RPushbullet_0.3.4          </span></span>
+<span><span class="co">#&gt; [115] survival_3.3-1              RCurl_1.98-1.6             </span></span>
+<span><span class="co">#&gt; [117] future.apply_1.8.1          tibble_3.2.1               </span></span>
+<span><span class="co">#&gt; [119] crayon_1.5.0                KernSmooth_2.23-20         </span></span>
+<span><span class="co">#&gt; [121] utf8_1.2.2                  rmarkdown_2.20             </span></span>
+<span><span class="co">#&gt; [123] locfit_1.5-9.4              grid_4.0.2                 </span></span>
+<span><span class="co">#&gt; [125] data.table_1.14.2           blob_1.2.2                 </span></span>
+<span><span class="co">#&gt; [127] SimDesign_2.10.1            digest_0.6.29              </span></span>
+<span><span class="co">#&gt; [129] xtable_1.8-4                tidyr_1.3.0                </span></span>
+<span><span class="co">#&gt; [131] textshaping_0.3.6           stats4_4.0.2               </span></span>
+<span><span class="co">#&gt; [133] munsell_0.5.0               viridisLite_0.4.0          </span></span>
+<span><span class="co">#&gt; [135] bslib_0.3.1                 sessioninfo_1.2.2</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
