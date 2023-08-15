@@ -117,12 +117,16 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   ## change position
   sample_names <- sub("Count_", "", colnames(data))
   pca["ID"] <- sample_names # create new column with sample names
+  percentVar <- round(100 * attr(pca, "percentVar"))
+  
   cat("Organising principal component analysis \n")
   if(labels == TRUE){
     if(boxed == TRUE){
       X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
         {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions))} +
         ggplot2::geom_point(size=3) +
+        xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+        ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(is.null(colours)) ggplot2::scale_color_manual(values=cbbPalette)}+ 
         ggplot2::coord_fixed()+
         ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
@@ -135,6 +139,8 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
       X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
         {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions))} +
         ggplot2::geom_point(size=3) +
+        xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+        ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(is.null(colours)) ggplot2::scale_color_manual(values=cbbPalette)}+ 
         ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
                                   show.legend = FALSE, box.padding = 1)+
@@ -147,6 +153,8 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
     X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
       {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions))} +
       ggplot2::geom_point(size=3) +
+      xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+      ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
       {if(is.null(colours)) ggplot2::scale_color_manual(values=cbbPalette)}+ 
       ggplot2::labs(color = legend.title) + 
       ggplot2::coord_fixed(ratio = size.ratio)+

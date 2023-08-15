@@ -37,3 +37,4 @@ Updated to version  0.99.5 (2023-08-07)
 Updated to version devel (2023-08-14)
 + amended and added feature option to RNAattributes 
 + Improved plotting options for PCA (choose colours, add different shapes, add theme)
++ fixed specific sample plotting bug in RNAdistribution 
