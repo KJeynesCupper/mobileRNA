@@ -49,6 +49,8 @@
 #' @importFrom rlang "sym"
 #' @importFrom dplyr "select_if"
 #' @importFrom IRanges "IRanges"
+#' @importFrom S4Vectors "mcols" 
+#' @importFrom IRanges "ranges"
 #' @examples
 #' \dontrun{
 #'
@@ -78,7 +80,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     # convert data to granges 
     data_gr <- GenomicRanges::GRanges(
       seqnames = data$chr,
-      ranges = IRanges(start = data$start, end = data$end)
+      ranges = IRanges::IRanges(start = data$start, end = data$end)
     )
     # Find overlaps between genomic loci and adjusted GRanges
     overlaps <- GenomicRanges::findOverlaps(data_gr, features_gr)
@@ -119,15 +121,15 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     genes <- anno_data[anno_data$type == "gene"]
     # amend ranges
     adjusted_ranges <- IRanges::IRanges(
-      start = start(ranges(genes)) - bufferRegion,
-      end = end(ranges(genes)) + bufferRegion
+      start = start(IRanges::ranges(genes)) - bufferRegion,
+      end = end(IRanges::ranges(genes)) + bufferRegion
     )
     
     #add ranges to genes info  
     adjusted_grange <- GenomicRanges::GRanges(
       seqnames(genes),
       ranges = adjusted_ranges,
-      metadata = mcols(genes)
+      metadata = S4Vectors::mcols(genes)
     )
     
     # convert data to granges 
@@ -169,4 +171,3 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
   }
   return(data)
 }
-

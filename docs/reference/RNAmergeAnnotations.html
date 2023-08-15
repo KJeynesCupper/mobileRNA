@@ -18,7 +18,7 @@ local directory."><meta property="og:image" content="https://kjeynescupper.githu
     
     <a class="navbar-brand me-2" href="../index.html">mobileRNA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,9 @@ local directory."><meta property="og:image" content="https://kjeynescupper.githu
     <a class="dropdown-item" href="../articles/mobileRNA_chimeric.html">Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</a>
     <a class="dropdown-item" href="../articles/mobileRNA_mRNA.html">Explore canditate mobile mRNAs &amp; population-scale mRNA changes in chimeric systems using mobileRNA</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -77,7 +80,8 @@ local directory.</p>
 <span>  <span class="va">annotationB</span>,</span>
 <span>  <span class="va">out_dir</span>,</span>
 <span>  abbreviationAnnoA <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>  abbreviationAnnoB <span class="op">=</span> <span class="st">"B"</span></span>
+<span>  abbreviationAnnoB <span class="op">=</span> <span class="st">"B"</span>,</span>
+<span>  exportFormat <span class="op">=</span> <span class="st">"GFF"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,6 +111,12 @@ within <code>annotationA</code>.Default set as "A".</p></dd>
 <dt>abbreviationAnnoB</dt>
 <dd><p>a string placed in "", to replace chromosome names
 within <code>annotationB</code>.Default set as "B".</p></dd>
+
+
+<dt>exportFormat</dt>
+<dd><p>The format of the annotation output. If missing or the
+format does not match the file type, an error will occur. Default set to "GFF"
+format.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -163,25 +173,13 @@ genome,that you treat the input annotations in the same way.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># edit and merge</span></span></span>
-<span class="r-in"><span><span class="va">merged_anno</span> <span class="op">&lt;-</span> <span class="fu">RNAmergeAnnotations</span><span class="op">(</span>annotationA <span class="op">=</span> <span class="va">anno1</span>,</span></span>
-<span class="r-in"><span>                                 annotationB <span class="op">=</span> <span class="va">anno2</span>,</span></span>
+<span class="r-in"><span><span class="va">merged_anno</span> <span class="op">&lt;-</span> <span class="fu">RNAmergeAnnotations</span><span class="op">(</span>annotationA <span class="op">=</span> <span class="va">anno1</span>,annotationB <span class="op">=</span> <span class="va">anno2</span>,</span></span>
 <span class="r-in"><span>             out_dir <span class="op">=</span> <span class="st">"./merged_annotation.gff3"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Adding abbreviations to chomosome names ... </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> New annotation file created:  ./annotationA_altered.gff </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Adding abbreviations to chomosome names ...  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> New annotation file annotationB:  ./annotationA_altered.gff </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> New annotation file created:  ./annotationB_altered.gff </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Merging altered annotation files ... </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Set specific pre-fixes:</span></span></span>
-<span class="r-in"><span><span class="co">###  annotationA represents Solanum melongena, so abbreviated to `SM`</span></span></span>
-<span class="r-in"><span><span class="co">###  annotationB represents Solanum lycopersicum, so abbreviated to `SL`</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">merged_anno_2</span> <span class="op">&lt;-</span> <span class="fu">RNAmergeAnnotations</span><span class="op">(</span>annotationA <span class="op">=</span> <span class="va">anno1</span>,annotationB <span class="op">=</span> <span class="va">anno2</span>,</span></span>
-<span class="r-in"><span>              out_dir <span class="op">=</span> <span class="st">"./merged_annotation.gff3"</span>,</span></span>
-<span class="r-in"><span>              abbreviationAnnoA <span class="op">=</span> <span class="st">"SM"</span>,abbreviationAnnoB <span class="op">=</span> <span class="st">"SL"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Adding abbreviations to chomosome names ... </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> New annotation file created:  ./annotationA_altered.gff </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> New annotation file created:  ./annotationB_altered.gff </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Merging altered annotation files ... </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> New merged annnotation with modified chromosome names has been created saved to:  ./merged_annotation.gff3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

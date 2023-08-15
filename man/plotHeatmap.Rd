@@ -11,7 +11,8 @@ plotHeatmap(
   cluster = TRUE,
   scale = "none",
   clustering_method = "complete",
-  row.names = TRUE
+  row.names = TRUE,
+  border.color = NA
 )
 }
 \arguments{
@@ -20,7 +21,8 @@ plotHeatmap(
 
 \item{pseudocount}{numeric; pseudocount, default is \code{1e-6}}
 
-\item{colours}{vector of colors. Default is \code{viridis::viridis(100)}}
+\item{colours}{vector of colors. Default is
+\code{grDevices::hsv(1,1,seq(0,1,length.out = 12))}}
 
 \item{cluster}{logical; include hierarchical clustering when default
 \code{cluster= TRUE}}
@@ -34,6 +36,8 @@ values as hclust. Default \code{clustering_method= "complete"}}
 
 \item{row.names}{logical; indicated whether to include cluster names as
 rownames. Default \code{row.names=TRUE}}
+
+\item{border.color}{border colour, default is no border, NA.}
 }
 \value{
 Produces a list of objects, including the plot.

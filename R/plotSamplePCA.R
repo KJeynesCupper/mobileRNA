@@ -34,7 +34,7 @@
 #'for each condition. 
 #'
 #'@param ggplot.theme character; state the `ggplot2` theme (without () 
-#'brackets). For example, `ggplot.theme=theme_classic`. 
+#'brackets). For example, `ggplot.theme=ggplot2::theme_classic`. 
 #'
 #' @return A PCA plot to show sample distance.
 #'
@@ -99,9 +99,9 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   count.data.set$conditions <- stats::relevel(count.data.set$conditions,
                                               group[1])
   dds <- DESeq2::estimateSizeFactors(count.data.set)
-
-    # log transform the data.
-
+  
+  # log transform the data.
+  
   if(vst ==TRUE){
     cat("Transforming the count data with a variance stabilizing transformation \n")
     rld1 <- DESeq2::varianceStabilizingTransformation(dds, blind = TRUE)
@@ -111,7 +111,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
       cat("Transforming the count data to the log2 scale \n")
       rld1 <- DESeq2::rlog(dds, blind = TRUE) # log transform the data.
     }
-
+  
   # use the DEseq plot pca function, store in an object.
   pca <- DESeq2::plotPCA(rld1, returnData = TRUE, intgroup = "conditions")
   ## change position
@@ -123,8 +123,8 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   if(labels == TRUE){
     if(boxed == TRUE){
       X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
-        {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions))} +
-        ggplot2::geom_point(size=3) +
+        {if(point.shape) ggplot2::geom_point(size=3, ggplot2::aes(shape = conditions))}+
+        {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
         xlab(paste0("PC1: ",percentVar[1],"% variance")) +
         ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
@@ -133,12 +133,12 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
                                   show.legend = FALSE, box.padding = 1)+
         ggplot2::labs(color = legend.title) + 
         ggplot2::coord_fixed(ratio = size.ratio)+
-        {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
-   
+        {if(!is.null(ggplot.theme)) ggplot.theme() }
+      
     } else
       X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
-        {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions))} +
-        ggplot2::geom_point(size=3) +
+        {if(point.shape) ggplot2::geom_point(size=3, ggplot2::aes(shape = conditions))}+
+        {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
         xlab(paste0("PC1: ",percentVar[1],"% variance")) +
         ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
@@ -146,19 +146,19 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
                                   show.legend = FALSE, box.padding = 1)+
         ggplot2::labs(color = legend.title) + 
         suppressMessages(ggplot2::coord_fixed(ratio = size.ratio))+
-        {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
+        {if(!is.null(ggplot.theme)) ggplot.theme() }
     
     
   } else {
     X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
-      {if(point.shape) ggplot2::geom_point(ggplot2::aes(shape = conditions))} +
-      ggplot2::geom_point(size=3) +
+      {if(point.shape) ggplot2::geom_point(size=3, ggplot2::aes(shape = conditions))}+
+      {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
       xlab(paste0("PC1: ",percentVar[1],"% variance")) +
       ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
       {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
       ggplot2::labs(color = legend.title) + 
       ggplot2::coord_fixed(ratio = size.ratio)+
-      {if(!is.null(ggplot.theme)) ggplot2::ggplot.theme() }
+      {if(!is.null(ggplot.theme)) ggplot.theme() }
   }
   return(X)
 }

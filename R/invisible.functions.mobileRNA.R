@@ -9,7 +9,7 @@
 ################ remove mapping errors (RNAmobile function) ####################
 .remove_mapping_errors <- function(data, controls) {
   class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
-
+  
   if (length(colnames(class_colnames)) > 1){
     x <- c()
     for (j in 1:nrow(data)){
@@ -31,8 +31,8 @@
   if(is.null(x)){
     data <- data
   } else
-  data <- data[-x,]
-
+    data <- data[-x,]
+  
   return(data)
 }
 
@@ -56,7 +56,7 @@
     x <- c()
     for (j in 1:nrow(data_select)){
       if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
-                                        na.rm=TRUE)))>0){
+                                       na.rm=TRUE)))>0){
         x <- c(x,j)
       }
     }
@@ -109,12 +109,12 @@
 find_complementary_sequenceRNA <- function(seq) {
   # conversions
   conversion_nucleotides <- c(A = "U", U = "A", C = "G", G = "C")
-
+  
   # calculate complementary nt for each
   complementary_calc <- sapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
   })
-
+  
   # Combine into string
   output <- paste0(complementary_calc, collapse = "")
   return(output)
@@ -126,12 +126,12 @@ find_complementary_sequenceRNA <- function(seq) {
 find_complementary_sequenceDNA <- function(seq) {
   # conversions
   conversion_nucleotides <- c(A = "T", U = "A", C = "G", G = "C")
-
+  
   # calc complementary nt for each in string
   complementary_calc <- sapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
   })
-
+  
   # Combine into string
   output <- paste0(complementary_calc, collapse = "")
   return(output)
@@ -148,8 +148,8 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "value" , "variable" , "repeats_info" , "Genome" ,
                          "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ,
                          "MajorRNA", "i", "other", "report", "DicerCounts", 
-                         "Sequence", "new_df", "Locus", "Name", "SampleCounts",
-                         "SampleCounts_val", "log2FoldChange", "significance", 
-                         "Gene", "ranges"))
-
+                         "Sequence", "new_df",  "PC1", "PC2", "conditions", 
+                         "Gene", "Locus", "Name", "SampleCounts", 
+                         "SampleCounts_val", "log2FoldChange",
+                         "significance"))
 

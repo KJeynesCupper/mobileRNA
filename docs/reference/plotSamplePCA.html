@@ -14,7 +14,7 @@ an unbiased manner (blind=TRUE)."><meta property="og:image" content="https://kje
     
     <a class="navbar-brand me-2" href="../index.html">mobileRNA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,9 @@ an unbiased manner (blind=TRUE)."><meta property="og:image" content="https://kje
     <a class="dropdown-item" href="../articles/mobileRNA_chimeric.html">Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</a>
     <a class="dropdown-item" href="../articles/mobileRNA_mRNA.html">Explore canditate mobile mRNAs &amp; population-scale mRNA changes in chimeric systems using mobileRNA</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -73,7 +76,10 @@ an unbiased manner (<code>blind=TRUE</code>).</p>
 <span>  labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  boxed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="st">"Conditions"</span>,</span>
-<span>  size.ratio <span class="op">=</span> <span class="fl">2</span></span>
+<span>  size.ratio <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  colours <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  point.shape <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ggplot.theme <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -115,6 +121,22 @@ will not suit all experimental designs.</p></dd>
 <dd><p>numeric; set plot ratio, broadens axis dimensions by ratio.
 Default <code>size.ratio=2</code>, double the plot dimension.</p></dd>
 
+
+<dt>colours</dt>
+<dd><p>Vector of HEX colour codes. Must match the number of
+conditions. For example,
+<code>colours = c("#E69F00", "#56B4E9", "#CC79A7", "#009E73")</code></p></dd>
+
+
+<dt>point.shape</dt>
+<dd><p>Logical; set whether the point shapes should be different
+for each condition.</p></dd>
+
+
+<dt>ggplot.theme</dt>
+<dd><p>character; state the <code>ggplot2</code> theme (without ()
+brackets). For example, <code>ggplot.theme=ggplot2::theme_classic</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -141,6 +163,7 @@ and switch to a variance stabilizing transformation method
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>,</span></span>
 <span class="r-in"><span>            <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>            </span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span>  <span class="fu">plotSamplePCA</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>,group <span class="op">=</span> <span class="va">groups</span> <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Checking and organising data </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transforming the count data to the log2 scale </span>

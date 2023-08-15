@@ -531,22 +531,24 @@ sample_distribution <- RNAdistribution(sRNA_data,
 
 Lets view these plots:
 
-```{r, message=FALSE, fig.cap=cap9, fig.show="hold", out.width="33%", fig.subcap= c("A","B", "C", "D")}
-
+```{r, message=FALSE, fig.cap=cap9, fig.show="hold", out.width="33%", fig.subcap= c("A","B","C")}
 # View plot (only)
 sample_distribution_line$plot
-
-
 
 # View plot (only)
 sample_distribution_bar$plot
 
 # View plot
 sample_distribution$plot
+
+```
+<br>
+
+View data:
+```{r}
 # View data 
 sample_distribution$data
 ```
-<br>
 
 
 ### Principle component analysis to assess sample distance
@@ -883,24 +885,14 @@ each altered genome annotation and then merges them into one.
 
 ### Add genomic attributes to sRNA clusters   
 Each sRNA cluster contains coordinates, these can be matches with coordinates in
-an annotation file. If there is a match, the function returns the input data 
-with additional fields, where sRNA cluster will receive information on:
-
-- `source` : name of the program that generated this feature, or the data source
-(database or project name)
-- `feature` : feature type name, e.g. Gene, Variation, Similarity
-- `score` : A floating point value
-- `strand` : defined as + (forward) or - (reverse)
-- `frame` : One of '0', '1' or '2'. '0' indicates that the first base of the
-feature is the first base of a codon, '1' that the second base is the first
-base of a codon, and so on
-- `attribute` : A semicolon-separated list of tag-value pairs, providing
-additional information about each feature.
-
+an annotation file. A match occurs when the cluster is found within the 
+coordinates of a feature. If there is a match, the function returns the input 
+data with additional fields of information from the annotation file. 
 
 Using the genomic locations of the mobile sRNA clusters, we can identify 
 overlaps in the genome annotation of the origin tissue to predict the 
-implication of the mobile sRNA. 
+implication of the mobile sRNA. Or to explore the functionality of native 
+populations.  
 
 This function can be utilsed at the beginning of the analysis steps where all 
 sRNA clusters from both genotypes can be annotated with the genomic attributes 
@@ -909,9 +901,12 @@ a merge annotation file using the function [mobileRNA::RNAmergeAnnotations()].
 
 
 
+Here we will only be overlapping the data with genes, and adding a buffer 
+region of 1kb upstream and downstream of the each gene. 
+
 ```{r, eval = FALSE}
 
-mobile_df_attributes <- RNAattributes(data = mobile_sRNA,
+mobile_df_attributes <- RNAattributes(data = mobile_sRNA, match ="genes",
                             annotation = "./annotation/origin_annotation.gff3")
 ```
 <br>
@@ -1050,6 +1045,17 @@ unique_control <- RNApopulation(data = sRNA_data_consensus,
 # look at number of sRNA cluster only found in control  
 nrow(unique_control) 
 ```
+<br>
+
+The data here can be manipulated in many ways, you may wish to extract
+statistically significant small RNA clusters within a population to explore 
+further. For this you can utilise the \code[RNAsignificant()] function. 
+
+The plotting functions within the package can be used to display these results, 
+specifically \code[RNAdistribution()] and \code[plotHeatmap()]. Similarly, the
+functions to assist with functional analysis can also be utilsied to pull 
+the consensus sRNA sequence for each cluster in the population, or find 
+overlaps with known annotations in the native genome.
 <br>
 
 The plotting functions within the package can be used to display these results, 

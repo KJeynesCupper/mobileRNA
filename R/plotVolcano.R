@@ -35,6 +35,7 @@
 #' @importFrom dplyr "count"
 #' @importFrom utils "head"
 #' @importFrom dplyr "bind_rows"
+#' @importFrom ggplot2 "scale_color_viridis_d"
 plotVolcano <- function(data, labels = FALSE, top.molecules = 10, 
                         colour.scheme = NULL){
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
