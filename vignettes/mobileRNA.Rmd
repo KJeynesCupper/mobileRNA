@@ -531,22 +531,24 @@ sample_distribution <- RNAdistribution(sRNA_data,
 
 Lets view these plots:
 
-```{r, message=FALSE, fig.cap=cap9, fig.show="hold", out.width="33%", fig.subcap= c("A","B", "C", "D")}
-
+```{r, message=FALSE, fig.cap=cap9, fig.show="hold", out.width="33%", fig.subcap= c("A","B","C")}
 # View plot (only)
 sample_distribution_line$plot
-
-
 
 # View plot (only)
 sample_distribution_bar$plot
 
 # View plot
 sample_distribution$plot
+
+```
+<br>
+
+View data:
+```{r}
 # View data 
 sample_distribution$data
 ```
-<br>
 
 
 ### Principle component analysis to assess sample distance
@@ -832,7 +834,7 @@ cap7 <- "An example heatmap of the potential mobile RNA molecules Identifed by t
 ```
 
 ```{r,fig.cap=cap7, fig.show="hold", out.width="50%", fig.subcap= c("A","B") }
-p10 <- plotHeatmap(mobile_sRNA_sig24)
+p10 <- plotHeatmap(mobile_sRNA_sig24, row.names = FALSE)
 p11 <- plotHeatmap(mobile_sRNA_sig2122)
 ```
 
@@ -862,14 +864,6 @@ the local functionality. As well as, retrieving the nucleotide sequence of
 the most abundant sRNA within a cluster and locating complementary sequences in 
 both the genome of origin and genome of destination using BLAST. 
 
-If you have different datatypes, for example RNAseq and BSseq, and want to 
-overlap your data it might be interesting to see whether there are complementary
-DNA sequences at the promoter regions of your deferentially expressed genes of 
-interest to the identified potential mobile sRNAs. Moreover, in theory, if these 
-regions also show differential methylation it could be a potential indication of 
-a molecular pathway. 
-
-
 
 IMPORTANT: If chromosome names were altered in either of genome assemblies used
 in the mapping steps, the chromosome names in the genome annotation files must 
@@ -883,24 +877,14 @@ each altered genome annotation and then merges them into one.
 
 ### Add genomic attributes to sRNA clusters   
 Each sRNA cluster contains coordinates, these can be matches with coordinates in
-an annotation file. If there is a match, the function returns the input data 
-with additional fields, where sRNA cluster will receive information on:
-
-- `source` : name of the program that generated this feature, or the data source
-(database or project name)
-- `feature` : feature type name, e.g. Gene, Variation, Similarity
-- `score` : A floating point value
-- `strand` : defined as + (forward) or - (reverse)
-- `frame` : One of '0', '1' or '2'. '0' indicates that the first base of the
-feature is the first base of a codon, '1' that the second base is the first
-base of a codon, and so on
-- `attribute` : A semicolon-separated list of tag-value pairs, providing
-additional information about each feature.
-
+an annotation file. A match occurs when the cluster is found within the 
+coordinates of a feature. If there is a match, the function returns the input 
+data with additional fields of information from the annotation file. 
 
 Using the genomic locations of the mobile sRNA clusters, we can identify 
 overlaps in the genome annotation of the origin tissue to predict the 
-implication of the mobile sRNA. 
+implication of the mobile sRNA. Or to explore the functionality of native 
+populations.  
 
 This function can be utilsed at the beginning of the analysis steps where all 
 sRNA clusters from both genotypes can be annotated with the genomic attributes 
@@ -909,9 +893,12 @@ a merge annotation file using the function [mobileRNA::RNAmergeAnnotations()].
 
 
 
+Here we will only be overlapping the data with genes, and adding a buffer 
+region of 1kb upstream and downstream of the each gene. 
+
 ```{r, eval = FALSE}
 
-mobile_df_attributes <- RNAattributes(data = mobile_sRNA,
+mobile_df_attributes <- RNAattributes(data = mobile_sRNA, match ="genes",
                             annotation = "./annotation/origin_annotation.gff3")
 ```
 <br>
@@ -1032,7 +1019,7 @@ remove sRNA cluster related to the foreign genome.
 ```{r, eval=FALSE}
 # select sRNA clusters only found in treatment & not in the control samples
 treatment_reps <- c("heterograft_1", "heterograft_2" , "heterograft_3")
-unique_treatment <- RNApopulation(data = sRNA_data_consensus, 
+unique_treatment <- RNApopulation(data = sRNA_edgeR, 
                                    conditions = treatment_reps)
 
 # look at number of sRNA cluster only found in treatment 
@@ -1045,12 +1032,16 @@ Now, the sRNA clusters unique to the control condition:
 ```{r, eval=FALSE}
 # select sRNA clusters only found in control & not in the treatment samples
 control_reps <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
-unique_control <- RNApopulation(data = sRNA_data_consensus, 
+unique_control <- RNApopulation(data = sRNA_edgeR, 
                                    conditions = control_reps)
 # look at number of sRNA cluster only found in control  
 nrow(unique_control) 
 ```
 <br>
+
+The data here can be manipulated in many ways, you may wish to extract
+statistically significant small RNA clusters within a population to explore 
+further. For this you can utilise the \code[RNAsignificant()] function. 
 
 The plotting functions within the package can be used to display these results, 
 specifically \code[RNAdistribution()] and \code[plotHeatmap()]. Similarly, the

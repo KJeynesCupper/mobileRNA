@@ -49,7 +49,7 @@ conditions. For example,
 for each condition.}
 
 \item{ggplot.theme}{character; state the \code{ggplot2} theme (without ()
-brackets). For example, \code{ggplot.theme=theme_classic}.}
+brackets). For example, \code{ggplot.theme=ggplot2::theme_classic}.}
 }
 \value{
 A PCA plot to show sample distance.

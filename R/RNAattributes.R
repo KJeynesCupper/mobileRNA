@@ -135,7 +135,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     # convert data to granges 
     data_gr <- GenomicRanges::GRanges(
       seqnames = data$chr,
-     ranges = IRanges(start = data$start, end = data$end)
+      ranges = IRanges(start = data$start, end = data$end)
     )
     
     # Find overlaps between genomic loci and adjusted GRanges

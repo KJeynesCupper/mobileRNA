@@ -8,7 +8,8 @@
 #' @param data Dataframe; Must follow the structure created by 
 #' `mobileRNA::RNAimport()`. 
 #'
-#' @param colours vector of colors. Default is `viridis::viridis(100)`
+#' @param colours vector of colors. Default is 
+#' `grDevices::hsv(1,1,seq(0,1,length.out = 12))`
 #'
 #' @param pseudocount numeric; pseudocount, default is `1e-6`
 #' 
@@ -22,6 +23,8 @@
 #' values as hclust. Default `clustering_method= "complete"`
 #' @param row.names logical; indicated whether to include cluster names as 
 #' rownames. Default `row.names=TRUE`
+#' 
+#' @param border.color border colour, default is no border, NA. 
 #'
 #' @details Undertakes FPKM/RPM normalisation using a pseudocount and then 
 #' transforms the normalised-RPM data using log-scale. The 
@@ -64,7 +67,8 @@ plotHeatmap <- function (data, pseudocount = 1e-6,
                          colours = grDevices::hsv(1,1,seq(0,1,length.out = 12)),
                          cluster = TRUE, scale = "none", 
                          clustering_method = "complete", 
-                         row.names = TRUE) 
+                         row.names = TRUE,
+                         border.color = NA) 
 {
   if (base::missing(data) || !base::inherits(data, c("matrix", 
                                                      "data.frame", "DataFrame"))) {
@@ -80,7 +84,7 @@ plotHeatmap <- function (data, pseudocount = 1e-6,
     } else {
       stop("data must contain columns containing either FPKM or RPM data columns.")
     }
-    # remove cluster with no counts 
+  # remove cluster with no counts 
   select_data <- select_data[rowSums(select_data[])>0,]
   rownames(select_data) <- data$clusterID
   # RPM normalization with pseudocount addition
@@ -101,6 +105,7 @@ plotHeatmap <- function (data, pseudocount = 1e-6,
                              show_col_dendrogram = FALSE,  
                              color = colours,
                              show_rownames = row.names,
+                             border_color = border.color,
                              fontsize_row = 10,            
                              fontsize_col = 10)
   } else {
@@ -111,6 +116,7 @@ plotHeatmap <- function (data, pseudocount = 1e-6,
                              show_rownames = row.names,
                              fontsize_row = 10,            
                              fontsize_col = 10, 
+                             border_color = border.color,
                              cluster_cols = FALSE)
   }
   out <- list(plot = p1, data = log_rpm_matrix)
