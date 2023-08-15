@@ -11,7 +11,10 @@ plotSamplePCA(
   labels = TRUE,
   boxed = TRUE,
   legend.title = "Conditions",
-  size.ratio = 2
+  size.ratio = 2,
+  colours = NULL,
+  point.shape = TRUE,
+  ggplot.theme = NULL
 )
 }
 \arguments{
@@ -37,6 +40,16 @@ will not suit all experimental designs.}
 
 \item{size.ratio}{numeric; set plot ratio, broadens axis dimensions by ratio.
 Default \code{size.ratio=2}, double the plot dimension.}
+
+\item{colours}{Vector of HEX colour codes. Must match the number of
+conditions. For example,
+\code{colours = c("#E69F00", "#56B4E9", "#CC79A7", "#009E73")}}
+
+\item{point.shape}{Logical; set whether the point shapes should be different
+for each condition.}
+
+\item{ggplot.theme}{character; state the \code{ggplot2} theme (without ()
+brackets). For example, \code{ggplot.theme=theme_classic}.}
 }
 \value{
 A PCA plot to show sample distance.
@@ -63,6 +76,7 @@ data("sRNA_data_consensus")
 
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
+            
 p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
 
 plot(p)

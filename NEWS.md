@@ -35,4 +35,5 @@ Updated to version  0.99.5 (2023-08-07)
 + updated man files for datasets, missing /values.
 
 Updated to version devel (2023-08-14)
-+ ammended and added feature option to RNAattributes 
++ amended and added feature option to RNAattributes 
++ Improved plotting options for PCA (choose colours, add different shapes, add theme)
