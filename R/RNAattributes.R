@@ -73,10 +73,9 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
   if (base::missing(annotation)) {
     stop("annotation is missing. annotation must be an object of GFF format.")
   }
-  anno_data <- rtracklayer::import(annotation)
-  
+  #annotation <- rtracklayer::import(annotation)
   if(match == "within"){
-    features_gr <-  anno_data
+    features_gr <-  annotation
     # convert data to granges 
     data_gr <- GenomicRanges::GRanges(
       seqnames = data$chr,
@@ -118,7 +117,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
   
   if(match == "genes"){
     # select genes
-    genes <- anno_data[anno_data$type == "gene"]
+    genes <- annotation[annotation$type == "gene"]
     # amend ranges
     adjusted_ranges <- IRanges::IRanges(
       start = start(IRanges::ranges(genes)) - bufferRegion,
@@ -148,18 +147,20 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     
     # convert to dataframe 
     adjusted_grange_df <- as.data.frame(adjusted_grange)
+    # converion adds metadeta to metadatcols 
+    names(adjusted_grange_df) <- sub('^metadata.', '', names(adjusted_grange_df))
     # add columns to data 
     add_cols <- colnames(adjusted_grange_df) 
     col_diff <- setdiff(add_cols, colnames(data))
     rm_extra <- c("seqnames", "width","strand","source", "score", "phase")
     col_diff <- col_diff[!col_diff %in% rm_extra]
-    
     data[,col_diff] <- NA
     
     for (i in seq_along(subjectHits_ot)) {
       row_index <- subjectHits_ot[i]
-      row_vals <- features_gr_df[row_index, ]
+      row_vals <- adjusted_grange_df[row_index, ]
       row_vals<- row_vals[,col_diff] # only extra columns. 
+      
       for (j in names(row_vals)) {
         if (j %in% names(data[queryHits_ot[i],])) {
           data[queryHits_ot[i],] <- data[queryHits_ot[i],] %>%
@@ -168,6 +169,9 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
         }
       }
     }
+    # remove columns with na
+    data <- data[,colSums(is.na(data))<nrow(data)]
+    
   }
   return(data)
 }
