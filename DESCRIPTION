@@ -27,7 +27,6 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    kableExtra, 
     dplyr,
     magrittr
 Imports: 
@@ -61,10 +60,7 @@ Imports:
     parallel,
     S4Vectors,
     SummarizedExperiment,
-    rlang,
-    svglite,
-    magick,
-    kableExtra
+    rlang
 biocViews: 
     Visualization,
     RNASeq,

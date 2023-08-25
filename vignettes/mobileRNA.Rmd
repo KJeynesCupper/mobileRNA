@@ -16,7 +16,6 @@ vignette: >
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
  %\VignetteDepends{magrittr}
- %\VignetteDepends{kableExtra}
  %\usepackage[utf8]{inputenc}
 ---
 <br>
@@ -29,8 +28,7 @@ knitr::opts_chunk$set(
   warning=FALSE,
   comment = "#>"
 )
-library(knitr)
-library(kableExtra)
+
 library(magrittr)
 ```
 
@@ -528,12 +526,7 @@ sample_distribution_bar$plot
 sample_distribution$plot
 
 ```
-<br>
-```{r , echo=FALSE, results='asis', fig.show="hold", out.width=500 }
-knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) %>% 
-  kableExtra::kable_styling(latex_options="scale_down", font_size = 12)
 
-```
 
 
 ### Principle component analysis to assess sample distance
@@ -670,11 +663,7 @@ Now, view the plot:
 consensus_plot$plot
 ```
 <br>
-```{r , echo=FALSE, results='asis', fig.show="hold", out.width=500 }
-knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) %>% 
-  kableExtra::kable_styling(latex_options="scale_down", font_size = 12)
 
-```
 
 ## Differential Expression analysis with DESeq2 or edgeR
 Differential expression (DE) analysis is undertaken to identify small RNA which 
@@ -899,12 +888,7 @@ mobile_sequences <- RNAsequences(mobile_sRNA)
 
 ```
 <br>
-```{r, echo=FALSE, results='asis',out.width = "80%"}
-knitr::kable(head(mobile_sequences), caption = "Head of the dataframe containing the consensus sequences and complementary sequence of candidate mobile small RNAs", row.names=FALSE,
-             booktabs = TRUE, escape = FALSE, align = "l")  %>% 
-  kableExtra::kable_styling(latex_options="scale_down", font_size = 10)
 
-```
 
 
 We can extract the consensus small RNA sequences using the following code:
