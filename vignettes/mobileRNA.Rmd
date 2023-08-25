@@ -17,7 +17,8 @@ vignette: >
  %\VignettePackage{mobileRNA}
  %\VignetteDepends{mobileRNA}
  %\usepackage[utf8]{inputenc}
-
+ % \VignetteDepends{dplyr}
+ % \VignetteDepends{kableExtra}
 ---
 <br>
 ```{r setup, include = FALSE}
@@ -528,10 +529,8 @@ sample_distribution$plot
 
 ```
 <br>
-```{r, echo=FALSE, results='asis', fig.show="hold"}
-knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate",
-             align = "l", row.names=FALSE) %>%
-  kableExtra::kable_styling(font_size = 10)
+```{r , echo=FALSE, results='asis', fig.show="hold", }
+knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) 
 
 ```
 
@@ -673,8 +672,7 @@ consensus_plot$plot
 
 ```{r, echo=FALSE, results='asis', fig.show="hold"}
 
-knitr::kable(consensus_plot$data, caption = "The distribution of the consensus small RNA classes across the analysis.", 
-             align = "l", row.names=FALSE)%>%
+knitr::kable(consensus_plot$data, caption = "The distribution of the consensus small RNA classes across the analysis.", align = "l", row.names=FALSE)%>%
   kableExtra::kable_styling(font_size = 10)
 
 ```
