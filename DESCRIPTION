@@ -29,8 +29,7 @@ Suggests:
     BiocStyle,
     kableExtra, 
     dplyr,
-    magrittr,
-    systemfonts
+    magrittr
 Imports: 
     dplyr,
     tidyr, 

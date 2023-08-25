@@ -16,9 +16,9 @@ vignette: >
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
  %\VignetteDepends{mobileRNA}
+ %\VignetteDepends{magrittr}
+ %\VignetteDepends{kableExtra}
  %\usepackage[utf8]{inputenc}
- % \VignetteDepends{magrittr}
- % \VignetteDepends{kableExtra}
 ---
 <br>
 ```{r setup, include = FALSE}
@@ -30,9 +30,7 @@ knitr::opts_chunk$set(
   warning=FALSE,
   comment = "#>"
 )
-
 library(magrittr)
-library(kableExtra)
 ```
 
  
@@ -530,8 +528,9 @@ sample_distribution$plot
 
 ```
 <br>
-```{r , echo=FALSE, results='asis', fig.show="hold", }
-knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) 
+```{r , echo=FALSE, results='asis', fig.show="hold", out.width=500 }
+knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) %>% 
+  kableExtra::kable_styling( font_size = 15)
 
 ```
 
@@ -670,14 +669,11 @@ Now, view the plot:
 consensus_plot$plot
 ```
 <br>
-
-```{r, echo=FALSE, results='asis', fig.show="hold"}
-
-knitr::kable(consensus_plot$data, caption = "The distribution of the consensus small RNA classes across the analysis.", align = "l", row.names=FALSE)%>%
-  kableExtra::kable_styling(font_size = 10)
+```{r , echo=FALSE, results='asis', fig.show="hold", out.width=500 }
+knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) %>% 
+  kableExtra::kable_styling( font_size = 15)
 
 ```
-
 
 ## Differential Expression analysis with DESeq2 or edgeR
 Differential expression (DE) analysis is undertaken to identify small RNA which 
@@ -902,9 +898,9 @@ mobile_sequences <- RNAsequences(mobile_sRNA)
 
 ```
 <br>
-```{r, echo=FALSE, results='asis', fig.show="hold"}
-knitr::kable(head(mobile_sequences), caption = "Head of the dataframe containing the consensus sequences and complementary sequence of candidate mobile small RNAs", align = "l", row.names=FALSE) %>% 
-  kableExtra::kable_styling( font_size = 10)
+```{r, echo=FALSE, results='asis',out.width = "100%"}
+knitr::kable(head(mobile_sequences), caption = "Head of the dataframe containing the consensus sequences and complementary sequence of candidate mobile small RNAs", align = "l", row.names=FALSE) %>% kableExtra::kable_styling( font_size = 10, full_width =FALSE)
+
 
 ```
 
