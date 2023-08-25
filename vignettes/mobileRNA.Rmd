@@ -15,7 +15,6 @@ vignette: >
  %\VignetteEngine{knitr::rmarkdown}}
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
- %\VignetteDepends{mobileRNA}
  %\VignetteDepends{magrittr}
  %\VignetteDepends{kableExtra}
  %\usepackage[utf8]{inputenc}
@@ -30,6 +29,8 @@ knitr::opts_chunk$set(
   warning=FALSE,
   comment = "#>"
 )
+library(knitr)
+library(kableExtra)
 library(magrittr)
 ```
 
@@ -530,7 +531,7 @@ sample_distribution$plot
 <br>
 ```{r , echo=FALSE, results='asis', fig.show="hold", out.width=500 }
 knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) %>% 
-  kableExtra::kable_styling( font_size = 15)
+  kableExtra::kable_styling(latex_options="scale_down", font_size = 12)
 
 ```
 
@@ -671,7 +672,7 @@ consensus_plot$plot
 <br>
 ```{r , echo=FALSE, results='asis', fig.show="hold", out.width=500 }
 knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate", align = "l", row.names=FALSE) %>% 
-  kableExtra::kable_styling( font_size = 15)
+  kableExtra::kable_styling(latex_options="scale_down", font_size = 12)
 
 ```
 
@@ -898,9 +899,10 @@ mobile_sequences <- RNAsequences(mobile_sRNA)
 
 ```
 <br>
-```{r, echo=FALSE, results='asis',out.width = "100%"}
-knitr::kable(head(mobile_sequences), caption = "Head of the dataframe containing the consensus sequences and complementary sequence of candidate mobile small RNAs", align = "l", row.names=FALSE) %>% kableExtra::kable_styling( font_size = 10, full_width =FALSE)
-
+```{r, echo=FALSE, results='asis',out.width = "80%"}
+knitr::kable(head(mobile_sequences), caption = "Head of the dataframe containing the consensus sequences and complementary sequence of candidate mobile small RNAs", row.names=FALSE,
+             booktabs = TRUE, escape = FALSE, align = "l")  %>% 
+  kableExtra::kable_styling(latex_options="scale_down", font_size = 10)
 
 ```
 
