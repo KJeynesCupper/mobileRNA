@@ -32,6 +32,7 @@ knitr::opts_chunk$set(
 )
 
 library(magrittr)
+library(kableExtra)
 ```
 
  

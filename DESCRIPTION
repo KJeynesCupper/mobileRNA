@@ -26,7 +26,9 @@ RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    kableExtra, 
+    dplyr
 Imports: 
     dplyr,
     tidyr, 
@@ -59,9 +61,9 @@ Imports:
     S4Vectors,
     SummarizedExperiment,
     rlang,
-    kableExtra, 
     svglite,
-    magick
+    magick,
+    kableExtra
 biocViews: 
     Visualization,
     RNASeq,
