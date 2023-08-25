@@ -91,13 +91,13 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     dplyr::select(dplyr::starts_with("MajorRNA")) %>%
     dplyr::select(-dplyr::where(~all(. == "N")))
 
-    message("The minimum number of matches required to form a consensus sRNA sequence is... ", match.threshold)
+    cat("The minimum number of matches required to form a consensus sRNA sequence is... ", match.threshold, "\n")
     
     if(duplicates == "random"){
-      message("The consensus sRNA sequences will be choose at random in the case of a tie")
+      cat("The consensus sRNA sequences will be choose at random in the case of a tie \n")
     } else 
       if(duplicates == "exclude"){
-        message("The consensus sRNA sequences will be excluded in the case of a tie") 
+        cat("The consensus sRNA sequences will be excluded in the case of a tie \n") 
       }
     cat("\n")
 
@@ -169,7 +169,7 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     df$Complementary_RNA <- sapply(df$Sequence, find_complementary_sequenceRNA)
     df$Complementary_DNA <- sapply(df$Sequence, find_complementary_sequenceDNA) 
   } else {
-    message("There is no consensus RNA sequence between replicates, no complementary sequence has been determined.")
+    cat("There is no consensus RNA sequence between replicates, no complementary sequence has been determined.")
   }
   
   # add as col
@@ -192,7 +192,7 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     }
   
   if(tidy){
-    message("Removing sRNA clusters with no consensus sRNA sequence...")
+    cat("Removing sRNA clusters with no consensus sRNA sequence... \n")
     
     data_output <-  data_output %>%  dplyr::filter(Sequence != "NA")
     

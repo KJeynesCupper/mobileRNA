@@ -88,7 +88,7 @@ RNAloci <- function (files, out, samples)
   
   utils::write.table(gff_merged_df, file = out, quote = FALSE, 
                      sep = "\t", row.names = FALSE, col.names = TRUE)
-  message("Writting Loci file to:  ", out)
+  cat("Writting Loci file to:  ", out, "\n")
   return(gff_merged_df)
-  message("Loci data frame saved to named object")
+  cat("Loci data frame saved to named object \n")
 }

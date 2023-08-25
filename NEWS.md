@@ -38,3 +38,6 @@ Updated to version  0.99.6 (2023-08-15)
 + fixed bug in RNAdistribution plot, when sample specific
 + improved PCA plot flexibility
 + broadened use of RNAattributes function. 
+
+Updated to version  0.99.7 (2023-08-25)
++ updated vignette

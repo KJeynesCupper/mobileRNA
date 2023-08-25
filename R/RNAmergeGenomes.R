@@ -155,7 +155,7 @@ RNAmergeGenomes <-  function(genomeA, genomeB,
     ref2 <-do.call(c, ref2_fragments)
     
     # Replace chromosome names in reference genomes
-    message("Replacing chromosome names")
+    cat("Replacing chromosome names... \n")
     ref1_names <- names(ref1)
     ref1_newnames <- paste0(abbreviationGenomeA, "_", ref1_names)
     ref1_newnames <- sub("\\.", "", ref1_newnames)
@@ -168,8 +168,8 @@ RNAmergeGenomes <-  function(genomeA, genomeB,
     
     # merge genomes 
     merged_genome <- append(ref1, ref2)
-    message("Genomes have been successfully merged")
-    message("Attempting to save merged genome to: ", out_dir)
+    cat("Genomes have been successfully merged \n")
+    cat("Attempting to save merged genome to: ", out_dir, "\n")
     
     `%dopar%` <- foreach::`%dopar%`
     # set number of cores for parelle, TRUE sets most for systm.  
@@ -185,7 +185,7 @@ RNAmergeGenomes <-  function(genomeA, genomeB,
     
     doParallel::registerDoParallel(cluster)
     
-    message("Please be patient, this next step may take a long time .. ")
+    cat("Please be patient, this next step may take a long time ..  \n")
     # Create a progress bar
 
     foreach::foreach(i = 1:number_cores) %dopar% {
@@ -198,14 +198,14 @@ RNAmergeGenomes <-  function(genomeA, genomeB,
     }
   
     on.exit(parallel::stopCluster(cluster))
-    message("All temporary files have been created")
-    message("Merging temporary files ... ")
-    message("At this point get a cup of tea, its going to be a while ... ")
+    cat("All temporary files have been created \n")
+    cat("Merging temporary files ... \n ")
+    cat("At this point get a cup of tea, its going to be a while ... \n ")
     
     loc <- paste0(dirname(out_dir), "/tempfile_*")
     system(paste0("cat ", loc, " > ", out_dir), intern = TRUE)
     
-    message("Deleting temporary files ...")
+    cat("Deleting temporary files ... \n")
     system(paste0("rm ", loc), intern = TRUE)
     return(merged_genome)
   }

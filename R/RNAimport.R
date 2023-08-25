@@ -118,13 +118,13 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       utils::flush.console()
     }
     cat("\n")  # Print a newline after progress is complete
-    message("Completed importation of data from directory.")
+    cat("Completed importation of data from directory. \n")
     
     
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    message("Checking data content...")
+    cat("Checking data content... \n")
     required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -134,7 +134,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                    line of the input file(s)"))
       }
     }
-    message("Data content is correct.")
+    cat("Data content is correct.")
     cat("\n") 
     
     # merge first columns to create list of loci across all samples
@@ -218,7 +218,7 @@ df_final <- df_final[!rows_to_remove, ]
 
   } else
     if(input == "mRNA"){
-      return(message("This features is under development, and will be available soon.\nPlease see the `devel` branch on github (https://github.com/KJeynesCupper/mobileRNA/tree/devel)."))
+      return(cat("This features is under development, and will be available soon.\nPlease see the `devel` branch on github (https://github.com/KJeynesCupper/mobileRNA/tree/devel). \n"))
     }
 }
 
