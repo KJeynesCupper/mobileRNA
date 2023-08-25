@@ -17,7 +17,7 @@ vignette: >
  %\VignettePackage{mobileRNA}
  %\VignetteDepends{mobileRNA}
  %\usepackage[utf8]{inputenc}
- % \VignetteDepends{dplyr}
+ % \VignetteDepends{magrittr}
  % \VignetteDepends{kableExtra}
 ---
 <br>

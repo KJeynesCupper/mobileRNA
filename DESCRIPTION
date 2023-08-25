@@ -28,7 +28,9 @@ Suggests:
     rmarkdown,
     BiocStyle,
     kableExtra, 
-    dplyr
+    dplyr,
+    magrittr,
+    systemfonts
 Imports: 
     dplyr,
     tidyr, 
