@@ -30,13 +30,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-#install.packages("dplyr")
-#install.packages("kableExtra")
-#install.packages("svglite")
-   
-library(dplyr)
-library(kableExtra)
-library(svglite)
 ```
 
  
@@ -535,6 +528,8 @@ sample_distribution$plot
 ```
 <br>
 ```{r, echo=FALSE, results='asis', fig.show="hold"}
+library(dplyr)
+library(kableExtra)
 knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate",
              align = "l", row.names=FALSE) %>%
   kable_styling(font_size = 10)
@@ -678,6 +673,8 @@ consensus_plot$plot
 <br>
 
 ```{r, echo=FALSE, results='asis', fig.show="hold"}
+library(dplyr)
+library(kableExtra)
 knitr::kable(consensus_plot$data, caption = "The distribution of the consensus small RNA classes across the analysis.", 
              align = "l", row.names=FALSE)%>%
   kable_styling(font_size = 10)
@@ -909,6 +906,9 @@ mobile_sequences <- RNAsequences(mobile_sRNA)
 ```
 <br>
 ```{r, echo=FALSE, results='asis', fig.show="hold"}
+library(dplyr)
+library(kableExtra)
+
 knitr::kable(head(mobile_sequences), caption = "Head of the dataframe containing the consensus sequences and complementary sequence of candidate mobile small RNAs", align = "l", row.names=FALSE) %>% 
   kableExtra::kable_styling( font_size = 10)
 
