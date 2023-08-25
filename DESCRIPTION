@@ -60,7 +60,8 @@ Imports:
     SummarizedExperiment,
     rlang,
     kableExtra, 
-    svglite
+    svglite,
+    magick
 biocViews: 
     Visualization,
     RNASeq,

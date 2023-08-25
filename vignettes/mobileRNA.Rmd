@@ -528,6 +528,7 @@ sample_distribution$plot
 ```
 <br>
 ```{r, echo=FALSE, results='asis', fig.show="hold"}
+devtools::install_github("kupietz/kableExtra")
 library(dplyr)
 library(kableExtra)
 knitr::kable(sample_distribution$data, caption = "Table of the distribution of small RNA classes within each sample replicate",
