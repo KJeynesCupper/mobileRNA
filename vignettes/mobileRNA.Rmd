@@ -41,7 +41,7 @@ long-distance signalling is played by small RNA molecules (sRNAs). These
 endogenous sRNAs can be produced in a tissue and then transported
 systemically across the vascular system into recipient organs, where they can
 induce a molecular response and coordinate physiological changes. Plant grafting
-can be utilsed to create chimeric plant systems composed of two genotypes. For 
+can be utilised to create chimeric plant systems composed of two genotypes. For 
 example, grafting can join tomato and eggplant or different species of 
 grapevine. Grafting of horticultural crops can lead to favorable traits, such 
 as improved plant vigour or architecture, and resistance to stress. sRNAs have
@@ -112,13 +112,13 @@ workflows but adds huge value to the analysis. Similarly, an important core step
 to understand is consensus dicer classification (see function 
 \code[mobileRNA::RNAdicercall()]). For a given sRNA cluster, each replicate at 
 the mapping and clustering pre-processing step will have been predicted a sRNA
-classification (default: 20-24nt). This analysis step uses this information to 
+classification. This analysis step uses this information to 
 define the classification of the cluster based on the consensus across 
 replicates. There is a range of parameters to control how these are drawn,
 making it either stringent or loose, which will alter the downstream analysis. 
 Finally, the step to identify the candidate mobile molecules 
 (see function \code[mobileRNA::RNAmobile()]) also has a parameter which can 
-either result in stringent or looser outcomes. These parameter utilses the 
+either result in stringent or looser outcomes. These parameter utilises the 
 number of replicates which contributed to the consensus dicer classification as 
 a threshold value. For instance, it would be more stringent to select sRNA 
 clusters which were unambiguously classified across condition replicates. 
@@ -275,7 +275,7 @@ samples are aligned to.
 ### Merging Genome Assemblies
 
 Here we merge the two reference genomes into a single merged genome using the
-`RNAgenomeMerge()` function. This removes punctation from chromosome
+`RNAgenomeMerge()` function. This removes punctuation from chromosome
 names which could cause issues when mapping with ShortStack and it also adds a 
 prefix to each chromosome name which is unique to each genome assembly. By 
 default, the string `A_` is added to the reference genome supplied to `genomeA` 
@@ -584,12 +584,12 @@ plotSampleDistance(sRNA_data)
 ## Define the consensus RNA class
 Have a look at the `sRNA_data` object, you will see that for each sample the
 sRNA class for a given cluster has been determined (see columns with names 
-containing with "DicerCall") which will state a number from 20-24 which 
-represents the nucleotide length of the small RNA, or, state NA/N which 
+containing with "DicerCall") which will state a number from 20-24 in the data 
+which represents the nucleotide length of the small RNA, or, state NA/N which 
 represents that the small RNA was unclassified in the sample. 
 
 The `RNAdicercall()` function is used to calculate the consensus dicer 
-classification for each small RNA cluster based of the classificartion by each
+classification for each small RNA cluster based of the classification by each
 sample replicate. 
 
 When working with samples from a chimeric system, the function contains a 
@@ -623,7 +623,7 @@ sRNA_data_consensus <- RNAdicercall(data = sRNA_data,
 For the downstream analysis, it can be useful to define the distinct 24-nt and
 21/22-nt populations of small RNAs, To subset the data, use the `RNAsubset()`
 function to choose which small RNA populations to include: 20-nt, 21-nt, 22-nt, 
-23-nt, or 24-nt. For example:
+23-nt, or 24-nt in this data. For example:
 
 ```{r, message=FALSE}
 
@@ -688,7 +688,7 @@ Please note that this step is optional and not a required part of the analysis.
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
 
-## Differential analysis of whole dataset: DEseq2 method 
+## Differential analysis of whole dataset: DESeq22 method 
 sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
                               group = groups,
                               method = "DESeq2")
@@ -742,7 +742,7 @@ mobile_sRNA <- RNAmobile(data = sRNA_DESeq2,
                          task = "keep", 
                          statistical = FALSE)
 
-## Identify potential tomato mobile molecules which are statistically signifcant
+## Identify potential tomato mobile molecules which are statistically significant
 mobile_sRNA_significant <- RNAmobile(data = sRNA_DESeq2, 
                          controls = control_names,
                          genome.ID = "SL40",
@@ -816,7 +816,7 @@ IMPORTANT: If chromosome names were altered in either of genome assemblies used
 in the mapping steps, the chromosome names in the genome annotation files must 
 match the same pattern. If you used the [mobileRNA::RNAmergeGenomes()] 
 function, the chromosome names will by default be altered. The 
-[mobileRNA::RNAmergeAnnotations()] function can be utilsed to alter both 
+[mobileRNA::RNAmergeAnnotations()] function can be utilised to alter both 
 genome annotation files in the same way. This functions alters the names, saves
 each altered genome annotation and then merges them into one. 
 <br>
@@ -1008,7 +1008,7 @@ further. For this you can utilise the \code[RNAsignificant()] function.
 
 The plotting functions within the package can be used to display these results, 
 specifically \code[RNAdistribution()] and \code[plotHeatmap()]. Similarly, the
-functions to assist with functional analysis can also be utilsied to pull 
+functions to assist with functional analysis can also be utilised to pull 
 the consensus sRNA sequence for each cluster in the population, or find 
 overlaps with known annotations in the native genome.
 <br>
@@ -1033,9 +1033,9 @@ output of the calculation is added as an additional column to the input datafram
 
 This can be manipulated to be used before or after identified mobile RNAs. When 
 calculating means after identifying mobile molecules, it is recommend to base this
-on the heterograft samples rather than the full dataset (selfgrafts + heterograft
+on the heterograft samples rather than the full dataset (self-grafts + heterograft
 replicates) as all potential mobile sRNAs should have zero counts or RPM value in 
-the selfgraft control replicates. By including the full dataset in these 
+the self-grafts control replicates. By including the full dataset in these 
 calculations, the mean values for the mobile molecules will be skewed. 
 
 Therefore, depending on your intended output this function could be approached 

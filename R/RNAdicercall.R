@@ -72,7 +72,7 @@
 #' 
 #'
 #'The second, labeled `DicerConsensus` states the consensus sRNA class between 
-#'20-24 nucleotides in length or "N" if unclassified. 
+#'nucleotides in length or "N" if unclassified. 
 #'
 #'
 #' @examples
@@ -90,9 +90,7 @@
 #' @export
 #' @importFrom dplyr "%>%"
 #' @importFrom dplyr "mutate"
-#' @importFrom dplyr "select"
 #' @importFrom dplyr "filter"
-#' @importFrom stringr "str_detect"
 #' @importFrom tidyr "replace_na"
 RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, 
                          tidy = FALSE, chimeric = FALSE, controls = NULL, 
@@ -115,39 +113,31 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
                                       genome.ID = genome.ID)
   }
   
-  class_colnames <- c()
-  for (i in colnames(data)) {
-    if (stringr::str_detect(i, "DicerCall_")) {
-      class_colnames <- c(class_colnames, i)
-    }
-  }
+  class_colnames <- colnames(data)[grep("DicerCall_", colnames(data))]
+  
   if (!is.null(conditions)) {
-    cat("Calculating consensus dicercall based on information from select replicates \n")
+    cat("Calculating consensus dicercall based on information from select replicates... \n")
     onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
-    cat("Calculating consensus dicercall based on information from all replicates \n")
+    cat("Calculating consensus dicercall based on information from all replicates... \n")
     onlyconditions <- class_colnames
   }
-  
-  other_exclude <- c("20", "21", "22", "23", "24", "N", "NA")
-  data <- data %>% 
-    dplyr::mutate(nt_20 = rowSums(.[onlyconditions] =="20")) %>% 
-    dplyr::mutate(nt_21 = rowSums(.[onlyconditions] == "21")) %>% 
-    dplyr::mutate(nt_22 = rowSums(.[onlyconditions] ==  "22")) %>% 
-    dplyr::mutate(nt_23 = rowSums(.[onlyconditions] == "23")) %>% 
-    dplyr::mutate(nt_24 = rowSums(.[onlyconditions] == "24"))%>% 
-    dplyr::mutate(other = rowSums(!sapply(dplyr::select(.,onlyconditions), 
-                                          `%in%`, other_exclude)))
+  cat("\n")
+  # unique values across the dicer call columns 
+  unique_vals <- unique(unlist(data[onlyconditions]))
+  # rowsum of columsn. 
+  for (value in unique_vals) {
+    add_col <- paste0("nt_", value)
+    data[add_col] <- rowSums(data[onlyconditions] == value)
+  }
   
   # search columns based on location 
-  col_q <- grep("^nt", base::names(data))
-  col_qp <- grep("^other", base::names(data))
-  t <-c(col_q,col_qp)
+  t <- grep("^nt", base::names(data))
   
   if (ties.method == "random"){
-    cat("The consensus dicercall will be choose at random in the case of a tie \n")
+    cat("The consensus dicercall will be choose at random in the case of a tie... \n")
     new_df <- data 
     new_df$DicerCounts <- apply(new_df[t], 1, max)
     new_df <- new_df %>% 
@@ -158,7 +148,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
     
   } else 
     if(ties.method == "exclude"){
-      cat("The consensus dicercall will be excluded in the case of a tie \n") 
+      cat("The consensus dicercall will be excluded in the case of a tie... \n") 
       new_df <- data
       
       # Initialize result vector
@@ -201,14 +191,13 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
     }
   
   # remove calulation columns 
-  new_df <- new_df %>% dplyr::select(-nt_20, -nt_21, -nt_22, 
-                                     -nt_23, -nt_24, -other)
+   new_df <- new_df[, !grepl("^nt_", colnames(new_df))]
   # remove nt from output values
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
   
   if (tidy) {
     cat("\n")
-    cat("Removing sRNA clusters with no consensus dicercall... \n")
+    cat("Removing small RNA clusters with no consensus dicercall... \n")
     new_df_tidy <- new_df %>% dplyr::filter(DicerConsensus != "N")
     return(new_df_tidy)
   }

@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
 Title: Identify mobile RNA molecules in plant graft systems 
-Version: 0.99.7
+Version: 0.99.8
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut"))
@@ -26,9 +26,7 @@ RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
-    BiocStyle,
-    dplyr,
-    magrittr
+    BiocStyle
 Imports: 
     dplyr,
     tidyr, 

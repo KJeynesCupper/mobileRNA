@@ -73,7 +73,7 @@ This can encourage closer comparison between sample replicates.
 }
 \description{
 \code{RNAdistribution} plots the distribution of dicer-derived
-sRNA classes (20-24nt) across samples or across the sRNA consensus
+sRNA classes across samples or across the sRNA consensus
 determined by the function \code{\link[=RNAdicercall]{RNAdicercall()}}.
 }
 \details{

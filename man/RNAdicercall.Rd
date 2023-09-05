@@ -56,7 +56,7 @@ represents the number of replicates which which contributed to the
 unclassified consensus in \code{DicerConsensus}.
 
 The second, labeled \code{DicerConsensus} states the consensus sRNA class between
-20-24 nucleotides in length or "N" if unclassified.
+nucleotides in length or "N" if unclassified.
 }
 \description{
 Using the data, the function uses the supplied dataframe and

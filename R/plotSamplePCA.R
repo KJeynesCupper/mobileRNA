@@ -73,6 +73,8 @@
 #' @importFrom ggrepel "geom_label_repel"
 #' @importFrom ggplot2 "aes"
 #' @importFrom ggplot2 "labs"
+#' @importFrom ggplot2 "xlab"
+#' @importFrom ggplot2 "ylab"
 #' @importFrom ggplot2 "coord_fixed"
 #' @importFrom ggrepel "geom_text_repel"
 #' @importFrom ggplot2 "ggplot"
@@ -98,6 +100,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
     countData=data,colData=column.data,design= ~conditions))
   count.data.set$conditions <- stats::relevel(count.data.set$conditions,
                                               group[1])
+  
   dds <- DESeq2::estimateSizeFactors(count.data.set)
   
   # log transform the data.
@@ -114,37 +117,37 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   
   # use the DEseq plot pca function, store in an object.
   pca <- DESeq2::plotPCA(rld1, returnData = TRUE, intgroup = "conditions")
-  ## change position
-  sample_names <- sub("Count_", "", colnames(data))
-  pca["ID"] <- sample_names # create new column with sample names
+  colnames(pca)[colnames(pca) == 'conditions'] <- 'Conditions'
+  rownames(pca) <- gsub("^Count_", "", rownames(pca))
+  pca$name <- gsub("^Count_", "",  pca$name)
   percentVar <- round(100 * attr(pca, "percentVar"))
   
   cat("Organising principal component analysis \n")
   if(labels == TRUE){
     if(boxed == TRUE){
-      X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
+      X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=Conditions)) +
         {if(point.shape) ggplot2::geom_point(size=3, ggplot2::aes(
-          shape = conditions))}+
+          shape = Conditions))}+
         {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
-        xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-        ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+        ggplot2::xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+        ggplot2::ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
         ggplot2::coord_fixed()+
-        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
+        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = name), 
                                   show.legend = FALSE, box.padding = 1)+
         ggplot2::labs(color = legend.title) + 
         ggplot2::coord_fixed(ratio = size.ratio)+
         {if(!is.null(ggplot.theme)) ggplot.theme() }
       
     } else
-      X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
+      X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=Conditions)) +
         {if(point.shape) ggplot2::geom_point(size=3, ggplot2::aes(
-          shape =conditions))}+
+          shape =Conditions))}+
         {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
-        xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-        ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+        ggplot2::xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+        ggplot2::ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
-        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = ID), 
+        ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = name), 
                                   show.legend = FALSE, box.padding = 1)+
         ggplot2::labs(color = legend.title) + 
         suppressMessages(ggplot2::coord_fixed(ratio = size.ratio))+
@@ -152,12 +155,12 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
     
     
   } else {
-    X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=conditions)) +
+    X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=Conditions)) +
       {if(point.shape) ggplot2::geom_point(size=3, ggplot2::aes(
-        shape = conditions))}+
+        shape = Conditions))}+
       {if(point.shape == FALSE) ggplot2::geom_point(size=3)}+
-      xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-      ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+      ggplot2::xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+      ggplot2::ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
       {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
       ggplot2::labs(color = legend.title) + 
       ggplot2::coord_fixed(ratio = size.ratio)+

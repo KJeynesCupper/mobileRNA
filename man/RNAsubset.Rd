@@ -4,24 +4,18 @@
 \alias{RNAsubset}
 \title{Subset data to select a specific small RNA population}
 \usage{
-RNAsubset(data, type, sig = FALSE, ...)
+RNAsubset(data, type, sig = FALSE)
 }
 \arguments{
 \item{data}{A numerical data-frame containing the sample data, with a
 defined consensus sRNA class/type for each sRNA dicer-derived cluster
 (see \code{\link[=RNAdicercall]{RNAdicercall()}}.}
 
-\item{type}{A number to represent the type of small RNA population to subset
-for.}
+\item{type}{numeric; small RNA class(es) to select.}
 
 \item{sig}{Parameter to filter and select significant sRNA. If
 \code{sig=TRUE}, data will be filtered based on p-adjusted < 0.05
 significance threshold.}
-
-\item{...}{Related to number in the \code{type} argument
-This can be a value from 20-24. To select, 24-nt sRNA, state 24.
-Multiple values can be inputted, for instance both 21 and 22 can be
-stated to select both.}
 }
 \value{
 A dataframe containing sRNA clusters with a sRNA consensus matching

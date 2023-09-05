@@ -41,3 +41,9 @@ Updated to version  0.99.6 (2023-08-15)
 
 Updated to version  0.99.7 (2023-08-25)
 + updated vignette
+
+Updated to version  0.99.8 (2023-09-05)
++ updated vignette
++ updated RNAdicercall to allow any dicer-classification (not constricted to 20-24)
++ Amended RNA distribution to suit. 
++ Amended plotSamplePCA table and plot

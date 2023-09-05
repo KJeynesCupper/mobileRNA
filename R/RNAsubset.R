@@ -22,13 +22,8 @@
 #' defined consensus sRNA class/type for each sRNA dicer-derived cluster
 #' (see [mobileRNA::RNAdicercall()].
 #'
-#' @param type A number to represent the type of small RNA population to subset
-#' for.
-#' @param ... Related to number in the `type` argument
-#' This can be a value from 20-24. To select, 24-nt sRNA, state 24.
-#' Multiple values can be inputted, for instance both 21 and 22 can be
-#' stated to select both.
-#'
+#' @param type numeric; small RNA class(es) to select.
+#' 
 #' @param sig Parameter to filter and select significant sRNA. If
 #'  \code{sig=TRUE}, data will be filtered based on p-adjusted < 0.05
 #'  significance threshold.
@@ -52,7 +47,7 @@
 #' @importFrom magrittr "%>%"
 #' @importFrom dplyr "filter"
 
-RNAsubset <- function(data, type,  sig=FALSE, ...){
+RNAsubset <- function(data, type,  sig=FALSE){
     x <- data %>% dplyr::filter(DicerConsensus %in% type)
     if(sig){
       x<- x %>%

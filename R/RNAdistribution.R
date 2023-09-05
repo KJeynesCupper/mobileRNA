@@ -1,7 +1,7 @@
 #' Plot the distribution of sRNA lengths
 #'
 #' @description \code{RNAdistribution} plots the distribution of dicer-derived
-#' sRNA classes (20-24nt) across samples or across the sRNA consensus
+#' sRNA classes across samples or across the sRNA consensus
 #' determined by the function [mobileRNA::RNAdicercall()].
 #'
 #' @param data a dataframe, on which one of the following functions has already
@@ -164,10 +164,11 @@ RNAdistribution  <- function (data, samples = NULL, style,
     # if a replicate only has unclassified sRNAs (N), then we need to alter
     # beware that any tables which do not have the required columns
     if (base::inherits(counts.df, c("list"))) {
-      required_columns <- c("20", "21", "22", "23", "24", "N")
+      class_colnames <- colnames(data)[grep("DicerCall_", colnames(data))]
+      required_columns <- unique(unlist(data[class_colnames]))
       for (i in seq_along(counts.df)) {
         table_i <- counts.df[[i]]  # current table
-        if (length(names(table_i)) < 6) {
+        if (length(names(table_i)) < length(required_columns)) {
           # columns missing from the table
           missing_columns <- setdiff(required_columns, names(table_i))
           # add missing columns to table, and assign a value of 0
