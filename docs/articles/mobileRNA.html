@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mobileRNA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Explore canditate mobile sRNAs &amp; population-scale sRNA changes in chimeric systems using mobileRNA</h1>
                         <h4 data-toc-skip class="author">Katie Jeynes-Cupper, Marco Catoni</h4>
             
-            <h4 data-toc-skip class="date">2023-08-15</h4>
+            <h4 data-toc-skip class="date">2023-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/KJeynesCupper/mobileRNA.git/blob/HEAD/vignettes/mobileRNA.Rmd" class="external-link"><code>vignettes/mobileRNA.Rmd</code></a></small>
       <div class="d-none name"><code>mobileRNA.Rmd</code></div>
@@ -98,9 +98,9 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>In plants, systemic signalling is an elaborated molecular system which coordinates plant development, integrating and transmitting the information perceived from environment to distant organs.An important role in long-distance signalling is played by small RNA molecules (sRNAs). These endogenous sRNAs can be produced in a tissue and then transported systemically across the vascular system into recipient organs, where they can induce a molecular response and coordinate physiological changes. Plant grafting can be utilse to create chimeric plant systems composed of two genotype. For example, grafting can join tomato and eggplant or different species of grapevine. Grafting of horticultural crops can lead to favorable traits, such as improved plant vigour or architecture, and resistance to stress. sRNAs have been known to move across a graft junction, hence, understanding the complex regulatory networks controlled by sRNAs traveling from different genomes could assist the development of novel methods for transferring traits into crops, as alternatives to traditional breeding or transgenic approaches.</p>
-<p>Currently, for each study it has been necessary to adapt general RNA sequencing pipelines to the specific study of mobile molecules. Several genomic studies used grafting to explore and characterise mobile sRNAs in chimeric systems, however, it is clear that there is not a standardised approach.</p>
-<p>Here we introduce the R Package , to aid the identification of mobile RNA molecules and explore population-scale changes in chimeric systems in comparison to its non-chimeric control. The tool offers a workflow for pre-processing and analysis. Ultimately, the pipeline offers an optimised mapping/alignment of samples to genome assemblies to improve sRNA origin, and offers analysis steps to remove mapping errors, visualization of the results, and supports output for functional analysis. <br></p>
+<p>In plants, systemic signalling is an elaborated molecular system which coordinates plant development, integrating and transmitting the information perceived from environment to distant organs. An important role in long-distance signalling is played by small RNA molecules (sRNAs). These endogenous sRNAs can be produced in a tissue and then transported systemically across the vascular system into recipient organs, where they can induce a molecular response and coordinate physiological changes. Plant grafting can be utilised to create chimeric plant systems composed of two genotypes. For example, grafting can join tomato and eggplant or different species of grapevine. Grafting of horticultural crops can lead to favorable traits, such as improved plant vigour or architecture, and resistance to stress. sRNAs have been known to move across a graft junction, hence, understanding the complex regulatory networks controlled by sRNAs traveling from different genomes could assist the development of novel methods for transferring traits into crops, as alternatives to traditional breeding or transgenic approaches.</p>
+<p>To identify sRNA population which are mobile or native, analysts currently adopt and adapt a general RNA sequencing pipeline. Several genomic studies have used grafting to explore and characterise mobile sRNAs in chimeric systems, however, it is clear that there is not a standardised approach.</p>
+<p>Here we introduce the R Package mobileRNA, a recommend pipeline and analysis workflow for the exploration and identification of mobile small RNAs for chimeric systems and small RNA population changes between treatment and condition of non-chimeric systems. The pipeline offers an optimised mapping/alignment of samples to genome assemblies to improve sRNA origin, and offers analysis steps to remove mapping errors, visualization of the results, and supports output for functional analysis. <br></p>
 </div>
 <div class="section level2">
 <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a>
@@ -108,16 +108,15 @@
 <p>This manual offers a pipeline for the analysis of sRNAseq data taken from chimeric systems. For example, plant grafting experiments between different cultivars and species (with distinct genome assemblies). This pipeline involves pre-processing and analysis steps for the identification of candidate mobile sRNA molecules and the exploration of population level changes in chimeric systems.</p>
 <p>There are two clear area which must be optimised to make better predicts of the<br>
 sRNA mobility and population dynamics in chimeric systems: * Optimisation of the alignment steps * Optimisation of analysis: sRNA classification and mapping error removal.</p>
-<p>The first involves optimising the use of mapping algorithm to best place sRNA to each genome. Here, we supply the mapping algorithms with as much information as possible to make its predictions. This includes supplying both genome assemblies at the same time, through the use of a merged genome. A merged genome is a single FASTA file containing multiple genome assemblies. In many databases, the chromosome names have been consistently named in the same patterns. This means that when you merge multiple genome assemblies together it is very challenging to distinguish the individual genomes in the merged file. here, we offer a function to merge two genome assemblies into a single file and is able to maintain the distinguishability by adding a distinct pre-fix to chromosome names in each genome. The other bit of extra information to supply to the aligner, is a list of loci where sRNA clusters have been identified in each sample in the analysis. This ensure consistency across the analysis and helps prevent false assumptions. The first thing to understand is that sRNA molecules are expected to have a very low abundance. It might be the case that in one replicate the abundance of reads at a given sRNA locus was not significant enough to record as a sRNA cluster, while in another replicate it was recorded. Therefore, it would be wrong to assume there are zero reads at the loci. Collectively, considering the extra information should optimise the alignment of sRNAs to the bets locations within the merged genome.</p>
-<p>The second area to optimise is the analysis in R. The analysis workflow can be completed in a simple 3-step process to identify potentially mobile sRNAs and similarly to explore the population-scale dynamics this can be achieved in a simple 4-step process. Across the analysis, additional features are available to advance the analysis. This includes plotting principal component analysis results, heatmaps and distribution plots, as well as including statistical analysis through the deployment of differential analysis method (edgeR or DESeq2), and steps to assist functional analysis. At many of the core steps, there is the ability to remove mapping errors by comparing controls to the treatment. This is a step not obviously described by other workflows but adds huge value to the analysis. Similarly, an important core step to understand is consensus dicer classification (see function ). For a given sRNA cluster, each replicate at the mapping and clustering pre-processing step will have predicted the class (default: 20-24nt). The consensus dicer classification step uses this information to define the classification of the cluster. There is a range of parameters to control how these are drawn, making it either stringent or loose, which will alter the downstream analysis. Finally, the step to identify the candidate mobile molecules (see function ) also has a parameter which can either result in stringent or looser outcomes. This parameter utilses the number of replicates which contributed to the consensus dicer classification as a threshold value. For instance, it would be more stringent to select sRNA clusters which were unambiguously classified across condition replicates.</p>
+<p>The first involves optimising the use of the mapping algorithm to best place sRNA to each genome. Here, we supply the mapping algorithms with as much information as possible to make its predictions. This includes supplying both genome assemblies at the same time, through the use of a merged genome. A merged genome is a single FASTA file containing multiple genome assemblies. In many databases, the chromosome names have been named in the same patterns. This means that when you merge multiple genome assemblies together it is very challenging to distinguish the individual genomes in the merged file. Here, we offer a function to merge two genome assemblies into a single file and is able to maintain the distinguishability by adding a distinct pre-fix to chromosome names in each genome. The other bit of extra information to supply to the aligner, is a list of de novo sRNA loci identified in each sample in the analysis. This ensures consistency across the analysis and helps prevent false assumptions. sRNA molecules are expected to have a very low abundance; It might be the case that in one replicate the read abundance of a given sRNA locus was not significant enough to record as a sRNA cluster, while in another replicate it was recorded. Therefore, it would be wrong to assume there are zero reads at the locus. Collectively, considering the extra information should optimise the alignment of sRNAs to the best locations within the merged genome.</p>
+<p>The second area to optimise is the analysis in R. The analysis workflow can be completed in a simple 3-step process to identify potentially mobile sRNAs and similarly to explore the population-scale dynamics this can be achieved in a simple 4-step process. Across the analysis, additional features are available to advance the analysis. This includes plotting principal component analysis results, heatmaps and distribution plots, as well as including statistical analysis through the deployment of differential analysis methods (edgeR or DESeq2), and steps to assist functional analysis. At many of the core steps, there is the ability to remove mapping errors by comparing controls to the treatment. This is a step not obviously described by other workflows but adds huge value to the analysis. Similarly, an important core step to understand is consensus dicer classification (see function ). For a given sRNA cluster, each replicate at the mapping and clustering pre-processing step will have been predicted a sRNA classification. This analysis step uses this information to define the classification of the cluster based on the consensus across replicates. There is a range of parameters to control how these are drawn, making it either stringent or loose, which will alter the downstream analysis. Finally, the step to identify the candidate mobile molecules (see function ) also has a parameter which can either result in stringent or looser outcomes. These parameter utilises the number of replicates which contributed to the consensus dicer classification as a threshold value. For instance, it would be more stringent to select sRNA clusters which were unambiguously classified across condition replicates.</p>
 <p>Here we introduce the use of statistical analysis to identify mobile sRNA molecules in chimeric systems, and it should be emphasized that this is an optional step. However, statistical analysis for the exploration of population dynamics should be a mandatory step. Here we include a single function which can be instructed to undertake differential analysis using either the edgeR or DESeq2 method (see function ). The function outputs additional columns to your working dataset, including the raw count mean, log2FoldChange, p-value and adjusted p-value.</p>
 <div class="section level3">
 <h3 id="workflow-summary">Workflow Summary<a class="anchor" aria-label="anchor" href="#workflow-summary"></a>
 </h3>
-<p>The summarised workflow is shown below, where it begins in R-Studio to merge the two genome assemblies into one, then the pre-processing moves into Linux to align each replicate to the merged reference and then back into R-Studio to undertake the analysis to identify potentially mobile RNA species.</p>
-<p><img src="../reference/figures/program_flow.png" width="400" height="350"><br></p>
-<p>The analysis pipeline, splits into two tracks when trying to identify candidate mobile sRNAs and population dynamics. This can be seen in the diagram below:</p>
-<p><img src="../reference/figures/basic_vs_advanced_mobile.png" width="1211"><br></p>
+<p><img align="right" width="300" src="../reference/figures/program_flow.png"></p>
+<p>The summarised workflow is shown below, where it starts in R-Studio to merge the two genome assemblies into one, then the pre-processing moves into Linux to align each replicate to the merged reference and then back into R-Studio to undertake the analysis. <br><br><br></p>
+<p>The analysis pipeline, splits into two tracks when trying to identify candidate mobile sRNAs and population dynamics. This can be seen in the diagram below: <br><br><br><img src="../reference/figures/complete_workflow_mobile_native3.png" width="700" height="750"><br><br></p>
 </div>
 </div>
 <div class="section level2">
@@ -125,34 +124,37 @@ sRNA mobility and population dynamics in chimeric systems: * Optimisation of the
 </h2>
 <p>The latest version of <code>mobileRNA</code> can be installed via GitHub using the <code>devtools</code> package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"KJeynesCupper/mobileRNA"</span>, ref <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span></code></pre></div>
 <p>Load package to library:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/KJeynesCupper/mobileRNA.git" class="external-link">mobileRNA</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/KJeynesCupper/mobileRNA.git" class="external-link">mobileRNA</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="an-overview-of-the-data-used">An overview of the data used<a class="anchor" aria-label="anchor" href="#an-overview-of-the-data-used"></a>
 </h3>
 <p>For the following examples, a semi-synthetic small RNA-seq data set has been utilised to simulate the movement of sRNA molecules from an Tomato (<em>Solanium lycopersicum</em>) rootstock to a Eggplant (<em>Solanium melongena</em>) scion, a grafting system known to be compatible.</p>
+<p>There are three heterograft replicate, where each is an individual tomato replicate spiked with the same random set of 150 tomato sRNA clusters. These are known as: * <code>heterograft_1</code> * <code>heterograft_2</code> * <code>heterograft_3</code></p>
+<p>There are three self-graft replicates, where each is an individual tomato replicate without the spiked tomato sRNA clusters. These are:</p>
 <ul>
-<li><p>The three heterograft replicates: known as:<code>heterograft_1</code>, <code>heterograft_2</code> &amp; <code>heterograft_3</code> are individual tomato replicates spiked with 150 tomato sRNA clusters.</p></li>
-<li><p>The self-graft replicates: known as <code>selfgraft_1</code>, <code>selfgraft_2</code> &amp; <code>selfgraft_3</code>, are the individual tomato replicates without the spiked tomato sRNA clusters.</p></li>
+<li><code>selfgraft_1</code></li>
+<li><code>selfgraft_2</code></li>
+<li><code>selfgraft_3</code></li>
 </ul>
 <p>The replicates mirror each other where, for instance, <code>heterograft_1</code> and <code>selfgraft_1</code> are the same replicate, either with or without the spiked clusters. These replicates serve for the aim to analyse sRNA mobility.</p>
-<p>The data set, called <code>sRNA_data</code>, stores a matrix containing the pre-processed data from the experiment. As a user, this allows you to see what a full data set might look like and how you might expect it to change across the analysis. Please not that the data has been doctored to reduce the size of the file.</p>
-<p>These can be loaded in these R workspace by using the following command:</p>
+<p>The data set, called <code>sRNA_data</code>, stores a matrix containing the pre-processed data from the experiment. As a user, this allows you to see what a full data set might look like and how you might expect it to change across the analysis.</p>
+<p>These can be loaded in the R environment by using the following command:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sRNA_data"</span><span class="op">)</span></span></code></pre></div>
-<p>In addition, there are two further datasets called “sRNA_data_consensus” and “sRNA_data_mobile” which are utilised in the function documentations. Both build on the “sRNA_data” dataset where “sRNA_data_consensus” contains the RNA consensus results formed by the function [RNAdicercall()]. While, the “sRNA_data_mobile” contains only the likely mobile sRNAs selected by the function [RNAmobile()] under the default parameters. <br></p>
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sRNA_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="data-organisation">Data organisation<a class="anchor" aria-label="anchor" href="#data-organisation"></a>
 </h3>
 <p>There are two key elements required for the pipeline analysis: * sRNA-seq sample replicates (.fastq/.fq) * Two reference genomes (.fasta/.fa)</p>
 <p>And one additional element; to improve functional analysis: * Reference genome annotations (.gff/.gff3) <br><br></p>
-<div class="section level4">
-<h4 id="naming-data-files">Naming data files<a class="anchor" aria-label="anchor" href="#naming-data-files"></a>
-</h4>
 <p>It is recommended to rename your files to names you wish for them to be represented as within the analysis and shown as labels in plots. Plus, it makes the analysis easier!</p>
 <p>For example, instead of names such as:</p>
 <ul>
@@ -188,63 +190,55 @@ sRNA mobility and population dynamics in chimeric systems: * Optimisation of the
 </li>
 </ul>
 </div>
-<div class="section level4">
-<h4 id="the-reference-genomes-and-annotation-files--fasta-fa">The reference genomes and annotation files (.fasta/.fa)<a class="anchor" aria-label="anchor" href="#the-reference-genomes-and-annotation-files--fasta-fa"></a>
-</h4>
-<p>The pipeline is designed to analyse grafting systems with two distinct genomes, here tomato and eggplant. <br></p>
-</div>
-</div>
 </div>
 <div class="section level2">
 <h2 id="pre-processing">Pre-Processing<a class="anchor" aria-label="anchor" href="#pre-processing"></a>
 </h2>
-<p>The pre-processing step involves cleaning raw data and aligning data to the merged genome. Going forward, the pipeline has assumed that the sRNA-seq samples have met quality control standards.</p>
-<p>We recommend installing and using the <code>ShortStack</code> (<a href="https://github.com/MikeAxtell/ShortStack" class="external-link uri">https://github.com/MikeAxtell/ShortStack</a>) program to aligns samples to the merged genome and undertake cluster analysis. This program is specifically formulated for sRNAseq analysis, utilising Bowtie (Version 1) to map samples and a specifically formulated algorithm to cluster sRNAs.</p>
-<p>Here, we introduce an alternative mapping method for the analysis of plant heterograft samples. The heterograft system involves two genotypes; here the two genome references are merged into a single reference to which samples are aligned to.</p>
-<p><code>mobileRNA</code> offers a function to merge two FASTA reference genomes into one. To distinguish between the reference genomes in a merged file, it is important to make sure the chromosome names between the genomes are different and distinguishable. The function below added a particular character string to the start of each chromosome name in each reference genome. As standard, the string <code>A_</code> is added to the reference genome supplied to <code>genomeA</code> and <code>B_</code> is added to the reference genome supplied to <code>genomeB.</code> These can be customized to the users preference, see manual for more information. <br></p>
+<p>The pre-processing steps involve cleaning raw data and aligning it to the merged genome. Going forward, the pipeline has assumed that the sRNA-seq samples have met quality control standards.</p>
+<p>We recommend using <code>ShortStack</code> (<a href="https://github.com/MikeAxtell/ShortStack" class="external-link uri">https://github.com/MikeAxtell/ShortStack</a>) to aligns samples to the merged genome and undertake cluster analysis. This program was formulated for sRNAseq analysis, utilising Bowtie (Version 1) to map samples along with an algorithm to cluster sRNAs.</p>
+<p>Here, we introduce an alternative mapping method for the analysis of plant heterograft samples. The heterograft system involves two genotypes; here the two genome references are merged into a single reference to which samples are aligned to. <br></p>
 <div class="section level3">
 <h3 id="pre-mapping">Pre-mapping<a class="anchor" aria-label="anchor" href="#pre-mapping"></a>
 </h3>
 <div class="section level4">
 <h4 id="merging-genome-assemblies">Merging Genome Assemblies<a class="anchor" aria-label="anchor" href="#merging-genome-assemblies"></a>
 </h4>
-<p>Here we merge the two reference genomes into a single merged genome using the [mobileRNA::RNAgenomeMerge()] function. As default, this function changes the chromosome names of each genome to ensure they are distinguishable. To do so, the function requires an input of the initials of each organism’s Latin name. But why do this:</p>
-<ul>
-<li><p>If the two genomes use the same pattern to name the chromosomes, the user will not be able to differentiate the chromosomes from one another in the merged genome. This could be solves by adding letters to the chromosomes of one of the genomes, for example, <code>SM</code> to represent the Latin name of eggplant.</p></li>
-<li><p>If a chromosome naming pattern contains punctuation, the mapping step will not work.</p></li>
-</ul>
-<p>In the example, the <em>Solanum lycopersicum</em> (version 4) genome contains a full-stop/period within each chromosome name which needs to be removed as well. Here we rename the chromosomes of the tomato genome to <code>SL</code> and the chromosomes related to the eggplant genome (<em>Solanum melongena</em>) to <code>SM</code>.</p>
+<p>Here we merge the two reference genomes into a single merged genome using the <code>RNAgenomeMerge()</code> function. This removes punctuation from chromosome names which could cause issues when mapping with ShortStack and it also adds a prefix to each chromosome name which is unique to each genome assembly. By default, the string <code>A_</code> is added to the reference genome supplied to <code>genomeA</code> and <code>B_</code> is added to the reference genome supplied to <code>genomeB.</code> These can be customized to the users preference, see the manual for more information.</p>
+<p>Depending on where you attained your genome assembly, the same chromosome naming pattern might be the same for each assembly. Therefore, without altering the chromosome names there would be no way to distinguish the two genomes apart within the merged file. Moreover, it makes the analysis through this pipeline much smoother is chromosomes have distinguishable character differences.</p>
+<p>In the example below, demonstrates how to use the function. For the example dataset, we would merge the assemblies of tomato (<em>Solanum lycopersicum</em>) and eggplant (<em>Solanum melongena</em>). Here, we have decided to customize the prefix where we will add the <code>SL</code> prefix to the tomato chromosomes and <code>SM</code> prefix to the eggplant chromosomes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/RNAmergeGenomes.html">RNAmergeGenomes</a></span><span class="op">(</span>genomeA <span class="op">=</span><span class="st">"/Users/user1/projectname/workplace/reference/ref1.fa"</span>,</span>
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/RNAmergeGenomes.html">RNAmergeGenomes</a></span><span class="op">(</span>genomeA <span class="op">=</span><span class="st">"/Users/user1/projectname/workplace/reference/ref1.fa"</span>,</span>
 <span>               genomeB <span class="op">=</span><span class="st">"/Users/user1/projectname/workplace/reference/ref2.fa"</span>,</span>
 <span>               abbreviationGenomeA <span class="op">=</span> <span class="st">"SL"</span>,</span>
 <span>               abbreviationGenomeB <span class="op">=</span> <span class="st">"SM"</span>,</span>
 <span>               out_dir <span class="op">=</span> <span class="st">"/Users/user1/projectname/workplace/reference/merge/</span></span>
 <span><span class="st">               ref_merged.fa"</span><span class="op">)</span></span></code></pre></div>
+<p><br></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="merging-genome-annotations">Merging Genome Annotations<a class="anchor" aria-label="anchor" href="#merging-genome-annotations"></a>
 </h3>
-<p>To identify associates between sRNA clusters and genomic features, the genomic annotation files (GFF) of each reference genome must be merged in the same way the reference genomes were. This includes following the same naming patterns for the chromosomes in each genome as undertaken earlier with the <code><a href="../reference/RNAmergeGenomes.html">RNAmergeGenomes()</a></code> function. To undertake a similar merging between the two GFF files, use the <code>RNAmergeAnnotations</code> function.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">## merge the annotation files into a single annotation file</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">RNAmergeAnnotation</span>(<span class="dt">annotationA =</span> <span class="st">"/Users/user1/projectname/workplace/</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="st">                   annotation/annotation_1.gff3"</span>,</span>
-<span id="cb5-4"><a href="#cb5-4"></a>                   <span class="dt">annotationB =</span> <span class="st">"/Users/user1/projectname/workplace/</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="st">                   annotation/annotation_1.gff3"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6"></a>                   <span class="dt">abbreviationAnnoA =</span> <span class="st">"SL"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7"></a>                   <span class="dt">abbreviationAnnoB =</span> <span class="st">"SM"</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a>                  <span class="dt">out_dir =</span> <span class="st">"/Users/user1/projectname/workplace/</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="st">                  annotation/merge/anno_merged.gff"</span>)</span></code></pre></div>
+<p>To identify genomic features which overlap the sRNA producing loci, we must overlap the data with the genome annotation files (GFF). However, if you are exploring a dataset which contains sRNA from both genomes, you will need to alter the chromosome names of the genome annotations in the same way we have for the genome assemblies. This can be undertaken using the <code><a href="../reference/RNAmergeAnnotations.html">RNAmergeAnnotations()</a></code> function.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">## merge the annotation files into a single annotation file</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">RNAmergeAnnotation</span>(<span class="dt">annotationA =</span> <span class="st">"/Users/user1/projectname/workplace/</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="st">                   annotation/annotation_1.gff3"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5"></a>                   <span class="dt">annotationB =</span> <span class="st">"/Users/user1/projectname/workplace/</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="st">                   annotation/annotation_1.gff3"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7"></a>                   <span class="dt">abbreviationAnnoA =</span> <span class="st">"SL"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>                   <span class="dt">abbreviationAnnoB =</span> <span class="st">"SM"</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>                  <span class="dt">out_dir =</span> <span class="st">"/Users/user1/projectname/workplace/</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="st">                  annotation/merge/anno_merged.gff"</span>)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="auto-detection-of-srna-cluster">Auto-Detection of sRNA Cluster<a class="anchor" aria-label="anchor" href="#auto-detection-of-srna-cluster"></a>
 </h3>
 <p>Here we identify and build a list sRNA clusters within each sample to assist the mapping step later on to ensure consistency across the analysis. This step is very important to consider in the analysis as it prevents false assumptions. This step aligns a replicate to the given genome assembly and the outputs contains loci where sRNA clusters were found. Across your replicates, there will be difference in the cluster identified. In some instance, it might be the case that the abundance of reads at a given sRNA locus was not significant enough to record as a sRNA cluster, while in another replicate it was recorded. Therefore, it would be wrong to assume there are zero reads at the loci. Here, we identify all the potential sRNA cluster loci and use this information to improve the mapping.</p>
-<p>We recommend installing the <code>ShortStack</code> (<a href="https://github.com/MikeAxtell/ShortStack" class="external-link uri">https://github.com/MikeAxtell/ShortStack</a>) program to detect sRNA clusters and align sRNAseq samples. <br></p>
-<div class="section level5">
-<h5 id="step-1---cluster-analysis-with-shortstack">Step 1 - Cluster analysis with ShortStack<a class="anchor" aria-label="anchor" href="#step-1---cluster-analysis-with-shortstack"></a>
-</h5>
+<div class="section level4">
+<h4 id="step-1---cluster-analysis-with-shortstack">Step 1 - Cluster analysis with ShortStack<a class="anchor" aria-label="anchor" href="#step-1---cluster-analysis-with-shortstack"></a>
+</h4>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">ShortStack</span> \</span>
 <span id="cb6-2"><a href="#cb6-2"></a>--readfile <span class="op">&lt;</span>control_1.fastq<span class="op">&gt;</span> \</span>
 <span id="cb6-3"><a href="#cb6-3"></a>--genomefile <span class="op">&lt;</span>merged_reference.fa<span class="op">&gt;</span> \</span>
@@ -254,9 +248,9 @@ sRNA mobility and population dynamics in chimeric systems: * Optimisation of the
 <span id="cb6-7"><a href="#cb6-7"></a>--nohp \</span>
 <span id="cb6-8"><a href="#cb6-8"></a>--outdir <span class="op">&lt;</span>./output/directory<span class="op">&gt;</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="step-2---build-srna-cluster-list">Step 2 - Build sRNA cluster list<a class="anchor" aria-label="anchor" href="#step-2---build-srna-cluster-list"></a>
-</h5>
+<div class="section level4">
+<h4 id="step-2---build-srna-cluster-list">Step 2 - Build sRNA cluster list<a class="anchor" aria-label="anchor" href="#step-2---build-srna-cluster-list"></a>
+</h4>
 <p>Now, we collate all the sRNA loci information from each sample into a text file.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># location of step 1 output</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>folder &lt;-<span class="st"> </span><span class="er">&lt;</span>.<span class="op">/</span>output<span class="op">/</span>directory<span class="op">/</span>from<span class="op">/</span>step<span class="op">/</span><span class="dv">1</span><span class="op">/</span><span class="er">&gt;</span></span>
@@ -293,111 +287,44 @@ sRNA mobility and population dynamics in chimeric systems: * Optimisation of the
 <div class="section level2">
 <h2 id="analysis">Analysis<a class="anchor" aria-label="anchor" href="#analysis"></a>
 </h2>
-<p>Here, the analysis of the pre-processed data occurs, with the aim to identify if any mobile sRNA molecules are traveling from one genotype to the other in your grafting system. <br></p>
+<p>Here, we will analyses the output of the pre-processed data to identify candidate mobile small RNA molecules and native small RNA population changes. <br></p>
 <div class="section level3">
 <h3 id="import-data">Import Data<a class="anchor" aria-label="anchor" href="#import-data"></a>
 </h3>
-<p>In the pre-processing steps, the data was cleaned and aligned to the merged reference genome. During the mapping step, a folder for each sample is created which stores all the results in. The analysis steps requires the information which is stored in the <code>Results.txt</code>.</p>
-<p>The <code><a href="../reference/RNAimport.html">RNAimport()</a></code> function imports the data from the folder containing all sample folders. The function extracts the required information, stores it in a matrix.</p>
-<p>The function requires some information to coordinate the importation and calculations. It requires a directory path to your processed samples; this is the path to the folder containing all the individual sample folders which is stores in argument <code>directory</code>. The second directory path is to the loci file containing information on the loci of the sRNA clusters across the analysis, stored in the argument <code>loci</code>. The last pieces of information the function requires a vector containing the sample names, both treatment and control replicates which is stored in the argument <code>samples</code>. The sample names must match the names of the folders produced in the mapping, and stored in the directory supplied to the argument <code>directory</code>.</p>
+<p>In the pre-processing steps, the data was cleaned and aligned to the merged reference genome. During the mapping step, a folder for each sample is created storing the results and we are interested in the file <code>Results.txt</code>. The <code><a href="../reference/RNAimport.html">RNAimport()</a></code> function imports the <code>Results.txt</code> file for each sample, extracting specific pieces of information and storing it all in a single working dataframe. To do so, the function requires the path to the directory path which stores the output folders produced by ShortStack. Along with a vector containing the names of each sample - this must correspond to the folder names previously mentioned to which the directory path leads to.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## Import &amp; organise data.</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="co">## Import &amp; organise data.</span></span>
 <span><span class="va">results_dir</span> <span class="op">&lt;-</span>  <span class="st">"./analysis/alignment_unique_two/"</span></span>
+<span></span>
 <span><span class="va">sample_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"heterograft_1"</span>,<span class="st">"heterograft_2"</span>, <span class="st">"heterograft_3"</span>,</span>
 <span>                  <span class="st">"selfgraft_1"</span>, <span class="st">"selfgraft_2"</span>, <span class="st">"selfgraft_3"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">sRNA_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAimport.html">RNAimport</a></span><span class="op">(</span>input <span class="op">=</span> <span class="st">"sRNA"</span>,</span>
 <span>                       directory <span class="op">=</span> <span class="va">results_dir</span>,</span>
-<span>                           samples <span class="op">=</span> <span class="va">sample_names</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># example dataframe </span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sRNA_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   Locus chr     start       end   Cluster</span></span>
-<span><span class="co">#&gt; 1 1:100000956-100001076   1 100000956 100001076 cluster_1</span></span>
-<span><span class="co">#&gt; 2 1:100001486-100001554   1 100001486 100001554 cluster_2</span></span>
-<span><span class="co">#&gt; 3 1:100001646-100001731   1 100001646 100001731 cluster_3</span></span>
-<span><span class="co">#&gt; 4   1:10001034-10001073   1  10001034  10001073 cluster_4</span></span>
-<span><span class="co">#&gt; 5 1:100011795-100011930   1 100011795 100011930 cluster_5</span></span>
-<span><span class="co">#&gt; 6   1:10002000-10002065   1  10002000  10002065 cluster_6</span></span>
-<span><span class="co">#&gt;   DicerCall_heterograft_1 Count_heterograft_1 RPM_heterograft_1</span></span>
-<span><span class="co">#&gt; 1                      24                  19             1.908</span></span>
-<span><span class="co">#&gt; 2                      24                   3             0.301</span></span>
-<span><span class="co">#&gt; 3                       N                   3             0.301</span></span>
-<span><span class="co">#&gt; 4                      24                   1             0.100</span></span>
-<span><span class="co">#&gt; 5                      24                  11             1.105</span></span>
-<span><span class="co">#&gt; 6                      24                   9             0.904</span></span>
-<span><span class="co">#&gt;      MajorRNA_heterograft_1 DicerCall_heterograft_2 Count_heterograft_2</span></span>
-<span><span class="co">#&gt; 1  AGUGACGGUCUCAUGUAACAUAGA                      24                  14</span></span>
-<span><span class="co">#&gt; 2  AAAGAGUAGACAUAUAUUAAAUGG                      20                   5</span></span>
-<span><span class="co">#&gt; 3 CUGUCUCAUGUGACACUCUUUCACU                      23                   6</span></span>
-<span><span class="co">#&gt; 4  AAAUUGUCAUUUAGUCAGAGGAAU                       N                   0</span></span>
-<span><span class="co">#&gt; 5  AUAGACAAAUCGCACUCGCUCUCG                      24                   2</span></span>
-<span><span class="co">#&gt; 6  UUAGAUUUCUGGAGUAACAACUUU                       N                   2</span></span>
-<span><span class="co">#&gt;   RPM_heterograft_2   MajorRNA_heterograft_2 DicerCall_heterograft_3</span></span>
-<span><span class="co">#&gt; 1             1.803 AGUGACGGUCUCAUGUAACAUAGA                      24</span></span>
-<span><span class="co">#&gt; 2             0.644     ACAUAUUUUUUUGGACGAAC                      24</span></span>
-<span><span class="co">#&gt; 3             0.773  UCUGUCUCAUGUGACACUCUUUC                      24</span></span>
-<span><span class="co">#&gt; 4             0.000                        N                      24</span></span>
-<span><span class="co">#&gt; 5             0.258 AAGUGUCUACCCAUUGUGAUUCGC                      24</span></span>
-<span><span class="co">#&gt; 6             0.258      UUAUUGACAAACUAUAACU                      22</span></span>
-<span><span class="co">#&gt;   Count_heterograft_3 RPM_heterograft_3   MajorRNA_heterograft_3</span></span>
-<span><span class="co">#&gt; 1                  30             2.953 AGUGACGGUCUCAUGUAACAUAGA</span></span>
-<span><span class="co">#&gt; 2                   1             0.098 UAUGUCUACUCUUUAUUACUCUCC</span></span>
-<span><span class="co">#&gt; 3                  11             1.083 AUCUUGUCAAGUGAAAGAGUGUCA</span></span>
-<span><span class="co">#&gt; 4                  11             1.083 AUUCCUCUGACUAAAUGACAAUUU</span></span>
-<span><span class="co">#&gt; 5                   5             0.492 AAUCACAAUGGGUAGACACUUAGA</span></span>
-<span><span class="co">#&gt; 6                   3             0.295 UUAGAUUUCUGGAGUAACAACUUU</span></span>
-<span><span class="co">#&gt;   DicerCall_selfgraft_1 Count_selfgraft_1 RPM_selfgraft_1</span></span>
-<span><span class="co">#&gt; 1                    24                19           1.909</span></span>
-<span><span class="co">#&gt; 2                    24                 3           0.301</span></span>
-<span><span class="co">#&gt; 3                     N                 3           0.301</span></span>
-<span><span class="co">#&gt; 4                    24                 1           0.100</span></span>
-<span><span class="co">#&gt; 5                    24                11           1.105</span></span>
-<span><span class="co">#&gt; 6                    24                 9           0.904</span></span>
-<span><span class="co">#&gt;        MajorRNA_selfgraft_1 DicerCall_selfgraft_2 Count_selfgraft_2</span></span>
-<span><span class="co">#&gt; 1  AGUGACGGUCUCAUGUAACAUAGA                    24                14</span></span>
-<span><span class="co">#&gt; 2  AAAGAGUAGACAUAUAUUAAAUGG                    20                 5</span></span>
-<span><span class="co">#&gt; 3 CUGUCUCAUGUGACACUCUUUCACU                    23                 6</span></span>
-<span><span class="co">#&gt; 4  AAAUUGUCAUUUAGUCAGAGGAAU                     N                 0</span></span>
-<span><span class="co">#&gt; 5  AAUGGGUAGACACUUAGAUACAUG                    24                 2</span></span>
-<span><span class="co">#&gt; 6  UUAGAUUUCUGGAGUAACAACUUU                     N                 2</span></span>
-<span><span class="co">#&gt;   RPM_selfgraft_2     MajorRNA_selfgraft_2 DicerCall_selfgraft_3</span></span>
-<span><span class="co">#&gt; 1           1.804 AGUGACGGUCUCAUGUAACAUAGA                    24</span></span>
-<span><span class="co">#&gt; 2           0.644     ACAUAUUUUUUUGGACGAAC                    24</span></span>
-<span><span class="co">#&gt; 3           0.773  UCUGUCUCAUGUGACACUCUUUC                    24</span></span>
-<span><span class="co">#&gt; 4           0.000                        N                    24</span></span>
-<span><span class="co">#&gt; 5           0.258 AUAGACAAAUCGCACUCGCUCUCG                    24</span></span>
-<span><span class="co">#&gt; 6           0.258  AGAUUUCUGGAGUAACAACUUUG                    22</span></span>
-<span><span class="co">#&gt;   Count_selfgraft_3 RPM_selfgraft_3     MajorRNA_selfgraft_3</span></span>
-<span><span class="co">#&gt; 1                30           2.954 AGUGACGGUCUCAUGUAACAUAGA</span></span>
-<span><span class="co">#&gt; 2                 1           0.098 UAUGUCUACUCUUUAUUACUCUCC</span></span>
-<span><span class="co">#&gt; 3                11           1.083 AUCUUGUCAAGUGAAAGAGUGUCA</span></span>
-<span><span class="co">#&gt; 4                11           1.083 AUUCCUCUGACUAAAUGACAAUUU</span></span>
-<span><span class="co">#&gt; 5                 5           0.492 AAUCACAAUGGGUAGACACUUAGA</span></span>
-<span><span class="co">#&gt; 6                 3           0.295   UUGACAAACUAUAACUUAAAUU</span></span></code></pre></div>
-<p><br></p>
+<span>                       samples <span class="op">=</span> <span class="va">sample_names</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="sample-level-quality-control">Sample-level quality control<a class="anchor" aria-label="anchor" href="#sample-level-quality-control"></a>
 </h3>
-<p>A handy step in the analysis is to assess the overall similarity between sample replicates to understand which samples are the most similar and which are different, and where the most variation is introduced in the data set. As well as understanding whether the data set meets your expectations. It is expected that between the conditions, the sample replicates show enough variation to suggest that the replicates are from different groups.</p>
+<p>A handy step in the analysis is to assess the overall similarity between sample replicates to understand which samples are the similar and/or different. As well as understand where the most variation is introduced and whether the data meets your expectations. It is expected that between the conditions, the sample replicates show enough variation to suggest that the replicates are from different groups.</p>
 <p>To investigate the sample similarity/difference, we will undertake sample-level quality control using three different methods:</p>
 <ul>
 <li>Distribution of RNA classes within each sample</li>
 <li>Principle component analysis (PCA)</li>
-<li>hierarchical clustering Heatmap</li>
+<li>Heatmap using hierarchical clustering</li>
 </ul>
 <p>This will show us how well samples within each condition cluster together, which may highlight outliers. Plus, to show whether our experimental conditions represent the main source of variation in the data set.</p>
-<p>Here we will be employing an unsupervised clustering methods for the PCA and hierarchical clustering Heatmap. This involves an unbiased log2-transformation of the counts which will emphasis the the sample clustering to improve visualization. The DESeq2 package contains a particularly useful function to undertake regularized log transformation (rlog) which controls the variance across the mean, and in this package we have utilized this for the quality control steps.</p>
-<p><br></p>
+<p>Here we will be employing an unsupervised clustering methods for the PCA and hierarchical clustering Heatmap. This involves an unbiased log2-transformation of the raw counts which will emphasis the the sample clustering to improve visualization. The DESeq2 package contains a particularly useful function to undertake regularized log transformation (rlog) which controls the variance across the mean, and in this package we have utilized this for the quality control steps. <br></p>
 <div class="section level4">
 <h4 id="plot-the-distribution-of-rna-classes-within-each-sample">Plot the distribution of RNA classes within each sample<a class="anchor" aria-label="anchor" href="#plot-the-distribution-of-rna-classes-within-each-sample"></a>
 </h4>
-<p>Explore the number of each RNA class identified within each sample using the <code>RNAdistribution</code> function which produces a table and plots the results. The results can be plotted as either a bar chart (<code>style = "bar"</code>) or a line graph (<code>style = "line"</code>) for each sample and can be shown in a bar chart facet (<code>facet = TRUE</code>) or in as a single line graph, where each line represents a sample (<code>together=TRUE</code>). Alternatively, the results can be plotted individually for each sample in either format.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># plot each replicate as a line, separately, and facet </span></span>
+<p>Here, we can generate a number of different customized plots which represent the number of each small RNA class identified within a sample. The function, <code><a href="../reference/RNAdistribution.html">RNAdistribution()</a></code> outputs a table and the plots.</p>
+<p>The results can be plotted as either a bar chart (<code>style = "bar"</code>) or a line graph (<code>style = "line"</code>) for each sample and can be shown in a facet (<code>facet = TRUE</code>) or in as a single line graph, where each line represents a sample (<code>together=TRUE</code>). Alternatively, the results can be plotted individually for each sample in either format (<code>together = FALSE</code>).</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># plot each replicate as a line, separately, and facet </span></span>
 <span><span class="va">sample_distribution_line</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdistribution.html">RNAdistribution</a></span><span class="op">(</span><span class="va">sRNA_data</span>,</span>
 <span>                                            style <span class="op">=</span> <span class="st">"line"</span>,</span>
 <span>                                            together <span class="op">=</span> <span class="cn">FALSE</span>,facet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -413,43 +340,32 @@ sRNA mobility and population dynamics in chimeric systems: * Optimisation of the
 <span>                                           style <span class="op">=</span> <span class="st">"line"</span>,</span>
 <span>                                           together <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Lets view these plots:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># View plot (only)</span></span>
-<span><span class="va">sample_distribution_line</span><span class="op">$</span><span class="va">plot</span></span>
-<span></span>
-<span><span class="co"># View plot (only)</span></span>
-<span><span class="va">sample_distribution_bar</span><span class="op">$</span><span class="va">plot</span></span>
-<span></span>
-<span><span class="co"># View plot</span></span>
-<span><span class="va">sample_distribution</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<span><span class="va">sample_distribution_line</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="mobileRNA_files/figure-html/unnamed-chunk-11-1.png" alt="An example line graph (A) and bar graph (B), to show the distribution of
-RNA classes within each sample. Figure C shows all replicates plotted on a 
-single plot and the accompanying data." width="33%"><img src="mobileRNA_files/figure-html/unnamed-chunk-11-2.png" alt="An example line graph (A) and bar graph (B), to show the distribution of
-RNA classes within each sample. Figure C shows all replicates plotted on a 
-single plot and the accompanying data." width="33%"><img src="mobileRNA_files/figure-html/unnamed-chunk-11-3.png" alt="An example line graph (A) and bar graph (B), to show the distribution of
-RNA classes within each sample. Figure C shows all replicates plotted on a 
-single plot and the accompanying data." width="33%"><p class="caption">
-An example line graph (A) and bar graph (B), to show the distribution of RNA classes within each sample. Figure C shows all replicates plotted on a single plot and the accompanying data.
+<img src="mobileRNA_files/figure-html/unnamed-chunk-9-1.png" alt="An example facet line graph to show the distribution of RNA classes within each sample." width="700"><p class="caption">
+An example facet line graph to show the distribution of RNA classes within each sample.
 </p>
 </div>
 <p><br></p>
-<p>View data:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># View plot (only)</span></span>
+<span><span class="va">sample_distribution_bar</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="mobileRNA_files/figure-html/unnamed-chunk-10-1.png" alt="An example facet bar graph to show the distribution of RNA classes within each sample." width="700"><p class="caption">
+An example facet bar graph to show the distribution of RNA classes within each sample.
+</p>
+</div>
+<p><br></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># View data </span></span>
-<span><span class="va">sample_distribution</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;    Class heterograft_1 heterograft_2 heterograft_3 selfgraft_1 selfgraft_2</span></span>
-<span><span class="co">#&gt; 1:    20             9            14             7           8          13</span></span>
-<span><span class="co">#&gt; 2:    21            27            28            24          25          26</span></span>
-<span><span class="co">#&gt; 3:    22            19            27            26          19          27</span></span>
-<span><span class="co">#&gt; 4:    23            25            38            42          18          31</span></span>
-<span><span class="co">#&gt; 5:    24           597           491           575         459         353</span></span>
-<span><span class="co">#&gt;    selfgraft_3</span></span>
-<span><span class="co">#&gt; 1:           6</span></span>
-<span><span class="co">#&gt; 2:          22</span></span>
-<span><span class="co">#&gt; 3:          26</span></span>
-<span><span class="co">#&gt; 4:          35</span></span>
-<span><span class="co">#&gt; 5:         437</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># View plot</span></span>
+<span><span class="va">sample_distribution</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="mobileRNA_files/figure-html/unnamed-chunk-11-1.png" alt="An example line graph showing all the replicates plotted on a single plot." width="700"><p class="caption">
+An example line graph showing all the replicates plotted on a single plot.
+</p>
+</div>
 </div>
 <div class="section level4">
 <h4 id="principle-component-analysis-to-assess-sample-distance">Principle component analysis to assess sample distance<a class="anchor" aria-label="anchor" href="#principle-component-analysis-to-assess-sample-distance"></a>
@@ -465,25 +381,27 @@ An example line graph (A) and bar graph (B), to show the distribution of RNA cla
 <span><span class="co">#&gt; Transforming the count data to the log2 scale </span></span>
 <span><span class="co">#&gt; Organising principal component analysis</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="mobileRNA_files/figure-html/unnamed-chunk-14-1.png" alt="An example of a PCA, illustracting the sRNA data set sample similarity" width="700"><p class="caption">
+<img src="mobileRNA_files/figure-html/unnamed-chunk-13-1.png" alt="An example of a PCA, illustracting the sRNA data set sample similarity" width="700"><p class="caption">
 An example of a PCA, illustracting the sRNA data set sample similarity
 </p>
 </div>
-<p>This PCA is somewhat not what we would expect to see in a real dataset. This is because PC1 is showing the variation between the non-spiked and spiked version of the replicate while PC2 shows the natural variation between the replicates. In a real dataset, we would expect there to be little difference between the treatment and control. There should be much more natural variation between the replicates, but it is unlikely that there will be a huge distinctive variation between the samples across the conditions. This is because it is likely that only a very small number of endogenous mobile sRNAs are present in the heterograft system compared to the self-graft controls while the population of sRNAs present in the destination tissue is expected to be largely similar. Although, there is likely to be some difference in this too due to the endogenous changes. <br></p>
+<p>This PCA is somewhat not what we would expect to see in a real dataset. This is because PC1 is showing the variation between the non-spiked and spiked version of the replicate while PC2 shows the natural variation between the replicates.</p>
+<p>It is more likely that in a real small RNA dataset, you might expect more or less variation between the conditions. For example, analysis of a self-graft vs heterograft may show little variation between the conditions. This might be expected because there may only be a very small number of endogenous mobile/foreign small RNAs that are present in the whole population while the population of small RNAs present in the destination tissue is expected to be largely similar. Although, there is likely to be some difference in this too due to the endogenous changes. <br></p>
 </div>
 <div class="section level4">
 <h4 id="hierarchical-clustered-heatmap-to-assess-sample-distance">Hierarchical clustered heatmap to assess sample distance<a class="anchor" aria-label="anchor" href="#hierarchical-clustered-heatmap-to-assess-sample-distance"></a>
 </h4>
 <p>Similarly, to a PCA plot, the <code><a href="../reference/plotSampleDistance.html">plotSampleDistance()</a></code> function undertakes hierarchical clustering with an unbiased log transformation to calculate sample distance and is plotted in the form of a heatmap.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSampleDistance.html">plotSampleDistance</a></span><span class="op">(</span><span class="va">sRNA_data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/plotSampleDistance.html">plotSampleDistance</a></span><span class="op">(</span><span class="va">sRNA_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Checking data </span></span>
 <span><span class="co">#&gt; Transforming the count data to the log2 scale </span></span>
 <span><span class="co">#&gt; Calculating distance matrix </span></span>
 <span><span class="co">#&gt; Creating sample distance plot</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="mobileRNA_files/figure-html/unnamed-chunk-16-1.png" alt="An example of a heatmap,illustracting the sRNA data set sample similarity" width="700"><p class="caption">
-An example of a heatmap,illustracting the sRNA data set sample similarity
+<img src="mobileRNA_files/figure-html/unnamed-chunk-15-1.png" alt="An example of a heatmap,illustrating the sRNA data set sample similarity" width="700"><p class="caption">
+An example of a heatmap,illustrating the sRNA data set sample similarity
 </p>
 </div>
 <p><br></p>
@@ -492,96 +410,28 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <div class="section level3">
 <h3 id="define-the-consensus-rna-class">Define the consensus RNA class<a class="anchor" aria-label="anchor" href="#define-the-consensus-rna-class"></a>
 </h3>
-<p>Have a look at the <code>sRNA_data</code> object, you will see that for each sample the class of sRNA has been determined (see columns with names starting with DicerCall). The result will either state a number from 20-24 which represents the nucleotide length of the sRNA, or, state NA/N which represents that the sRNA was unclassified in the sample. There is usually some discrepancies between the classification of a sRNA, therefore, a consensus class can be assigned based off the information from the treatment samples. The <code><a href="../reference/RNAdicercall.html">RNAdicercall()</a></code> function is used to compute this by counting the number of occurrences of classifications for a sRNA. The consensus is determined based on the class with the most counts.</p>
-<p>When working with samples from a chimeric system, the function contains a specialised parameter which should be utilized. This is <code>chimeric=TRUE</code>, along with the <code>id</code> and <code>controls</code> parameters. This helps optimise classification by removal of mapping errors.</p>
-<p>Moreover, the user would prefer to form the dicer consensus based on the results of specific samples this can be specified to the <code>conditions</code> parameter. The function also works to remove noise from your data, which as default is not undertaken. If the user wishes to remove the noise, set <code>tidy=TRUE</code> to promote the removal of unclassified clusters.</p>
-<p>For the downstream analysis, it can be useful to define the distinct 24-nt and 21/22-nt populations of sRNA molecules at the beginning of the analysis. Hence, the data should be subset. To subset the data, use the <code><a href="../reference/RNAsubset.html">RNAsubset()</a></code> function to choose which sRNA populations to include: 20-nt, 21-nt, 22-nt, 23-nt, or 24-nt. It is recommended to subset the data into two dataframes: one which includes only 24-nt sRNA and the other to include both 21-nt and 22-nt sRNAs. To instruct the <code><a href="../reference/RNAsubset.html">RNAsubset()</a></code> function to select specific groups, use the <code>type</code> argument.</p>
+<p>Have a look at the <code>sRNA_data</code> object, you will see that for each sample the sRNA class for a given cluster has been determined (see columns with names containing with “DicerCall”) which will state a number from 20-24 in the data which represents the nucleotide length of the small RNA, or, state NA/N which represents that the small RNA was unclassified in the sample.</p>
+<p>The <code><a href="../reference/RNAdicercall.html">RNAdicercall()</a></code> function is used to calculate the consensus dicer classification for each small RNA cluster based of the classification by each sample replicate.</p>
+<p>When working with samples from a chimeric system, the function contains a specialised parameter which should be utilized. This is <code>chimeric=TRUE</code>, along with the <code>genome.ID</code> and <code>controls</code> parameters. This helps optimise classification by removal of potential mapping errors.</p>
+<p>The used can alter the functions decision making by telling it to base the consensus on specific samples or across all samples in the analysis (default). Plus, if the user utilises the <code>tidy=TRUE</code> parameter, this will remove small RNA cluster which have an unclassified (N) consensus dicer classification - reducing noise in the data.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># define consensus, store as a data summary file.</span></span>
-<span><span class="va">sRNA_data_consensus2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdicercall.html">RNAdicercall</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>, chimeric <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span><span class="va">sRNA_data_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdicercall.html">RNAdicercall</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>, </span>
+<span>                                     chimeric <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                                     genome.ID <span class="op">=</span> <span class="st">"SL"</span>, </span>
 <span>                                     controls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"selfgraft_1"</span>, </span>
 <span>                                                  <span class="st">"selfgraft_2"</span>, </span>
 <span>                                                  <span class="st">"selfgraft_3"</span><span class="op">)</span>,</span>
 <span>                                     tidy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Calculating consensus dicercall based on information from all replicates </span></span>
-<span><span class="co">#&gt; The consensus dicercall will be excluded in the case of a tie </span></span>
+<span><span class="co">#&gt; Calculating consensus dicercall based on information from all replicates... </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Removing sRNA clusters with no consensus dicercall...</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sRNA_data_consensus</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   Locus chr     start       end   Cluster</span></span>
-<span><span class="co">#&gt; 1 1:100000956-100001076   1 100000956 100001076 cluster_1</span></span>
-<span><span class="co">#&gt; 2 1:100001486-100001554   1 100001486 100001554 cluster_2</span></span>
-<span><span class="co">#&gt; 4   1:10001034-10001073   1  10001034  10001073 cluster_4</span></span>
-<span><span class="co">#&gt; 5 1:100011795-100011930   1 100011795 100011930 cluster_5</span></span>
-<span><span class="co">#&gt; 7   1:10002223-10002449   1  10002223  10002449 cluster_7</span></span>
-<span><span class="co">#&gt; 8   1:10002531-10002593   1  10002531  10002593 cluster_8</span></span>
-<span><span class="co">#&gt;   DicerCall_heterograft_1 Count_heterograft_1 RPM_heterograft_1</span></span>
-<span><span class="co">#&gt; 1                      24                  19             1.908</span></span>
-<span><span class="co">#&gt; 2                      24                   3             0.301</span></span>
-<span><span class="co">#&gt; 4                      24                   1             0.100</span></span>
-<span><span class="co">#&gt; 5                      24                  11             1.105</span></span>
-<span><span class="co">#&gt; 7                      24                  20             2.009</span></span>
-<span><span class="co">#&gt; 8                      24                  12             1.205</span></span>
-<span><span class="co">#&gt;     MajorRNA_heterograft_1 DicerCall_heterograft_2 Count_heterograft_2</span></span>
-<span><span class="co">#&gt; 1 AGUGACGGUCUCAUGUAACAUAGA                      24                  14</span></span>
-<span><span class="co">#&gt; 2 AAAGAGUAGACAUAUAUUAAAUGG                      20                   5</span></span>
-<span><span class="co">#&gt; 4 AAAUUGUCAUUUAGUCAGAGGAAU                       N                   0</span></span>
-<span><span class="co">#&gt; 5 AUAGACAAAUCGCACUCGCUCUCG                      24                   2</span></span>
-<span><span class="co">#&gt; 7 AACGUGAAUUCUGAUGAAACCAAU                      24                  12</span></span>
-<span><span class="co">#&gt; 8 AGGGUAUAUUGGUAUUGGACCAUC                      24                   9</span></span>
-<span><span class="co">#&gt;   RPM_heterograft_2   MajorRNA_heterograft_2 DicerCall_heterograft_3</span></span>
-<span><span class="co">#&gt; 1             1.803 AGUGACGGUCUCAUGUAACAUAGA                      24</span></span>
-<span><span class="co">#&gt; 2             0.644     ACAUAUUUUUUUGGACGAAC                      24</span></span>
-<span><span class="co">#&gt; 4             0.000                        N                      24</span></span>
-<span><span class="co">#&gt; 5             0.258 AAGUGUCUACCCAUUGUGAUUCGC                      24</span></span>
-<span><span class="co">#&gt; 7             1.545 UUAUAACGUGAAUUCUGAUGAAAC                      24</span></span>
-<span><span class="co">#&gt; 8             1.159 AUAUUGGUAUUGGACCAUCAGAUU                      24</span></span>
-<span><span class="co">#&gt;   Count_heterograft_3 RPM_heterograft_3   MajorRNA_heterograft_3</span></span>
-<span><span class="co">#&gt; 1                  30             2.953 AGUGACGGUCUCAUGUAACAUAGA</span></span>
-<span><span class="co">#&gt; 2                   1             0.098 UAUGUCUACUCUUUAUUACUCUCC</span></span>
-<span><span class="co">#&gt; 4                  11             1.083 AUUCCUCUGACUAAAUGACAAUUU</span></span>
-<span><span class="co">#&gt; 5                   5             0.492 AAUCACAAUGGGUAGACACUUAGA</span></span>
-<span><span class="co">#&gt; 7                  29             2.855  AUAACGUGAAUUCUGAUGAAACC</span></span>
-<span><span class="co">#&gt; 8                  16             1.575 GGUAUUGGACCAUCAGAUUGACGA</span></span>
-<span><span class="co">#&gt;   DicerCall_selfgraft_1 Count_selfgraft_1 RPM_selfgraft_1</span></span>
-<span><span class="co">#&gt; 1                    24                19           1.909</span></span>
-<span><span class="co">#&gt; 2                    24                 3           0.301</span></span>
-<span><span class="co">#&gt; 4                    24                 1           0.100</span></span>
-<span><span class="co">#&gt; 5                    24                11           1.105</span></span>
-<span><span class="co">#&gt; 7                    24                20           2.010</span></span>
-<span><span class="co">#&gt; 8                    24                12           1.206</span></span>
-<span><span class="co">#&gt;       MajorRNA_selfgraft_1 DicerCall_selfgraft_2 Count_selfgraft_2</span></span>
-<span><span class="co">#&gt; 1 AGUGACGGUCUCAUGUAACAUAGA                    24                14</span></span>
-<span><span class="co">#&gt; 2 AAAGAGUAGACAUAUAUUAAAUGG                    20                 5</span></span>
-<span><span class="co">#&gt; 4 AAAUUGUCAUUUAGUCAGAGGAAU                     N                 0</span></span>
-<span><span class="co">#&gt; 5 AAUGGGUAGACACUUAGAUACAUG                    24                 2</span></span>
-<span><span class="co">#&gt; 7 AACGUGAAUUCUGAUGAAACCAAU                    24                12</span></span>
-<span><span class="co">#&gt; 8 AGGGUAUAUUGGUAUUGGACCAUC                    24                 9</span></span>
-<span><span class="co">#&gt;   RPM_selfgraft_2     MajorRNA_selfgraft_2 DicerCall_selfgraft_3</span></span>
-<span><span class="co">#&gt; 1           1.804 AGUGACGGUCUCAUGUAACAUAGA                    24</span></span>
-<span><span class="co">#&gt; 2           0.644     ACAUAUUUUUUUGGACGAAC                    24</span></span>
-<span><span class="co">#&gt; 4           0.000                        N                    24</span></span>
-<span><span class="co">#&gt; 5           0.258 AUAGACAAAUCGCACUCGCUCUCG                    24</span></span>
-<span><span class="co">#&gt; 7           1.546 UUAUAACGUGAAUUCUGAUGAAAC                    24</span></span>
-<span><span class="co">#&gt; 8           1.160 AUAUUGGUAUUGGACCAUCAGAUU                    24</span></span>
-<span><span class="co">#&gt;   Count_selfgraft_3 RPM_selfgraft_3     MajorRNA_selfgraft_3 DicerCounts</span></span>
-<span><span class="co">#&gt; 1                30           2.954 AGUGACGGUCUCAUGUAACAUAGA           3</span></span>
-<span><span class="co">#&gt; 2                 1           0.098 UAUGUCUACUCUUUAUUACUCUCC           3</span></span>
-<span><span class="co">#&gt; 4                11           1.083 AUUCCUCUGACUAAAUGACAAUUU           2</span></span>
-<span><span class="co">#&gt; 5                 5           0.492 AAUCACAAUGGGUAGACACUUAGA           3</span></span>
-<span><span class="co">#&gt; 7                29           2.856  AUAACGUGAAUUCUGAUGAAACC           3</span></span>
-<span><span class="co">#&gt; 8                16           1.576 GGUAUUGGACCAUCAGAUUGACGA           3</span></span>
-<span><span class="co">#&gt;   DicerConsensus</span></span>
-<span><span class="co">#&gt; 1             24</span></span>
-<span><span class="co">#&gt; 2             24</span></span>
-<span><span class="co">#&gt; 4             24</span></span>
-<span><span class="co">#&gt; 5             24</span></span>
-<span><span class="co">#&gt; 7             24</span></span>
-<span><span class="co">#&gt; 8             24</span></span>
-<span></span>
+<span><span class="co">#&gt; The consensus dicercall will be excluded in the case of a tie... </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Removing small RNA clusters with no consensus dicercall...</span></span></code></pre></div>
+<p>For the downstream analysis, it can be useful to define the distinct 24-nt and 21/22-nt populations of small RNAs, To subset the data, use the <code><a href="../reference/RNAsubset.html">RNAsubset()</a></code> function to choose which small RNA populations to include: 20-nt, 21-nt, 22-nt, 23-nt, or 24-nt in this data. For example:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Subset data for analysis: 24-nt sRNAs</span></span>
 <span><span class="va">sRNA_24</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsubset.html">RNAsubset</a></span><span class="op">(</span><span class="va">sRNA_data_consensus</span>, type <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span>
 <span><span class="co"># Subset data for analysis: 24 21/22-nt sRNAs</span></span>
@@ -590,233 +440,115 @@ An example of a heatmap,illustracting the sRNA data set sample similarity
 <div class="section level4">
 <h4 id="plot-consensus-classification-of-srna">Plot consensus classification of sRNA<a class="anchor" aria-label="anchor" href="#plot-consensus-classification-of-srna"></a>
 </h4>
-<p>Use <code>RNAdistriution()</code> to visualize the distribution of the consensus sRNA classes within the data. This step can be used as a quality control step to illustrate the distribution of each sRNA class within the data. The function can plot the absolute or relative frequency, use argument <code>relative</code>. It can be beneficial to view the absolute frequency as well as the relative to observe whether the data meets your expectations.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">consensus_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdistribution.html">RNAdistribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>,</span>
+<p>Similar to before, the <code>RNAdistriution()</code> function can be used to visualize the distribution of the consensus sRNA classes.</p>
+<p>The function can plot the absolute or relative frequency, use argument <code>relative</code>. It can be beneficial to view the absolute frequency as well as the relative to observe whether the data meets your expectations.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">consensus_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdistribution.html">RNAdistribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>,</span>
 <span>                                  consensus <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                                  style <span class="op">=</span> <span class="st">"consensus"</span><span class="op">)</span></span>
+<span>                                  style <span class="op">=</span> <span class="st">"consensus"</span><span class="op">)</span></span></code></pre></div>
+<p>Now, view the plot:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># view </span></span>
 <span><span class="va">consensus_plot</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
-<p><img src="mobileRNA_files/figure-html/unnamed-chunk-18-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">consensus_plot</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;   DicerConsensus   n</span></span>
-<span><span class="co">#&gt; 1             20   5</span></span>
-<span><span class="co">#&gt; 2             21  20</span></span>
-<span><span class="co">#&gt; 3             22  14</span></span>
-<span><span class="co">#&gt; 4             23  19</span></span>
-<span><span class="co">#&gt; 5             24 601</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="mobileRNA_files/figure-html/unnamed-chunk-20-1.png" alt="An example of the distribution of small RNA consensus dicer classifications. " width="700"><p class="caption">
+An example of the distribution of small RNA consensus dicer classifications.
+</p>
+</div>
 <p><br></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="differential-expression-analysis-with-deseq2-or-edger">Differential Expression analysis with DESeq2 or edgeR<a class="anchor" aria-label="anchor" href="#differential-expression-analysis-with-deseq2-or-edger"></a>
 </h3>
-<p>Differential expression (DE) analysis is undertaken to identify sRNA which are statistically significant to discover quantitative changes in the expression levels between the treatment (hetero-grafting) and the control (self-grafting) groups. This technique can be undertaken with a variety of tools, in <code>mobileRNA</code> users have the option to use the <code>DESeq2</code> or <code>edgeR</code> analytical method.</p>
-<p>Although both methods will produce different results, it is typically they case that that at the step where we isolate the mobile molecules, the same results are produce. What is meant by this, is that the same mobile molecules are typically identified at the end of the analysis regardless of the analytical method. However, in particular case, one method will be preferred over the other. For instance, the <code>DESeq2</code> method is not appropriate when the experiment does not contain replicate (ie. one sample replicate per condition). On the other hand, edgeR can be used. Here, we have included the recommend practice for edgeR when the data set does not contain replicates. This option can be employed by setting a custom dispersion value, see argument <code>dispersionValue</code>.</p>
+<p>Differential expression (DE) analysis is undertaken to identify small RNA which are statistically significant to discover quantitative changes in the abundance levels between the treatment (hetero-grafting) and the control (self-grafting) groups. This technique can be undertaken with a variety of tools, in <code>mobileRNA</code> users have the option to use the <code>DESeq2</code> or <code>edgeR</code> analytical method.</p>
+<p>Based on your data, one analytical method might be preferable over another. For instance, the applied <code>DESeq2</code> method is not appropriate when the experiment does not contain replicate (ie. one sample replicate per condition). While, <code>edgeR</code> can be used. Here, we have included the recommend practice for edgeR when the data does not contain replicates. This option can be employed by setting a custom dispersion value, see argument <code>dispersionValue</code>.</p>
 <p>Please note that this step is optional and not a required part of the analysis.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># sample conditions in order within dataframe</span></span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># sample conditions in order within dataframe</span></span>
 <span><span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>, <span class="st">"Heterograft"</span>,</span>
 <span>            <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span>, <span class="st">"Selfgraft"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Differential analysis of whole dataset: DEseq2 method </span></span>
+<span><span class="co">## Differential analysis of whole dataset: DESeq22 method </span></span>
 <span><span class="va">sRNA_DESeq2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>,</span>
 <span>                              group <span class="op">=</span> <span class="va">groups</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">"DESeq2"</span> <span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Differential analysis: DEseq2 method</span></span>
-<span><span class="co"># 24-nt sRNA data-set</span></span>
-<span><span class="va">sRNA_24_DESeq2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_24</span>,</span>
-<span>                              group <span class="op">=</span> <span class="va">groups</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">"DESeq2"</span> <span class="op">)</span></span>
-<span><span class="co"># 2122-nt sRNA data-set</span></span>
-<span><span class="va">sRNA_2122_DESeq2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_2122</span>,</span>
-<span>                                group <span class="op">=</span> <span class="va">groups</span>,</span>
-<span>                                method <span class="op">=</span> <span class="st">"DESeq2"</span> <span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co">## Differential analysis of whole dataset: edgeR method </span></span>
-<span><span class="va">sRNA_edgeR</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>,</span>
-<span>                              group <span class="op">=</span> <span class="va">groups</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">"edgeR"</span> <span class="op">)</span></span>
-<span><span class="co">#&gt; Design matrix not provided. Switch to the classic mode.</span></span>
-<span></span>
-<span></span>
-<span><span class="co">## Differential analysis: edgeR method</span></span>
-<span><span class="va">sRNA_24_edgeR</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_24</span>,</span>
-<span>                             group <span class="op">=</span> <span class="va">groups</span>,</span>
-<span>                             method <span class="op">=</span> <span class="st">"edgeR"</span> <span class="op">)</span></span>
-<span><span class="co">#&gt; Design matrix not provided. Switch to the classic mode.</span></span>
-<span></span>
-<span><span class="va">sRNA_2122_edgeR</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAanalysis.html">RNAanalysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_2122</span> ,</span>
-<span>                               group <span class="op">=</span> <span class="va">groups</span>,</span>
-<span>                               method <span class="op">=</span> <span class="st">"edgeR"</span> <span class="op">)</span></span>
-<span><span class="co">#&gt; Design matrix not provided. Switch to the classic mode.</span></span>
-<span></span>
-<span><span class="co"># view example output:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sRNA_edgeR</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                   Locus chr     start       end   Cluster</span></span>
-<span><span class="co">#&gt; 1 1:100000956-100001076   1 100000956 100001076 cluster_1</span></span>
-<span><span class="co">#&gt; 2 1:100001486-100001554   1 100001486 100001554 cluster_2</span></span>
-<span><span class="co">#&gt; 4   1:10001034-10001073   1  10001034  10001073 cluster_4</span></span>
-<span><span class="co">#&gt; 5 1:100011795-100011930   1 100011795 100011930 cluster_5</span></span>
-<span><span class="co">#&gt; 7   1:10002223-10002449   1  10002223  10002449 cluster_7</span></span>
-<span><span class="co">#&gt; 8   1:10002531-10002593   1  10002531  10002593 cluster_8</span></span>
-<span><span class="co">#&gt;   DicerCall_heterograft_1 Count_heterograft_1 RPM_heterograft_1</span></span>
-<span><span class="co">#&gt; 1                      24                  19             1.908</span></span>
-<span><span class="co">#&gt; 2                      24                   3             0.301</span></span>
-<span><span class="co">#&gt; 4                      24                   1             0.100</span></span>
-<span><span class="co">#&gt; 5                      24                  11             1.105</span></span>
-<span><span class="co">#&gt; 7                      24                  20             2.009</span></span>
-<span><span class="co">#&gt; 8                      24                  12             1.205</span></span>
-<span><span class="co">#&gt;     MajorRNA_heterograft_1 DicerCall_heterograft_2 Count_heterograft_2</span></span>
-<span><span class="co">#&gt; 1 AGUGACGGUCUCAUGUAACAUAGA                      24                  14</span></span>
-<span><span class="co">#&gt; 2 AAAGAGUAGACAUAUAUUAAAUGG                      20                   5</span></span>
-<span><span class="co">#&gt; 4 AAAUUGUCAUUUAGUCAGAGGAAU                       N                   0</span></span>
-<span><span class="co">#&gt; 5 AUAGACAAAUCGCACUCGCUCUCG                      24                   2</span></span>
-<span><span class="co">#&gt; 7 AACGUGAAUUCUGAUGAAACCAAU                      24                  12</span></span>
-<span><span class="co">#&gt; 8 AGGGUAUAUUGGUAUUGGACCAUC                      24                   9</span></span>
-<span><span class="co">#&gt;   RPM_heterograft_2   MajorRNA_heterograft_2 DicerCall_heterograft_3</span></span>
-<span><span class="co">#&gt; 1             1.803 AGUGACGGUCUCAUGUAACAUAGA                      24</span></span>
-<span><span class="co">#&gt; 2             0.644     ACAUAUUUUUUUGGACGAAC                      24</span></span>
-<span><span class="co">#&gt; 4             0.000                        N                      24</span></span>
-<span><span class="co">#&gt; 5             0.258 AAGUGUCUACCCAUUGUGAUUCGC                      24</span></span>
-<span><span class="co">#&gt; 7             1.545 UUAUAACGUGAAUUCUGAUGAAAC                      24</span></span>
-<span><span class="co">#&gt; 8             1.159 AUAUUGGUAUUGGACCAUCAGAUU                      24</span></span>
-<span><span class="co">#&gt;   Count_heterograft_3 RPM_heterograft_3   MajorRNA_heterograft_3</span></span>
-<span><span class="co">#&gt; 1                  30             2.953 AGUGACGGUCUCAUGUAACAUAGA</span></span>
-<span><span class="co">#&gt; 2                   1             0.098 UAUGUCUACUCUUUAUUACUCUCC</span></span>
-<span><span class="co">#&gt; 4                  11             1.083 AUUCCUCUGACUAAAUGACAAUUU</span></span>
-<span><span class="co">#&gt; 5                   5             0.492 AAUCACAAUGGGUAGACACUUAGA</span></span>
-<span><span class="co">#&gt; 7                  29             2.855  AUAACGUGAAUUCUGAUGAAACC</span></span>
-<span><span class="co">#&gt; 8                  16             1.575 GGUAUUGGACCAUCAGAUUGACGA</span></span>
-<span><span class="co">#&gt;   DicerCall_selfgraft_1 Count_selfgraft_1 RPM_selfgraft_1</span></span>
-<span><span class="co">#&gt; 1                    24                19           1.909</span></span>
-<span><span class="co">#&gt; 2                    24                 3           0.301</span></span>
-<span><span class="co">#&gt; 4                    24                 1           0.100</span></span>
-<span><span class="co">#&gt; 5                    24                11           1.105</span></span>
-<span><span class="co">#&gt; 7                    24                20           2.010</span></span>
-<span><span class="co">#&gt; 8                    24                12           1.206</span></span>
-<span><span class="co">#&gt;       MajorRNA_selfgraft_1 DicerCall_selfgraft_2 Count_selfgraft_2</span></span>
-<span><span class="co">#&gt; 1 AGUGACGGUCUCAUGUAACAUAGA                    24                14</span></span>
-<span><span class="co">#&gt; 2 AAAGAGUAGACAUAUAUUAAAUGG                    20                 5</span></span>
-<span><span class="co">#&gt; 4 AAAUUGUCAUUUAGUCAGAGGAAU                     N                 0</span></span>
-<span><span class="co">#&gt; 5 AAUGGGUAGACACUUAGAUACAUG                    24                 2</span></span>
-<span><span class="co">#&gt; 7 AACGUGAAUUCUGAUGAAACCAAU                    24                12</span></span>
-<span><span class="co">#&gt; 8 AGGGUAUAUUGGUAUUGGACCAUC                    24                 9</span></span>
-<span><span class="co">#&gt;   RPM_selfgraft_2     MajorRNA_selfgraft_2 DicerCall_selfgraft_3</span></span>
-<span><span class="co">#&gt; 1           1.804 AGUGACGGUCUCAUGUAACAUAGA                    24</span></span>
-<span><span class="co">#&gt; 2           0.644     ACAUAUUUUUUUGGACGAAC                    24</span></span>
-<span><span class="co">#&gt; 4           0.000                        N                    24</span></span>
-<span><span class="co">#&gt; 5           0.258 AUAGACAAAUCGCACUCGCUCUCG                    24</span></span>
-<span><span class="co">#&gt; 7           1.546 UUAUAACGUGAAUUCUGAUGAAAC                    24</span></span>
-<span><span class="co">#&gt; 8           1.160 AUAUUGGUAUUGGACCAUCAGAUU                    24</span></span>
-<span><span class="co">#&gt;   Count_selfgraft_3 RPM_selfgraft_3     MajorRNA_selfgraft_3 DicerCounts</span></span>
-<span><span class="co">#&gt; 1                30           2.954 AGUGACGGUCUCAUGUAACAUAGA           3</span></span>
-<span><span class="co">#&gt; 2                 1           0.098 UAUGUCUACUCUUUAUUACUCUCC           3</span></span>
-<span><span class="co">#&gt; 4                11           1.083 AUUCCUCUGACUAAAUGACAAUUU           2</span></span>
-<span><span class="co">#&gt; 5                 5           0.492 AAUCACAAUGGGUAGACACUUAGA           3</span></span>
-<span><span class="co">#&gt; 7                29           2.856  AUAACGUGAAUUCUGAUGAAACC           3</span></span>
-<span><span class="co">#&gt; 8                16           1.576 GGUAUUGGACCAUCAGAUUGACGA           3</span></span>
-<span><span class="co">#&gt;   DicerConsensus CountMean log2FoldChange    pvalue padjusted    logCPM</span></span>
-<span><span class="co">#&gt; 1             24  21.00000     0.09399726 0.7992536         1 10.819068</span></span>
-<span><span class="co">#&gt; 2             24   3.00000     0.20765865 0.8863680         1  8.661401</span></span>
-<span><span class="co">#&gt; 4             24   4.00000     0.01104373 1.0000000         1  8.831677</span></span>
-<span><span class="co">#&gt; 5             24   6.00000     0.07211172 1.0000000         1  9.271215</span></span>
-<span><span class="co">#&gt; 7             24  20.33333     0.08714351 0.8448235         1 10.763685</span></span>
-<span><span class="co">#&gt; 8             24  12.33333     0.09474876 0.8602119         1 10.144466</span></span></code></pre></div>
+<span>                              method <span class="op">=</span> <span class="st">"DESeq2"</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </div>
-<div class="section level3">
-<h3 id="identify-the-mobile-molecules">Identify the mobile molecules<a class="anchor" aria-label="anchor" href="#identify-the-mobile-molecules"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="identify-candiate-mobile-small-rnas">Identify candiate mobile small RNAs<a class="anchor" aria-label="anchor" href="#identify-candiate-mobile-small-rnas"></a>
+</h2>
 <p>It is essential to remove the noise from the data to isolate potential mobile molecules which include falsely mapped clusters and, in this case, the clusters which map the the scion genotype when the aim is to identify molecules traveling from the rootstock. In the data, the aim is to explore whether there are tomato sRNA traveling up through the graft junction and exiting into the eggplant leaf tissues. We can identify potential mobile molecule by using the <code><a href="../reference/RNAmobile.html">RNAmobile()</a></code> function. It selects clusters mapping to the rootstock genome in the hetero-graft. Therefore, we will remove clusters mapped to chromosome in the genotype used in the self-graft controls.</p>
 <p>In the example, the tomato genome has chromosome labeled with “SL40” whilst the the eggplant genome has no labels. To remove clusters associated with the eggplant genome and keep only clusters associated with the tomato genome, set the <code>"task"</code> argument as <code>"keep"</code>.</p>
 <p>The <code><a href="../reference/RNAmobile.html">RNAmobile()</a></code> function can take into account the statistically significance. If set to consider this, the function will filter sRNA based on an adjusted p-value threshold = 0.05. The threshold can be changed to make it less stringent by using the argument <code>padj</code>.Similarly, if you would prefer to extract the mobile RNA based on the p-value,rather than the adjusted p-values, a numeric threshold can be set for the argument <code>p.value</code>. As default, the function does not consider the statistical values and properties of the sRNAs. To consider, use <code>statistical=TRUE</code></p>
 <p>Below we have used the datasets which contains the additional columns with the statistical values. As stated above, we do not need to use the statistical values to identify the mobile molecules but it can be explored and utilised to plot a heatmap based on the logFC.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># vector of control names</span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># vector of control names</span></span>
 <span><span class="va">control_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"selfgraft_1"</span>, <span class="st">"selfgraft_2"</span>, <span class="st">"selfgraft_3"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="co">## Identify potential tomato mobile molecules, before subsetting classes</span></span>
+<span><span class="co">## Identify potential tomato mobile molecules</span></span>
 <span><span class="va">mobile_sRNA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_DESeq2</span>, </span>
 <span>                         controls <span class="op">=</span> <span class="va">control_names</span>,</span>
 <span>                         genome.ID <span class="op">=</span> <span class="st">"SL40"</span>,</span>
 <span>                         task <span class="op">=</span> <span class="st">"keep"</span>, </span>
 <span>                         statistical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># or identify within specific classes </span></span>
-<span><span class="co"># within 24-nt sRNA datset </span></span>
-<span><span class="va">mobile_sRNA_24</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_24_DESeq2</span>, </span>
-<span>                         controls <span class="op">=</span> <span class="va">control_names</span>,</span>
-<span>                         genome.ID <span class="op">=</span> <span class="st">"SL40"</span>,</span>
-<span>                         task <span class="op">=</span> <span class="st">"keep"</span><span class="op">)</span></span>
-<span><span class="co"># within 21/22-nt sRNA datset</span></span>
-<span><span class="va">mobile_sRNA_2122</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_2122_DESeq2</span>, </span>
-<span>                         controls <span class="op">=</span> <span class="va">control_names</span>,</span>
-<span>                         genome.ID <span class="op">=</span> <span class="st">"SL40"</span>,</span>
-<span>                         task <span class="op">=</span> <span class="st">"keep"</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co"># If you wish to consider the statistical values from DESeq2 analysis </span></span>
-<span></span>
-<span><span class="va">mobile_sRNA_sig24</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_24_DESeq2</span>, </span>
+<span><span class="co">## Identify potential tomato mobile molecules which are statistically significant</span></span>
+<span><span class="va">mobile_sRNA_significant</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_DESeq2</span>, </span>
 <span>                         controls <span class="op">=</span> <span class="va">control_names</span>,</span>
 <span>                         genome.ID <span class="op">=</span> <span class="st">"SL40"</span>,</span>
 <span>                         task <span class="op">=</span> <span class="st">"keep"</span>, </span>
-<span>                         statistical <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">mobile_sRNA_sig2122</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmobile.html">RNAmobile</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_2122_DESeq2</span>, </span>
-<span>                         controls <span class="op">=</span> <span class="va">control_names</span>,</span>
-<span>                         genome.ID <span class="op">=</span> <span class="st">"SL40"</span>,</span>
-<span>                         task <span class="op">=</span> <span class="st">"keep"</span>, </span>
-<span>                         statistical <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>                         statistical <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># change this parameter</span></span></code></pre></div>
 <p><br></p>
 <div class="section level4">
 <h4 id="heatmap-plots-to-represent-mobile-molecules">Heatmap plots to represent mobile molecules<a class="anchor" aria-label="anchor" href="#heatmap-plots-to-represent-mobile-molecules"></a>
 </h4>
-<p>Here we can use a hierarchical clustering heatmap to analysis the potential statistically significant mobile sRNAs we have identified. It is expected that the log2 fold changes should be opposite between your treatment and controls where the treatment samples shows up-regulation and the control samples show down-regulation.</p>
-<p><br></p>
-</div>
-<div class="section level4">
-<h4 id="mobile-molecules-from-the-24-nt-srna-dataset">Mobile molecules from the 24-nt sRNA dataset<a class="anchor" aria-label="anchor" href="#mobile-molecules-from-the-24-nt-srna-dataset"></a>
-</h4>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA_sig24</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">p11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA_sig2122</span><span class="op">)</span></span></code></pre></div>
+<p>We can plot our results as a heatmap - this heatmap represents the normalised reads-per-million (RPM) values which have been log transformed.<br><br></p>
+<p>Here we will plot all potential mobile molecules and those which are statistically significant:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">p10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="mobileRNA_files/figure-html/unnamed-chunk-21-1.png" alt="An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method Class of 24-nt sRNAs (left) and Class of 21/22-nt sRNAs (right). Where the rows represents the sRNA cluster number and the columns represents replicates." width="50%"><img src="mobileRNA_files/figure-html/unnamed-chunk-21-2.png" alt="An example heatmap of the potential mobile RNA molecules Identifed by the `DESeq2` method Class of 24-nt sRNAs (left) and Class of 21/22-nt sRNAs (right). Where the rows represents the sRNA cluster number and the columns represents replicates." width="50%"><p class="caption">
-An example heatmap of the potential mobile RNA molecules Identifed by the <code>DESeq2</code> method Class of 24-nt sRNAs (left) and Class of 21/22-nt sRNAs (right). Where the rows represents the sRNA cluster number and the columns represents replicates.
+<img src="mobileRNA_files/figure-html/unnamed-chunk-23-1.png" alt="An example heatmap of candidate mobile small RNAs.Where the columns represent the sample replicates and the rows represent the small RNA cluster." width="700"><p class="caption">
+An example heatmap of candidate mobile small RNAs.Where the columns represent the sample replicates and the rows represent the small RNA cluster.
 </p>
 </div>
 <p><br></p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">mobile_sRNA_significant</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="mobileRNA_files/figure-html/unnamed-chunk-24-1.png" alt="An example heatmap of candidate mobile small RNAs, which are statistically signifcant (adjusted pvalue &lt; 0.05). Where the columns represent the sample replicates and the rows represent the small RNA cluster." width="700"><p class="caption">
+An example heatmap of candidate mobile small RNAs, which are statistically signifcant (adjusted pvalue &lt; 0.05). Where the columns represent the sample replicates and the rows represent the small RNA cluster.
+</p>
+</div>
 </div>
 <div class="section level4">
 <h4 id="save-output">Save output<a class="anchor" aria-label="anchor" href="#save-output"></a>
 </h4>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">mobile_sRNA</span>, <span class="st">"./output.txt"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">mobile_sRNA</span>, <span class="st">"./candidate_mobile_sRNAs.txt"</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
-</div>
 </div>
 <div class="section level3">
 <h3 id="functional-analysis">Functional Analysis<a class="anchor" aria-label="anchor" href="#functional-analysis"></a>
 </h3>
-<p>By now you will have retrieved a list of potentially mobile sRNA molecules and you will want to identify whether they play a role in the biological system.</p>
-<p>Small interfering RNAs (siRNAs) have a length of 24-nucleotides, and are known to play a role in the RNA-directed DNA methylation pathway via targeting complementary sequencing in the DNA. While, miRNAs have a length of 21/22-nucleotides, and are known to instigate post-transcriptional gene silencing via mRNA degradation or repression of translation.</p>
-<p>To predict the function of a mobile sRNA in destination tissues, we can overlap the information with the genome annotation of the origin tissue to determine the local functionality. As well as, retrieving the nucleotide sequence of the most abundant sRNA within a cluster and locating complementary sequences in both the genome of origin and genome of destination using BLAST.</p>
-<p>IMPORTANT: If chromosome names were altered in either of genome assemblies used in the mapping steps, the chromosome names in the genome annotation files must match the same pattern. If you used the [mobileRNA::RNAmergeGenomes()] function, the chromosome names will by default be altered. The [mobileRNA::RNAmergeAnnotations()] function can be utilsed to alter both genome annotation files in the same way. This functions alters the names, saves each altered genome annotation and then merges them into one.</p>
-<p><br></p>
+<p>At this point in the analysis, a dataframe contain candidate mobile small RNAs has been produced. Now, we can extrapolate information to assist the identification of their potential effect and role in the biological system.</p>
+<p>We offer three different tools to assist the functional analysis. The first, can be used to identify genomic features associated with the small RNA producing locus associated to each cluster. This function is known as <code><a href="../reference/RNAattributes.html">RNAattributes()</a></code>. The second tool does something very similar, it identifies the same overlaps but returns a value stating either the absolute or relative number of sRNA cluster which over overlap with the different genomic features. This function is known as <code><a href="../reference/RNAfeatures.html">RNAfeatures()</a></code>. Finally, the last tools, called <code><a href="../reference/RNAsequences.html">RNAsequences()</a></code> calculates the consensus small RNA sequence for each candidate and predicts the potential target sequences.</p>
+<p>The consensus RNA sequences for the candidates can be used to predict targets in a given genome using tools such as <code>psRNATarget</code> (Xinbin Dai, Zhaohong Zhuang and Patrick X. Zhao (2018). psRNATarget: a plant small RNA target analysis server (2017 release). Nucleic Acids Research. doi: 10.1093/nar/gky316).</p>
+<p>IMPORTANT: If chromosome names were altered in either of genome assemblies used in the mapping steps, the chromosome names in the genome annotation files must match the same pattern. If you used the [mobileRNA::RNAmergeGenomes()] function, the chromosome names will by default be altered. The [mobileRNA::RNAmergeAnnotations()] function can be utilised to alter both genome annotation files in the same way. This functions alters the names, saves each altered genome annotation and then merges them into one. <br></p>
 <div class="section level4">
 <h4 id="add-genomic-attributes-to-srna-clusters">Add genomic attributes to sRNA clusters<a class="anchor" aria-label="anchor" href="#add-genomic-attributes-to-srna-clusters"></a>
 </h4>
 <p>Each sRNA cluster contains coordinates, these can be matches with coordinates in an annotation file. A match occurs when the cluster is found within the coordinates of a feature. If there is a match, the function returns the input data with additional fields of information from the annotation file.</p>
-<p>Using the genomic locations of the mobile sRNA clusters, we can identify overlaps in the genome annotation of the origin tissue to predict the implication of the mobile sRNA. Or to explore the functionality of native populations.</p>
-<p>This function can be utilsed at the beginning of the analysis steps where all sRNA clusters from both genotypes can be annotated with the genomic attributes associated to their location. This can be completed in a single step using a merge annotation file using the function [mobileRNA::RNAmergeAnnotations()].</p>
-<p>Here we will only be overlapping the data with genes, and adding a buffer region of 1kb upstream and downstream of the each gene.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p>Using the genomic locations of the mobile sRNA clusters, we can identify overlaps in the genome annotation of the origin tissue to predict the origin of the mobile small RNA. Here we will only be overlapping the data with genes, and adding a buffer region of 1 kb upstream and downstream of the each gene.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">mobile_df_attributes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAattributes.html">RNAattributes</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mobile_sRNA</span>, match <span class="op">=</span><span class="st">"genes"</span>,</span>
 <span>                            annotation <span class="op">=</span> <span class="st">"./annotation/origin_annotation.gff3"</span><span class="op">)</span></span></code></pre></div>
@@ -825,95 +557,102 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <div class="section level4">
 <h4 id="summarise-overlaps-with-genomic-features">Summarise overlaps with genomic features<a class="anchor" aria-label="anchor" href="#summarise-overlaps-with-genomic-features"></a>
 </h4>
-<p>We can also locate specific genomic features which overlap with the the sRNA cluster locus including promoter regions, exon, introns, untranslated regions and repeat regions.The results can either be displayed in the matrix as an absolute value or as a percentage of the total:</p>
+<p>Very similar to before, we can find overlaps between our candidate small RNA clusters and genomic features. However, this time we can calculate the relative or absolute number of small RNA clusters which are associated to each type of feature. These include promoter regions, exon, introns, untranslated regions and repeat regions.The results can either be displayed in the matrix as an absolute value or as a percentage of the total:</p>
 <p>NOTE: This function look for the exact matches in the locus (chromosome, start and end regions) between the sRNA cluster and the annotation file.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">mobile_df_features</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAfeatures.html">RNAfeatures</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">mobile_sRNA</span>,</span>
 <span>                            annotation <span class="op">=</span> <span class="st">"./annotation/origin_annotation.gff3"</span>, </span>
 <span>                      repeats <span class="op">=</span> <span class="st">"./annotation/origin_annotation_repeats.gff3"</span><span class="op">)</span></span></code></pre></div>
-<p>The distribution of sRNA clusters across genomic features is strongly related to the class of sRNA based on their nucleotide length. It is expected that 24-nt sRNA are associated with repeat regions and promoter regions, while 21/22-nt sRNA are likely to be associated with coding sequence.</p>
-<p>The resulting dataframe can be passed into a plot of your choice. Similarly, this features can be utilsed across different data sets. For example, across the total data set or specific mobile sRNA subsets. <br></p>
+<p><br></p>
 </div>
 <div class="section level4">
 <h4 id="retrieve-srna-sequence-complementary-sequences">Retrieve sRNA sequence &amp; complementary sequences<a class="anchor" aria-label="anchor" href="#retrieve-srna-sequence-complementary-sequences"></a>
 </h4>
-<p>Lastly, lets extract the sRNA cluster sequences.These can utilised with <code>BLAST</code>, or plant sRNA target prediction tools such as <code>TargetFinder</code> (<a href="https://github.com/carringtonlab/TargetFinder" class="external-link uri">https://github.com/carringtonlab/TargetFinder</a>) or overlapped with <code>mRNAseq</code> data to identify complementary sequences to further elucidate the potential function of sRNAs.</p>
-<p>The <code>RNAsequences</code> function identifies whether the most abundant sRNA is consistent across the replicates, and if so, it extracts the sRNA nucleotide sequence and calculates the RNA and DNA complementary sequences, as well as stating the length of the sequence.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<p>We can speculate the potential targets of the mobile small RNAs using target prediction tools such as <code>psRNATarget</code> (Xinbin Dai, Zhaohong Zhuang and Patrick X. Zhao (2018). psRNATarget: a plant small RNA target analysis server (2017 release). Nucleic Acids Research. doi: 10.1093/nar/gky316).</p>
+<p>The <code><a href="../reference/RNAsequences.html">RNAsequences()</a></code> function can be used to extrapolate the consensus RNA sequence and also calculate the complementary sequences.</p>
+<p>The <code>RNAsequences</code> function does so by identifying whether the most abundant small RNA is consistent across the replicates, and if so, it extracts the sRNA nucleotide sequence and calculates the RNA and DNA complementary sequences, as well as stating the length of the sequence. However, if there is a tie between the he most abundant small RNAs within a cluster the user can utilise the <code>duplicates</code> parameter to choose whether to set the consensus sequence as NA or to pick one at random. Similarly, the make the analysis more stringent there is a threshold parameter which can be used to set the minimum number of replicates required to share the sRNA sequence to count as a match.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">mobile_sequences</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsequences.html">RNAsequences</a></span><span class="op">(</span><span class="va">mobile_sRNA</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The minimum number of matches required to form a consensus sRNA sequence is...  1 </span></span>
-<span><span class="co">#&gt; The consensus sRNA sequences will be choose at random in the case of a tie</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mobile_sequences</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             Cluster Match                 Sequence Width</span></span>
-<span><span class="co">#&gt; 1610 cluster_133430    No                     &lt;NA&gt;  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2010 cluster_133435   Yes AUGUAACUGAUUGAGUAUAUAUUU    24</span></span>
-<span><span class="co">#&gt; 2410 cluster_133450   Yes  CCCGGACUGUCGGACACUACACA    23</span></span>
-<span><span class="co">#&gt; 2510 cluster_133451   Yes  ACGGCCUAUUGCACACCUGAAUU    23</span></span>
-<span><span class="co">#&gt; 2610 cluster_133452   Yes AGGAUUACUUACCACUCCACCAUA    24</span></span>
-<span><span class="co">#&gt; 2810 cluster_133455   Yes ACACUUGUAGGUCUGAGUGAAACU    24</span></span>
-<span><span class="co">#&gt;             Complementary_RNA        Complementary_DNA</span></span>
-<span><span class="co">#&gt; 1610                       NA                       NA</span></span>
-<span><span class="co">#&gt; 2010 UACAUUGACUAACUCAUAUAUAAA TACATTGACTAACTCATATATAAA</span></span>
-<span><span class="co">#&gt; 2410  GGGCCUGACAGCCUGUGAUGUGU  GGGCCTGACAGCCTGTGATGTGT</span></span>
-<span><span class="co">#&gt; 2510  UGCCGGAUAACGUGUGGACUUAA  TGCCGGATAACGTGTGGACTTAA</span></span>
-<span><span class="co">#&gt; 2610 UCCUAAUGAAUGGUGAGGUGGUAU TCCTAATGAATGGTGAGGTGGTAT</span></span>
-<span><span class="co">#&gt; 2810 UGUGAACAUCCAGACUCACUUUGA TGTGAACATCCAGACTCACTTTGA</span></span></code></pre></div>
+<span><span class="co">#&gt; The consensus sRNA sequences will be choose at random in the case of a tie</span></span></code></pre></div>
 <p><br></p>
+<p>We can extract the consensus small RNA sequences using the following code:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co"># select the cluster and sequence columns </span></span>
+<span><span class="va">sequences</span> <span class="op">&lt;-</span><span class="va">mobile_sequences</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Cluster</span>, <span class="va">Sequence</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add prefix, remove row with NA</span></span>
+<span><span class="va">prefix</span> <span class="op">&lt;-</span> <span class="st">"&gt;"</span></span>
+<span><span class="va">sequences</span><span class="op">$</span><span class="va">Cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">prefix</span>, <span class="va">sequences</span><span class="op">$</span><span class="va">Cluster</span><span class="op">)</span></span>
+<span><span class="va">sequences</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">sequences</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># convert</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sequences</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">sequences</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># save output </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">res</span>, file <span class="op">=</span><span class="st">"./candidate_mobile_sRNAs_sequences.txt"</span> ,</span>
+<span>            row.names <span class="op">=</span> <span class="cn">FALSE</span>, col.names <span class="op">=</span> <span class="cn">FALSE</span>, quote <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>The output can be used as input for tools such as <code>psRNATarget</code> (Xinbin Dai, Zhaohong Zhuang and Patrick X. Zhao (2018). psRNATarget: a plant small RNA target analysis server (2017 release). Nucleic Acids Research. doi: 10.1093/nar/gky316). <br></p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="explore-population-scale-srna-difference">Explore population-scale sRNA difference<a class="anchor" aria-label="anchor" href="#explore-population-scale-srna-difference"></a>
-</h3>
-<p>Here, we will look at comparing the native population of sRNAs and how they might have changes in the leaf due to the chimeric system compared to the control.</p>
+</div>
+<div class="section level2">
+<h2 id="explore-small-rna-population-difference-between-treatment-and-control">Explore small RNA population difference between treatment and control<a class="anchor" aria-label="anchor" href="#explore-small-rna-population-difference-between-treatment-and-control"></a>
+</h2>
+<p>Here, we will look at comparing the native population of sRNAs and how they might have changes in the tissue due to the chimeric system compared to the control.</p>
 <p>As a reminder, the data used here will not yield any results as the treatment and control samples contain the exact same population of eggplant sRNAs, the only difference in the treatment samples are the spiked tomato sRNA clusters.</p>
 <p>We have already undertaken the statistical analysis in the previous steps, we will be utilising this dataset going forward.</p>
 <div class="section level4">
 <h4 id="srna-abundance">sRNA abundance<a class="anchor" aria-label="anchor" href="#srna-abundance"></a>
 </h4>
-<p>When comparing treatment to control conditions, it might be the case that the same sRNA clusters are found within both yet there could be difference in the total abundance of the shared clusters. For instance, for a given sRNA cluster the samples in the treatment condition might have a greater abundance than the samples in the control condition. These difference could attribute to observed differences.</p>
+<p>When comparing treatment to control conditions, it might be the case that the same sRNA clusters are found within both, yet, there could be difference in the total abundance of the shared clusters. For instance, for a given sRNA cluster the samples in the treatment condition might have a greater abundance than the samples in the control condition. These difference could attribute to observed differences.</p>
 <p>The statistical analysis calculated the log2FC values for each sRNA cluster by comparing the normalised counts between treatment and control. Here, a positive log2FC indicates an increased abundance of transcripts for a given sRNA cluster in the treatment compared to the control, while negative log2FC indicates decreased abundance of transcripts for a given sRNA cluster. The statistical significance of the log2FC is determined by the (adjusted) pvalue also calculated in the previous step.</p>
 <p>Here we will filter the data to select sRNA clusters which are statistically significant, and then plot the results as a heatmap to compare the conditions.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select only significant sRNAs</span></span>
-<span><span class="va">significant_sRNAs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsignificant.html">RNAsignificant</a></span><span class="op">(</span><span class="va">sRNA_edgeR</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co">#plot</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">significant_sRNAs</span>, cluster <span class="op">=</span> <span class="cn">FALSE</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="mobileRNA_files/figure-html/unnamed-chunk-26-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>Lets look at the plot:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p1</span><span class="op">$</span><span class="va">plot</span> </span></code></pre></div>
-<p><img src="mobileRNA_files/figure-html/unnamed-chunk-27-1.png" width="700" style="display: block; margin: auto;"><br></p>
-</div>
+<span><span class="va">significant_sRNAs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAsignificant.html">RNAsignificant</a></span><span class="op">(</span><span class="va">sRNA_DESeq2</span><span class="op">)</span></span></code></pre></div>
+<p>Plot the results: <br></p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#plot</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotHeatmap.html">plotHeatmap</a></span><span class="op">(</span><span class="va">significant_sRNAs</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="mobileRNA_files/figure-html/unnamed-chunk-31-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="step-6-identify-absolute-srna-population-difference">Step 6: Identify absolute sRNA population difference<a class="anchor" aria-label="anchor" href="#step-6-identify-absolute-srna-population-difference"></a>
+<h3 id="step-6-identify-srna-population-difference">Step 6: Identify sRNA population difference<a class="anchor" aria-label="anchor" href="#step-6-identify-srna-population-difference"></a>
 </h3>
-<p>Finally, the <code><a href="../reference/RNApopulation.html">RNApopulation()</a></code> function can be utilised to identify unique sRNA populations found in the treatment or control condition.</p>
+<p>Finally, the <code><a href="../reference/RNApopulation.html">RNApopulation()</a></code> function can be utilised to identify unique sRNA populations found in the treatment or control conditions.</p>
 <p>First lets look at the sRNA clusters unique to the treatment condition. In the chimeric heterografts, we expect that the foreign sRNAs will also be selected in this pick-up, therefore, we can use the parameter <code>genome.ID</code> to remove sRNA cluster related to the foreign genome.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># select sRNA clusters only found in treatment &amp; not in the control samples</span></span>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># select sRNA clusters only found in treatment &amp; not in the control samples</span></span>
 <span><span class="va">treatment_reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"heterograft_1"</span>, <span class="st">"heterograft_2"</span> , <span class="st">"heterograft_3"</span><span class="op">)</span></span>
 <span><span class="va">unique_treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNApopulation.html">RNApopulation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_edgeR</span>, </span>
-<span>                                   conditions <span class="op">=</span> <span class="va">treatment_reps</span><span class="op">)</span></span>
+<span>                                  conditions <span class="op">=</span> <span class="va">treatment_reps</span>,</span>
+<span>                                  chimeric <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                                  genome.ID <span class="op">=</span> <span class="st">"SL"</span>, </span>
+<span>                                  controls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"selfgraft_1"</span>,</span>
+<span>                                               <span class="st">"selfgraft_2"</span>, </span>
+<span>                                               <span class="st">"selfgraft_3"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># look at number of sRNA cluster only found in treatment </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">unique_treatment</span><span class="op">)</span></span></code></pre></div>
 <p>Now, the sRNA clusters unique to the control condition:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># select sRNA clusters only found in control &amp; not in the treatment samples</span></span>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># select sRNA clusters only found in control &amp; not in the treatment samples</span></span>
 <span><span class="va">control_reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"selfgraft_1"</span>, <span class="st">"selfgraft_2"</span> , <span class="st">"selfgraft_3"</span><span class="op">)</span></span>
 <span><span class="va">unique_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNApopulation.html">RNApopulation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_edgeR</span>, </span>
 <span>                                   conditions <span class="op">=</span> <span class="va">control_reps</span><span class="op">)</span></span>
 <span><span class="co"># look at number of sRNA cluster only found in control  </span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">unique_control</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">unique_control</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p>The data here can be manipulated in many ways, you may wish to extract statistically significant small RNA clusters within a population to explore further. For this you can utilise the function.</p>
-<p>The plotting functions within the package can be used to display these results, specifically and . Similarly, the functions to assist with functional analysis can also be utilsied to pull the consensus sRNA sequence for each cluster in the population, or find overlaps with known annotations in the native genome. <br></p>
+<p>The plotting functions within the package can be used to display these results, specifically and . Similarly, the functions to assist with functional analysis can also be utilised to pull the consensus sRNA sequence for each cluster in the population, or find overlaps with known annotations in the native genome. <br></p>
+<p>Similarly if you are comparing several different treatments, a venn diagram could be plotted to observe whether any unique populations of small RNA are shared.</p>
 </div>
 </div>
 <div class="section level2">
@@ -925,10 +664,11 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <h3 id="calculate-rpm-and-count-means-for-specific-samples">Calculate RPM and Count means for specific samples<a class="anchor" aria-label="anchor" href="#calculate-rpm-and-count-means-for-specific-samples"></a>
 </h3>
 <p>This function calculates the RPM mean and Count mean across specific samples.The output of the calculation is added as an additional column to the input dataframe.</p>
-<p>This can be manipulated to be used before or after identified mobile RNAs. When calculating means after identifying mobile molecules, it is recommend to base this on the heterograft samples rather than the full dataset (selfgrafts + heterograft replicates) as all potential mobile sRNAs should have zero counts or RPM value in the selfgraft control replicates. By including the full dataset in these calculations, the mean values for the mobile molecules will be skewed.</p>
+<p>This can be manipulated to be used before or after identified mobile RNAs. When calculating means after identifying mobile molecules, it is recommend to base this on the heterograft samples rather than the full dataset (self-grafts + heterograft replicates) as all potential mobile sRNAs should have zero counts or RPM value in the self-grafts control replicates. By including the full dataset in these calculations, the mean values for the mobile molecules will be skewed.</p>
 <p>Therefore, depending on your intended output this function could be approached in multiple ways.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># calculate mean RPM and mean Counts for heterograft samples</span></span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># calculate mean RPM and mean Counts for heterograft samples</span></span>
 <span><span class="va">selected_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"heterograft_1"</span>, <span class="st">"heterograft_2"</span>, <span class="st">"heterograft_3"</span><span class="op">)</span></span>
 <span><span class="va">means</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAmean.html">RNAmean</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>, conditions <span class="op">=</span> <span class="va">selected_samples</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
@@ -937,7 +677,7 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.0.2 (2020-06-22)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
@@ -954,7 +694,7 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] mobileRNA_0.99.5 BiocStyle_2.16.1</span></span>
+<span><span class="co">#&gt; [1] dplyr_1.1.2      mobileRNA_0.99.8 magrittr_2.0.3   BiocStyle_2.16.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] colorspace_2.0-3            rprojroot_2.0.2            </span></span>
@@ -970,61 +710,60 @@ An example heatmap of the potential mobile RNA molecules Identifed by the <code>
 <span><span class="co">#&gt;  [21] geneplotter_1.66.0          knitr_1.42                 </span></span>
 <span><span class="co">#&gt;  [23] jsonlite_1.8.4              Rsamtools_2.4.0            </span></span>
 <span><span class="co">#&gt;  [25] annotate_1.66.0             cluster_2.1.2              </span></span>
-<span><span class="co">#&gt;  [27] vsn_3.56.0                  png_0.1-7                  </span></span>
-<span><span class="co">#&gt;  [29] pheatmap_1.0.12             BiocManager_1.30.16        </span></span>
-<span><span class="co">#&gt;  [31] compiler_4.0.2              Matrix_1.4-0               </span></span>
-<span><span class="co">#&gt;  [33] fastmap_1.1.0               limma_3.44.3               </span></span>
-<span><span class="co">#&gt;  [35] cli_3.6.0                   beepr_1.3                  </span></span>
-<span><span class="co">#&gt;  [37] htmltools_0.5.5             tools_4.0.2                </span></span>
-<span><span class="co">#&gt;  [39] gtable_0.3.0                glue_1.6.2                 </span></span>
-<span><span class="co">#&gt;  [41] GenomeInfoDbData_1.2.3      affy_1.66.0                </span></span>
-<span><span class="co">#&gt;  [43] dplyr_1.1.2                 Rcpp_1.0.8.3               </span></span>
-<span><span class="co">#&gt;  [45] Biobase_2.48.0              jquerylib_0.1.4            </span></span>
-<span><span class="co">#&gt;  [47] pkgdown_2.0.7               vctrs_0.6.2                </span></span>
-<span><span class="co">#&gt;  [49] Biostrings_2.56.0           preprocessCore_1.50.0      </span></span>
-<span><span class="co">#&gt;  [51] progressr_0.10.0            rtracklayer_1.48.0         </span></span>
-<span><span class="co">#&gt;  [53] iterators_1.0.14            xfun_0.37                  </span></span>
-<span><span class="co">#&gt;  [55] stringr_1.5.0               globals_0.14.0             </span></span>
-<span><span class="co">#&gt;  [57] lifecycle_1.0.3             gtools_3.9.2               </span></span>
-<span><span class="co">#&gt;  [59] XML_3.99-0.9                future_1.24.0              </span></span>
-<span><span class="co">#&gt;  [61] edgeR_3.30.3                zlibbioc_1.34.0            </span></span>
-<span><span class="co">#&gt;  [63] MASS_7.3-55                 scales_1.2.1               </span></span>
-<span><span class="co">#&gt;  [65] BSgenome_1.56.0             ragg_1.2.2                 </span></span>
-<span><span class="co">#&gt;  [67] parallel_4.0.2              SummarizedExperiment_1.18.2</span></span>
-<span><span class="co">#&gt;  [69] RColorBrewer_1.1-2          curl_4.3.2                 </span></span>
-<span><span class="co">#&gt;  [71] yaml_2.3.5                  pbapply_1.7-0              </span></span>
-<span><span class="co">#&gt;  [73] memoise_2.0.1               ggplot2_3.4.2              </span></span>
-<span><span class="co">#&gt;  [75] sass_0.4.0                  stringi_1.7.6              </span></span>
-<span><span class="co">#&gt;  [77] RSQLite_2.2.10              highr_0.9                  </span></span>
-<span><span class="co">#&gt;  [79] genefilter_1.70.0           S4Vectors_0.26.1           </span></span>
-<span><span class="co">#&gt;  [81] desc_1.4.1                  foreach_1.5.2              </span></span>
-<span><span class="co">#&gt;  [83] Ringo_1.52.0                caTools_1.18.2             </span></span>
-<span><span class="co">#&gt;  [85] BiocGenerics_0.34.0         BiocParallel_1.22.0        </span></span>
-<span><span class="co">#&gt;  [87] truncnorm_1.0-8             GenomeInfoDb_1.24.2        </span></span>
-<span><span class="co">#&gt;  [89] rlang_1.1.0                 pkgconfig_2.0.3            </span></span>
-<span><span class="co">#&gt;  [91] systemfonts_1.0.4           matrixStats_0.61.0         </span></span>
-<span><span class="co">#&gt;  [93] bitops_1.0-7                Rsolnp_1.16                </span></span>
-<span><span class="co">#&gt;  [95] evaluate_0.15               lattice_0.20-45            </span></span>
-<span><span class="co">#&gt;  [97] purrr_1.0.1                 labeling_0.4.2             </span></span>
-<span><span class="co">#&gt;  [99] GenomicAlignments_1.24.0    bit_4.0.4                  </span></span>
-<span><span class="co">#&gt; [101] tidyselect_1.2.0            parallelly_1.30.0          </span></span>
-<span><span class="co">#&gt; [103] magrittr_2.0.3              bookdown_0.32              </span></span>
-<span><span class="co">#&gt; [105] DESeq2_1.28.1               R6_2.5.1                   </span></span>
-<span><span class="co">#&gt; [107] IRanges_2.22.2              gplots_3.1.1               </span></span>
-<span><span class="co">#&gt; [109] generics_0.1.2              DelayedArray_0.14.1        </span></span>
-<span><span class="co">#&gt; [111] DBI_1.1.2                   withr_2.5.0                </span></span>
-<span><span class="co">#&gt; [113] pillar_1.9.0                gsmoothr_0.1.7             </span></span>
-<span><span class="co">#&gt; [115] RPushbullet_0.3.4           survival_3.3-1             </span></span>
-<span><span class="co">#&gt; [117] RCurl_1.98-1.6              future.apply_1.8.1         </span></span>
-<span><span class="co">#&gt; [119] tibble_3.2.1                crayon_1.5.0               </span></span>
-<span><span class="co">#&gt; [121] KernSmooth_2.23-20          utf8_1.2.2                 </span></span>
-<span><span class="co">#&gt; [123] rmarkdown_2.20              locfit_1.5-9.4             </span></span>
-<span><span class="co">#&gt; [125] grid_4.0.2                  data.table_1.14.2          </span></span>
-<span><span class="co">#&gt; [127] blob_1.2.2                  SimDesign_2.10.1           </span></span>
-<span><span class="co">#&gt; [129] digest_0.6.29               xtable_1.8-4               </span></span>
-<span><span class="co">#&gt; [131] tidyr_1.3.0                 textshaping_0.3.6          </span></span>
-<span><span class="co">#&gt; [133] stats4_4.0.2                munsell_0.5.0              </span></span>
-<span><span class="co">#&gt; [135] bslib_0.3.1                 sessioninfo_1.2.2</span></span></code></pre></div>
+<span><span class="co">#&gt;  [27] vsn_3.56.0                  pheatmap_1.0.12            </span></span>
+<span><span class="co">#&gt;  [29] BiocManager_1.30.16         compiler_4.0.2             </span></span>
+<span><span class="co">#&gt;  [31] Matrix_1.4-0                fastmap_1.1.0              </span></span>
+<span><span class="co">#&gt;  [33] limma_3.44.3                cli_3.6.0                  </span></span>
+<span><span class="co">#&gt;  [35] beepr_1.3                   htmltools_0.5.5            </span></span>
+<span><span class="co">#&gt;  [37] tools_4.0.2                 gtable_0.3.0               </span></span>
+<span><span class="co">#&gt;  [39] glue_1.6.2                  GenomeInfoDbData_1.2.3     </span></span>
+<span><span class="co">#&gt;  [41] affy_1.66.0                 Rcpp_1.0.8.3               </span></span>
+<span><span class="co">#&gt;  [43] Biobase_2.48.0              jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt;  [45] pkgdown_2.0.7               vctrs_0.6.2                </span></span>
+<span><span class="co">#&gt;  [47] Biostrings_2.56.0           preprocessCore_1.50.0      </span></span>
+<span><span class="co">#&gt;  [49] progressr_0.10.0            rtracklayer_1.48.0         </span></span>
+<span><span class="co">#&gt;  [51] iterators_1.0.14            xfun_0.37                  </span></span>
+<span><span class="co">#&gt;  [53] stringr_1.5.0               globals_0.14.0             </span></span>
+<span><span class="co">#&gt;  [55] lifecycle_1.0.3             gtools_3.9.2               </span></span>
+<span><span class="co">#&gt;  [57] XML_3.99-0.9                future_1.24.0              </span></span>
+<span><span class="co">#&gt;  [59] edgeR_3.30.3                zlibbioc_1.34.0            </span></span>
+<span><span class="co">#&gt;  [61] MASS_7.3-55                 scales_1.2.1               </span></span>
+<span><span class="co">#&gt;  [63] BSgenome_1.56.0             ragg_1.2.2                 </span></span>
+<span><span class="co">#&gt;  [65] parallel_4.0.2              SummarizedExperiment_1.18.2</span></span>
+<span><span class="co">#&gt;  [67] RColorBrewer_1.1-2          curl_4.3.2                 </span></span>
+<span><span class="co">#&gt;  [69] yaml_2.3.5                  pbapply_1.7-0              </span></span>
+<span><span class="co">#&gt;  [71] memoise_2.0.1               ggplot2_3.4.2              </span></span>
+<span><span class="co">#&gt;  [73] sass_0.4.0                  stringi_1.7.6              </span></span>
+<span><span class="co">#&gt;  [75] RSQLite_2.2.10              highr_0.9                  </span></span>
+<span><span class="co">#&gt;  [77] genefilter_1.70.0           S4Vectors_0.26.1           </span></span>
+<span><span class="co">#&gt;  [79] desc_1.4.1                  foreach_1.5.2              </span></span>
+<span><span class="co">#&gt;  [81] Ringo_1.52.0                caTools_1.18.2             </span></span>
+<span><span class="co">#&gt;  [83] BiocGenerics_0.34.0         BiocParallel_1.22.0        </span></span>
+<span><span class="co">#&gt;  [85] truncnorm_1.0-8             GenomeInfoDb_1.24.2        </span></span>
+<span><span class="co">#&gt;  [87] rlang_1.1.0                 pkgconfig_2.0.3            </span></span>
+<span><span class="co">#&gt;  [89] systemfonts_1.0.4           matrixStats_0.61.0         </span></span>
+<span><span class="co">#&gt;  [91] bitops_1.0-7                Rsolnp_1.16                </span></span>
+<span><span class="co">#&gt;  [93] evaluate_0.15               lattice_0.20-45            </span></span>
+<span><span class="co">#&gt;  [95] purrr_1.0.1                 labeling_0.4.2             </span></span>
+<span><span class="co">#&gt;  [97] GenomicAlignments_1.24.0    bit_4.0.4                  </span></span>
+<span><span class="co">#&gt;  [99] tidyselect_1.2.0            parallelly_1.30.0          </span></span>
+<span><span class="co">#&gt; [101] bookdown_0.32               DESeq2_1.28.1              </span></span>
+<span><span class="co">#&gt; [103] R6_2.5.1                    IRanges_2.22.2             </span></span>
+<span><span class="co">#&gt; [105] gplots_3.1.1                generics_0.1.2             </span></span>
+<span><span class="co">#&gt; [107] DelayedArray_0.14.1         DBI_1.1.2                  </span></span>
+<span><span class="co">#&gt; [109] withr_2.5.0                 pillar_1.9.0               </span></span>
+<span><span class="co">#&gt; [111] gsmoothr_0.1.7              RPushbullet_0.3.4          </span></span>
+<span><span class="co">#&gt; [113] survival_3.3-1              RCurl_1.98-1.6             </span></span>
+<span><span class="co">#&gt; [115] future.apply_1.8.1          tibble_3.2.1               </span></span>
+<span><span class="co">#&gt; [117] crayon_1.5.0                KernSmooth_2.23-20         </span></span>
+<span><span class="co">#&gt; [119] utf8_1.2.2                  rmarkdown_2.20             </span></span>
+<span><span class="co">#&gt; [121] locfit_1.5-9.4              grid_4.0.2                 </span></span>
+<span><span class="co">#&gt; [123] data.table_1.14.2           blob_1.2.2                 </span></span>
+<span><span class="co">#&gt; [125] SimDesign_2.10.1            digest_0.6.29              </span></span>
+<span><span class="co">#&gt; [127] xtable_1.8-4                tidyr_1.3.0                </span></span>
+<span><span class="co">#&gt; [129] textshaping_0.3.6           stats4_4.0.2               </span></span>
+<span><span class="co">#&gt; [131] munsell_0.5.0               bslib_0.3.1                </span></span>
+<span><span class="co">#&gt; [133] sessioninfo_1.2.2</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

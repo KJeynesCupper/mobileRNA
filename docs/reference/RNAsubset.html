@@ -12,7 +12,7 @@ on the consensus sRNA determination."><meta property="og:image" content="https:/
     
     <a class="navbar-brand me-2" href="../index.html">mobileRNA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ on the consensus sRNA determination.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RNAsubset</span><span class="op">(</span><span class="va">data</span>, <span class="va">type</span>, sig <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RNAsubset</span><span class="op">(</span><span class="va">data</span>, <span class="va">type</span>, sig <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,21 +78,13 @@ defined consensus sRNA class/type for each sRNA dicer-derived cluster
 
 
 <dt>type</dt>
-<dd><p>A number to represent the type of small RNA population to subset
-for.</p></dd>
+<dd><p>numeric; small RNA class(es) to select.</p></dd>
 
 
 <dt>sig</dt>
 <dd><p>Parameter to filter and select significant sRNA. If
 <code>sig=TRUE</code>, data will be filtered based on p-adjusted &lt; 0.05
 significance threshold.</p></dd>
-
-
-<dt>...</dt>
-<dd><p>Related to number in the <code>type</code> argument
-This can be a value from 20-24. To select, 24-nt sRNA, state 24.
-Multiple values can be inputted, for instance both 21 and 22 can be
-stated to select both.</p></dd>
 
 </dl></div>
     <div class="section level2">

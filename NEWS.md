@@ -39,3 +39,7 @@ handling ties.
 + amended and added feature option to RNAattributes 
 + Improved plotting options for PCA (choose colours, add different shapes, add theme)
 + fixed specific sample plotting bug in RNAdistribution 
+
+
+## Updated to version 0.99.6 (2023-09-14)
++ updated devel branch with same amendments to main where applicable. 

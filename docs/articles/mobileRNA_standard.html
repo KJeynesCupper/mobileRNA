@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mobileRNA</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Analyse sRNA populations using mobileRNA</h1>
                         <h4 data-toc-skip class="author">Katie Jeynes-Cupper, Marco Catoni</h4>
             
-            <h4 data-toc-skip class="date">2023-08-15</h4>
+            <h4 data-toc-skip class="date">2023-09-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/KJeynesCupper/mobileRNA.git/blob/HEAD/vignettes/mobileRNA_standard.Rmd" class="external-link"><code>vignettes/mobileRNA_standard.Rmd</code></a></small>
       <div class="d-none name"><code>mobileRNA_standard.Rmd</code></div>
@@ -262,10 +262,11 @@
 <code class="sourceCode R"><span><span class="co"># calculate dicercall consensus </span></span>
 <span><span class="va">sRNA_data_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdicercall.html">RNAdicercall</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data</span>,  </span>
 <span>                                 tidy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Calculating consensus dicercall based on information from all replicates </span></span>
-<span><span class="co">#&gt; The consensus dicercall will be excluded in the case of a tie </span></span>
+<span><span class="co">#&gt; Calculating consensus dicercall based on information from all replicates... </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Removing sRNA clusters with no consensus dicercall...</span></span>
+<span><span class="co">#&gt; The consensus dicercall will be excluded in the case of a tie... </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Removing small RNA clusters with no consensus dicercall...</span></span>
 <span><span class="co"># plot results </span></span>
 <span><span class="va">plot_distribution</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RNAdistribution.html">RNAdistribution</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sRNA_data_consensus</span>, </span>
 <span>                        consensus <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -421,7 +422,7 @@
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] mobileRNA_0.99.5 BiocStyle_2.16.1</span></span>
+<span><span class="co">#&gt; [1] mobileRNA_0.99.8 BiocStyle_2.16.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] colorspace_2.0-3            rprojroot_2.0.2            </span></span>
