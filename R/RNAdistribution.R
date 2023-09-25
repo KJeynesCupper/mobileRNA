@@ -1,4 +1,4 @@
-#' Plot the distribution of sRNA lengths
+#' Plot the distribution of sRNA lengths/classes
 #'
 #' @description \code{RNAdistribution} plots the distribution of dicer-derived
 #' sRNA classes across samples or across the sRNA consensus
@@ -29,21 +29,14 @@
 #' @param colour bar plot fill colour. Default colour is "black".
 #'
 #' @param style plotting option to choose the style of either a line graph or
-#' bar chart to represent your data.
-#' * Where \code{style="line"} a line graph will be produced
-#' * Where \code{style="bar"} produces a bar graph
-#' * Where \code{style="consensus"} produces the line graph for the consensus
-#' sRNA in conjunction with \code{consensus=TRUE}
+#' bar chart to represent your data. Where \code{style="line"} a line graph will 
+#' be produced. Where \code{style="bar"} produces a bar graph. Where 
+#' \code{style="consensus"} produces the line graph for the consensus.
 #'
 #' @param together Logical; forms a single line graph with multiple lines each
 #' to represent the sample replicates. Default \code{together=TRUE}.
 #'
 #'
-#'@param consensus Logical; plots the distribution of sRNA classes across all
-#'identified dicer-derived clusters based on the consensus. See
-#'[mobileRNA::RNAdicercall()]
-#'function to calculate consensus RNA class based the experimental replicates.
-#'Default \code{consensus=FALSE}.
 #'
 #'@param relative Logical; calculates relative frequency of consensus
 #'dicer-derived sRNA clusters. Only applicable when  only in conjunction with
@@ -56,21 +49,19 @@
 #'It can be used to plot the distribution of sRNA classes within each sample
 #'replicate, which can be represented as a bar chart \code{style="bar"} or a
 #'line graph \code{style="line"}. These plots can be represented individually or
-#'in a single plot facet \code{facet="TRUE"} by default.
+#'in a single plot facet \code{facet="TRUE"} by default. While the option 
+#' \code{style="consensus"}, plots the distribution of the consensus 
+#' dicer-derived sRNA classes determined by the [RNAdicercall()] function
 #'
 #'
 #'To plot the sRNA dicer-derived clusters identified in each sample, the
-#'function extracts the information from the RNA summary data and calculates the
+#'function extracts the information from the sRNA data set and calculates the
 #'total number of each RNA class identified within a sample, for all samples.
 #'
 #'Alternatively, the function allows you to plot the line graph for each sample
 #'together, overlapped on a single graph \code{total="TRUE"}. This is not an
 #'option for bar plots.
 #'
-#'The final option, is to plot the total consensus of dicer-derived sRNA
-#'clusters across the experimental conditions, the function pulls the consensus
-#'call from the column created by the [RNAdicercall()] function in the working
-#'data frame.
 #'
 #'
 #'
@@ -99,7 +90,7 @@
 #'                       facet = TRUE, facet.arrange = 2 )
 #'
 #'data("sRNA_data_consensus")
-#'p6 <- RNAdistribution(data = sRNA_data_consensus, consensus = TRUE)
+#'p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus")
 #'
 #' @export
 #' @importFrom BiocGenerics "grep"
@@ -126,13 +117,21 @@
 #'
 RNAdistribution  <- function (data, samples = NULL, style, 
                               facet = TRUE, facet.arrange = 3, colour = "black", 
-                              together = TRUE, 
-                              consensus = FALSE, relative = FALSE) {
+                              together = TRUE, relative = FALSE) {
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
     stop("data must be a data frame, see ?help for more details")
   }
+  if (missing(style) || !is.character(style)) {
+    stop("style parameter is missing or not a character vector.")
+  }
   
-  if (consensus == TRUE) {
+  # Check if style is one of the allowed values
+  allowed_styles <- c("line", "bar", "consensus")
+  if (!style %in% allowed_styles) {
+    stop("style parameter must be one of 'line', 'bar', or 'consensus'.")
+  }
+  
+  if (style == "consensus") {
     x <- data %>% dplyr::count(DicerConsensus)
     if (!relative == FALSE) {
       x <- x %>% dplyr::mutate(freq = n/sum(n))
@@ -166,7 +165,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
     if (base::inherits(counts.df, c("list"))) {
       class_colnames <- colnames(data)[grep("DicerCall_", colnames(data))]
       required_columns <- unique(unlist(data[class_colnames]))
-      for (i in seq_along(counts.df)) {
+      for (i in seq_len(nrow(counts.df)) ) {
         table_i <- counts.df[[i]]  # current table
         if (length(names(table_i)) < length(required_columns)) {
           # columns missing from the table

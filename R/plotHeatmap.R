@@ -7,6 +7,8 @@
 #'
 #' @param data Dataframe; Must follow the structure created by 
 #' `mobileRNA::RNAimport()`. 
+#' 
+#' @param value the values to plot, either `FPKM` or `RPM`
 #'
 #' @param colours vector of colors. Default is 
 #' `grDevices::hsv(1,1,seq(0,1,length.out = 12))`
@@ -63,61 +65,49 @@
 #' @importFrom pheatmap "pheatmap"
 #' @importFrom stats "na.omit"
 #' @importFrom grDevices "hsv"
-plotHeatmap <- function (data, pseudocount = 1e-6, 
+plotHeatmap <- function (data, value = "RPM", pseudocount = 1e-6, 
                          colours = grDevices::hsv(1,1,seq(0,1,length.out = 12)),
                          cluster = TRUE, scale = "none", 
                          clustering_method = "complete", 
                          row.names = TRUE,
-                         border.color = NA) 
-{
-  if (base::missing(data) || !base::inherits(data, c("matrix", 
-                                                     "data.frame", "DataFrame"))) {
-    stop("data must be an object of class matrix, data.frame,\n DataFrame. See ?plotHeatmap for more information.")
+                         border.color = NA) {
+  if (base::missing(data) || !base::inherits(data, c("matrix","data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame, DataFrame. \n See ?plotHeatmap for more information.")
   }
-  if(any(grepl(paste0("^", "FPKM_"), colnames(data)))){
-    select_data <- data %>% dplyr::select(tidyselect::starts_with("FPKM"))
-    names(select_data) <- sub('^FPKM', '', names(select_data)) 
+  allowed_styles <- c("RPM", "FPKM")
+  if (!value %in% allowed_styles) {
+    stop("value parameter must be one of 'RPM', or 'FPKM'.")
+  }
+  if (value == "RPM" && any(grepl(paste0("^", "RPM_"), colnames(data)))) {
+    select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
+    names(select_data) <- sub('^RPM_', '', names(select_data))
   } else 
-    if(any(grepl(paste0("^", "RPM_"), colnames(data)))){
-      select_data <- data %>% dplyr::select(tidyselect::starts_with("RPM_"))
-      names(select_data) <- sub('^RPM_', '', names(select_data))
-    } else {
-      stop("data must contain columns containing either FPKM or RPM data columns.")
-    }
-  # remove cluster with no counts 
+    if (value == "FPKM" && any(grepl(paste0("^", "FPKM_"), colnames(data)))) {
+    select_data <- data %>% dplyr::select(tidyselect::starts_with("FPKM"))
+    names(select_data) <- sub('^FPKM', '', names(select_data))
+   } else {
+    stop("data must contain columns containing either FPKM, or  RPM data columns depending on the 'value' parameter.")
+  }
+  rownames(select_data) <- data$clusterID # remove cluster with no counts 
   select_data <- select_data[rowSums(select_data[])>0,]
-  rownames(select_data) <- data$clusterID
-  # RPM normalization with pseudocount addition
-  total_reads_per_sample <- colSums(select_data)
+  total_reads_per_sample <- colSums(select_data)   # RPM normalization with pseudocount addition
   rpm_matrix <- (select_data / (total_reads_per_sample + pseudocount)) * 1e6
-  # log transform. 
-  log_rpm_matrix <- log2(rpm_matrix + 1)
-  # add cluster names
-  data_rownames <- data$Cluster
-  # add row names 
-  rownames(log_rpm_matrix) <- data_rownames
+  log_rpm_matrix <- log2(rpm_matrix + 1)   # log transform. 
+  data_rownames <- data$Cluster  # add cluster names
+  rownames(log_rpm_matrix) <- data_rownames   # add row names 
   if(cluster == FALSE){
-    p1 <- pheatmap::pheatmap(log_rpm_matrix,
-                             scale = scale,               
-                             cluster_rows = FALSE, 
-                             cluster_cols = FALSE, 
-                             show_row_dendrogram = FALSE, 
-                             show_col_dendrogram = FALSE,  
-                             color = colours,
-                             show_rownames = row.names,
-                             border_color = border.color,
-                             fontsize_row = 10,            
+    p1 <- pheatmap::pheatmap(log_rpm_matrix, scale = scale,cluster_rows = FALSE, 
+                             cluster_cols = FALSE, show_row_dendrogram = FALSE, 
+                             show_col_dendrogram = FALSE, color = colours,
+                             show_rownames = row.names, 
+                             border_color = border.color,fontsize_row = 10,            
                              fontsize_col = 10)
   } else {
-    p1 <- pheatmap::pheatmap(log_rpm_matrix,
-                             scale = scale,               
+    p1 <- pheatmap::pheatmap(log_rpm_matrix,scale = scale,               
                              clustering_method = clustering_method,  
-                             color = colours,
-                             show_rownames = row.names,
-                             fontsize_row = 10,            
-                             fontsize_col = 10, 
-                             border_color = border.color,
-                             cluster_cols = FALSE)
+                             color = colours,show_rownames = row.names,
+                             fontsize_row = 10, fontsize_col = 10, 
+                             border_color = border.color,cluster_cols = FALSE)
   }
   out <- list(plot = p1, data = log_rpm_matrix)
   return(out)

@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
-Title: Identify mobile RNA molecules in plant graft systems 
-Version: 0.99.8
+Title: Explore canditate mobile sRNAs & sRNAs population-scale changes
+Version: 0.99.9
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut"))
@@ -12,21 +12,20 @@ Description: The mobileRNA package allows for the identifcation of mobile small
   steps for sRNA-seq mRNA-seq data with the end goal of identifying mobile RNAs 
   and their potential function or implications on phenotypic changes. 
 License: MIT + file LICENSE
-URL: https://github.com/KJeynesCupper/mobileRNA.git,
-    https://kjeynescupper.github.io/mobileRNA/
 Depends:
     R (>= 4.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 LazyDataCompression: xz
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    bioseq
 Imports: 
     dplyr,
     tidyr, 
@@ -52,18 +51,19 @@ Imports:
     stats,
     Biostrings, 
     xfun,
-    magrittr,
     foreach,
     doParallel,
     parallel,
     S4Vectors,
     SummarizedExperiment,
-    rlang
+    rlang,
+    BiocParallel
 biocViews: 
     Visualization,
     RNASeq,
     Sequencing,
     SmallRNA,
-    GenomeAssembly
-SystemRequirements: ShortStack (https://github.com/MikeAxtell/ShortStack)
-BiocType: Workflow
+    GenomeAssembly,
+    Clustering
+BiocType: Software
+BugReports: https://github.com/KJeynesCupper/mobileRNA/issues

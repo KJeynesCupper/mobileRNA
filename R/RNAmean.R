@@ -32,21 +32,24 @@
 #'means <- RNAmean(data = sRNA_data)
 #'
 RNAmean <- function(data, conditions = NULL){
+  if (base::missing(data)) {
+    stop("data is missing. data must be an object of class matrix, data.frame, 
+         DataFrame")
+  }
+  if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame, DataFrame")
+  }
   RPM_cols <- dplyr::select(data, starts_with("RPM_"))
   count_cols <- dplyr::select(data, starts_with("Count_"))
 
   if (!is.null(conditions)){
     RPM <- grep(paste(conditions, collapse = "|"), colnames(RPM_cols),
                 value = TRUE)
-
-
     count <- grep(paste(conditions, collapse = "|"), colnames(count_cols),
                   value = TRUE)
-
     data <- data %>%
       dplyr::mutate(mean_RPM = base::rowMeans(.[RPM])) %>%
       dplyr::mutate(mean_Count = base::rowMeans(.[count]))
-
   }
   else
     if (is.null(conditions)){

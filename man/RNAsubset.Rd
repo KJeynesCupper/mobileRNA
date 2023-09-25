@@ -4,35 +4,36 @@
 \alias{RNAsubset}
 \title{Subset data to select a specific small RNA population}
 \usage{
-RNAsubset(data, type, sig = FALSE)
+RNAsubset(data, class, statistical = FALSE)
 }
 \arguments{
 \item{data}{A numerical data-frame containing the sample data, with a
-defined consensus sRNA class/type for each sRNA dicer-derived cluster
+defined consensus sRNA class/class for each sRNA dicer-derived cluster
 (see \code{\link[=RNAdicercall]{RNAdicercall()}}.}
 
-\item{type}{numeric; small RNA class(es) to select.}
+\item{class}{numeric; small RNA class(es) to select.}
 
-\item{sig}{Parameter to filter and select significant sRNA. If
-\code{sig=TRUE}, data will be filtered based on p-adjusted < 0.05
-significance threshold.}
+\item{statistical}{Parameter to filter and select statisticalnificant sRNA. If
+\code{statistical=TRUE}, data will be filtered based on p-adjusted < 0.05
+statisticalnificance threshold.}
 }
 \value{
 A dataframe containing sRNA clusters with a sRNA consensus matching
-the size instructed to the type argument.
+the size instructed to the class argument.
 }
 \description{
 Creates a data-frame containing the desired sRNA class(s) based
 on the consensus sRNA determination.
 }
 \details{
-See \code{\link[=RNAdicercall]{RNAdicercall()}} for information on defining the sRNA type
+See \code{\link[=RNAdicercall]{RNAdicercall()}} for information on defining the sRNA class
 for each cluster. The function allows the choice to filtered the data by
-statistical significance based on differential expression analysis, see
-\code{\link[=RNAanalysis]{RNAanalysis()}}. Set \code{sig=TRUE} to filtered by significance
-(p-adjusted). It is important to consider the point in your analysis you
-subset the data or/and undertake differential analysis to achieve statistical
-values. Subsetting the dataset into groups based on the sRNA class will
+statistical statisticalnificance based on differential expression analysis, see
+\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. Set \code{statistical=TRUE} to
+filtered by statisticalnificance (p-adjusted). It is important to consider
+the point in your analysis you subset the data or/and undertake differential
+analysis to achieve statistical values.
+Subsetting the dataset into groups based on the sRNA class will
 create a smaller set of data for each to draw statistical differences.
 Depending on the size of your data, and analysis aims this should be taken
 into consideration.
@@ -41,11 +42,11 @@ into consideration.
 data("sRNA_data_consensus")
 
 # Subset data for  24-nt sRNAs
-sRNA_24 <- RNAsubset(sRNA_data_consensus, type = 24)
+sRNA_24 <- RNAsubset(sRNA_data_consensus, class = 24)
 
 
 # Subset data for 24 21/22-nt sRNAs
-sRNA_2122 <- RNAsubset(sRNA_data_consensus, type = c(21, 22))
+sRNA_2122 <- RNAsubset(sRNA_data_consensus, class = c(21, 22))
 
 # You can subset by any combination of classes. For example, a dataset
 # of 23-nt & 24-nt sRNAs or just 20-nt sRNAs.

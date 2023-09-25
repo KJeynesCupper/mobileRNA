@@ -77,18 +77,13 @@
 #'# Read reference genomes
 #' url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
 #'
-#' anno1_url <- paste0(url_remote,"chr12_Eggplant_V4.1_function_IPR_final.gff")
+#' anno1 <- paste0(url_remote,"chr12_Eggplant_V4.1_function_IPR_final.gff")
 #'
-#' anno2_url <- paste0(url_remote, "chr2_ITAG4.0_gene_models.gff")
-#'
-#'  # Read in GFF files
-#' anno1 <- rtracklayer::import(anno1_url)
-#' anno2 <- rtracklayer::import(anno2_url)
-#'
+#' anno2 <- paste0(url_remote, "chr2_ITAG4.0_gene_models.gff")
 #'
 #'# edit and merge
 #' merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-#'              out_dir = "./merged_annotation.gff3")
+#'              out_dir = tempfile("merged_annotation",tempdir(), fileext = ".gff3"))
 #'
 #'
 #'
@@ -97,6 +92,7 @@
 #' @importFrom GenomeInfoDb "seqlevels"
 #' @importFrom rtracklayer "export"
 #' @importFrom GenomicRanges "GRangesList"
+#' @importFrom rtracklayer "import"
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
@@ -105,43 +101,36 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
                                abbreviationAnnoB = "B", 
                                exportFormat = "GFF"){
 
-  if (base::missing(annotationA) || !base::inherits(annotationA, "GRanges")) {
-    stop(paste("Please specify annotationA object; GRanges object "))
+  if (base::missing(annotationA) || !base::inherits(annotationA, "character")) {
+    stop("Please specify annotationA object; path to GFF file.")
   }
-
-  if (base::missing(annotationB) || !base::inherits(annotationB, "GRanges")){
-    stop(paste("Please specify annotationA; GRanges object"))
+  if (base::missing(annotationB) || !base::inherits(annotationB, "character")){
+    stop("Please specify annotationA; path to GFF file.")
   }
-
   if (base::missing(out_dir) || grepl("\\.gff$", out_dir)) {
-    stop(paste("Please specify out_dir, a connection to a local directory to
-               write and save merged annotation. Ensure file name with extension
-               (.gff or .gff3) is supplied."))
+    stop("Please specify out_dir, a connection to a local directory to write and save merged annotation. \n Ensure file name with extension (GFF) is supplied.")
   }
-  cat("Adding abbreviations to chomosome names ...  \n")
+  annotationA <- rtracklayer::import(annotationA)
+  annotationB <- rtracklayer::import(annotationB)  
+  message("Adding abbreviations to chomosome names ...  \n")
   # replace names with prefix and remove punc.
   annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   GenomeInfoDb::seqlevels(annotationA)))
   annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",   GenomeInfoDb::seqlevels(annotationB)))
-  
   # rename 
   GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames
   GenomeInfoDb::seqlevels(annotationB) <- annotationB_seqnames
-  
   # Write out altered GFF files
   location <- dirname(out_dir)
   annoA_save <- paste0(location,"/", "annotationA_altered.gff")
   annoB_save <- paste0(location,"/", "annotationB_altered.gff")
-  
   rtracklayer::export(annotationA, annoA_save, format = exportFormat)
-  cat("New annotation file annotationB: ", annoA_save, "\n")
+  message("New annotation file annotationB: ", annoA_save, "\n")
   rtracklayer::export(annotationB, annoB_save, format = exportFormat)
-  cat("New annotation file created: ", annoB_save, "\n")
-  
-  cat("Merging altered annotation files ... \n")
+  message("New annotation file created: ", annoB_save, "\n")
+  message("Merging altered annotation files ... \n")
   gr_list <- GenomicRanges::GRangesList(annotationA, annotationB)
   concatenated_gff <- unlist(gr_list)
-  
   rtracklayer::export(concatenated_gff, out_dir, format = exportFormat)
-  cat("New merged annnotation with modified chromosome names has been created saved to: ", out_dir)
+  message("New merged annnotation with modified chromosome names has been created saved to: ", out_dir)
   return(concatenated_gff)
 }

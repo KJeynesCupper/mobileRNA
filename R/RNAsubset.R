@@ -4,13 +4,14 @@
 #' on the consensus sRNA determination.
 #'
 #' @details
-#' See [mobileRNA::RNAdicercall()] for information on defining the sRNA type
+#' See [mobileRNA::RNAdicercall()] for information on defining the sRNA class
 #' for each cluster. The function allows the choice to filtered the data by
-#' statistical significance based on differential expression analysis, see
-#' [mobileRNA::RNAanalysis()]. Set \code{sig=TRUE} to filtered by significance
-#' (p-adjusted). It is important to consider the point in your analysis you
-#' subset the data or/and undertake differential analysis to achieve statistical
-#' values. Subsetting the dataset into groups based on the sRNA class will
+#' statistical statisticalnificance based on differential expression analysis, see
+#' [mobileRNA::RNAdifferentialAnalysis()]. Set \code{statistical=TRUE} to 
+#' filtered by statisticalnificance (p-adjusted). It is important to consider 
+#' the point in your analysis you subset the data or/and undertake differential 
+#' analysis to achieve statistical values. 
+#' Subsetting the dataset into groups based on the sRNA class will
 #' create a smaller set of data for each to draw statistical differences.
 #' Depending on the size of your data, and analysis aims this should be taken
 #' into consideration.
@@ -19,37 +20,43 @@
 #'
 #'
 #' @param data A numerical data-frame containing the sample data, with a
-#' defined consensus sRNA class/type for each sRNA dicer-derived cluster
+#' defined consensus sRNA class/class for each sRNA dicer-derived cluster
 #' (see [mobileRNA::RNAdicercall()].
 #'
-#' @param type numeric; small RNA class(es) to select.
+#' @param class numeric; small RNA class(es) to select.
 #' 
-#' @param sig Parameter to filter and select significant sRNA. If
-#'  \code{sig=TRUE}, data will be filtered based on p-adjusted < 0.05
-#'  significance threshold.
+#' @param statistical Parameter to filter and select statisticalnificant sRNA. If
+#'  \code{statistical=TRUE}, data will be filtered based on p-adjusted < 0.05
+#'  statisticalnificance threshold.
 #'
 #' @return A dataframe containing sRNA clusters with a sRNA consensus matching
-#' the size instructed to the type argument.
+#' the size instructed to the class argument.
 #' @examples
 #' data("sRNA_data_consensus")
 #'
 #' # Subset data for  24-nt sRNAs
-#' sRNA_24 <- RNAsubset(sRNA_data_consensus, type = 24)
+#' sRNA_24 <- RNAsubset(sRNA_data_consensus, class = 24)
 #'
 #'
 #'# Subset data for 24 21/22-nt sRNAs
-#'sRNA_2122 <- RNAsubset(sRNA_data_consensus, type = c(21, 22))
+#'sRNA_2122 <- RNAsubset(sRNA_data_consensus, class = c(21, 22))
 #'
 #' # You can subset by any combination of classes. For example, a dataset
 #' # of 23-nt & 24-nt sRNAs or just 20-nt sRNAs.
 #'
 #' @export
-#' @importFrom magrittr "%>%"
+#' @importFrom dplyr "%>%"
 #' @importFrom dplyr "filter"
 
-RNAsubset <- function(data, type,  sig=FALSE){
-    x <- data %>% dplyr::filter(DicerConsensus %in% type)
-    if(sig){
+RNAsubset <- function(data, class,  statistical=FALSE){
+  if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame, DataFrame")
+  }
+  if (base::missing(class) || !base::inherits(class, "numeric")) {
+    stop("Please specify a numeric vector stating the class of sRNAs to select")
+  }
+    x <- data %>% dplyr::filter(DicerConsensus %in% class)
+    if(statistical){
       x<- x %>%
         dplyr::filter(padj < 0.05)
     }

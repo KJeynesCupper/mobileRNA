@@ -86,36 +86,26 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, DataFrame")
   }
-  # select only columns with RNA seqs, remove columns with only NA values
-  df <- data %>%
+  df <- data %>% # select only columns with RNA seqs, remove columns with only NA values
     dplyr::select(dplyr::starts_with("MajorRNA")) %>%
     dplyr::select(-dplyr::where(~all(. == "N")))
-
-    cat("The minimum number of matches required to form a consensus sRNA sequence is... ", match.threshold, "\n")
-    
+    message("The minimum number of matches required to form a consensus sRNA sequence is... ", match.threshold, "\n")
     if(duplicates == "random"){
-      cat("The consensus sRNA sequences will be choose at random in the case of a tie \n")
+      message("The consensus sRNA sequences will be choose at random in the case of a tie \n")
     } else 
       if(duplicates == "exclude"){
-        cat("The consensus sRNA sequences will be excluded in the case of a tie \n") 
+        message("The consensus sRNA sequences will be excluded in the case of a tie \n") 
       }
-    cat("\n")
-
-    # Initialize result vector
-    match_res <- vector("character", nrow(df))
+    message("\n")
+    match_res <- vector("character", nrow(df))  # Initialize result vector
     sequence_res <- vector("character", nrow(df))
-    #sequence_res[] <- NA
     width_res <- vector("character", nrow(df))
-    #width_res[] <- NA
-    
-    for (i in 1:nrow(df)) {
+    for (i in seq_len(nrow(df))) {
       row_values <- df[i, ]
       row_sequence <- row_values[row_values != "N"]
       any_match <- any(duplicated(row_sequence))
-      
       if (length(row_sequence) == 0) {
-        # only one "N" elements
-        match <- FALSE
+        match <- FALSE # only one "N" elements
         sequence <- NA
       } else 
         if(length(row_sequence) == 1){
@@ -123,8 +113,7 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
           sequence <- row_sequence
         } else
         if(any_match){ # FIND ANY MATCH 
-          # check how many matches 
-          seq_table <- table(row_sequence)
+          seq_table <- table(row_sequence) # check how many matches 
           max_value <- max(seq_table)
           # Check if the maximum value is duplicated
           if (!is.na(seq_table[max_value]) && seq_table[max_value] > 1) {
@@ -162,21 +151,17 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     df$Match <- match_res
     df$Sequence <- sequence_res
     df$Width <- width_res
-
   # if sequences column contains only NA
   if (length(unique(is.na(df$Sequence))) == 2){
     # calculate complementary sequences
     df$Complementary_RNA <- sapply(df$Sequence, find_complementary_sequenceRNA)
     df$Complementary_DNA <- sapply(df$Sequence, find_complementary_sequenceDNA) 
   } else {
-    cat("There is no consensus RNA sequence between replicates, no complementary sequence has been determined.")
+    message("There is no consensus RNA sequence between replicates, no complementary sequence has been determined.")
   }
-  
   # add as col
   Cluster <-  data$Cluster
   df <- cbind(Cluster, df )
-  
-  
   # add columns to og data
   if (original){
     data_output <- data %>%
@@ -190,13 +175,9 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
       data_output <- df %>%
         dplyr::select(!dplyr::starts_with("MajorRNA"))
     }
-  
   if(tidy){
-    cat("Removing sRNA clusters with no consensus sRNA sequence... \n")
-    
+    message("Removing sRNA clusters with no consensus sRNA sequence... \n")
     data_output <-  data_output %>%  dplyr::filter(Sequence != "NA")
-    
   }
-  
   return(data_output)
 }

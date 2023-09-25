@@ -33,7 +33,8 @@ a p-value or adjusted p-value threshold stated by \code{padj} & \code{p.value}.D
 set at FALSE. Requires presence of columns containing statistical data.
 In order to filter by the adjusted p-value, a column named \code{padjusted} must
 be present. Similarly, to filter by the p-value, a column named \code{pvalue} must
-be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistical values.}
+be present. See \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} to calculate
+statistical values.}
 
 \item{padj}{A user defined numeric value to represent the adjusted p-value
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -72,8 +73,8 @@ genotype to the control.
 
 The function also allows for statistical analysis based on the results
 collect from differential analysis of the total dataset using the function
-\code{\link[=RNAanalysis]{RNAanalysis()}}. This features enables the filtering of sRNA
-clusters which meet a specific p-value or adjusted p-values.
+\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. This features enables the filtering
+of sRNA clusters which meet a specific p-value or adjusted p-values.
 
 A greater confidence in the mobile sRNA candidates can be achieved by setting
 a threshold that considers the number of replicates which contributed to
@@ -108,7 +109,7 @@ mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
 groups <- c("Heterograft", "Heterograft", "Heterograft",
           "Selfgraft", "Selfgraft", "Selfgraft")
 
-analysis_df <- RNAanalysis(data = sRNA_data_consensus,
+analysis_df <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
                              group = groups,
                              method = "DESeq2" )
 

@@ -18,8 +18,8 @@
 #'
 #' The function also allows for statistical analysis based on the results
 #' collect from differential analysis of the total dataset using the function
-#' [mobileRNA::RNAanalysis()]. This features enables the filtering of sRNA
-#' clusters which meet a specific p-value or adjusted p-values.
+#' [mobileRNA::RNAdifferentialAnalysis()]. This features enables the filtering 
+#' of sRNA clusters which meet a specific p-value or adjusted p-values.
 #'
 #'
 #' A greater confidence in the mobile sRNA candidates can be achieved by setting 
@@ -47,7 +47,8 @@
 #' set at FALSE. Requires presence of columns containing statistical data.
 #' In order to filter by the adjusted p-value, a column named `padjusted` must
 #' be present. Similarly, to filter by the p-value, a column named `pvalue` must
-#' be present. See [mobileRNA::RNAanalysis()] to calculate statistical values.
+#' be present. See [mobileRNA::RNAdifferentialAnalysis()] to calculate 
+#' statistical values.
 #'
 #' @param padj A user defined numeric value to represent the adjusted p-value
 #' threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -93,7 +94,7 @@
 #' groups <- c("Heterograft", "Heterograft", "Heterograft",
 #'           "Selfgraft", "Selfgraft", "Selfgraft")
 #'
-#' analysis_df <- RNAanalysis(data = sRNA_data_consensus,
+#' analysis_df <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
 #'                              group = groups,
 #'                              method = "DESeq2" )
 #'
@@ -124,29 +125,26 @@
 #'
 #'
 #' @export
-#' @importFrom magrittr "%>%"
+#' @importFrom dplyr "%>%"
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
 #' @importFrom dplyr "case_when"
-
 RNAmobile <- function(data,controls, genome.ID, task = NULL ,
-                      statistical = FALSE,
-                      padj = 0.05, threshold = NULL, 
+                      statistical = FALSE, padj = 0.05, threshold = NULL, 
                       p.value = NULL){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame")
   }
   if (base::missing(controls) || !base::inherits(controls, "character")) {
-    stop(paste("Please specify a character vector storing names of control
-               replicates"))
+    stop("Please specify a character vector storing names of control
+               replicates")
   }
   if (base::missing(genome.ID) || genome.ID %in% "") {
-    stop(paste("Please specify a single character string which is present in
+    stop("Please specify a single character string which is present in
                the all the chromosomes within the genome you wish to keep
-               or remove"))
+               or remove")
   }
-  
   x <- data %>%
     dplyr::filter(dplyr::case_when(
       is.null(task) & base::grepl(genome.ID, chr) ~ TRUE,
@@ -154,24 +152,19 @@ RNAmobile <- function(data,controls, genome.ID, task = NULL ,
       task == "keep" & base::grepl(genome.ID, chr) ~ TRUE,
       TRUE ~ FALSE
     ))
-  
   res <- .remove_mapping_errors(data = x, controls = controls)
-
   # Remove rows with no counts 
-count_columns <- grep("^Count", names(res))
-# Identify rows where all values in Count columns are zero
-rows_to_remove <- apply(res[count_columns], 1, function(row) all(row == 0))
-# Remove rows with all zero values in Count columns
-res <- res[!rows_to_remove, ]
-                        
+  count_columns <- grep("^Count", names(res))
+  # Identify rows where all values in Count columns are zero
+  rows_to_remove <- apply(res[count_columns], 1, function(row) all(row == 0))
+  # Remove rows with all zero values in Count columns
+  res <- res[!rows_to_remove, ]
   if (statistical) {
     if (is.null(p.value)) {
       res <- res %>% filter(padjusted <= padj)
     } else
       res <- res %>% filter(pvalue <= p.value)
   } 
-  
-
   if(!is.null(threshold)){
     res <- res %>% filter(!DicerCounts < threshold)
   }

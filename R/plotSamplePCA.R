@@ -106,12 +106,12 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   # log transform the data.
   
   if(vst ==TRUE){
-    cat("Transforming the count data with a variance stabilizing transformation \n")
+    message("Transforming the count data with a variance stabilizing transformation \n")
     rld1 <- DESeq2::varianceStabilizingTransformation(dds, blind = TRUE)
     # log transform the data.
   } else
     if(vst == FALSE) {
-      cat("Transforming the count data to the log2 scale \n")
+      message("Transforming the count data to the log2 scale \n")
       rld1 <- DESeq2::rlog(dds, blind = TRUE) # log transform the data.
     }
   
@@ -122,7 +122,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
   pca$name <- gsub("^Count_", "",  pca$name)
   percentVar <- round(100 * attr(pca, "percentVar"))
   
-  cat("Organising principal component analysis \n")
+  message("Organising principal component analysis \n")
   if(labels == TRUE){
     if(boxed == TRUE){
       X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=Conditions)) +

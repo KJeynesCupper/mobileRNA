@@ -48,13 +48,13 @@
 #'
 #'
 #'## Differential analysis: DEseq2 method
-#'sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
+#'sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
 #'                              group = groups,
 #'                              method = "DESeq2" )
 #'
 #'
 #'## Differential analysis: edgeR method
-#'sRNA_edgeR <- RNAanalysis(data = sRNA_data_consensus,
+#'sRNA_edgeR <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
 #'                             group = groups,
 #'                             method = "edgeR" )
 
@@ -69,20 +69,19 @@
 #' @importFrom dplyr "mutate_at"
 #' @importFrom tidyr "replace_na"
 
-RNAanalysis <- function(data, group, method = c("edgeR", "DESeq2"),
+RNAdifferentialAnalysis <- function(data, group, method = c("edgeR", "DESeq2"),
                         dispersionValue = NULL){
   if (base::missing(data) || !base::inherits(data,  "data.frame")) {
-    stop(paste("Please specify a data frame"))
+    stop("Please specify a data frame")
   }
-  counts <- data %>% dplyr::select(tidyselect::starts_with("Count"))
-
   if (base::missing(method) || !method %in% c("edgeR", "DESeq2")) {
-    stop(paste("Please specify analysis method", "(\"edgeR\", or \"DESeq2\")"))
+    stop("Please specify analysis method", "(\"edgeR\", or \"DESeq2\")")
   }
   if ( is.null(group) || !base::inherits(group, "character")) {
     stop("group must be an vector of characters to specify the treatment
          and control conditions for each replicate")
   }
+  counts <- data %>% dplyr::select(tidyselect::starts_with("Count"))
   method <- base::match.arg(method)
   if(method == "edgeR"){
     res <-  .edgeR_normalise(counts, group)

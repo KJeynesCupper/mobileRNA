@@ -79,28 +79,24 @@
 #'
 #' # run function to merge
 #' merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
-#'                                out_dir = "../../merged_ref.fa", 
+#'                                out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"), 
 #'                                cores = FALSE,number_cores = 1)
 #'
 #'
 #'
 #'
 #' ## or, to set specific changes to chromosome names:
-#'  # genomeA represents Solanum melongena and the chromosomes will be
-#'  # abbreviated to `SM.
-#' # genomeB represents Solanum lycopersicum and the chromosomes will be
+#'  # genomeA represents **Solanum melongena** and the chromosomes will be
+#'  # abbreviated to `SM`.
+#' # genomeB represents **Solanum lycopersicum** and the chromosomes will be
 #' # abbreviated to `SL`.
 #'
-#' merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,
-#'             genomeB = fasta_2 ,
-#'             out_dir = "./merged_ref.fa",
+#' merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,genomeB = fasta_2 ,
+#'             out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"),
 #'             abbreviationGenomeA = "SM",
 #'             abbreviationGenomeB = "SL",  
 #'            cores = FALSE, number_cores = 1)
 #'             
-#'             
-#'              
-#'
 #' @importFrom Biostrings "readDNAStringSet"
 #' @importFrom Biostrings "writeXStringSet"
 #' @importFrom parallel "detectCores"
@@ -111,102 +107,76 @@
 #' @importFrom foreach "foreach"
 #' @importFrom foreach "%dopar%"
 #' @importFrom parallel "makePSOCKcluster"
+#' @importFrom BiocParallel MulticoreParam
+#' @importFrom BiocParallel SnowParam
+#' @importFrom BiocParallel bplapply
 #' @export
-
-RNAmergeGenomes <-  function(genomeA, genomeB, 
-                             out_dir,abbreviationGenomeA = "A",
-                             abbreviationGenomeB = "B", cores = TRUE, 
-                             number_cores = 4) {
-    
-    if (base::missing(genomeA)) {
-      stop("Please specify genomeA, a connection to a FASTA file in local")
-    }
-    
-    if (base::missing(genomeB)) {
-      stop("Please specify annotationA, a connection to a FASTA file in local")
-    }
-    
-    if (base::missing(out_dir) || !grepl("\\.fa$", out_dir)) {
-      stop("Please specify out_dir, a connection to a local directory to write 
-           and save merged annotation. Ensure file name with extension 
-           (.fa or .fasta) is supplied.")
-    }
-    # Load FASTA files in parallel
-  if(cores){
-    number_cores <- parallel::detectCores()
-    cluster <- parallel::makeCluster(number_cores)
+RNAmergeGenomes <- function(genomeA, genomeB, out_dir,
+                             abbreviationGenomeA = "A",
+                             abbreviationGenomeB = "B",
+                             cores = TRUE, number_cores = 2) {
+  if (missing(genomeA)) {
+    stop("Please specify genomeA, a connection to a FASTA file in local")
   }
-  else if(cores == FALSE){
-    number_cores <- number_cores
-    cluster <- parallel::makePSOCKcluster(number_cores)
+  if (missing(genomeB)) {
+    stop("Please specify annotationA, a connection to a FASTA file in local")
   }
-    suppressWarnings(
-      ref1_fragments <- parallel::parLapply(cluster, genomeA, function(file) {
-        Biostrings::readDNAStringSet(file, format = "fasta")}))
-    
-    suppressWarnings(
-      ref2_fragments <- parallel::parLapply(cluster, genomeB, function(file) {
-        Biostrings::readDNAStringSet(file, format = "fasta") }))
-    # Stop the cluster
-    parallel::stopCluster(cluster)
-    
-    # join fragments together 
-    ref1 <- do.call(c, ref1_fragments)
-    ref2 <-do.call(c, ref2_fragments)
-    
-    # Replace chromosome names in reference genomes
-    cat("Replacing chromosome names... \n")
-    ref1_names <- names(ref1)
-    ref1_newnames <- paste0(abbreviationGenomeA, "_", ref1_names)
-    ref1_newnames <- sub("\\.", "", ref1_newnames)
-    names(ref1) <- ref1_newnames
-    
-    ref2_names <- names(ref2)
-    ref2_newnames <- paste0(abbreviationGenomeB, "_", ref2_names)
-    ref2_newnames <- sub("\\.", "", ref2_newnames)
-    names(ref2) <- ref2_newnames
-    
-    # merge genomes 
-    merged_genome <- append(ref1, ref2)
-    cat("Genomes have been successfully merged \n")
-    cat("Attempting to save merged genome to: ", out_dir, "\n")
-    
-    `%dopar%` <- foreach::`%dopar%`
-    # set number of cores for parelle, TRUE sets most for systm.  
-    if(cores){
-      number_cores <- parallel::detectCores()
-      cluster <- parallel::makeCluster(number_cores)
-    }
-    else if(cores == FALSE){
-      number_cores <- number_cores
-      cluster <- parallel::makePSOCKcluster(number_cores)
-      
-    }
-    
-    doParallel::registerDoParallel(cluster)
-    
-    cat("Please be patient, this next step may take a long time ..  \n")
-    # Create a progress bar
-
-    foreach::foreach(i = 1:number_cores) %dopar% {
-      Biostrings::writeXStringSet(merged_genome,
-                                  file = 
-                                    paste0(dirname(out_dir), 
-                                           "/tempfile_", i, ".fasta"), 
-                                  format = "fasta")
-    
-    }
-  
-    on.exit(parallel::stopCluster(cluster))
-    cat("All temporary files have been created \n")
-    cat("Merging temporary files ... \n ")
-    cat("At this point get a cup of tea, its going to be a while ... \n ")
-    
-    loc <- paste0(dirname(out_dir), "/tempfile_*")
-    system(paste0("cat ", loc, " > ", out_dir), intern = TRUE)
-    
-    cat("Deleting temporary files ... \n")
-    system(paste0("rm ", loc), intern = TRUE)
-    return(merged_genome)
+  if (missing(out_dir) || !grepl("\\.fa$", out_dir)) {
+    stop("Please specify out_dir, a connection to a local directory to write and save merged annotation. Ensure file name with extension (.fa or .fasta) is supplied.")
   }
   
+  if (cores) {
+    BPPARAM <- BiocParallel::MulticoreParam(workers = number_cores)
+  } else {
+    BPPARAM <- BiocParallel::SnowParam(workers = number_cores)
+  }
+  
+  ref1_fragments <- BiocParallel::bplapply(genomeA, function(file) {
+    Biostrings::readDNAStringSet(file, format = "fasta")
+  }, BPPARAM = BPPARAM)
+  
+  ref2_fragments <- BiocParallel::bplapply(genomeB, function(file) {
+    Biostrings::readDNAStringSet(file, format = "fasta")
+  }, BPPARAM = BPPARAM)
+  
+  # Join fragments together
+  ref1 <- do.call(c, ref1_fragments)
+  ref2 <- do.call(c, ref2_fragments)
+  
+  # Replace chromosome names in reference genomes
+  message("Replacing chromosome names... \n")
+  ref1_names <- names(ref1)
+  ref1_newnames <- paste0(abbreviationGenomeA, "_", ref1_names)
+  ref1_newnames <- sub("\\.", "", ref1_newnames)
+  names(ref1) <- ref1_newnames
+  
+  ref2_names <- names(ref2)
+  ref2_newnames <- paste0(abbreviationGenomeB, "_", ref2_names)
+  ref2_newnames <- sub("\\.", "", ref2_newnames)
+  names(ref2) <- ref2_newnames
+  
+  # Merge genomes
+  merged_genome <- append(ref1, ref2)
+  message("Genomes have been successfully merged \n")
+  message("Attempting to save merged genome to: ", out_dir, "\n")
+  
+  message("Please be patient, this next step may take a long time ..  \n")
+  
+  loc <- paste0(dirname(out_dir), "/tempfile_*.fasta")
+  BiocParallel::bplapply(1:number_cores, function(i) {
+    Biostrings::writeXStringSet(merged_genome,
+                                file = paste0(dirname(out_dir), "/tempfile_", i, ".fasta"),
+                                format = "fasta")
+  }, BPPARAM = BPPARAM)
+  
+  message("All temporary files have been created \n")
+  message("Merging temporary files ... \n ")
+  message("At this point, get a cup of tea; it's going to be a while ... \n ")
+  
+  system(paste0("cat ", loc, " > ", out_dir), intern = TRUE)
+  
+  message("Deleting temporary files ... \n")
+  system(paste0("rm ", loc), intern = TRUE)
+  
+  return(merged_genome)
+}

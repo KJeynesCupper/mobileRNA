@@ -14,9 +14,9 @@
 #' function. 
 #' 
 #'The second role involves filtering the data based on statistical significance
-#'which has been calculated by the [mobileRNA::RNAanalysis()] function. This 
-#'optional features enables the user to select sRNA clusters which meet a 
-#'specific p-value or adjusted p-values threshold.
+#'which has been calculated by the [mobileRNA::RNAdifferentialAnalysis()] 
+#'function. This optional features enables the user to select sRNA clusters 
+#'which meet a specific p-value or adjusted p-values threshold.
 #'
 #'When working with a chimeric system, for example interspecific grafting, 
 #' mapping errors can easily be recognised and eliminated. Here, these can be 
@@ -38,7 +38,8 @@
 #' set at FALSE. Requires presence of columns containing statistical data.
 #' In order to filter by the adjusted p-value, a column named `padjusted` must
 #' be present. Similarly, to filter by the p-value, a column named `pvalue` must
-#' be present. See [mobileRNA::RNAanalysis()] to calculate statistical values.
+#' be present. See [mobileRNA::RNAdifferentialAnalysis()] to calculate 
+#' statistical values.
 #'
 #' @param padj A user defined numeric value to represent the adjusted p-value
 #' threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -69,7 +70,7 @@
 #' 
 #' Selection of sRNA clusters which meet the statistical threshold can be 
 #' included, given the statistical analysis has been undertaken using the 
-#' [mobileRNA::RNAanalysis()] function.
+#' [mobileRNA::RNAdifferentialAnalysis()] function.
 #' 
 #'
 #' @examples
@@ -85,7 +86,7 @@
 #'                                  
 #'
 #' @export
-#' @importFrom magrittr "%>%"
+#' @importFrom dplyr "%>%"
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
@@ -99,17 +100,15 @@ RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
     stop("data must be an object of class matrix, data.frame, DataFrame")
   }
   if (base::missing(conditions) || !base::inherits(conditions, "character")) {
-    stop(paste("Please specify a character vector storing names of control
-               replicates"))
+    stop("Please specify a character vector storing names of control
+               replicates")
   }
-  
   conditions_cols <-  data %>% dplyr::select(paste0("Count_", conditions))
   opposite_cols <- data %>% 
     dplyr::select(dplyr::starts_with("Count_")) %>%
     dplyr::select(!colnames(conditions_cols))
-  
   if(chimeric){
-    data <- .remove_mapping_errors_V2(data = new_df,controls = controls, 
+    data <- .remove_mapping_errors_V2(data = data,controls = controls, 
                                       genome.ID = genome.ID)
     if(dual == FALSE){
       data <- data %>% dplyr::filter(!grepl(genome.ID,chr))
@@ -119,7 +118,7 @@ RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
     data <- data %>% dplyr::filter(!grepl(genome.ID,chr))
   }
   output <- data[0,]
-  for(i in 1:nrow(data)){
+  for(i in seq_len(nrow(data))){
     sum_conditions <- sum(stats::na.omit(as.numeric(data[
       i,colnames(conditions_cols)],na.rm=TRUE)))
     sum_opposite <- sum(stats::na.omit(as.numeric(data[
@@ -128,7 +127,6 @@ RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
       output <- rbind(output, data[i,])
       }
   }
-  
     if (statistical) {
       if (is.null(p.value)) {
         res <- output %>% filter(padjusted <= padj)
@@ -140,4 +138,3 @@ RNApopulation <- function(data,conditions,statistical = FALSE,padj = 0.05,
       }
     return(res)
   }
-

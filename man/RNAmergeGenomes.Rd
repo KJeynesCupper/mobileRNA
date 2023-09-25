@@ -11,7 +11,7 @@ RNAmergeGenomes(
   abbreviationGenomeA = "A",
   abbreviationGenomeB = "B",
   cores = TRUE,
-  number_cores = 4
+  number_cores = 2
 )
 }
 \arguments{
@@ -94,26 +94,22 @@ annotation,that you treat the input references in the same way.
 
 # run function to merge
 merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
-                               out_dir = "../../merged_ref.fa", 
+                               out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"), 
                                cores = FALSE,number_cores = 1)
 
 
 
 
 ## or, to set specific changes to chromosome names:
- # genomeA represents Solanum melongena and the chromosomes will be
- # abbreviated to `SM.
-# genomeB represents Solanum lycopersicum and the chromosomes will be
+ # genomeA represents **Solanum melongena** and the chromosomes will be
+ # abbreviated to `SM`.
+# genomeB represents **Solanum lycopersicum** and the chromosomes will be
 # abbreviated to `SL`.
 
-merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,
-            genomeB = fasta_2 ,
-            out_dir = "./merged_ref.fa",
+merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,genomeB = fasta_2 ,
+            out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"),
             abbreviationGenomeA = "SM",
             abbreviationGenomeB = "SL",  
            cores = FALSE, number_cores = 1)
             
-            
-             
-
 }

@@ -63,17 +63,15 @@
 RNAloci <- function (files, out, samples) 
 {
   if (base::missing(files)) {
-    stop(paste("Please specify files, a connection to a local directory\n    containing sample folders"))
+    stop("Please specify files, a connection to a local directory\n    containing sample folders")
   }
   if (base::missing(samples) || !base::inherits(samples, c("character"))) {
-    stop(paste("Please specify samples, a vector containing individual strings\n               cooresponding to the folders of each sample replicate containing\n               results"))
+    stop("Please specify samples, a vector containing individual strings \n cooresponding to the folders of each sample replicate containing \n results")
   }
   extension_out <- xfun::file_ext(out)
   if (base::missing(out) || !extension_out == "txt") {
-    stop(paste("Please specify out, a connection to a local directory to\n               store output, including name and file extention (.txt)"))
+    stop("Please specify out, a connection to a local directory to \n store output, including name and file extention (.txt)")
   }
-  
-  
   gff_alignment <- GenomicRanges::GRangesList()
   for (i in samples) {
     gff_alignment[[i]] <- rtracklayer::import.gff(paste0(files, 
@@ -82,13 +80,12 @@ RNAloci <- function (files, out, samples)
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
                                       ignore.strand = TRUE)
   gff_merged <- Repitools::annoGR2DF(gff_merged)
-  
   gff_merged_df <- data.frame(Locus = paste0(gff_merged$chr, ":",gff_merged$start,"-", gff_merged$end), 
-                              Cluster = paste0("cluster_", 1:nrow(gff_merged)))
+                              Cluster = paste0("cluster_", seq_len(nrow(gff_merged))))
   
   utils::write.table(gff_merged_df, file = out, quote = FALSE, 
                      sep = "\t", row.names = FALSE, col.names = TRUE)
-  cat("Writting Loci file to:  ", out, "\n")
+  message("Writting Loci file to:  ", out, "\n")
   return(gff_merged_df)
-  cat("Loci data frame saved to named object \n")
+  message("Loci data frame saved to named object \n")
 }

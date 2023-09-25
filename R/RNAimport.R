@@ -1,6 +1,6 @@
-#' Import and organise sRNAseq or mRNA data sets
+#' Import and organise sRNAseq data sets
 #'
-#' @description Load and organise either sRNAseq or mRNAseq results into a
+#' @description Load and organise either sRNAseq results into a
 #' single dataframe containing all experimental replicates specified where rows
 #' represent either a sRNA locus or gene, respectively.
 #'
@@ -36,8 +36,8 @@
 #' columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 #'
 #'
-#'@param input string; define type of Next-Generation Sequencing dataset
-#'originates from, either "sRNA" or "mRNA" are the only valid inputs.
+#'@param input string; define type of Next-Generation Sequencing dataset.
+#'"sRNA" is the only valid inputs at this time.
 #'
 #' @param directory Path to directory containing of sample folders. NOTE:
 #' Following the suggested pre-processing steps, these can be found in second
@@ -63,17 +63,11 @@
 #'
 #' # import sRNAseq data
 #' df_sRNA <- RNAimport(input = "sRNA",
-#'                      directory = "./analysis/sRNA_mapping_results/",
+#'                      directory = "./analysis/sRNA_mapping_results",
 #'                      samples = c("heterograft_1", "heterograft_2",
 #'                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
 #'                      "selfgraft_3"))
 #'
-#'# import mRNAseq data
-#' df_mRNA <- RNAimport(input = "mRNA",
-#'                      directory = "./analysis/mRNA_counts/",
-#'                      samples = c("heterograft_1", "heterograft_2",
-#'                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
-#'                      "selfgraft_3"))
 #'
 #'}
 #'# The output of this function can be explore in the data object sRNA_data
@@ -91,16 +85,24 @@
 #' @importFrom dplyr "contains"
 #' @importFrom tidyr "replace_na"
 #' @importFrom data.table ":="
-#' @importFrom magrittr "%>%"
+#' @importFrom dplyr "%>%"
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr "if_any"
 #' @importFrom dplyr "where"
 #' @importFrom stats "setNames"
 #' @importFrom utils "flush.console"
 
-RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
+RNAimport <- function(input = c("sRNA"), directory, samples,
                        tidy = TRUE) {
-
+  if (base::missing(input) || !input %in% c("sRNA")) {
+    stop("Please state the data-type to the `input` paramter. Currently, only `sRNA` data is accepted.")
+  }
+  if (base::missing(directory)) {
+    stop("Please specify an accessable directory where files are stored")
+  }
+  if (base::missing(samples)) {
+    stop("Please specify a vector storing sample names matching files")
+  }
   if(input=="sRNA"){
     # LOad sample data as list of data frames, with index as file name.
     dt_list <- list()
@@ -109,22 +111,20 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     for (file in samples) {
       file_n <- file_n + 1
       options(datatable.showProgress = FALSE)
-      dt_list[[file]] <- data.table::fread(paste0(directory, file,
-                                                  "/Results.txt"),header = TRUE)
+      dt_list[[file]] <- data.table::fread(file.path(directory, file,
+                                                  "Results.txt"),header = TRUE)
       progress_counter <- file
       progress_message <- paste0("Processing sample: ", progress_counter,".", "\n",
                                  "File ", file_n, " of ", total_files)
-      cat(sprintf("\r%s", progress_message))
+      message(sprintf("\r%s", progress_message))
       utils::flush.console()
     }
-    cat("\n")  # Print a newline after progress is complete
-    cat("Completed importation of data from directory. \n")
-    
-    
+    message("\n")  # Print a newline after progress is complete
+    message("Completed importation of data from directory. \n")
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    cat("Checking data content... \n")
+    message("Checking data content... \n")
     required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -134,20 +134,17 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                    line of the input file(s)"))
       }
     }
-    cat("Data content is correct.")
-    cat("\n") 
-    
+    message("Data content is correct.")
+    message("\n") 
     # merge first columns to create list of loci across all samples
     loci <- lapply(dt_list, "[", , "Locus")
     loci_all <- unique(Reduce(merge,loci))
-
     # Define a function to update the loci with the matching values from a
     # single input dataframe
     update_locus_df <- function(dt, i) {
       # Join loci and the current input df on chromosome and coordinate range
       join_cols <- c("Locus")
       dt_match <- loci_all[dt, on = join_cols, nomatch = 0]
-
       # Aggregate the matching rows by chromosome, start coordinate, & end coor,
       # and compute the sum of DicerCall, Reads, and RPM values for each group
       dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
@@ -155,7 +152,6 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                              RPM = sum(RPM),
                              MajorRNA = as.character(MajorRNA)),
                          by = join_cols]
-
       # Rename the aggregated columns
       col_names <- paste0(c("DicerCall_", "Count_", "RPM_", "MajorRNA_"),  i)
       data.table::setnames(dt_agg, c("Locus", col_names))
@@ -164,12 +160,10 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       loci_all[dt_agg, on = join_cols, (col_names) := mget(col_names)]
 
     }
-
     # Update loci with the matching values from each input dataframe
-    for (i in seq_along(dt_list)) {
+    for (i in seq_len(nrow(dt_list))) {
       update_locus_df(dt_list[[i]], names(dt_list)[i])
     }
-
     # Fill in missing values with 0 or N
     ## Dicer call needs to character/factor
     loci_all <- loci_all %>%
@@ -182,11 +176,8 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       dplyr::mutate(dplyr::across(dplyr::contains('MajorRNA_'),
                                   ~tidyr::replace_na(.,"N"))) %>%
       dplyr::mutate_all(~ ifelse(. == "*", "N", .)) # remove any astriks to "N"
-
-
     # Convert loci_all back to a data.frame and return it
     res_data <- as.data.frame(loci_all)
-
     # Split the Locus column into three new columns
     locus_cols <- data.frame(
       chr = sapply(strsplit(res_data$Locus, split = ":"), "[[", 1),
@@ -200,12 +191,9 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     # order by chr
     df_final <- df_final[order(df_final$chr),]
     # insert cluster name
-    cluster_names <-  paste0("cluster_", 1:nrow(df_final))
+    cluster_names <-  paste0("cluster_", seq_len(nrow(df_final)) )
     df_final <- as.data.frame(append(df_final, list(Cluster = cluster_names),
                                      after = 4))
-
-
-    
 # Remove rows with no counts 
 count_columns <- grep("^Count", names(df_final))
 # Identify rows where all values in Count columns are zero
@@ -216,9 +204,6 @@ df_final <- df_final[!rows_to_remove, ]
     # return values
     return(df_final)
 
-  } else
-    if(input == "mRNA"){
-      return(cat("This features is under development, and will be available soon.\nPlease see the `devel` branch on github (https://github.com/KJeynesCupper/mobileRNA/tree/devel). \n"))
-    }
+  } 
 }
 

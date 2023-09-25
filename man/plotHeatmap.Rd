@@ -6,6 +6,7 @@
 \usage{
 plotHeatmap(
   data,
+  value = "RPM",
   pseudocount = 1e-06,
   colours = grDevices::hsv(1, 1, seq(0, 1, length.out = 12)),
   cluster = TRUE,
@@ -18,6 +19,8 @@ plotHeatmap(
 \arguments{
 \item{data}{Dataframe; Must follow the structure created by
 \code{mobileRNA::RNAimport()}.}
+
+\item{value}{the values to plot, either \code{FPKM} or \code{RPM}}
 
 \item{pseudocount}{numeric; pseudocount, default is \code{1e-6}}
 

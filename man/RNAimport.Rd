@@ -2,13 +2,13 @@
 % Please edit documentation in R/RNAimport.R
 \name{RNAimport}
 \alias{RNAimport}
-\title{Import and organise sRNAseq or mRNA data sets}
+\title{Import and organise sRNAseq data sets}
 \usage{
-RNAimport(input = c("sRNA", "mRNA"), directory, samples, tidy = TRUE)
+RNAimport(input = c("sRNA"), directory, samples, tidy = TRUE)
 }
 \arguments{
-\item{input}{string; define type of Next-Generation Sequencing dataset
-originates from, either "sRNA" or "mRNA" are the only valid inputs.}
+\item{input}{string; define type of Next-Generation Sequencing dataset.
+"sRNA" is the only valid inputs at this time.}
 
 \item{directory}{Path to directory containing of sample folders. NOTE:
 Following the suggested pre-processing steps, these can be found in second
@@ -27,7 +27,7 @@ and MajorRNA sequence. Each replicate information is distinguishable as
 the replicate name is ajoined as a prefix to each column name.
 }
 \description{
-Load and organise either sRNAseq or mRNAseq results into a
+Load and organise either sRNAseq results into a
 single dataframe containing all experimental replicates specified where rows
 represent either a sRNA locus or gene, respectively.
 }
@@ -66,17 +66,11 @@ columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
 
 # import sRNAseq data
 df_sRNA <- RNAimport(input = "sRNA",
-                     directory = "./analysis/sRNA_mapping_results/",
+                     directory = "./analysis/sRNA_mapping_results",
                      samples = c("heterograft_1", "heterograft_2",
                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
                      "selfgraft_3"))
 
-# import mRNAseq data
-df_mRNA <- RNAimport(input = "mRNA",
-                     directory = "./analysis/mRNA_counts/",
-                     samples = c("heterograft_1", "heterograft_2",
-                     "heterograft_3","selfgraft_1" , "selfgraft_2" ,
-                     "selfgraft_3"))
 
 }
 # The output of this function can be explore in the data object sRNA_data

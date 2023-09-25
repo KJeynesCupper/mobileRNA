@@ -27,7 +27,11 @@ to \code{data} argument.}
 
 \item{ties.method}{a character string specifying how ties are handled,
 "exclude" by default. Options include "random", or
-"exclude"; see ‘Details’}
+"exclude"; when using \code{random}, if there is a tie one of the classes will be
+choose at random. While, when using \code{exclude} if there is a tie the class
+is set to undefined, however, if there is a tie between a undefined and a
+known class, the known class takes president (eg 3x24-nt and 3xN-nt, then it
+will be classed as 24nt)}
 
 \item{tidy}{use of this argument will remove sRNA clusters with a unknown or
 unclassified consensus result. By default, the function will not tidy the

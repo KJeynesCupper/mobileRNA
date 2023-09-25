@@ -22,7 +22,8 @@ a p-value or adjusted p-value threshold stated by \code{padj} & \code{p.value}.D
 set at FALSE. Requires presence of columns containing statistical data.
 In order to filter by the adjusted p-value, a column named \code{padjusted} must
 be present. Similarly, to filter by the p-value, a column named \code{pvalue} must
-be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistical values.}
+be present. See \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} to calculate
+statistical values.}
 
 \item{padj}{A user defined numeric value to represent the adjusted p-value
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -45,7 +46,7 @@ system}
 A refined version of the working dataframe supplied to the function.
 The function selects sRNA clusters which meet the statistical threshold,
 given the statistical analysis has been undertaken using the
-\code{\link[=RNAanalysis]{RNAanalysis()}} function.
+\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} function.
 }
 \description{
 sRNA clusters which are more abundant, show a statistically
@@ -53,9 +54,9 @@ significant logfc.
 }
 \details{
 Filters the data based on statistical significance
-which has been calculated by the \code{\link[=RNAanalysis]{RNAanalysis()}} function. This
-optional features enables the user to select sRNA clusters which meet a
-specific p-value or adjusted p-values threshold.
+which has been calculated by the \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}
+function. This optional features enables the user to select sRNA clusters
+which meet a specific p-value or adjusted p-values threshold.
 
 Requires either or both columns: \code{pvalue}, \code{padjusted} to undertake.
 
@@ -77,7 +78,7 @@ groups <- c("Heterograft", "Heterograft", "Heterograft",
 
 
 ## Differential analysis using the DEseq2 method 
-sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
+sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
                           group = groups,
                           method = "DESeq2")
                           

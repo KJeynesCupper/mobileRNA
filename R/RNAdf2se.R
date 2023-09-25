@@ -38,7 +38,25 @@
 #'@importFrom GenomicRanges "GRanges"
 #'@importFrom IRanges "IRanges"
 #'@importFrom S4Vectors "DataFrame"
+#'@importFrom dplyr "select"
 RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
+  if (base::missing(data)) {
+    stop("data is missing. data must be an object of class matrix, data.frame, 
+         DataFrame")
+  }
+  if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
+    stop("data must be an object of class matrix, data.frame, DataFrame")
+  }
+  if (missing(input) || !is.character(input)) {
+    stop("style parameter is missing or not a character vector.")
+  }
+  
+  # Check if input is one of the allowed values
+  allowed_input <- c("sRNA", "mRNA")
+  if (!input %in% allowed_input) {
+    stop("input parameter must be one of 'sRNA' or 'mRNA'.")
+  }
+  
   if(input == "sRNA"){
     # create gene locations
     if("DicerCounts" %in% colnames(data)) {
@@ -79,8 +97,8 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     }
     assay_list <- list()
     # create matrix for each extra data and count  
-    for(i in seq_along(extra_vrs_unique)){
-      extra_matrix <-as.matrix(data %>% select(starts_with(extra_vrs_unique[i])))
+    for(i in seq_along(extra_vrs_unique) ){
+      extra_matrix <-as.matrix(data %>% dplyr::select(starts_with(extra_vrs_unique[i])))
       colnames(extra_matrix) <- NULL
       assay_list[[i]] <- extra_matrix
     }
@@ -126,8 +144,8 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
       }
       assay_list <- list()
       # create matrix for each extra data and count  
-      for(i in seq_along(extra_vrs_unique)){
-        extra_matrix <-as.matrix(data %>% select(starts_with(extra_vrs_unique[i])))
+      for(i in seq_len(nrow(extra_vrs_unique))){
+        extra_matrix <-as.matrix(data %>% dplyr::select(starts_with(extra_vrs_unique[i])))
         colnames(extra_matrix) <- NULL
         assay_list[[i]] <- extra_matrix
       }

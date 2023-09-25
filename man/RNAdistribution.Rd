@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAdistribution.R
 \name{RNAdistribution}
 \alias{RNAdistribution}
-\title{Plot the distribution of sRNA lengths}
+\title{Plot the distribution of sRNA lengths/classes}
 \usage{
 RNAdistribution(
   data,
@@ -12,7 +12,6 @@ RNAdistribution(
   facet.arrange = 3,
   colour = "black",
   together = TRUE,
-  consensus = FALSE,
   relative = FALSE
 )
 }
@@ -28,13 +27,9 @@ to plot. Is not required when plotting the sRNA consensus using the argument
 \code{total=TRUE}.}
 
 \item{style}{plotting option to choose the style of either a line graph or
-bar chart to represent your data.
-\itemize{
-\item Where \code{style="line"} a line graph will be produced
-\item Where \code{style="bar"} produces a bar graph
-\item Where \code{style="consensus"} produces the line graph for the consensus
-sRNA in conjunction with \code{consensus=TRUE}
-}}
+bar chart to represent your data. Where \code{style="line"} a line graph will
+be produced. Where \code{style="bar"} produces a bar graph. Where
+\code{style="consensus"} produces the line graph for the consensus.}
 
 \item{facet}{Logical; forms a matrix of panels defined by row and column
 faceting variables. It plots the results for each sample as a bar-chart
@@ -52,12 +47,6 @@ set to 3.}
 
 \item{together}{Logical; forms a single line graph with multiple lines each
 to represent the sample replicates. Default \code{together=TRUE}.}
-
-\item{consensus}{Logical; plots the distribution of sRNA classes across all
-identified dicer-derived clusters based on the consensus. See
-\code{\link[=RNAdicercall]{RNAdicercall()}}
-function to calculate consensus RNA class based the experimental replicates.
-Default \code{consensus=FALSE}.}
 
 \item{relative}{Logical; calculates relative frequency of consensus
 dicer-derived sRNA clusters. Only applicable when  only in conjunction with
@@ -81,20 +70,17 @@ The function can be used to plot a variety of different comparisons and plots.
 It can be used to plot the distribution of sRNA classes within each sample
 replicate, which can be represented as a bar chart \code{style="bar"} or a
 line graph \code{style="line"}. These plots can be represented individually or
-in a single plot facet \code{facet="TRUE"} by default.
+in a single plot facet \code{facet="TRUE"} by default. While the option
+\code{style="consensus"}, plots the distribution of the consensus
+dicer-derived sRNA classes determined by the \code{\link[=RNAdicercall]{RNAdicercall()}} function
 
 To plot the sRNA dicer-derived clusters identified in each sample, the
-function extracts the information from the RNA summary data and calculates the
+function extracts the information from the sRNA data set and calculates the
 total number of each RNA class identified within a sample, for all samples.
 
 Alternatively, the function allows you to plot the line graph for each sample
 together, overlapped on a single graph \code{total="TRUE"}. This is not an
 option for bar plots.
-
-The final option, is to plot the total consensus of dicer-derived sRNA
-clusters across the experimental conditions, the function pulls the consensus
-call from the column created by the \code{\link[=RNAdicercall]{RNAdicercall()}} function in the working
-data frame.
 }
 \examples{
 data('sRNA_data')
@@ -115,6 +101,6 @@ p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
 data("sRNA_data_consensus")
-p6 <- RNAdistribution(data = sRNA_data_consensus, consensus = TRUE)
+p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus")
 
 }

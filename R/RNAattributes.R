@@ -70,10 +70,14 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     stop("data is missing. data must be an object of class matrix, data.frame, 
          DataFrame")
   }
-  if (base::missing(annotation)) {
-    stop("annotation is missing. annotation must be an object of GFF format.")
+  if (missing(annotation) || is.null(annotation) || annotation == "") {
+    stop("annotation parameter is missing or empty.")
   }
-  #annotation <- rtracklayer::import(annotation)
+  if (!dir.exists(annotation)) {
+    stop("The specified directory does not exist, please ammend the annotation parameter.")
+  }
+
+  annotation <- rtracklayer::import(annotation)
   if(match == "within"){
     features_gr <-  annotation
     # convert data to granges 
@@ -99,7 +103,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     
     data[,col_diff] <- NA
     
-    for (i in seq_along(subjectHits_ot)) {
+    for (i in 1:nrow(subjectHits_ot)) {
       row_index <- subjectHits_ot[i]
       row_vals <- features_gr_df[row_index, ]
       row_vals<- row_vals[,col_diff] # only extra columns. 
@@ -156,7 +160,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     col_diff <- col_diff[!col_diff %in% rm_extra]
     data[,col_diff] <- NA
     
-    for (i in seq_along(subjectHits_ot)) {
+    for (i in 1:nrow(subjectHits_ot)) {
       row_index <- subjectHits_ot[i]
       row_vals <- adjusted_grange_df[row_index, ]
       row_vals<- row_vals[,col_diff] # only extra columns. 

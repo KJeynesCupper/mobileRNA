@@ -1,4 +1,7 @@
-citEntry(
-	textVersion = paste("Katie Jeynes-Cupper, Marco Catoni.",
-	 "mobileRNA: An R package to identify mobile RNA molecules traveling between genotypes.")
+citEntry(entry="Unpublished",
+	author = "Jeynes-Cupper, Katie and Catoni, Marco",
+	title = "mobileRNA: Explore candidate mobile sRNAs & sRNAs population-scale changes",
+	note = "Yet to be published", 
+	textVersion = paste("Katie , Marco Catoni.",
+	 "mobileRNA: Explore candidate mobile sRNAs & sRNAs population-scale changes")
 )

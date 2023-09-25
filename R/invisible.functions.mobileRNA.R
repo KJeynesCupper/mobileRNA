@@ -3,16 +3,12 @@
 # Author: Katie Jeynes-Cupper (kej031@student.bham.ac.uk) #
 # Date:   01.02.23                                           #
 #------------------------------------------------------------#
-
-
-
 ################ remove mapping errors (RNAmobile function) ####################
 .remove_mapping_errors <- function(data, controls) {
   class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
-
   if (length(colnames(class_colnames)) > 1){
     x <- c()
-    for (j in 1:nrow(data)){
+    for (j in seq_len(nrow(data))){
       if(sum(stats::na.omit(as.numeric( data[j,colnames(class_colnames)],
                                         na.rm=TRUE)))>0){
         x <- c(x,j)
@@ -21,7 +17,7 @@
   } else
     if (length(colnames(class_colnames)) == 1){
       x <- c()
-      for (k in 1:nrow(data)){
+      for (k in seq_len(nrow(data))){
         if(stats::na.omit(as.numeric(data[k,colnames(class_colnames)],
                                      na.rm=TRUE))!= 0){
           x <- c(x,k)
@@ -36,25 +32,21 @@
   return(data)
 }
 
-
 ################ Remove mapping errors  #########################
-################ RNAsignificant, RNAdicercall, RNApopulation
 .remove_mapping_errors_V2 <- function(data,  controls, genome.ID) {
   if (base::missing(controls) || !base::inherits(controls, "character")) {
-    stop(paste("Please specify a character vector storing names of control replicates"))
+    stop("Please specify a character vector storing names of control replicates")
   }
   if (base::missing(genome.ID) || genome.ID %in% "") {
-    stop(paste("Please specify a single character string which is present in the all the chromosomes within the foriegn genome"))
+    stop("Please specify a single character string which is present in the all the chromosomes within the foriegn genome")
   }
   data_native <- data %>% dplyr::filter(!grepl(genome.ID,chr))
   # subset data to find all rows of forign genome
   data_select <- data %>% dplyr::filter(grepl(genome.ID,chr))
-  
   class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
-  
   if (length(colnames(class_colnames)) > 1){
     x <- c()
-    for (j in 1:nrow(data_select)){
+    for (j in seq_len(nrow(data_select)) ){
       if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
                                         na.rm=TRUE)))>0){
         x <- c(x,j)
@@ -63,7 +55,7 @@
   } else
     if (length(colnames(class_colnames)) == 1){
       x <- c()
-      for (k in 1:nrow(data_select)){
+      for (k in seq_len(nrow(data_select)) ){
         if(stats::na.omit(as.numeric(data_select[k,colnames(class_colnames)],
                                      na.rm=TRUE))!= 0){
           x <- c(x,k)
@@ -79,9 +71,7 @@
   data <- rbind(data_native,data_id)
 }
 
-
-
-################ DESE2 function (RNAanalysis function) #########################
+################ DESE2 function (RNAdifferentialAnalysis function) #############
 .DESeq_normalise <- function(data, conditions){
   column.data <- data.frame(conditions=as.factor(conditions))
   base::rownames(column.data) <- base::colnames(data)
@@ -93,8 +83,7 @@
   out <- DESeq2::estimateSizeFactors(count.data.set)
   return(out)
 }
-
-################ EDGER function (RNAanalysis function) #########################
+################ EDGER function (RNAdifferentialAnalysis function) #############
 .edgeR_normalise <- function(data, conditions){
   d <- edgeR::DGEList(counts = data, group = factor(conditions))
   result <- edgeR::calcNormFactors(d)
@@ -105,7 +94,6 @@
 }
 
 ################ Find RNA complementary sequence (RNAsequence function) ########
-
 find_complementary_sequenceRNA <- function(seq) {
   # conversions
   conversion_nucleotides <- c(A = "U", U = "A", C = "G", G = "C")
@@ -120,9 +108,7 @@ find_complementary_sequenceRNA <- function(seq) {
   return(output)
 }
 
-
 ################ Find DNA complementary sequence (RNAsequence function) #######
-
 find_complementary_sequenceDNA <- function(seq) {
   # conversions
   conversion_nucleotides <- c(A = "T", U = "A", C = "G", G = "C")
@@ -137,7 +123,6 @@ find_complementary_sequenceDNA <- function(seq) {
   return(output)
 }
 
-
 ################## global variable storage #####################################
 utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "nt_23", "nt_24", "group", "qc", "score", "phase",
@@ -150,5 +135,4 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "MajorRNA", "i", "other", "report", "DicerCounts", 
                          "Sequence", "new_df",  "PC1", "PC2", "Conditions",
                          "name"))
-
 

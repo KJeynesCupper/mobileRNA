@@ -4,9 +4,9 @@
 #' significant logfc. 
 #'
 #' @details Filters the data based on statistical significance
-#'which has been calculated by the [mobileRNA::RNAanalysis()] function. This 
-#'optional features enables the user to select sRNA clusters which meet a 
-#'specific p-value or adjusted p-values threshold.
+#'which has been calculated by the [mobileRNA::RNAdifferentialAnalysis()] 
+#'function. This optional features enables the user to select sRNA clusters 
+#'which meet a specific p-value or adjusted p-values threshold.
 #'
 #'Requires either or both columns: `pvalue`, `padjusted` to undertake. 
 #'
@@ -26,7 +26,8 @@
 #' set at FALSE. Requires presence of columns containing statistical data.
 #' In order to filter by the adjusted p-value, a column named `padjusted` must
 #' be present. Similarly, to filter by the p-value, a column named `pvalue` must
-#' be present. See [mobileRNA::RNAanalysis()] to calculate statistical values.
+#' be present. See [mobileRNA::RNAdifferentialAnalysis()] to calculate 
+#' statistical values.
 #'
 #' @param padj A user defined numeric value to represent the adjusted p-value
 #' threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -48,7 +49,7 @@
 #' @return A refined version of the working dataframe supplied to the function.
 #' The function selects sRNA clusters which meet the statistical threshold, 
 #' given the statistical analysis has been undertaken using the 
-#' [mobileRNA::RNAanalysis()] function.
+#' [mobileRNA::RNAdifferentialAnalysis()] function.
 #' 
 #'
 #' @examples
@@ -61,7 +62,7 @@
 #' 
 #' 
 #' ## Differential analysis using the DEseq2 method 
-#'sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_consensus,
+#'sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
 #'                           group = groups,
 #'                           method = "DESeq2")
 #'                           
@@ -74,7 +75,7 @@
 #'                                  
 #'
 #' @export
-#' @importFrom magrittr "%>%"
+#' @importFrom dplyr "%>%"
 #' @importFrom dplyr "filter"
 
 RNAsignificant <- function(data, statistical = FALSE, padj = 0.05,

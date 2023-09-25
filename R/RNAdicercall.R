@@ -47,7 +47,11 @@
 #'  
 #' @param ties.method a character string specifying how ties are handled, 
 #' "exclude" by default. Options include "random", or 
-#' "exclude"; see ‘Details’
+#' "exclude"; when using `random`, if there is a tie one of the classes will be 
+#' choose at random. While, when using `exclude` if there is a tie the class
+#' is set to undefined, however, if there is a tie between a undefined and a 
+#' known class, the known class takes president (eg 3x24-nt and 3xN-nt, then it 
+#' will be classed as 24nt)
 #' 
 #' 
 #'@param chimeric logical; state whether system is chimeric: contains multiple 
@@ -116,15 +120,15 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   class_colnames <- colnames(data)[grep("DicerCall_", colnames(data))]
   
   if (!is.null(conditions)) {
-    cat("Calculating consensus dicercall based on information from select replicates... \n")
+    message("Calculating consensus dicercall based on information from select replicates... \n")
     onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
-    cat("Calculating consensus dicercall based on information from all replicates... \n")
+    message("Calculating consensus dicercall based on information from all replicates... \n")
     onlyconditions <- class_colnames
   }
-  cat("\n")
+  message("\n")
   # unique values across the dicer call columns 
   unique_vals <- unique(unlist(data[onlyconditions]))
   # rowsum of columsn. 
@@ -137,7 +141,7 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   t <- grep("^nt", base::names(data))
   
   if (ties.method == "random"){
-    cat("The consensus dicercall will be choose at random in the case of a tie... \n")
+    message("The consensus dicercall will be choose at random in the case of a tie... \n")
     new_df <- data 
     new_df$DicerCounts <- apply(new_df[t], 1, max)
     new_df <- new_df %>% 
@@ -148,58 +152,75 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
     
   } else 
     if(ties.method == "exclude"){
-      cat("The consensus dicercall will be excluded in the case of a tie... \n") 
+      message("The consensus dicercall will be excluded in the case of a tie... \n") 
       new_df <- data
-      
       # Initialize result vector
       result <- vector("character", nrow(new_df))
       result[] <- "N"
       dicer_counts <- vector("character", nrow(new_df))
       dicer_counts[] <- "N"
+      
       # For loop to check for two matching non-zero numbers within the same row
-      for (i in 1:nrow(new_df)) {
+      for (i in seq_len(nrow(new_df)) ) {
         row_values <- new_df[t][i, ]
-        if(rowSums(row_values) == 0){
+        if(rowSums(row_values) == 0){ # if no class across reps:
           classification <- "N"
           dicer_counts_val <- length(onlyconditions)
-        } else {
+        } 
           non_zero_values <- as.numeric(row_values[row_values != 0])
           values_table <- table(non_zero_values)
           max_value <- max(non_zero_values)
-          
           # Check if the maximum value is duplicated
           if (!is.na(values_table[max_value]) && values_table[max_value] > 1) {
             dicer_counts_val <- 0
             classification <- "N"
           } else {
-            
-            classification <- names(row_values)[max.col(row_values)*NA^(
-              rowSums(row_values) == 0)]
-            count_max <- max.col(row_values)
-            dicer_counts_val <- as.numeric(row_values[,count_max])
-            if (is.na(classification)){
-              classification <- "N"
-              dicer_counts_val <- 0
-            }
+            numeric_class <- names(row_values[, row_values[1, ] > 0, drop = FALSE])
+            max_value <- max(unlist(row_values))
+            if(length(numeric_class) ==  1 ){ 
+              # if there is only one class
+              # and if it is the max acros other results
+              classification <- numeric_class
+              count_max <- max.col(row_values)
+              dicer_counts_val<- as.numeric(row_values[,count_max])
+            } else
+              if(sum(unlist(row_values) == max_value) == 1){
+                count_max <- max.col(row_values)
+                classification <- colnames(row_values)[count_max]
+                dicer_counts_val<- as.numeric(row_values[,count_max])
+              } else 
+            if(length(names(row_values[, row_values[1, ] > 0]))>= 2){
+              if(sum(nchar(numeric_class)) > 10){
+                # if tie between two different classes
+                dicer_counts_val <- 0
+                classification <- "N"
+              } else {
+                if(sum(nchar(numeric_class)) < 10){
+                  # if tie with class and unclassed
+                  index_longest <- which.max(nchar(numeric_class))
+                  classification <- numeric_class[index_longest]
+                  dicer_counts_val <- row_values[1, classification]
+                }
+              }
+            } 
           }
-        }
         result[i] <- classification
         dicer_counts[i] <- dicer_counts_val
       }
       new_df$DicerCounts <- as.numeric(dicer_counts)
       new_df$DicerConsensus <- result
-    }
-  
+    } 
   # remove calulation columns 
    new_df <- new_df[, !grepl("^nt_", colnames(new_df))]
   # remove nt from output values
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
   
   if (tidy) {
-    cat("\n")
-    cat("Removing small RNA clusters with no consensus dicercall... \n")
+    message("\n")
+    message("Removing small RNA clusters with no consensus dicercall... \n")
     new_df_tidy <- new_df %>% dplyr::filter(DicerConsensus != "N")
     return(new_df_tidy)
   }
     return(new_df)
 }
+

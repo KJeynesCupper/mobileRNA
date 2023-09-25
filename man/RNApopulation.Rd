@@ -27,7 +27,8 @@ a p-value or adjusted p-value threshold stated by \code{padj} & \code{p.value}.D
 set at FALSE. Requires presence of columns containing statistical data.
 In order to filter by the adjusted p-value, a column named \code{padjusted} must
 be present. Similarly, to filter by the p-value, a column named \code{pvalue} must
-be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistical values.}
+be present. See \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} to calculate
+statistical values.}
 
 \item{padj}{A user defined numeric value to represent the adjusted p-value
 threshold to define statistic significance. Defaults set at 0.05.Only mobile
@@ -57,7 +58,7 @@ replicates within the dataset.
 
 Selection of sRNA clusters which meet the statistical threshold can be
 included, given the statistical analysis has been undertaken using the
-\code{\link[=RNAanalysis]{RNAanalysis()}} function.
+\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} function.
 }
 \description{
 Identify unique sRNA populations between two conditions.
@@ -74,9 +75,9 @@ not consider the genome of origin unlike the \code{\link[=RNAmobile]{RNAmobile()
 function.
 
 The second role involves filtering the data based on statistical significance
-which has been calculated by the \code{\link[=RNAanalysis]{RNAanalysis()}} function. This
-optional features enables the user to select sRNA clusters which meet a
-specific p-value or adjusted p-values threshold.
+which has been calculated by the \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}
+function. This optional features enables the user to select sRNA clusters
+which meet a specific p-value or adjusted p-values threshold.
 
 When working with a chimeric system, for example interspecific grafting,
 mapping errors can easily be recognised and eliminated. Here, these can be

@@ -33,28 +33,32 @@
 #' @importFrom dplyr "select"
 #' @importFrom RColorBrewer "brewer.pal"
 plotSampleDistance <- function(data, vst = FALSE){
-  cat("Checking data... \n")
+  if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
+    stop("data must be an object of class data.frame containing raw count data")
+  }
+
+  message("Checking data... \n")
   data <- as.matrix(data %>% dplyr::select(tidyselect::starts_with("Count")))
 
   if(vst == TRUE){
-    cat("Transforming the count data with a variance stabilizing
+    message("Transforming the count data with a variance stabilizing
             transformation... \n")
     rld <- DESeq2::varianceStabilizingTransformation(data, blind = TRUE)
     # log transform the data.
   } else
     if(vst == FALSE) {
-      cat("Transforming the count data to the log2 scale... \n")
+      message("Transforming the count data to the log2 scale... \n")
       rld <- DESeq2::rlog(data, blind = TRUE) # log transform the data.
     }
-cat("\n")
-  cat("Calculating distance matrix... \n")
+message("\n")
+  message("Calculating distance matrix... \n")
   sample_names <- colnames(data)
   sample_names <- sub("Count_", "", sample_names)
   distance <- stats::dist(t(rld))
   distance_matrix <- as.matrix(distance)
   rownames(distance_matrix) <- paste(sample_names)
   colnames(distance_matrix) <- NULL
-  cat("Creating sample distance plot \n")
+  message("Creating sample distance plot \n")
   colors <- grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(
     9,"Blues")))(255)
   plot <- pheatmap::pheatmap(distance_matrix,
