@@ -15,7 +15,7 @@ vignette: >
  %\VignetteEngine{knitr::rmarkdown}}
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
- %\VignetteDepends{magrittr}
+ %\VignetteDepends{dplyr}
  %\usepackage[utf8]{inputenc}
 ---
 <br>
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(magrittr)
+library(dplyr)
 ```
 
  
@@ -183,7 +183,7 @@ library(mobileRNA)
 
 ```
 
-## An overview of the data used
+## Example data set
 
 For the following examples, a simulated sRNAseq data set was generated to 
 simulate the movement of sRNA molecules in a compatible plant graft system. This
@@ -287,7 +287,7 @@ RNAmergeGenomes(genomeA ="/Users/user1/workplace/reference/ref1.fa",
 <br>
 
 
-## Merging Genome Annotations
+## Merging genome annotations
 
 Now, repeat for the genome annotations (GFF) - this is required for downstream 
 analysis, for example to identify genomic features which overlap the sRNA 
@@ -308,14 +308,14 @@ RNAmergeAnnotation(annotationA = "/Users/user1/workplace/
 
 
 
-## Auto-Detection of sRNA Cluster
+## Auto-detection of sRNA cluster
 Here we identify and build a list sRNA clusters within each sample to assist
 the mapping step to ensure consistency across the analysis. This step
 is very important to consider as it prevents false assumptions. This step aligns 
 a replicate to the given genome assembly and the outputs contains loci where 
 sRNA clusters were found. 
 
-### Step 1 - Cluster analysis with ShortStack
+### Step 1 - Cluster analysis with `ShortStack`
 
 ``` bash
 ShortStack \
@@ -382,7 +382,7 @@ treatment in comparison to the control - and those statistically more/less
 abundant. 
 <br>
 
-## Import Data
+## Import data
 The sRNAseq pre-processing steps generate a folder for each sample storing the 
 results. We are interested in the file `Results.txt`. Here, the `RNAimport()` 
 function imports the `Results.txt` file for each sample, extracting specific 
@@ -493,7 +493,7 @@ sample_distribution$plot
 
 
 
-### Principle component analysis to assess sample distance
+### PCA
 Principal Component Analysis (PCA) is a useful technique to illustrate sample
 distance as it emphasizes the variation through the reduction of dimensions in
 the data set. Here, we introduce the function `plotSamplePCA()`
@@ -525,7 +525,7 @@ population of sRNAs present in the destination tissue is expected to be
 largely similar. 
 <br>
 
-### Hierarchical clustered heatmap to assess sample distance
+### Hierarchical clustered heatmap 
 
 Similarly, to a PCA plot, the `plotSampleDistance()` function undertakes
 hierarchical clustering with an unbiased log transformation to calculate sample
@@ -544,7 +544,7 @@ plotSampleDistance(sRNA_data)
 <br>
 
 
-## Define the consensus RNA class
+## Define the dicer-derived sRNA consensus classification
 Have a look at the `sRNA_data` object, you will see that for each sample the
 sRNA class for a given cluster has been determined (see columns with names 
 containing with "DicerCall") which will state a number from 20-24 in the data 
@@ -604,7 +604,7 @@ sRNA_2122 <- RNAsubset(sRNA_data_consensus, class = c(21, 22))
 <br>
 
 
-### Plot consensus classification of sRNA
+### Plot the dicer-derived sRNA consensus classification
 
 Similar to before, the `RNAdistriution()` function can be used to visualize the 
 distribution of the consensus sRNA classes.  
@@ -632,7 +632,7 @@ consensus_plot$plot
 <br>
 
 
-## Differential Expression analysis with DESeq2 or edgeR
+## Differential expression analysis with `DESeq2` or `edgeR`
 Differential expression (DE) analysis is undertaken to identify sRNA which 
 are statistically significant to discover quantitative changes in the abundance
 levels between the treatment (hetero-grafting) and the control (self-grafting)
@@ -664,7 +664,7 @@ sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
 ```
 <br>
 
-# Identify candiate mobile small RNAs
+# Identify candiate mobile sRNAs in chimeric systems
 We identify candidate mobile sRNAs by identifying clusters which are mapped 
 to the foreign genome and extracting the most abundant sRNA sequence and 
 classification. These can be isolated using the `RNAmobile()` function. 
@@ -700,7 +700,7 @@ mobile_sRNA <- RNAmobile(data = sRNA_DESeq2,
                          task = "keep", 
                          statistical = FALSE)
 
-## Identify potential tomato mobile molecules which are statistically significant
+## Identify statistically significant potential tomato mobile molecules 
 mobile_sRNA_significant <- RNAmobile(data = sRNA_DESeq2, 
                          controls = control_names,
                          genome.ID = "A_",
@@ -750,7 +750,7 @@ write.table(mobile_sRNA, "./candidate_mobile_sRNAs.txt")
 
 <br>
 
-## Functional Analysis 
+## Functional analysis 
 At this point in the analysis, the working dataframe contains candidate mobile 
 sRNAs. Now, we can extrapolate information to assist the prediction of their 
 targets and role in the biological system. 
@@ -789,7 +789,7 @@ mobile_df_attributes <- RNAattributes(data = mobile_sRNA, match ="genes",
 ```
 <br>
 
-### Summarise overlaps with genomic features 
+### Summarise sRNA cluster overlaps with genomic features 
 Very similar to before, we can find overlaps between our candidate sRNA clusters 
 and genomic features. However, this time we can calculate the relative
 or absolute number of sRNA clusters which are associated to each type of
@@ -809,7 +809,7 @@ mobile_df_features <- RNAfeatures(data = mobile_sRNA,
 ```
 <br>
 
-### Retrieve sRNA sequence & complementary sequences  
+### Retrieve RNA sequence from mobile sRNA clusters
 To predict the the targets of the mobile sRNA candidates, we need to extract
 the RNA sequence. The `RNAsequences()` function can be used to extrapolate the 
 consensus RNA sequence and also calculate the complementary sequences. It does 
@@ -830,11 +830,12 @@ mobile_sequences <- RNAsequences(mobile_sRNA)
 ```
 <br>
 
-Target prediction tools such as `psRNATarget` (Xinbin Dai, Zhaohong Zhuang and Patrick 
-X. Zhao (2018). psRNATarget: a plant small RNA target analysis server (2017 
-release). Nucleic Acids Research. doi: 10.1093/nar/gky316) can be used. For a 
-tool like `psRNATarget`, we can manipulate the output of `RNAsequences()` to 
-match the input style for target prediction using the following code:
+Target prediction tools such as `psRNATarget` (Xinbin Dai, Zhaohong Zhuang and 
+Patrick X. Zhao (2018). psRNATarget: a plant small RNA target analysis server 
+(2017 release). Nucleic Acids Research. doi: 10.1093/nar/gky316) can be used. 
+
+For a tool like `psRNATarget`, we can manipulate the output of `RNAsequences()` 
+to match the input style for target prediction using the following code:
 ```{r, eval = FALSE, message=FALSE}
 
 library(dplyr)
@@ -873,7 +874,7 @@ bioseq::seq_consensus(mobileRNA_seq)
 
 
 
-# Explore small RNA population difference between treatment and control
+# Explore sRNA population difference between treatment & control
 Here, we will look at comparing the native population of sRNAs and how they 
 might have changes in the tissue due to the treatment compared to the 
 control. 
@@ -886,7 +887,7 @@ sRNA clusters.
 We have already undertaken the statistical analysis in the previous steps, we
 will be utilising this dataset going forward.
 
-### sRNA abundance difference
+### Differences in sRNA abundance 
 When comparing treatment to control conditions, it might be the case that 
 the same sRNA clusters are found within both, yet, there could be difference in 
 the total abundance of the shared clusters. For instance, for a given sRNA 
@@ -917,7 +918,7 @@ p1 <- plotHeatmap(significant_sRNAs, row.names = FALSE)
 ```
 
 
-## Identify sRNA population difference
+## Identify gain & loss of sRNA populations
 The `RNApopulation()` function can be utilised to identify unique 
 sRNA populations found in the treatment or control conditions. Basically, sRNA
 which are gained in the treatment or lost due to the treatment. 

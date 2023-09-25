@@ -14,12 +14,17 @@
 #' name and removes any periods.
 #'
 #'
-#' As default, the function will rename the chromosome names in `annotationA`
-#' to "A". For example, A0, A1, A2 etc. To set a custom chromosome name for
+#' As default, the function as a prefix to chromosomes which contains a either
+#' "A" or "B" and "_". It will rename the chromosome names in `annotationA`
+#' to "A_". For example, A_0, A_1, A_2 etc. To set a custom chromosome name for
 #' `annotationA` alter the argument \code{abbreviationAnnoA}. While, for
-#' `annotationB` as default the chromosome names will be named "B", for example,
-#' B0, B1, B2 etc. To set a custom chromosome name for `annotationB` alter the
-#' argument \code{abbreviationAnnoB}.
+#' `annotationB` as default the chromosome names will be named "B_", 
+#' for example, B_0, B_1, B_2 etc. To set a custom chromosome name for 
+#' `annotationB` alter the argument \code{abbreviationAnnoB}. Please note that 
+#' the underscore is added automatically, hence, when setting a custom prefix 
+#' just include character values. 
+#' 
+#' 
 #'
 #' The merged genome is saved to the specified output directory, and requires
 #' the user to set the name with a `gff` extension. The user must load the
@@ -31,7 +36,7 @@
 #'
 #'
 #'
-#'IMPORTANT:  The genome reference and annotation of a species
+#'*IMPORTANT:* The genome reference and annotation of a species
 #'must have chromosomes with matching names. It is critical that if you used
 #'the [mobileRNA::RNAmergeGenomes()] function to to create a merged reference
 #'genome,that you treat the input annotations in the same way.
@@ -46,25 +51,26 @@
 #'
 #'
 #'
-#'@param annotationA GRanges object; a genome annotation assembly file in
+#'@param annotationA path; directory path to genome annotation assembly file in
 #'GFF format.
 #'
 #'
-#'@param annotationB  GRanges object; a genome annotation assembly file in
+#'@param annotationB path; directory path to genome annotation assembly file in
 #'GFF format.
 #'
-#'@param out_dir either a character string or a \code{base::connections()} open
-#'for writing. Place path to output directory in "", including file output name
-#'with extension of either `.gff` or `.gff3`.
+#'@param out_dir path; a character string or a \code{base::connections()} open
+#'for writing. Including file output name, and file extension of `.fa`. 
 #'
 #'
-#'@param abbreviationAnnoA a string placed in "", to replace chromosome names
-#'within \code{annotationA}.Default set as "A".
+#'@param abbreviationAnnoA character; string to represent prefix added to 
+#'existing chromosome names in `annotationA`. Default set as "A", which is 
+#'separated from existing chromosome names by an underscore (_). 
 #'
 #'
 #'
-#'@param abbreviationAnnoB a string placed in "", to replace chromosome names
-#'within \code{annotationB}.Default set as "B".
+#'@param abbreviationAnnoB character; string to represent prefix added to 
+#'existing chromosome names in `annotationB`. Default set as "B", which is 
+#'separated from existing chromosome names by an underscore (_). 
 #' 
 #'@param exportFormat The format of the annotation output. If missing or the 
 #'format does not match the file type, an error will occur. Default set to "GFF"
@@ -83,7 +89,8 @@
 #'
 #'# edit and merge
 #' merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-#'              out_dir = tempfile("merged_annotation",tempdir(), fileext = ".gff3"))
+#'              out_dir = tempfile("merged_annotation",tempdir(), 
+#'              fileext = ".gff3"))
 #'
 #'
 #'
@@ -108,14 +115,18 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
     stop("Please specify annotationA; path to GFF file.")
   }
   if (base::missing(out_dir) || grepl("\\.gff$", out_dir)) {
-    stop("Please specify out_dir, a connection to a local directory to write and save merged annotation. \n Ensure file name with extension (GFF) is supplied.")
+    stop("Please specify out_dir, a connection to a local directory to write and 
+          save merged annotation. \n Ensure file name with extension (GFF) is 
+          supplied.")
   }
   annotationA <- rtracklayer::import(annotationA)
   annotationB <- rtracklayer::import(annotationB)  
   message("Adding abbreviations to chomosome names ...  \n")
   # replace names with prefix and remove punc.
-  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   GenomeInfoDb::seqlevels(annotationA)))
-  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",   GenomeInfoDb::seqlevels(annotationB)))
+  annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   
+                                          GenomeInfoDb::seqlevels(annotationA)))
+  annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",
+                                          GenomeInfoDb::seqlevels(annotationB)))
   # rename 
   GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames
   GenomeInfoDb::seqlevels(annotationB) <- annotationB_seqnames
@@ -131,6 +142,7 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   gr_list <- GenomicRanges::GRangesList(annotationA, annotationB)
   concatenated_gff <- unlist(gr_list)
   rtracklayer::export(concatenated_gff, out_dir, format = exportFormat)
-  message("New merged annnotation with modified chromosome names has been created saved to: ", out_dir)
+  message("New merged annnotation with modified chromosome names has been 
+created saved to: ", out_dir)
   return(concatenated_gff)
 }

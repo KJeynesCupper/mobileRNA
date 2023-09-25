@@ -10,15 +10,16 @@
 #'@param genomeB path; directory path to a genome reference assembly file in
 #'FASTA format (.fa/.fasta).
 #'
-#'@param out_dir either a character string or a \code{base::connections()} open
-#'for writing. Place path to output directory in "", including file output name.
-#'Output name must have a ".fa" extension.
+#'@param out_dir path; a character string or a \code{base::connections()} open
+#'for writing. Including file output name, and file extension of `.fa`. 
 #'
-#'@param abbreviationGenomeA a string placed in "", to replace chromosome names
-#'within \code{genomeA}.Default set as "A".
+#'@param abbreviationGenomeA character; string to represent prefix added to 
+#'existing chromosome names in `genomeA`. Default set as "A", which is 
+#'separated from existing chromosome names by an underscore (_). 
 #'
-#'@param abbreviationGenomeB a string placed in "", to replace chromosome names
-#'within \code{genomeB}.Default set as "B".
+#'@param abbreviationGenomeB character; string to represent prefix added to 
+#'existing chromosome names in `genomeB`. Default set as "B", which is 
+#'separated from existing chromosome names by an underscore (_). 
 #'
 #'@param cores logical;  the number of CPU cores for parallel computation. 
 #'By default, `cores = TRUE` which tells the system to detect the number of CPU 
@@ -32,27 +33,27 @@
 #'with edited chromosome names (prefixes, and removal of periods) to the give
 #'directory. 
 #'@details
+#' The function merges two FASTA files, however, when merging genomic files it 
+#' is critical that the two genomes are distinguishable by the chromosome names. 
+#' As a default setting, the function extracts the chromosome names for the
+#' given FASTA files and alters adds a unique prefix while retaining the 
+#' identifying number.
+#'
+#' The function requires the input of two FASTA reference genomes, where one
+#' represents `genome_A` and the other represents `genome_B`. As default, the
+#' function will rename the chromosome names in `genome_A` to "A_". For example,
+#' A_0, A_1, A_2 etc. To set a custom chromosome name for `genome_A` alter the
+#' argument \code{abbreviationGenomeA}. While, for  `genome_B` as default the
+#' chromosome names will be named "B_", for example, B_0, B_1, B_2 etc. To set a
+#' custom chromosome name for `genome_B` alter the argument
+#' \code{abbreviationGenomeB}.  Please note that the underscore is added 
+#' automatically, hence, when setting a custom prefix just include character 
+#' values. 
+#' 
 #'Please be aware that this function will take a very long time to process if 
 #'you are working with large genomes which together take up more than 1Gb 
 #'storage. Please be patient and allow the function to run. 
 #' 
-#' The functions primary goal is to merge two FASTA files, however, when
-#' merging genomic files it is critical that the two genomes are distinguishable
-#' by the chromosome names. As a default setting, the function extracts the
-#' chromosome names for a given FASTA file and alters the name while retaining
-#' the identifying number.
-#'
-#' The function requires the input of two reference genomes, where one
-#' represents `Genome-A` and the other represents `Genome-B`. As default, the
-#' function will rename the chromosome names in `Genome-A` to "A". For example,
-#' A0, A1, A2 etc. To set a custom chromosome name for `Genome-A` alter the
-#' argument \code{abbreviationGenomeA}. While, for  `Genome-B` as default the
-#' chromosome names will be named "B", for example, B0, B1, B2 etc. To set a
-#' custom chromosome name for `Genome-A` alter the argument
-#' \code{abbreviationGenomeB}. The function can do so by  draw the chromosome
-#' number within the given GFF file, remove all prior character or numerical
-#' values, and replace it with the supplied string.
-#'
 #'Please note that this function uses parallel computation using the packages 
 #'(`parallel`, `foreach` & `doParallel`) to improve the processing speed. Hence
 #'common errors may occur is you have some parallel computing going on in the 
@@ -60,10 +61,12 @@
 #'temporary files in your output directory, which are then merged into a single
 #'file and deleted. 
 #'
-#'IMPORTANT:  The genome reference and annotation of a species
-#'must have chromosomes with matching names. It is critical that if you used
-#'the [mobileRNA::RNAmergeAnnotations()] function to to create a merged genome
-#'annotation,that you treat the input references in the same way.
+#'
+#'*IMPORTANT:*  The genome reference and annotation of the same 
+#'species/accession/variety must have chromosomes with matching names. It is 
+#'critical that if you use the [mobileRNA::RNAmergeAnnotations()] function to
+#' create a merged genome annotation,that you treat the input references in the 
+#' same way.
 #'
 #'
 #'
@@ -79,7 +82,8 @@
 #'
 #' # run function to merge
 #' merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
-#'                                out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"), 
+#'                                out_dir = tempfile("merged_genome",tempdir(), 
+#'                                fileext = ".fa"), 
 #'                                cores = FALSE,number_cores = 1)
 #'
 #'
@@ -122,7 +126,9 @@ RNAmergeGenomes <- function(genomeA, genomeB, out_dir,
     stop("Please specify annotationA, a connection to a FASTA file in local")
   }
   if (missing(out_dir) || !grepl("\\.fa$", out_dir)) {
-    stop("Please specify out_dir, a connection to a local directory to write and save merged annotation. Ensure file name with extension (.fa or .fasta) is supplied.")
+    stop("Please specify out_dir, a connection to a local directory to write and 
+          save merged annotation. Ensure file name with extension 
+          (.fa or .fasta) is supplied.")
   }
   
   if (cores) {
@@ -165,7 +171,8 @@ RNAmergeGenomes <- function(genomeA, genomeB, out_dir,
   loc <- paste0(dirname(out_dir), "/tempfile_*.fasta")
   BiocParallel::bplapply(1:number_cores, function(i) {
     Biostrings::writeXStringSet(merged_genome,
-                                file = paste0(dirname(out_dir), "/tempfile_", i, ".fasta"),
+                                file = paste0(dirname(out_dir), "/tempfile_", i,
+                                              ".fasta"),
                                 format = "fasta")
   }, BPPARAM = BPPARAM)
   

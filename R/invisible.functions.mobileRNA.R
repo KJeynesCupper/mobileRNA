@@ -5,11 +5,11 @@
 #------------------------------------------------------------#
 ################ remove mapping errors (RNAmobile function) ####################
 .remove_mapping_errors <- function(data, controls) {
-  class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
-  if (length(colnames(class_colnames)) > 1){
+    class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
+    if (length(colnames(class_colnames)) > 1){
     x <- c()
     for (j in seq_len(nrow(data))){
-      if(sum(stats::na.omit(as.numeric( data[j,colnames(class_colnames)],
+    if(sum(stats::na.omit(as.numeric( data[j,colnames(class_colnames)],
                                         na.rm=TRUE)))>0){
         x <- c(x,j)
       }
@@ -32,43 +32,46 @@
   return(data)
 }
 
+
 ################ Remove mapping errors  #########################
 .remove_mapping_errors_V2 <- function(data,  controls, genome.ID) {
-  if (base::missing(controls) || !base::inherits(controls, "character")) {
-    stop("Please specify a character vector storing names of control replicates")
+    if (base::missing(controls) || !base::inherits(controls, "character")) {
+    stop("Please specify a character vector storing names of control 
+          replicates")
   }
-  if (base::missing(genome.ID) || genome.ID %in% "") {
-    stop("Please specify a single character string which is present in the all the chromosomes within the foriegn genome")
+    if (base::missing(genome.ID) || genome.ID %in% "") {
+    stop("Please specify a single character string which is present in the all 
+           the chromosomes within the foriegn genome")
   }
-  data_native <- data %>% dplyr::filter(!grepl(genome.ID,chr))
+    data_native <- data %>% dplyr::filter(!grepl(genome.ID,chr))
   # subset data to find all rows of forign genome
-  data_select <- data %>% dplyr::filter(grepl(genome.ID,chr))
-  class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
-  if (length(colnames(class_colnames)) > 1){
+    data_select <- data %>% dplyr::filter(grepl(genome.ID,chr))
+    class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
+    if (length(colnames(class_colnames)) > 1){
     x <- c()
     for (j in seq_len(nrow(data_select)) ){
-      if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
+    if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
                                         na.rm=TRUE)))>0){
-        x <- c(x,j)
+    x <- c(x,j)
       }
     }
   } else
     if (length(colnames(class_colnames)) == 1){
-      x <- c()
-      for (k in seq_len(nrow(data_select)) ){
-        if(stats::na.omit(as.numeric(data_select[k,colnames(class_colnames)],
+    x <- c()
+    for (k in seq_len(nrow(data_select)) ){
+    if(stats::na.omit(as.numeric(data_select[k,colnames(class_colnames)],
                                      na.rm=TRUE))!= 0){
           x <- c(x,k)
         }
       }
     }
-  if(is.null(x)){
+    if(is.null(x)){
     data_id <- data_select
   } else
     if(!is.null(x)){ 
       data_id <- data_select[-x,]
     }
-  data <- rbind(data_native,data_id)
+    data <- rbind(data_native,data_id)
 }
 
 ################ DESE2 function (RNAdifferentialAnalysis function) #############

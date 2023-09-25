@@ -4,11 +4,12 @@
 #'@description 
 #'Convert any `mobileRNA` output dataframe into a SummarizedExperiment object.
 #'
-#'@param data data.frame produced by the `mobileRNA` package. 
+#'@param data data.frame produced by the \pkg{mobileRNA} package. 
 #'@param input character; must be either "sRNA" or "mRNA"
 #'@details 
 #'The function relies on the naming structure of columns created by functions
-#'in the `mobileRNA` package, specifically `RNAimport()` and `RNAdicercall()`. 
+#'in the \pkg{mobileRNA} package, specifically [mobileRNA::RNAimport()] and 
+#'[mobileRNA::RNAdicercall()]. 
 #'It is able to extract the sample names based on these additions, and organise 
 #'the data appropriately. 
 #'
@@ -18,13 +19,13 @@
 #'* The rowData includes the Cluster ID, the DicerCounts & the DicerConsensus
 #'* The colnames represents the sample replicate names
 #'
-#'#'**For mRNAseq data** 
+#'**For mRNAseq data** 
 #'* The rownames contain the gene names
 #'* The assays represent the additional information including Count &FPKM. 
 #'* The rowData includes the gene & the SampleCounts. 
 #'* The colnames represents the sample replicate names
 #'
-#' @return A SummarizedExperiment object containing information from working 
+#' @return A `SummarizedExperiment` object containing information from working 
 #' data frame.  
 #'
 #'@examples
@@ -61,13 +62,13 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     # create gene locations
     if("DicerCounts" %in% colnames(data)) {
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(data$start, data$end),
+                                          IRanges::IRanges(data$start,data$end),
                                           Cluster = data$Cluster, 
                                           DicerCounts = data$DicerCounts,
                                           DicerConsensus= data$DicerConsensus)
     } else {
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(data$start, data$end),
+                                          IRanges::IRanges(data$start,data$end),
                                           Cluster = data$Cluster)
     }
     
@@ -82,7 +83,8 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     
     
     # make matrix for all information 
-    extra <- S4Vectors::DataFrame(data[, !names(data) %in% c("chr", "start", "end", 
+    extra <- S4Vectors::DataFrame(data[, !names(data) %in% c("chr", "start",
+                                                             "end", 
                                                              "Cluster", "Locus", 
                                                              "DicerCounts", 
                                                              "DicerConsensus"), 
@@ -98,7 +100,8 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     assay_list <- list()
     # create matrix for each extra data and count  
     for(i in seq_along(extra_vrs_unique) ){
-      extra_matrix <-as.matrix(data %>% dplyr::select(starts_with(extra_vrs_unique[i])))
+      extra_matrix <-as.matrix(data %>% dplyr::select(
+        starts_with(extra_vrs_unique[i])))
       colnames(extra_matrix) <- NULL
       assay_list[[i]] <- extra_matrix
     }
@@ -130,8 +133,10 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
       
       
       # make matrix for all information 
-      extra <- S4Vectors::DataFrame(data[, !names(data) %in% c("chr", "start", "end", 
-                                                               "Gene", "Locus","width", 
+      extra <- S4Vectors::DataFrame(data[, !names(data) %in% c("chr", "start", 
+                                                               "end", 
+                                                               "Gene", "Locus",
+                                                               "width", 
                                                                "SampleCounts"), 
                                          drop = FALSE])
       extra_vrs <-  gsub("^(.*?)_.*", "\\1", colnames(extra))
@@ -145,7 +150,8 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
       assay_list <- list()
       # create matrix for each extra data and count  
       for(i in seq_len(nrow(extra_vrs_unique))){
-        extra_matrix <-as.matrix(data %>% dplyr::select(starts_with(extra_vrs_unique[i])))
+        extra_matrix <-as.matrix(data %>% dplyr::select(
+          starts_with(extra_vrs_unique[i])))
         colnames(extra_matrix) <- NULL
         assay_list[[i]] <- extra_matrix
       }

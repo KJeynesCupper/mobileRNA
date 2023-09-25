@@ -15,14 +15,13 @@
 #' plain text file in the given directory.
 #'
 #'
+#' @param files path; directory containing `ShortStack` mapping results.
 #'
+#' @param out  path; a character string or a \code{base::connections()} open
+#'for writing to save the output annotation files. Include name of the output 
+#'file and file extension `.txt`. 
 #'
-#' @param files Path to the directory containing ShortStack mapping results.
-#'
-#' @param out  Path to the directory to save the outputted annotation files,
-#' include the name of the output file, including file extension (.txt`)
-#'
-#' @param samples A character vector containing the names of all the samples in
+#' @param samples character; vector containing the names of all the samples in
 #' the analysis. These should match the sample folder names created in mapping
 #' step one, outputted by \code{Shortstack}.
 #'
@@ -31,7 +30,7 @@
 #' columns,`Locus` containing the genomic coordinates of the dicer-derived
 #' cluster and `Cluster` contains the given name for the dicer-derived cluster.
 #'
-#'
+#'@references ShortStack (https://github.com/MikeAxtell/ShortStack)
 #' @examples
 #' \dontrun{
 #'
@@ -63,25 +62,31 @@
 RNAloci <- function (files, out, samples) 
 {
   if (base::missing(files)) {
-    stop("Please specify files, a connection to a local directory\n    containing sample folders")
+    stop("Please specify files, a connection to a local directory
+          containing sample folders")
   }
   if (base::missing(samples) || !base::inherits(samples, c("character"))) {
-    stop("Please specify samples, a vector containing individual strings \n cooresponding to the folders of each sample replicate containing \n results")
+    stop("Please specify samples, a vector containing individual strings 
+          cooresponding to the folders of each sample replicate containing \n results")
   }
   extension_out <- xfun::file_ext(out)
   if (base::missing(out) || !extension_out == "txt") {
-    stop("Please specify out, a connection to a local directory to \n store output, including name and file extention (.txt)")
+    stop("Please specify out, a connection to a local directory to 
+          store output, including name and file extention (.txt)")
   }
   gff_alignment <- GenomicRanges::GRangesList()
   for (i in samples) {
-    gff_alignment[[i]] <- rtracklayer::import.gff(paste0(files, 
-                                                         i, "/ShortStack_All.gff3"))
+    gff_alignment[[i]] <- rtracklayer::import.gff(paste0(files,i, 
+                                                        "/ShortStack_All.gff3"))
   }
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
                                       ignore.strand = TRUE)
   gff_merged <- Repitools::annoGR2DF(gff_merged)
-  gff_merged_df <- data.frame(Locus = paste0(gff_merged$chr, ":",gff_merged$start,"-", gff_merged$end), 
-                              Cluster = paste0("cluster_", seq_len(nrow(gff_merged))))
+  gff_merged_df <- data.frame(Locus = paste0(gff_merged$chr, ":", 
+                                             gff_merged$start,"-", 
+                                             gff_merged$end), 
+                              Cluster = paste0("cluster_", 
+                                               seq_len(nrow(gff_merged))))
   
   utils::write.table(gff_merged_df, file = out, quote = FALSE, 
                      sep = "\t", row.names = FALSE, col.names = TRUE)

@@ -9,10 +9,10 @@ RNAdf2se(input = c("sRNA", "mRNA"), data)
 \arguments{
 \item{input}{character; must be either "sRNA" or "mRNA"}
 
-\item{data}{data.frame produced by the \code{mobileRNA} package.}
+\item{data}{data.frame produced by the \pkg{mobileRNA} package.}
 }
 \value{
-A SummarizedExperiment object containing information from working
+A \code{SummarizedExperiment} object containing information from working
 data frame.
 }
 \description{
@@ -20,7 +20,8 @@ Convert any \code{mobileRNA} output dataframe into a SummarizedExperiment object
 }
 \details{
 The function relies on the naming structure of columns created by functions
-in the \code{mobileRNA} package, specifically \code{RNAimport()} and \code{RNAdicercall()}.
+in the \pkg{mobileRNA} package, specifically \code{\link[=RNAimport]{RNAimport()}} and
+\code{\link[=RNAdicercall]{RNAdicercall()}}.
 It is able to extract the sample names based on these additions, and organise
 the data appropriately.
 
@@ -32,7 +33,7 @@ the data appropriately.
 \item The colnames represents the sample replicate names
 }
 
-#'\strong{For mRNAseq data}
+\strong{For mRNAseq data}
 \itemize{
 \item The rownames contain the gene names
 \item The assays represent the additional information including Count &FPKM.

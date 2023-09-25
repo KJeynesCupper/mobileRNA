@@ -21,15 +21,16 @@ FASTA format (.fa/.fasta).}
 \item{genomeB}{path; directory path to a genome reference assembly file in
 FASTA format (.fa/.fasta).}
 
-\item{out_dir}{either a character string or a \code{base::connections()} open
-for writing. Place path to output directory in "", including file output name.
-Output name must have a ".fa" extension.}
+\item{out_dir}{path; a character string or a \code{base::connections()} open
+for writing. Including file output name, and file extension of \code{.fa}.}
 
-\item{abbreviationGenomeA}{a string placed in "", to replace chromosome names
-within \code{genomeA}.Default set as "A".}
+\item{abbreviationGenomeA}{character; string to represent prefix added to
+existing chromosome names in \code{genomeA}. Default set as "A", which is
+separated from existing chromosome names by an underscore (_).}
 
-\item{abbreviationGenomeB}{a string placed in "", to replace chromosome names
-within \code{genomeB}.Default set as "B".}
+\item{abbreviationGenomeB}{character; string to represent prefix added to
+existing chromosome names in \code{genomeB}. Default set as "B", which is
+separated from existing chromosome names by an underscore (_).}
 
 \item{cores}{logical;  the number of CPU cores for parallel computation.
 By default, \code{cores = TRUE} which tells the system to detect the number of CPU
@@ -49,26 +50,26 @@ Merges two reference genomes (.fa/.fasta). into one single
 reference with modified chromosome names to ensure distinguishability.
 }
 \details{
+The function merges two FASTA files, however, when merging genomic files it
+is critical that the two genomes are distinguishable by the chromosome names.
+As a default setting, the function extracts the chromosome names for the
+given FASTA files and alters adds a unique prefix while retaining the
+identifying number.
+
+The function requires the input of two FASTA reference genomes, where one
+represents \code{genome_A} and the other represents \code{genome_B}. As default, the
+function will rename the chromosome names in \code{genome_A} to "A_". For example,
+A_0, A_1, A_2 etc. To set a custom chromosome name for \code{genome_A} alter the
+argument \code{abbreviationGenomeA}. While, for  \code{genome_B} as default the
+chromosome names will be named "B_", for example, B_0, B_1, B_2 etc. To set a
+custom chromosome name for \code{genome_B} alter the argument
+\code{abbreviationGenomeB}.  Please note that the underscore is added
+automatically, hence, when setting a custom prefix just include character
+values.
+
 Please be aware that this function will take a very long time to process if
 you are working with large genomes which together take up more than 1Gb
 storage. Please be patient and allow the function to run.
-
-The functions primary goal is to merge two FASTA files, however, when
-merging genomic files it is critical that the two genomes are distinguishable
-by the chromosome names. As a default setting, the function extracts the
-chromosome names for a given FASTA file and alters the name while retaining
-the identifying number.
-
-The function requires the input of two reference genomes, where one
-represents \code{Genome-A} and the other represents \code{Genome-B}. As default, the
-function will rename the chromosome names in \code{Genome-A} to "A". For example,
-A0, A1, A2 etc. To set a custom chromosome name for \code{Genome-A} alter the
-argument \code{abbreviationGenomeA}. While, for  \code{Genome-B} as default the
-chromosome names will be named "B", for example, B0, B1, B2 etc. To set a
-custom chromosome name for \code{Genome-A} alter the argument
-\code{abbreviationGenomeB}. The function can do so by  draw the chromosome
-number within the given GFF file, remove all prior character or numerical
-values, and replace it with the supplied string.
 
 Please note that this function uses parallel computation using the packages
 (\code{parallel}, \code{foreach} & \code{doParallel}) to improve the processing speed. Hence
@@ -77,10 +78,11 @@ background. To improve the handling, the function will create a number of
 temporary files in your output directory, which are then merged into a single
 file and deleted.
 
-IMPORTANT:  The genome reference and annotation of a species
-must have chromosomes with matching names. It is critical that if you used
-the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function to to create a merged genome
-annotation,that you treat the input references in the same way.
+\emph{IMPORTANT:}  The genome reference and annotation of the same
+species/accession/variety must have chromosomes with matching names. It is
+critical that if you use the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function to
+create a merged genome annotation,that you treat the input references in the
+same way.
 }
 \examples{
 
@@ -94,7 +96,8 @@ annotation,that you treat the input references in the same way.
 
 # run function to merge
 merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
-                               out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"), 
+                               out_dir = tempfile("merged_genome",tempdir(), 
+                               fileext = ".fa"), 
                                cores = FALSE,number_cores = 1)
 
 

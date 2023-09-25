@@ -64,6 +64,8 @@ biocViews:
     Sequencing,
     SmallRNA,
     GenomeAssembly,
-    Clustering
+    Clustering,
+    ExperimentalDesign,
+    QualityControl
 BiocType: Software
 BugReports: https://github.com/KJeynesCupper/mobileRNA/issues
