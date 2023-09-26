@@ -115,13 +115,13 @@ RNAdicercall <- function(data, conditions = NULL, ties.method = NULL,
   
   if (!is.null(conditions)) {
     message("Calculating consensus dicercall based on information from select 
-replicates... \n")
+replicates... ")
     onlyconditions <- base::unique(grep(paste(conditions, collapse = "|"), 
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
     message("Calculating consensus dicercall based on information from all 
-replicates... \n")
+replicates... ")
     onlyconditions <- class_colnames
   }
   message("\n")
@@ -138,7 +138,7 @@ replicates... \n")
   
   if (ties.method == "random"){
     message("The consensus dicercall will be choose at random in the case of a 
-tie... \n")
+tie...")
     new_df <- data 
     new_df$DicerCounts <- apply(new_df[t], 1, max)
     new_df <- new_df %>% 

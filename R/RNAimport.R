@@ -111,18 +111,17 @@ RNAimport <- function(input = c("sRNA"), directory, samples,
       dt_list[[file]] <- data.table::fread(file.path(directory, file,
                                                   "Results.txt"),header = TRUE)
       progress_counter <- file
-      progress_message <- paste0("Processing sample: ", progress_counter,".",
+      progress_message <- paste0("Processing sample: ", progress_counter,
                                  "\n",
                                  "File ", file_n, " of ", total_files)
       message(sprintf("\r%s", progress_message))
       utils::flush.console()
     }
-    message("\n")  # Print a newline after progress is complete
     message("Completed importation of data from directory. \n")
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    message("Checking data content... \n")
+    message("Checking data content...")
     required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -133,7 +132,6 @@ RNAimport <- function(input = c("sRNA"), directory, samples,
       }
     }
     message("Data content is correct.")
-    message("\n") 
     # merge first columns to create list of loci across all samples
     loci <- lapply(dt_list, "[", , "Locus")
     loci_all <- unique(Reduce(merge,loci))
@@ -159,7 +157,7 @@ RNAimport <- function(input = c("sRNA"), directory, samples,
 
     }
     # Update loci with the matching values from each input dataframe
-    for (i in seq_len(nrow(dt_list))) {
+    for (i in seq_len(length(dt_list))) {
       update_locus_df(dt_list[[i]], names(dt_list)[i])
     }
     # Fill in missing values with 0 or N
