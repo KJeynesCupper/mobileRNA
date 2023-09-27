@@ -70,6 +70,7 @@
 #'This can encourage closer comparison between sample replicates.
 #'
 #' @examples
+#' # load data 
 #' data('sRNA_data')
 #'
 #' p1 <- RNAdistribution(data = sRNA_data, style = "line")
@@ -87,7 +88,9 @@
 #' p5 <- RNAdistribution(data = sRNA_data, style = "bar",
 #'                       facet = TRUE, facet.arrange = 2 )
 #'
-#'data("sRNA_data_consensus")
+#' # load data with dicer-derived consensus calculated
+#' data("sRNA_data_consensus")
+#'
 #'p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus")
 #'
 #' @export

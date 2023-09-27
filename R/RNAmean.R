@@ -28,7 +28,7 @@
 #' means <- RNAmean(data = sRNA_data, conditions = selected_samples)
 #'
 #' # for all samples
-#'means <- RNAmean(data = sRNA_data)
+#' means <- RNAmean(data = sRNA_data)
 #'
 RNAmean <- function(data, conditions = NULL){
   if (base::missing(data)) {

@@ -55,7 +55,7 @@ replicate. See the User’s Guide for the  ‘EdgeR’ package for more details,
 \link[edgeR:edgeR-package]{edgeR::edgeR}.
 }
 \examples{
-
+# load data 
 data("sRNA_data_consensus")
 # sample conditions.
 groups <- c("Heterograft", "Heterograft", "Heterograft",

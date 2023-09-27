@@ -32,12 +32,11 @@ overlaps any sRNA cluster loci. These columns represent the standard columns
 in a GFF file.
 }
 \description{
-Based on genomic coordinates, assign sRNA clusters with an annotation that
-has an specified match based on chromosome number, start and end coordinates.
-This function can be used to find small interfering RNA molecule clusters
-which overlap with genes. An additional buffer region at the start/end of
-the gene is added improve hits, and align with the assumptions about promoter
-regions.
+Based on genomic coordinates, assign sRNA clusters with matching annotation
+information. This function can be used to find the origins of sRNA clusters,
+and identify whether they overlap with genes or repetitive regions. An
+additional buffer region at the start/end of the gene is added improve hits,
+and align with the assumptions about promoter regions.
 }
 \details{
 The function merges an annotation (.gff/.gff3) file with
@@ -52,7 +51,7 @@ inline with these can be accomplished using the
 }
 \examples{
 \dontrun{
-
+ # load data 
 data("sRNA_data")
 
 attributes_df <- RNAattributes(data = sRNA_data,

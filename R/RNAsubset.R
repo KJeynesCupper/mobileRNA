@@ -36,11 +36,8 @@
 #' sRNA_24 <- RNAsubset(sRNA_data_consensus, class = 24)
 #'
 #'
-#'# Subset data for 24 21/22-nt sRNAs
+#'# Subset data for 21/22-nt sRNAs
 #'sRNA_2122 <- RNAsubset(sRNA_data_consensus, class = c(21, 22))
-#'
-#' # You can subset by any combination of classes. For example, a dataset
-#' # of 23-nt & 24-nt sRNAs or just 20-nt sRNAs.
 #'
 #' @export
 #' @importFrom dplyr "%>%"

@@ -71,19 +71,16 @@
 #' defined the dicer-derived sRNA consensus.
 #'
 #' @examples
-#'
-#'
+#' # Load data
 #'data("sRNA_data_consensus")
-#'
 #'
 #' # vector of control names
 #' controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 #'
-#' # Locate potentially mobile sRNA clusters associated to tomato, no
-#' # statistical analysis
+#' # Locate potentially mobile sRNA clusters associated to tomato
 #' mobile_df1 <- RNAmobile(data = sRNA_data_consensus,
 #'                     controls = controls,
-#'                     genome.ID = "SL40",
+#'                     genome.ID = "A_",
 #'                     task = "keep",
 #'                     statistical = FALSE)
 #'
@@ -92,8 +89,8 @@
 #'  # Locate potentially mobile sRNA clusters associated to tomato, include
 #'  # statistical analysis
 #'
-#' ## undertake statistical analysis with either edgeR or DESeq2, here we use
-#' # # DESeq2
+#' ## undertake statistical analysis with either edgeR or DESeq2:
+#' 
 #' groups <- c("Heterograft", "Heterograft", "Heterograft",
 #'           "Selfgraft", "Selfgraft", "Selfgraft")
 #'
@@ -104,27 +101,18 @@
 #' ## locate mobile sRNA using p-adjusted value
 #' mobile_df2 <- RNAmobile(data = analysis_df,
 #'                     controls = controls,
-#'                     genome.ID = "SL40",
+#'                     genome.ID = "A_",
 #'                     task = "keep",
 #'                     statistical = TRUE)
 #'
 #' ## or, locate mobile sRNA using p-value value
 #' mobile_df3 <- RNAmobile(data = analysis_df,
 #'                     controls = controls,
-#'                     genome.ID = "SL40",
+#'                     genome.ID = "A_",
 #'                     task = "keep",
 #'                     statistical = TRUE,
 #'                     p.value = 0.05)
 #'
-#'
-#'
-#'# Locate local sRNA clusters associated to eggplant, include statistical
-#'# analysis
-#' mobile_df4 <- RNAmobile(data = sRNA_data_consensus,
-#'                     controls = controls,
-#'                     genome.ID = "SL40",
-#'                     task = "remove",
-#'                     statistical = FALSE)
 #'
 #'
 #' @export

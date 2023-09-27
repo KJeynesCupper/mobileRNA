@@ -88,7 +88,7 @@ To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassifie
 ("N") sRNA clusters, resulting in a reduced dataset size.
 }
 \examples{
-
+ # load data 
  data("sRNA_data")
 
 # define consensus sRNA classes.

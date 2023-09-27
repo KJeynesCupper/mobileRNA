@@ -71,12 +71,8 @@ Please be aware that this function will take a very long time to process if
 you are working with large genomes which together take up more than 1Gb
 storage. Please be patient and allow the function to run.
 
-Please note that this function uses parallel computation using the packages
-(\code{parallel}, \code{foreach} & \code{doParallel}) to improve the processing speed. Hence
-common errors may occur is you have some parallel computing going on in the
-background. To improve the handling, the function will create a number of
-temporary files in your output directory, which are then merged into a single
-file and deleted.
+Please note that this function uses parallel computation to improve the
+processing speed.
 
 \emph{IMPORTANT:}  The genome reference and annotation of the same
 species/accession/variety must have chromosomes with matching names. It is
@@ -86,31 +82,48 @@ same way.
 }
 \examples{
 
-# URL for example genome assemblies
- url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
+# Load BiocFileCache package
+library(BiocFileCache)
 
- fasta_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+# generate cache in mobileRNA package
+package_directory <- system.file(package = "mobileRNA")
 
- fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
+# generate custom folder in package directory
+cache_directory <- file.path(package_directory, "cache")
 
+# Initialize a BiocFileCache in the cache directory
+cache <-  BiocFileCache(cache_directory, ask = FALSE)
+
+# Generate URL to FASTA files
+url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
+fasta_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
+ 
+# Add FASTA files to cache:
+add_fasta1 <- bfcadd(cache,"chr12_Eggplant_V4.1", fpath=fasta_1)
+rid3 <- names(add_fasta1)
+
+add_fasta2 <- bfcadd(cache,"chr2_S_lycopersicum_chromosomes",fpath=fasta_2)
+rid4 <- names(add_fasta2)
+
+# rid3 and rid4 object contain the path location to the FASTA files 
 
 # run function to merge
-merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
-                               out_dir = tempfile("merged_genome",tempdir(), 
+merged_ref <- RNAmergeGenomes(genomeA = cache[[rid3]], genomeB = cache[[rid4]],
+                               out_dir = tempfile("merged_genome",
+                               tmpdir = cache_directory, 
                                fileext = ".fa"), 
                                cores = FALSE,number_cores = 1)
 
 
 
 
-## or, to set specific changes to chromosome names:
- # genomeA represents **Solanum melongena** and the chromosomes will be
- # abbreviated to `SM`.
-# genomeB represents **Solanum lycopersicum** and the chromosomes will be
-# abbreviated to `SL`.
+# or, to set specific changes to chromosome names:
 
-merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,genomeB = fasta_2 ,
-            out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"),
+merged_ref2 <- RNAmergeGenomes(genomeA = cache[[rid3]], 
+                               genomeB = cache[[rid4]] ,
+            out_dir = tempfile("merged_genome2", tmpdir = cache_directory, 
+            fileext = ".fa"),
             abbreviationGenomeA = "SM",
             abbreviationGenomeB = "SL",  
            cores = FALSE, number_cores = 1)

@@ -1,7 +1,5 @@
 #'Extract sRNA cluster sequences
 #'
-#'
-#'
 #'@description Extract sRNA cluster sequences; identifies whether the most
 #'abundant sRNA for a sRNA cluster is consistent across a defined number of 
 #' replicates, and if so extracts the sRNA nucleotide sequence.
@@ -90,17 +88,16 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
   df <- data %>% # select only columns with RNA seqs, remove columns with only NA values
     dplyr::select(dplyr::starts_with("MajorRNA")) %>%
     dplyr::select(-dplyr::where(~all(. == "N")))
-    message("The minimum number of matches required to form a consensus sRNA 
-             sequence is... ", match.threshold, "\n")
+    message("Note: The minimum number of matches required to form a consensus 
+sRNA sequence is... ", match.threshold)
     if(duplicates == "random"){
-      message("The consensus sRNA sequences will be choose at random in the case 
-               of a tie \n")
+      message("Note: The consensus sRNA sequences will be choose at random in 
+the case of a tie \n")
     } else 
       if(duplicates == "exclude"){
-        message("The consensus sRNA sequences will be excluded in the case of a 
-                 tie \n") 
+        message("Note: The consensus sRNA sequences will be excluded in the case 
+of a tie") 
       }
-    message("\n")
     match_res <- vector("character", nrow(df))  # Initialize result vector
     sequence_res <- vector("character", nrow(df))
     width_res <- vector("character", nrow(df))
@@ -162,7 +159,7 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
     df$Complementary_DNA <- sapply(df$Sequence, find_complementary_sequenceDNA) 
   } else {
     message("There is no consensus RNA sequence between replicates, no 
-             complementary sequence has been determined.")
+complementary sequence has been determined.")
   }
   # add as col
   Cluster <-  data$Cluster
@@ -181,7 +178,7 @@ RNAsequences <- function(data, original = FALSE, match.threshold = 1,
         dplyr::select(!dplyr::starts_with("MajorRNA"))
     }
   if(tidy){
-    message("Removing sRNA clusters with no consensus sRNA sequence... \n")
+    message("Removing sRNA clusters with no consensus sRNA sequence...")
     data_output <-  data_output %>%  dplyr::filter(Sequence != "NA")
   }
   return(data_output)

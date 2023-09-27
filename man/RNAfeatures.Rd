@@ -51,7 +51,7 @@ respectively.
 
 This function can be utilised at different steps in your analysis, but is
 particularly powerful when observing the genomic location of potential mobile
-sRNA, and can be overlapped with a specific genome rather than a merged
+sRNA, and can be overlapped with a specific genome or with a merged
 annotation file.
 }
 \examples{

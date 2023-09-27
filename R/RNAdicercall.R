@@ -74,7 +74,7 @@
 #'
 #'
 #' @examples
-#'
+#'  # load data 
 #'  data("sRNA_data")
 #'
 #' # define consensus sRNA classes.
@@ -120,11 +120,9 @@ replicates... ")
                                         class_colnames, value = TRUE))
   }
   else if (is.null(conditions)) {
-    message("Calculating consensus dicercall based on information from all 
-replicates... ")
+    message("Calculating consensus dicercall based on information from all replicates... ")
     onlyconditions <- class_colnames
   }
-  message("\n")
   # unique values across the dicer call columns 
   unique_vals <- unique(unlist(data[onlyconditions]))
   # rowsum of columsn. 
@@ -137,8 +135,7 @@ replicates... ")
   t <- grep("^nt", base::names(data))
   
   if (ties.method == "random"){
-    message("The consensus dicercall will be choose at random in the case of a 
-tie...")
+    message("The consensus dicercall will be choose at random in the case of a tie...")
     new_df <- data 
     new_df$DicerCounts <- apply(new_df[t], 1, max)
     new_df <- new_df %>% 
@@ -149,8 +146,7 @@ tie...")
     
   } else 
     if(ties.method == "exclude"){
-      message("The consensus dicercall will be excluded in the case of a tie... 
-              ") 
+    message("The consensus dicercall will be excluded in the case of a tie...") 
       new_df <- data
       # Initialize result vector
       result <- vector("character", nrow(new_df))
@@ -215,8 +211,7 @@ tie...")
   new_df$DicerConsensus <- gsub("^nt_", "", new_df$DicerConsensus)
   
   if (tidy) {
-    message("\n")
-    message("Removing small RNA clusters with no consensus dicercall... \n")
+    message("Removing sRNA clusters with no consensus dicercall...")
     new_df_tidy <- new_df %>% dplyr::filter(DicerConsensus != "N")
     return(new_df_tidy)
   }

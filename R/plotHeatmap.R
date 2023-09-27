@@ -10,7 +10,7 @@
 #' @param value character; either `FPKM` or `RPM` - represents values to plot
 #'
 #' @param colours character; colors. Default is 
-#' `grDevices::hsv(1,1,seq(0,1,length.out = 12))`
+#'` grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "Blues"))(100) `
 #'
 #' @param pseudocount numeric; pseudocount, default is `1e-6`
 #' 
@@ -48,7 +48,7 @@
 #' data("sRNA_data_mobile")
 #'
 #' # plot heatmap of potential mobile sRNAs
-#'  p1 <-  plotHeatmap(sRNA_data_mobile)
+#'  p1 <-  plotHeatmap(sRNA_data_mobile, row.names = FALSE)
 #'
 #'
 #'
@@ -63,9 +63,10 @@
 #' @importFrom stats "reorder"
 #' @importFrom pheatmap "pheatmap"
 #' @importFrom stats "na.omit"
-#' @importFrom grDevices "hsv"
+#' @importFrom grDevices "colorRampPalette"
+#' @importFrom RColorBrewer "brewer.pal"
 plotHeatmap <- function (data, value = "RPM", pseudocount = 1e-6, 
-                         colours = grDevices::hsv(1,1,seq(0,1,length.out = 12)),
+                         colours = grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "Blues"))(100) ,
                          cluster = TRUE, scale = "none", 
                          clustering_method = "complete", 
                          row.names = TRUE,

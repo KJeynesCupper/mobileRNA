@@ -8,7 +8,7 @@ plotHeatmap(
   data,
   value = "RPM",
   pseudocount = 1e-06,
-  colours = grDevices::hsv(1, 1, seq(0, 1, length.out = 12)),
+  colours = (grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "Blues")))(100),
   cluster = TRUE,
   scale = "none",
   clustering_method = "complete",
@@ -24,7 +24,7 @@ plotHeatmap(
 \item{pseudocount}{numeric; pseudocount, default is \code{1e-6}}
 
 \item{colours}{character; colors. Default is
-\code{grDevices::hsv(1,1,seq(0,1,length.out = 12))}}
+\code{grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "Blues"))(100)}}
 
 \item{cluster}{logical; include hierarchical clustering when default
 \code{cluster= TRUE}}
@@ -68,7 +68,7 @@ replicates will contain zero values for the candidate mobile sRNA clusters.
 data("sRNA_data_mobile")
 
 # plot heatmap of potential mobile sRNAs
- p1 <-  plotHeatmap(sRNA_data_mobile)
+ p1 <-  plotHeatmap(sRNA_data_mobile, row.names = FALSE)
 
 
 

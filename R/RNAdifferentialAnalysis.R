@@ -39,7 +39,7 @@
 #' [edgeR::edgeR].
 #'
 #' @examples
-#'
+#'# load data 
 #' data("sRNA_data_consensus")
 #'# sample conditions.
 #' groups <- c("Heterograft", "Heterograft", "Heterograft",

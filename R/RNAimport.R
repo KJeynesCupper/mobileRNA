@@ -117,7 +117,7 @@ RNAimport <- function(input = c("sRNA"), directory, samples,
       message(sprintf("\r%s", progress_message))
       utils::flush.console()
     }
-    message("Completed importation of data from directory. \n")
+    message("Completed importation of data from directory.")
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns

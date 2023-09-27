@@ -85,6 +85,7 @@ together, overlapped on a single graph \code{together=TRUE}. This is not an
 option for bar plots.
 }
 \examples{
+# load data 
 data('sRNA_data')
 
 p1 <- RNAdistribution(data = sRNA_data, style = "line")
@@ -102,7 +103,9 @@ p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
 p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
+# load data with dicer-derived consensus calculated
 data("sRNA_data_consensus")
+
 p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus")
 
 }

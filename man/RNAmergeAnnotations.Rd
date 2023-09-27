@@ -81,22 +81,36 @@ the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a me
 genome,that you treat the input annotations in the same way.
 }
 \examples{
-# import GFF files into R
+# Load BiocFileCache package
+library(BiocFileCache)
 
-# Read reference genomes
+# generate cache in mobileRNA package
+package_directory <- system.file(package = "mobileRNA")
+
+# generate custom folder in package directory
+cache_directory <- file.path(package_directory, "cache")
+
+# Initialize a BiocFileCache in the cache directory
+cache <-  BiocFileCache(cache_directory, ask = FALSE)
+
+# Generate URL to GFF files
 url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
 
 anno1 <- paste0(url_remote,"chr12_Eggplant_V4.1_function_IPR_final.gff")
-
 anno2 <- paste0(url_remote, "chr2_ITAG4.0_gene_models.gff")
 
+# Add GFF files to cache:
+add_anno1 <- bfcadd(cache,"chr12_Eggplant_V4.1_function_IPR_final", fpath=anno1)
+rid1 <- names(add_anno1)
+
+add_anno2 <- bfcadd(cache,"chr2_ITAG4.0_gene_models",fpath=anno2)
+rid2 <- names(add_anno2)
+
+# rid1 and rid2 object contain the path location to the GFF files 
 # edit and merge
-merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
-             out_dir = tempfile("merged_annotation",tempdir(), 
+merged_anno <- RNAmergeAnnotations(annotationA = cache[[rid1]],
+                                   annotationB = cache[[rid2]],
+             out_dir = tempfile("merged_annotation",tmpdir = cache_directory, 
              fileext = ".gff3"))
-
-
-
-
 
 }

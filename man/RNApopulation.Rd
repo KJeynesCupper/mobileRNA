@@ -91,12 +91,12 @@ parameter & the control condition samples names to the \code{controls} parameter
 
 data("sRNA_data_consensus")
 
-# vector of control names
-reps <- c("heterograft_1", "heterograft_2" , "heterograft_3")
+# Select sRNA clusters only in the heterograft samples (ie. treatment)
 
 heterograft_pop <- RNApopulation(data = sRNA_data_consensus, 
-                                 conditions = reps)
-                                 
-                                 
-
+                                 conditions = c("heterograft_1", 
+                                                "heterograft_2", 
+                                                "heterograft_3"))
+# how many are unique to the heterografts?
+nrow(heterograft_pop)                                                
 }

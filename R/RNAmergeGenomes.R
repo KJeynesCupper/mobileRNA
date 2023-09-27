@@ -54,13 +54,8 @@
 #'you are working with large genomes which together take up more than 1Gb 
 #'storage. Please be patient and allow the function to run. 
 #' 
-#'Please note that this function uses parallel computation using the packages 
-#'(`parallel`, `foreach` & `doParallel`) to improve the processing speed. Hence
-#'common errors may occur is you have some parallel computing going on in the 
-#'background. To improve the handling, the function will create a number of 
-#'temporary files in your output directory, which are then merged into a single
-#'file and deleted. 
-#'
+#'Please note that this function uses parallel computation to improve the 
+#'processing speed.
 #'
 #'*IMPORTANT:*  The genome reference and annotation of the same 
 #'species/accession/variety must have chromosomes with matching names. It is 
@@ -71,32 +66,49 @@
 #'
 #'
 #' @examples
-#'
-#'# URL for example genome assemblies
-#'  url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-#'
-#'  fasta_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
-#'
-#'  fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
-#'
+#' 
+#' # Load BiocFileCache package
+#' library(BiocFileCache)
+#' 
+#' # generate cache in mobileRNA package
+#' package_directory <- system.file(package = "mobileRNA")
+#' 
+#' # generate custom folder in package directory
+#' cache_directory <- file.path(package_directory, "cache")
+#' 
+#' # Initialize a BiocFileCache in the cache directory
+#' cache <-  BiocFileCache(cache_directory, ask = FALSE)
+#' 
+#' # Generate URL to FASTA files
+#' url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
+#' fasta_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+#' fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
+#'  
+#' # Add FASTA files to cache:
+#' add_fasta1 <- bfcadd(cache,"chr12_Eggplant_V4.1", fpath=fasta_1)
+#' rid3 <- names(add_fasta1)
+#' 
+#' add_fasta2 <- bfcadd(cache,"chr2_S_lycopersicum_chromosomes",fpath=fasta_2)
+#' rid4 <- names(add_fasta2)
+#' 
+#' # rid3 and rid4 object contain the path location to the FASTA files 
 #'
 #' # run function to merge
-#' merged_ref <- RNAmergeGenomes(genomeA = fasta_1, genomeB = fasta_2,
-#'                                out_dir = tempfile("merged_genome",tempdir(), 
+#' merged_ref <- RNAmergeGenomes(genomeA = cache[[rid3]], genomeB = cache[[rid4]],
+#'                                out_dir = tempfile("merged_genome",
+#'                                tmpdir = cache_directory, 
 #'                                fileext = ".fa"), 
 #'                                cores = FALSE,number_cores = 1)
 #'
 #'
 #'
 #'
-#' ## or, to set specific changes to chromosome names:
-#'  # genomeA represents **Solanum melongena** and the chromosomes will be
-#'  # abbreviated to `SM`.
-#' # genomeB represents **Solanum lycopersicum** and the chromosomes will be
-#' # abbreviated to `SL`.
+#' # or, to set specific changes to chromosome names:
 #'
-#' merged_ref2 <- RNAmergeGenomes(genomeA = fasta_1,genomeB = fasta_2 ,
-#'             out_dir = tempfile("merged_genome",tempdir(), fileext = ".fa"),
+#' merged_ref2 <- RNAmergeGenomes(genomeA = cache[[rid3]], 
+#'                                genomeB = cache[[rid4]] ,
+#'             out_dir = tempfile("merged_genome2", tmpdir = cache_directory, 
+#'             fileext = ".fa"),
 #'             abbreviationGenomeA = "SM",
 #'             abbreviationGenomeB = "SL",  
 #'            cores = FALSE, number_cores = 1)
@@ -145,12 +157,18 @@ RNAmergeGenomes <- function(genomeA, genomeB, out_dir,
     Biostrings::readDNAStringSet(file, format = "fasta")
   }, BPPARAM = BPPARAM)
   
+  if(!is.null(names(ref1_fragments))){
+    ref1_fragments <- unname(ref1_fragments)
+  }
+  if(!is.null(names(ref2_fragments))){
+    ref2_fragments <- unname(ref2_fragments)
+  }
   # Join fragments together
   ref1 <- do.call(c, ref1_fragments)
   ref2 <- do.call(c, ref2_fragments)
   
   # Replace chromosome names in reference genomes
-  message("Replacing chromosome names... \n")
+  message("Replacing chromosome names...")
   ref1_names <- names(ref1)
   ref1_newnames <- paste0(abbreviationGenomeA, "_", ref1_names)
   ref1_newnames <- sub("\\.", "", ref1_newnames)
@@ -163,26 +181,23 @@ RNAmergeGenomes <- function(genomeA, genomeB, out_dir,
   
   # Merge genomes
   merged_genome <- append(ref1, ref2)
-  message("Genomes have been successfully merged \n")
+  message("Genomes have been successfully merged.")
   message("Attempting to save merged genome to: ", out_dir, "\n")
   
-  message("Please be patient, this next step may take a long time ..  \n")
+  message("-- Note:Please be patient, this next step may take a long time \n")
   
-  loc <- paste0(dirname(out_dir), "/tempfile_*.fasta")
   BiocParallel::bplapply(1:number_cores, function(i) {
     Biostrings::writeXStringSet(merged_genome,
                                 file = paste0(dirname(out_dir), "/tempfile_", i,
-                                              ".fasta"),
+                                              ".fa"),
                                 format = "fasta")
   }, BPPARAM = BPPARAM)
-  
-  message("All temporary files have been created \n")
-  message("Merging temporary files ... \n ")
-  message("At this point, get a cup of tea; it's going to be a while ... \n ")
-  
+  message("All temporary files have been created.")
+  message("Merging temporary files... ")
+  loc <- paste0(dirname(out_dir), "/tempfile_*.fa")
   system(paste0("cat ", loc, " > ", out_dir), intern = TRUE)
   
-  message("Deleting temporary files ... \n")
+  message("Deleting temporary files...")
   system(paste0("rm ", loc), intern = TRUE)
   
   return(merged_genome)

@@ -1,6 +1,6 @@
 Package: mobileRNA
 Type: Package
-Title: Explore canditate mobile sRNAs & sRNAs population-scale changes
+Title: Explore sRNAs population changes & canditate foreign mobile sRNAs
 Version: 0.99.9
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre")),
@@ -25,7 +25,8 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    bioseq
+    bioseq,
+    BiocFileCache
 Imports: 
     dplyr,
     tidyr, 

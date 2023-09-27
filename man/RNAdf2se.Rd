@@ -42,7 +42,7 @@ the data appropriately.
 }
 }
 \examples{
-
+# load data.frame
 data("sRNA_data")
 
 se <- RNAdf2se(input = "sRNA", data = sRNA_data)
