@@ -55,5 +55,5 @@ Version: 0.99.9 (2023-09-23)
     Amended CITATION and NEWs file
     Altered examples in RNAmergeAnnotations/Genomes functions to prevent examples saving into users directory
     Improved the functionality of RNAdicercall, specifically the `exclude` parameter. 
-Version: 1.01.1 (2023-09-27)
+Version: 1.1.0 (2023-09-27)
   Updated Version
