@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
 Title: Explore sRNAs population changes & canditate foreign mobile sRNAs
-Version: 0.99.9
+Version: 1.01.1
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut"))
