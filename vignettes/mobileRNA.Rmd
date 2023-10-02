@@ -3,8 +3,7 @@ title: "mobileRNA: Explore candidate mobile sRNAs & sRNAs population-scale chang
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document:
-  toc: true
+  BiocStyle::pdf_document
 toc_depth: 3
 number_sections: true
 theme: united
