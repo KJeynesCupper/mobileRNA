@@ -133,11 +133,14 @@ RNAmobile <- function(data, controls, genome.ID,
   res <- .remove_mapping_errors(data = x, controls = controls)
   
   # Remove rows with no counts 
-  count_columns <- grep("^Count", names(res))
+  count_columns <- as.numeric(grep("^Count", names(res)))
   # Identify rows where all values in Count columns are zero
-  rows_to_remove <- apply(res[count_columns], 1, function(row) all(row == 0))
+  refined <- res %>% select(all_of(count_columns))
+  rows_to_remove <- apply(refined, 1, function(row) all(row == 0))
+  
   # Remove rows with all zero values in Count columns
   res <- res[!rows_to_remove, ]
+  
   if (statistical) {
     if (is.null(p.value)) {
       res <- res %>% filter(padjusted <= padj)
@@ -153,7 +156,7 @@ RNAmobile <- function(data, controls, genome.ID,
     }
     if(input == "sRNA"){
     res <- res %>% filter(!DicerCounts < threshold)
-  } else 
+  }  
     if(input == "mRNA"){
       res <- res %>% filter(!SampleCounts < threshold)
       }

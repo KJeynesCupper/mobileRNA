@@ -103,14 +103,14 @@ ensure the genomes remain distinguishable. The function
 
 # import sRNAseq data
 df_sRNA <- RNAimport(input = "sRNA",
-                     directory = "./analysis/sRNA_mapping_results/",
+                     directory = "./analysis/sRNA_mapping_results",
                      samples = c("heterograft_1", "heterograft_2",
                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
                      "selfgraft_3"))
 
 # import mRNAseq data
 df_mRNA <- RNAimport(input = "mRNA",
-                     directory = "./analysis/mRNA_counts/",
+                     directory = "./analysis/mRNA_counts",
                      samples = c("heterograft_1", "heterograft_2",
                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
                      "selfgraft_3"))

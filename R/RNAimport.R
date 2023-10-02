@@ -92,14 +92,14 @@
 #'
 #' # import sRNAseq data
 #' df_sRNA <- RNAimport(input = "sRNA",
-#'                      directory = "./analysis/sRNA_mapping_results/",
+#'                      directory = "./analysis/sRNA_mapping_results",
 #'                      samples = c("heterograft_1", "heterograft_2",
 #'                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
 #'                      "selfgraft_3"))
 #'
 #'# import mRNAseq data
 #' df_mRNA <- RNAimport(input = "mRNA",
-#'                      directory = "./analysis/mRNA_counts/",
+#'                      directory = "./analysis/mRNA_counts",
 #'                      samples = c("heterograft_1", "heterograft_2",
 #'                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
 #'                      "selfgraft_3"))
@@ -154,22 +154,20 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     for (file in samples) {
       file_n <- file_n + 1
       options(datatable.showProgress = FALSE)
-      dt_list[[file]] <- data.table::fread(paste0(directory, file,
-                                                  "/Results.txt"),header = TRUE)
+      dt_list[[file]] <- data.table::fread(file.path(directory, file,
+                                                     "Results.txt"),header = TRUE)
       progress_counter <- file
-      progress_message <- paste0("Processing sample: ", progress_counter,".", "\n",
+      progress_message <- paste0("Processing sample: ", progress_counter,
+                                 "\n",
                                  "File ", file_n, " of ", total_files)
-      cat(sprintf("\r%s", progress_message))
+      message(sprintf("\r%s", progress_message))
       utils::flush.console()
     }
-    cat("\n")  # Print a newline after progress is complete
-    cat("Completed importation of data from directory. \n")
-    
-    
+    message("Completed importation of data from directory.")
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    cat("Checking data content... \n")
+    message("Checking data content...")
     required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -179,20 +177,16 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                    line of the input file(s)"))
       }
     }
-    cat("Data content is correct. \n")
-    cat("\n") 
-    
+    message("Data content is correct.")
     # merge first columns to create list of loci across all samples
     loci <- lapply(dt_list, "[", , "Locus")
     loci_all <- unique(Reduce(merge,loci))
-
     # Define a function to update the loci with the matching values from a
     # single input dataframe
     update_locus_df <- function(dt, i) {
       # Join loci and the current input df on chromosome and coordinate range
       join_cols <- c("Locus")
       dt_match <- loci_all[dt, on = join_cols, nomatch = 0]
-
       # Aggregate the matching rows by chromosome, start coordinate, & end coor,
       # and compute the sum of DicerCall, Reads, and RPM values for each group
       dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
@@ -200,21 +194,18 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                              RPM = sum(RPM),
                              MajorRNA = as.character(MajorRNA)),
                          by = join_cols]
-
       # Rename the aggregated columns
       col_names <- paste0(c("DicerCall_", "Count_", "RPM_", "MajorRNA_"),  i)
       data.table::setnames(dt_agg, c("Locus", col_names))
-
+      
       # Merge the aggregated values back into df1
       loci_all[dt_agg, on = join_cols, (col_names) := mget(col_names)]
-
+      
     }
-
     # Update loci with the matching values from each input dataframe
-    for (i in seq_along(dt_list)) {
+    for (i in seq_len(length(dt_list))) {
       update_locus_df(dt_list[[i]], names(dt_list)[i])
     }
-
     # Fill in missing values with 0 or N
     ## Dicer call needs to character/factor
     loci_all <- loci_all %>%
@@ -227,11 +218,8 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       dplyr::mutate(dplyr::across(dplyr::contains('MajorRNA_'),
                                   ~tidyr::replace_na(.,"N"))) %>%
       dplyr::mutate_all(~ ifelse(. == "*", "N", .)) # remove any astriks to "N"
-
-
     # Convert loci_all back to a data.frame and return it
     res_data <- as.data.frame(loci_all)
-
     # Split the Locus column into three new columns
     locus_cols <- data.frame(
       chr = sapply(strsplit(res_data$Locus, split = ":"), "[[", 1),
@@ -245,19 +233,22 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
     # order by chr
     df_final <- df_final[order(df_final$chr),]
     # insert cluster name
-    cluster_names <-  paste0("cluster_", 1:nrow(df_final))
+    cluster_names <-  paste0("cluster_", seq_len(nrow(df_final)) )
     df_final <- as.data.frame(append(df_final, list(Cluster = cluster_names),
                                      after = 4))
     
-    # Remove rows with no counts 
-    count_columns <- grep("^Count", names(df_final))
-    # Identify rows where all values in Count columns are zero
-    rows_to_remove <- apply(df_final[count_columns], 1, function(row) all(row == 0))
-    # Remove rows with all zero values in Count columns
-    df_final <- df_final[!rows_to_remove, ]   
+    
+    if (tidy){
+      # Remove rows with no counts 
+      count_columns <- grep("^Count", names(df_final))
+      # Identify rows where all values in Count columns are zero
+      rows_to_remove <- apply(df_final[count_columns], 1, function(row) all(row == 0))
+      # Remove rows with all zero values in Count columns
+      df_final <- df_final[!rows_to_remove, ]   
+    }
     # return values
     return(df_final)
-
+    
   } else
     if(input == "mRNA"){
       if (base::missing(annotation)) {
@@ -266,11 +257,10 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       # load data as list
       sample_data <- list()
       for (file in samples) {
-        sample_data[[file]] <- data.table::fread(paste0(directory, file,
-                                                        ".txt"), header = FALSE)
+        sample_data[[file]] <- data.table::fread(file.path(directory, paste0(file, ".txt")),header = FALSE)
         colnames(sample_data[[file]])[1] <- "Gene"
         colnames(sample_data[[file]])[2] <- "Count"
-     
+        
       }
       # remove rows with extra info 
       sample_data <- lapply(sample_data, function(x) {
@@ -295,9 +285,9 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
         dplyr::select(chr, start, end, Name, width)%>% 
         dplyr::rename(Gene = Name)
       Locus <- paste0(genes_info$chr, ":",genes_info$start,"-",
-                            genes_info$end)
+                      genes_info$end)
       genes_info <- cbind(Locus, genes_info)
-  
+      
       # merge gene list with annotation info. 
       merged_gene_info <- merge(genes_all, genes_info, by = "Gene", all.x = TRUE)
       #merged_gene_info <- merged_gene_info[stats::complete.cases(merged_gene_info), ]
@@ -314,9 +304,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
         # Merge the aggregated values back into df1
         merged_gene_info[matches_values, on = "Gene", (col_name) := mget(col_name)]
         # Print progress
-        if (report) {
-          cat(paste0("Added information from ", names(sample_data[i]) ," to the analysis mRNA dataframe" ,"\n"))
-        }
+        
       }
       
       # Fill in missing values with 0 or N
@@ -325,7 +313,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                                     ~tidyr::replace_na(.,0)))
       # set genes as rownames 
       fpkm <- apply(X = subset(mRNA_information, 
-                               select = c(-Gene, -chr, -start, -end, -width)),
+                               select = c(-Locus, -Gene, -chr, -start, -end, -width)),
                     MARGIN = 2, 
                     FUN = function(x) {
                       sum_x <- sum(as.numeric(x))
@@ -336,11 +324,14 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
                       }
                       t
                     })
+      
+      
+      
       # add prefix to all columns 
-     fpkm <- data.frame(fpkm)
-     names_col <- sub("^Count_", "", colnames(fpkm))
-     colnames(fpkm) <- paste0("FPKM_", names_col)
-     
+      fpkm <- data.frame(fpkm)
+      names_col <- sub("^Count_", "", colnames(fpkm))
+      colnames(fpkm) <- paste0("FPKM_", names_col)
+      
       
       # add result to df to output
       mRNA_information <- cbind(mRNA_information, fpkm)
@@ -348,14 +339,13 @@ RNAimport <- function(input = c("sRNA", "mRNA"), directory, samples,
       # add thresholding values - number of replicates with counts 
       t <- names(mRNA_information)[grep("^Count_", names(mRNA_information))]
       SampleCounts_vals <- apply(X = subset(mRNA_information, 
-                               select = c(t)),
-                    MARGIN = 1, 
-                    FUN = function(x) {
-                      length(x[x > 0])
-                    })
+                                            select = c(t)),
+                                 MARGIN = 1, 
+                                 FUN = function(x) {
+                                   length(x[x > 0])
+                                 })
       
-      mRNA_information$SampleCounts <- SampleCounts_val
-      
+      mRNA_information$SampleCounts <- SampleCounts_vals
       # remove rows with
       if (tidy){
         mRNA_information <- mRNA_information %>%

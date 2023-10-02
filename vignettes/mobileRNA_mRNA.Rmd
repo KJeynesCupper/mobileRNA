@@ -93,7 +93,7 @@ molecules in chimeric systems, and it should be emphasized that this is an
 optional step. However, statistical analysis for the exploration of population
 dynamics should be a mandatory step. Here we include a single 
 function which can be instructed to undertake differential analysis using either 
-the edgeR or DESeq2 method (see function \code[mobileRNA::RNAanalysis()]). The
+the edgeR or DESeq2 method (see function \code[mobileRNA::RNAdifferentialAnalysis()]). The
 function outputs additional columns to your working dataset, including the 
 raw count mean, log2FoldChange, p-value and adjusted p-value. 
 
@@ -305,54 +305,6 @@ RNAmergeAnnotation(annotationA = "/Users/user1/projectname/workplace/
 
 ```
 
-## Auto-Detection of mRNA loci
-Here we identify and build a list mRNA loci within each sample to assist
-the mapping step later on to ensure consistency across the analysis. This step
-is very important to consider in the analysis as it prevents false assumptions. 
-This step aligns a replicate to the given genome assembly and the
-output contains loci where mRNA reads aligned. 
-
-#### Step 1 
-
-``` bash
-
-
-```
-
-
-#### Step 2 
-
-Now, we collate all the mRNA loci information from each sample into a text file. 
-
-``` r
-
-```
-
-
-
-## Mapping   
-
-Each sample is mapped to the merged reference genome with the list of mRNA 
-clusters. 
-
-
-``` bash
-
-
-```
-
-<br>
-
-## Raw count generation    
-
-
-
-``` bash
-
-
-```
-
-<br>
 
 # Analysis
 Here, the analysis of the pre-processed data occurs, with the aim to
@@ -384,7 +336,7 @@ the mapping, and stored in the directory supplied to the argument `directory`.
 
 ```{r, eval = FALSE, message=FALSE}
 ## Import & organise data.
-results_dir <-  "./analysis/alignment_unique_two/"
+results_dir <-  "./analysis/alignment_unique_two"
 sample_names <- c("heterograft_1","heterograft_2", "heterograft_3",
                   "selfgraft_1", "selfgraft_2", "selfgraft_3")
 
@@ -414,8 +366,8 @@ enough variation to suggest that the replicates are from different groups.
 
 To investigate the sample similarity/difference, we will undertake sample-level
 quality control using three different methods:
-- Principle component analysis (PCA)
-- Hierarchical clustering Heatmap
+- Principal component analysis (PCA)
+- Sample distance matrix
 
 This will show us how well samples within each condition cluster together, which
 may highlight outliers. Plus, to show whether our experimental conditions
@@ -450,7 +402,7 @@ plotSamplePCA(mRNA_data, group)
 
 ```
 
-### Hierarchical clustered heatmap to assess sample distance
+### Sample distance matrix
 
 Similarly, to a PCA plot, the `plotSampleDistance()` function undertakes
 hierarchical clustering with an unbiased log transformation to calculate sample
@@ -490,12 +442,12 @@ groups <- c("Heterograft", "Heterograft", "Heterograft",
 
 
 ## Differential analysis of whole dataset: DEseq2 method 
-mRNA_DESeq2 <- RNAanalysis(data = mRNA_data,
+mRNA_DESeq2 <- RNAdifferentialAnalysis(data = mRNA_data,
                               group = groups,
                               method = "DESeq2" )
 
 ## Differential analysis of whole dataset: edgeR method 
-mRNA_edgeR <- RNAanalysis(data = mRNA_data,
+mRNA_edgeR <- RNAdifferentialAnalysis(data = mRNA_data,
                               group = groups,
                               method = "edgeR" )
 
@@ -529,7 +481,7 @@ control_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 ## Identify potential tomato mobile molecules, before subsetting classes
 mobile_mRNA <- RNAmobile(data = mRNA_DESeq2, 
                          controls = control_names,
-                         genome.ID = "SL40",
+                         genome.ID = "A_",
                          task = "keep", 
                          statistical = FALSE)
 

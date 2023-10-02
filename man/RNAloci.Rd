@@ -7,12 +7,13 @@
 RNAloci(files, out, samples)
 }
 \arguments{
-\item{files}{Path to the directory containing ShortStack mapping results.}
+\item{files}{path; directory containing \code{ShortStack} mapping results.}
 
-\item{out}{Path to the directory to save the outputted annotation files,
-include the name of the output file, including file extension (.txt`)}
+\item{out}{path; a character string or a \code{base::connections()} open
+for writing to save the output annotation files. Include name of the output
+file and file extension \code{.txt}.}
 
-\item{samples}{A character vector containing the names of all the samples in
+\item{samples}{character; vector containing the names of all the samples in
 the analysis. These should match the sample folder names created in mapping
 step one, outputted by \code{Shortstack}.}
 }
@@ -54,4 +55,7 @@ Loci_info <- RNAloci(files = folder,
                     samples = conditions)
 
 }
+}
+\references{
+ShortStack (https://github.com/MikeAxtell/ShortStack)
 }

@@ -264,8 +264,8 @@ cluster based on the consensus across (specific) replicates.
 sRNA_data_summary <- RNAdicercall(data = sRNA_data,  
                                  tidy=TRUE)
 # plot results 
-plot_distribution <- RNAdistribution(data = sRNA_data_consensus, 
-                        consensus = TRUE)
+plot_distribution <- RNAdistribution(data = sRNA_data_summary, 
+                        style = "consensus")
 # View figure
 plot_distribution$plot
 ```
@@ -283,13 +283,13 @@ groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
 
 ## Differential analysis using the DEseq2 method 
-sRNA_DESeq2 <- RNAanalysis(data = sRNA_data_summary,
+sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_summary,
                               group = groups,
                               method = "DESeq2")
 
 ## Differential analysis using the edgeR method 
 
-sRNA_edgeR <- RNAanalysis(data = sRNA_data_summary,
+sRNA_edgeR <- RNAdifferentialAnalysis(data = sRNA_data_summary,
                               group = groups,
                               method = "edgeR")
 ```
@@ -358,7 +358,7 @@ First lets look at the sRNA clusters unique to the treatment condition:
 ```{r}
 # select sRNA clusters only found in treatment & not in the control samples
 treatment_reps <- c("heterograft_1", "heterograft_2" , "heterograft_3")
-unique_treatment <- RNApopulation(data = sRNA_data_consensus, 
+unique_treatment <- RNApopulation(data = sRNA_data_summary, 
                                    conditions = treatment_reps)
 
 # look at number of sRNA cluster only found in treatment 
@@ -370,7 +370,7 @@ Now, the sRNA clusters unique to the control condition:
 ```{r}
 # select sRNA clusters only found in control & not in the treatment samples
 control_reps <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
-unique_control <- RNApopulation(data = sRNA_data_consensus, 
+unique_control <- RNApopulation(data = sRNA_data_summary, 
                                    conditions = control_reps)
 # look at number of sRNA cluster only found in control  
 nrow(unique_control) 
