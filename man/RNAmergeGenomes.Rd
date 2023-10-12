@@ -7,11 +7,10 @@
 RNAmergeGenomes(
   genomeA,
   genomeB,
-  out_dir,
+  output_file,
   abbreviationGenomeA = "A",
   abbreviationGenomeB = "B",
-  cores = TRUE,
-  number_cores = 2
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
@@ -21,7 +20,7 @@ FASTA format (.fa/.fasta).}
 \item{genomeB}{path; directory path to a genome reference assembly file in
 FASTA format (.fa/.fasta).}
 
-\item{out_dir}{path; a character string or a \code{base::connections()} open
+\item{output_file}{path; a character string or a \code{base::connections()} open
 for writing. Including file output name, and file extension of \code{.fa}.}
 
 \item{abbreviationGenomeA}{character; string to represent prefix added to
@@ -32,13 +31,10 @@ separated from existing chromosome names by an underscore (_).}
 existing chromosome names in \code{genomeB}. Default set as "B", which is
 separated from existing chromosome names by an underscore (_).}
 
-\item{cores}{logical;  the number of CPU cores for parallel computation.
-By default, \code{cores = TRUE} which tells the system to detect the number of CPU
-cores on the current host.While, \code{cores = FALSE} allows a user defined number
-of cores which is stored in the variable \code{number_cores}.}
-
-\item{number_cores}{numeric; number of CPU cores to use during parallel
-computation.}
+\item{BPPARAM}{An optional \code{\link[=BiocParallelParam]{BiocParallelParam()}} instance determining the
+parallel back-end to be used during evaluation, or a list of BiocParallelParam
+instances, to be applied in sequence for nested calls to \emph{BiocParallel}
+functions.}
 }
 \value{
 Returns a single FASTA format file containing both  genome assemblies
@@ -82,50 +78,33 @@ same way.
 }
 \examples{
 
-# Load BiocFileCache package
+# Initialize a cache directory, using the BiocFileCache package, to store the 
+# downloads used in this example
 library(BiocFileCache)
+cache_dir <- tools::R_user_dir("mobileRNA", which = "cache")
+cache <- BiocFileCache(cache_dir)
 
-# generate cache in mobileRNA package
-package_directory <- system.file(package = "mobileRNA")
 
-# generate custom folder in package directory
-cache_directory <- file.path(package_directory, "cache")
-
-# Initialize a BiocFileCache in the cache directory
-cache <-  BiocFileCache(cache_directory, ask = FALSE)
-
-# Generate URL to FASTA files
+# Construct URL to example FASTA files
 url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-fasta_1 <- paste0(url_remote, "chr12_Eggplant_V4.1.fa.gz")
-fasta_2 <- paste0(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
- 
-# Add FASTA files to cache:
-add_fasta1 <- bfcadd(cache,"chr12_Eggplant_V4.1", fpath=fasta_1)
-rid3 <- names(add_fasta1)
 
-add_fasta2 <- bfcadd(cache,"chr2_S_lycopersicum_chromosomes",fpath=fasta_2)
-rid4 <- names(add_fasta2)
+fasta_1_url <- file.path(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+fasta_2_url <- file.path(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
 
-# rid3 and rid4 object contain the path location to the FASTA files 
-
-# run function to merge
-merged_ref <- RNAmergeGenomes(genomeA = cache[[rid3]], genomeB = cache[[rid4]],
-                               out_dir = tempfile("merged_genome",
-                               tmpdir = cache_directory, 
-                               fileext = ".fa"), 
-                               cores = FALSE,number_cores = 1)
+# Download example FASTA files and add them to cache
+fasta_1 <- bfcrpath(cache, fasta_1_url)
+fasta_2 <- bfcrpath(cache, fasta_2_url)
 
 
+# Merge FASTA files and write them to a file in output_file.
+# For this example, the result is written to a temporary file.
+# For real use cases, the output_file should be an appropriate location on your 
+# computer.
 
+output_file <- tempfile("merged_annotation", fileext = ".fa")
 
-# or, to set specific changes to chromosome names:
-
-merged_ref2 <- RNAmergeGenomes(genomeA = cache[[rid3]], 
-                               genomeB = cache[[rid4]] ,
-            out_dir = tempfile("merged_genome2", tmpdir = cache_directory, 
-            fileext = ".fa"),
-            abbreviationGenomeA = "SM",
-            abbreviationGenomeB = "SL",  
-           cores = FALSE, number_cores = 1)
+merged_ref <- RNAmergeGenomes(genomeA = fasta_1, 
+genomeB = fasta_2,
+output_file = output_file)
             
 }

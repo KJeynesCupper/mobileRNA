@@ -27,6 +27,7 @@
 #' * p-value
 #' * Adjusted p-value
 #' * Log counts per million (CPM/RPM)
+#' * Comparison order 
 #'
 #' @details The analysis allows the users to choose the method which best suits
 #' their data. Notably, `DESeq2` cannot compute the analysis when there only
@@ -41,9 +42,14 @@
 #' @examples
 #'# load data 
 #' data("sRNA_data_consensus")
+#' 
+#' controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
+#' 
+#' reorder_df <- RNAreorder(sRNA_data_consensus, controls)
+#' 
 #'# sample conditions.
-#' groups <- c("Heterograft", "Heterograft", "Heterograft",
-#'           "Selfgraft", "Selfgraft", "Selfgraft")
+#'groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
+#'            "Heterograft", "Heterograft", "Heterograft")
 #'
 #'
 #'## Differential analysis: DEseq2 method
@@ -68,8 +74,9 @@
 #' @importFrom dplyr "mutate_at"
 #' @importFrom tidyr "replace_na"
 
-RNAdifferentialAnalysis <- function(data, group, method = c("edgeR", "DESeq2"),
-                        dispersionValue = NULL){
+RNAdifferentialAnalysis <- function(data, group, 
+                                    method = c("edgeR", "DESeq2"),
+                                    dispersionValue = NULL){
   if (base::missing(data) || !base::inherits(data,  "data.frame")) {
     stop("Please specify a data frame")
   }
@@ -114,5 +121,8 @@ RNAdifferentialAnalysis <- function(data, group, method = c("edgeR", "DESeq2"),
   res.df <- data %>%
     dplyr::mutate_at(c('log2FoldChange','padjusted', 'pvalue'),
                      ~tidyr::replace_na(.,0))
+  comparision.order <- paste(unique(groups),  collapse = " Vs ")
+  res.df$comparision.order <- comparision.order
+    
   return(res.df)
 }

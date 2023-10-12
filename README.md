@@ -4,26 +4,25 @@ mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/log
 
 Overview
 ======================================================================
-mobileRNA is an `R` package that provides a pipeline for the rapid 
-identification of small RNA molecules. It has been designed for two key 
-purposes; to undertaken typical sRNAseq between treatment and control and/or
-to identify endogenous mobile small RNA (sRNA) molecules in plant graft 
-systems. The tool provides a pipeline for each, in separate vignettes, both 
-include pre-processing and analysis of sRNA sequencing data, 
-and soon mRNA sequencing data. 
+**mobileRNA** is an `R` package that provides a pipeline for the rapid 
+ sRNA sequencing data pre-processing and analysis. It has been designed for two 
+ analysis workflows; the core analysis to undertaken typical sRNAseq between 
+ treatment and control and/or the mobile sRNA analysis to identify endogenous
+ mobile sRNAs chimeric systems. This was specifically designed for the analysis 
+ of samples from plant grafting experiments, which can generate plants with 
+ distinct genotypes for the upper parts (scion) and roots. 
 
-It has been established that many different substances and molecules 
-including RNAs can travel between the shoot and roots in plants. Many of these 
-studies utilized grafting, and this method has can be used to also join different
-species together. Plant heterograft systems are chimeric, comprised of two 
-genotypes joined at the graft junction; hence, molecules produces and encoded by 
-each genotype might be exchanged across the graft junction. These molecules 
-could have implications to the regulation of gene expression and trait 
-acquisition. for instance, sRNAs are linked to epigenetic pathways, such as 
-the RNA-directed DNA methylation pathway and post-transcriptional gene 
-silencing, which have implications to gene regulatory patterns. Changes in these
-sRNA populations could instigate or facilitate grafting-induced traits, such as
-improved plant vigour. 
+It has been established that many different molecules including RNAs can travel 
+between the shoot and roots in plants. Many of these studies utilized grafting, 
+and this method has can be used to also join different species together. Plant 
+heterograft systems are chimeric, comprised of two genotypes joined at the graft 
+junction; hence, molecules produces and encoded by each genotype might be 
+exchanged across the graft junction. These molecules could have implications to 
+the regulation of gene expression and trait acquisition. For instance, sRNAs are 
+linked to epigenetic pathways, such as the RNA-directed DNA methylation pathway 
+and post-transcriptional gene silencing, which have implications to gene 
+regulatory patterns. Changes in these sRNA populations could instigate or 
+facilitate grafting-induced traits, such as improved plant vigour. 
 
 For the identification of mobile sRNAs between genotypes, current methods 
 utilize a step-wise mapping of samples to each genome within the
@@ -33,12 +32,10 @@ assemblies relating to the genotypes in the heterograft system.
 
 **Below is a quick-start guide to the identification of mobile sRNAs in a 
 chimeric system** <br>
-To undertake sRNAseq analysis for treatment vs control, please see vignettes. 
 
 
 *Look-out for Version 2 which accommodates mRNA movement*
 <br>
-
 
 Author
 --------

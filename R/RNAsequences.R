@@ -41,7 +41,7 @@
 #' replicates share the same sRNA sequence, the sequence is pulled and the 
 #' complementary DNA and RNA sequences are calculated. Using the 
 #' `match.threshold` parameter, we can alter the minimum number of replicates 
-#' required to share the sRNA sequence to count as a match. For example, if set 
+#' required to share the RNA sequence to count as a match. For example, if set 
 #' as `match.threshold=3`, at least 3 replicates must contain the same sequence. 
 #' As a general rule, if only one replicate has determined a sRNA sequence it is 
 #' noted that there is no match, but the sequence is pulled and the 
@@ -60,7 +60,8 @@
 #'@return The results can be stored in the the working dataframe supplied to the
 #' function or stored as a new dataframe containing only the results from the
 #' function. The results includes:
-#' - Match: whether the sRNA sequence is consistent across replicates
+#' 
+#' - Match: whether the RNA sequence is consistent across replicates
 #' - Sequence:  character; sequence of the most abundant sRNA within a cluster
 #' - Complementary_RNA: character; complementary RNA nucleotide sequence
 #' - Complementary_DNA: character; complementary DNA nucleotide sequence

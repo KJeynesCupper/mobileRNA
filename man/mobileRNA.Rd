@@ -21,8 +21,8 @@ The most important functions in the \pkg{mobileRNA} are:
 all de novo sRNA cluster loci across the experimental design}
 \item{\code{\link{RNAimport}}}{reads the ShortStack Results report files in
 to a dataframe for all conditions}
-\item{\code{\link{RNAdicercall}}}{calculates the dicer-derived sRNA
-consensus class}
+\item{\code{\link{RNAdicercall}}}{calculates the consensus sRNA
+dicercall class}
 \item{\code{\link{RNAsubset}}}{subsets the working data set to select a
 defined sRNA class}
 \item{\code{\link{RNAdifferentialAnalysis}}}{undertakes differential
@@ -31,8 +31,9 @@ analysis using either the edgeR or DESeq2 method for data structure}
 mobile sRNA molecules in a chimeric system}
 \item{\code{\link{RNApopulation}}}{selects the sRNAs unique to the defined
 sample replicates}
-\item{\code{\link{RNAsignificant}}}{selects statistically significant sRNA
-clusters}
+\item{\code{\link{RNAsummary}}}{Summarise the abundance of sRNA clusters}
+\item{\code{\link{RNAreorder}}}{Reorder the data frame for differential
+analysis, ensuring control verse treatment comparison}
 \item{\code{\link{RNAsequences}}}{defines the consensus RNA sequence for a
 sRNA cluster}
 \item{\code{\link{RNAattributes}}}{overlaps the sRNA clusters with a GFF
@@ -56,44 +57,6 @@ given samples}
 files}
 \item{\code{\link{RNAdf2se}}}{Convert \code{mobileRNA} dataframe to
 a SummarizedExperiment object }
-}
-}
-\examples{
-\dontrun{
-
-# Load ShortStack results into R (this is an un-runnable example):
-## Directory containing results
-results_dir <-  "./output/directory/step2/"
-
-## Sample names and total number of reads, in the same order. 
-sample_names <- c("heterograft_1", "heterograft_2", "heterograft_3",
-                  "selfgraft_1", "selfgraft_2", "selfgraft_3")
-
-sRNA_data <- RNAimport(input = "sRNA", 
-                      directory = results_dir,
-                      samples = sample_names)
-
-# load the data set:
- data("sRNA_data")
- 
-# Calculate consensus dicer-derived sRNA class:
-sRNA_data_summary <- RNAdicercall(data = sRNA_data)
-
-# call candidate mobile sRNAs:
-# (based on foreign genome containing the prefix "A_")
-
-controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
-
-mobile_df <- RNAmobile(data = sRNA_data_summary, 
-                       controls = controls, 
-                       id = "A_", task = "keep")
-                       
-## output dataframe containing potentially mobile sRNAs
-
-output <- mobile_df
-
-# save output as txt file 
-write.table(output, "./output.txt")
 }
 }
 \seealso{

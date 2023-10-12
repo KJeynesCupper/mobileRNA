@@ -1,28 +1,45 @@
-#' Define the sRNA dicer consensus for each dicer-derived sRNA cluster
+#' Define the consensus dicercall for each sRNA cluster
 #'
-#' @description Using the data, the function uses the supplied dataframe and
-#' adds an additional column stating the consensus sRNA class for each
-#' dicer-derived cluster.
+#' @description The dicercall represent the length in nucleotides of the most 
+#' abundant sRNA sequence within a cluster. The function calculates the 
+#' consensus dicercall classification based on the predictions for the samples 
+#' in the analysis. 
 #'
 #' @details
-#' The function calculates the consensus sRNA class. Changes in parameter 
-#' settings will yield varying results. 
-#'
-#' When working with a chimeric system, for example interspecific grafting, 
-#' mapping errors can easily be recognised and eliminated. Here, these can be 
-#' eliminated by supplying some extra parameter information. State 
-#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
-#' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `genome.ID` 
-#' parameter & the control condition samples names to the `controls` parameter. 
-#' 
+#' For each sample, the mapping step will have predicted the sRNA dicercall for 
+#' each cluster which is stored in the sample columns with names containing with
+#'  "DicerCall_".  The dicercall value represent the length in nucleotides of 
+#'  the most abundant sRNA within the cluster. For some clusters, there is no 
+#'  particular sRNA which is more abundant than another, hence, it is stated as 
+#'  "NA" or "N", which is refereed to as being unclassified. Depending on the 
+#'  organism the dicercall values will have varying ranges.
+#'  
+#'  The `RNAdicercall()` function is used to calculate the consensus dicercall
+#'  for each sRNA cluster. This is based of the classification predicted for the 
+#'  cluster by each sample within the analysis, described above. There are 
+#'  several parameters which will alter the output, including the handling of 
+#'  ties and the method to draw the consensus from. 
+#'  
+#'  
 #' When ties.method = "random", as per default, ties are broken at random. 
 #' In this case, the determination of a tie assumes that the entries are 
 #' probabilities: there is a relative tolerance of 1e-5, relative to the 
 #' largest (in magnitude, omitting infinity) entry in the row.
 #' 
 #' When ties.method = "exclude", ties between sRNA classification are ruled as 
-#' unclassified ("N"). 
+#' unclassified ("N"). However, when there is a tie between the choice of a 
+#' class or unclassified result the `exclude` option will always select the 
+#' class choice over the unclassified result.
+#'  
+#' When working with a chimeric system, for example interspecific grafting, 
+#' mapping errors can easily be recognized and eliminated if the genotypes in 
+#' the system are distantly related ie. different species.Here, these can be 
+#' eliminated by supplying some extra parameter information. State 
+#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
+#' (ie. not the tissue sample genotype, but the genotype from which any 
+#' potential mobile molecules could be traveling from) to the `genome.ID` 
+#' parameter & the control condition samples names to the `controls` parameter. 
+#' 
 #' 
 #' To remove excess data noise, `tidy=TRUE` can be used to removed unclassified 
 #' ("N") sRNA clusters, resulting in a reduced dataset size. 
@@ -31,7 +48,7 @@
 #'
 #' @param conditions character; vector containing sample replicate names. When 
 #' supplied, the data from the named replicates will be the only ones used to 
-#' calculate the dicer-derived dicercall consensus for each sRNA cluster. Each 
+#' calculate the dicercall consensus for each sRNA cluster. Each 
 #' string should represent a sample name present in the dataframe supplied to
 #' the `data` argument.
 #'

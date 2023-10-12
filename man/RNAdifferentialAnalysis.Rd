@@ -36,6 +36,7 @@ adds the results to the supplied dataframe. This includes:
 \item p-value
 \item Adjusted p-value
 \item Log counts per million (CPM/RPM)
+\item Comparison order
 }
 }
 \description{
@@ -57,9 +58,14 @@ replicate. See the User’s Guide for the  ‘EdgeR’ package for more details,
 \examples{
 # load data 
 data("sRNA_data_consensus")
+
+controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
+
+reorder_df <- RNAreorder(sRNA_data_consensus, controls)
+
 # sample conditions.
-groups <- c("Heterograft", "Heterograft", "Heterograft",
-          "Selfgraft", "Selfgraft", "Selfgraft")
+groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
+           "Heterograft", "Heterograft", "Heterograft")
 
 
 ## Differential analysis: DEseq2 method
