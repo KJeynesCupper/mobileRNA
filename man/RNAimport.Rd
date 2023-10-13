@@ -4,7 +4,7 @@
 \alias{RNAimport}
 \title{Import and organise sRNAseq data sets}
 \usage{
-RNAimport(input = c("sRNA"), directory, samples, tidy = TRUE)
+RNAimport(input = c("sRNA"), directory, samples, tidy = TRUE, FPKM = FALSE)
 }
 \arguments{
 \item{input}{string; define type of Next-Generation Sequencing dataset.
@@ -18,12 +18,30 @@ to outputted folders within the \code{directory} path.}
 
 \item{tidy}{logical; tidy-up dataframe by removing sRNA clusters
 where there are zero counts across all replicates.}
+
+\item{FPKM}{logical; calculate the FPKM for each sample}
 }
 \value{
 A dataframe where rows represent sRNA clusters and columns represent
-replicate information. Replicate information includes Dicercall, Counts, RPM
+replicate information. Replicate information includes Dicercall, Counts,
 and MajorRNA sequence. Each replicate information is distinguishable as
-the replicate name is ajoined as a prefix to each column name.
+the replicate name is joined as a suffix to each column name. For example, for
+a sample called "Sample1", the columns will include DicerCall_Sample1,
+Count_Sample1, MajorRNA_Sample1 and RPM_Sample1
+
+The breakdown of each column:
+\itemize{
+\item \code{Locus} : sRNA cluster locus
+\item \code{Chr} : Chromosome
+\item \code{start} : start coordinate of cluster
+\item \code{end} : end coordinate of cluster
+\item \code{Cluster} : name of cluster
+\item \code{DicerCall_} : the size in nucleotides of most abundant sRNA in the cluster
+\item \code{Counts_} :  number of uniquely aligned sRNA-seq reads that overlap the locus
+\item \code{MajorRNA_} : RNA sequence of the most abundant sRNA in the cluster
+\item \code{RPM_} : reads per million
+\item \code{FPKM_} : Fragments Per Kilobase of transcript per Million mapped reads (only if option activated)
+}
 }
 \description{
 Load and organise either sRNAseq results into a
@@ -31,34 +49,16 @@ single dataframe containing all experimental replicates specified where rows
 represent either a sRNA locus or gene, respectively.
 }
 \details{
-Supply the directory to the folder storing the various sample replicate
-folders produced by ShortStack analysis. Within each sample replicate folder,
-there is "Result.txt". This file contains many different columns, but
-for the analysis the columns of interest are  "Locus", "DicerCall", "Reads",
-and "RPM" which will all be imported and loads into the new data frame.
-Note that "Reads" will be converted to "Counts" as output of the function.
-Locus contains the genomic locations of clusters,
-Dicercall contains the most likely size of the cluster, Reads contains the
-number of reads mapped to the cluster (recommended to use unique mapping,
-hence these will be the number of uniquely mapped reads, ie, not including
-multimapped reads). Lastly, RPM contains the Reads per Million score.
+The \code{RNAimport()} function requires the user to supply a directory path and
+a character vector. The path must be to the mapping/alignment output.
+Following the \code{mobileRNA} method, this path will be to the
+\verb{2_alignment_results} folder produced by the \code{\link[=sRNAmapper]{sRNAmapper()}}
+function. The \code{RNAimport()} function requires a vector storing the names of
+the replicates in the analysis. These should represent and mirror the names
+of the folders stored within the \verb{2_alignment_results} folder.
 
-\code{"RNAimport"} takes the results from  pre-processed sRNAseq data which
-has been mapped and undertaken cluster analysis through ShortStack, organises
-into a single data frame. Each row represent an sRNA dicer-derived cluster
-within the analysis and columns 1 - 5 supply information on the cluster
-including the locus, the separated coordinates
-(chromosome, start, end) and cluster name.
-
-Further columns represent data imported for each samples including DicerCall,
-Counts and RPM. The DicerCall represents the size of most
-abundant small RNA size based on the parameter used in ShortStack.
-The Count column represents the number of aligned sRNA-seq reads that overlap
-the locus. The RPM represents the reads per million.
-For each replicate included in the analysis, these columns are labeled with
-the type and then then name of the sample, for example, for
-a sample called "Sample1", the information from this sample will be stored in
-columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
+Together this information allows the function to extract the information
+stored in "Result.txt" files of each sample.
 }
 \examples{
 \dontrun{

@@ -29,5 +29,4 @@ data("sRNA_data_consensus")
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
 reorder_df <- RNAreorder(sRNA_data_consensus, controls)
-
 }

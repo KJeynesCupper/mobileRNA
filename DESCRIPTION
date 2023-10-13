@@ -54,6 +54,7 @@ Imports:
     Biostrings, 
     xfun,
     foreach,
+    reticulate,
     doParallel,
     parallel,
     S4Vectors,
@@ -71,3 +72,6 @@ biocViews:
     QualityControl
 BiocType: Software
 BugReports: https://github.com/KJeynesCupper/mobileRNA/issues
+SystemRequirements: 
+  GNU make, 
+  ShortStack (>= 4.0)

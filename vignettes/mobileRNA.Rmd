@@ -107,7 +107,7 @@ matches (accordingly to set parameters) in a given genome reference, but they do
 not account for potential matches to DNA sequences which are not provided as 
 reference. Therefore, the two genomes from all partners involved in the 
 chimeric system are merged in a single FASTA file and used as reference for 
-the unique alignment with the ShortStack pipeline. A tool specifically designed 
+the unique alignment with the `ShortStack` pipeline. A tool specifically designed 
 for the genomics analysis of sRNA. In a bid to supply the algorithm with as much 
 information as possible to make the best possible predictions and placement of
 sequencing reads to each genome. Then, `mobileRNA` will filter clusters which 
@@ -269,27 +269,17 @@ library(mobileRNA)
 
 ## Installing OS dependancies 
 
-`mobileRNA` works on systems with `R` and `ShortStack` installed. Please 
-consider that `ShortStack` is not available for Windows, hence, Windows users 
-will either need to opt to use a virtual machine or 
+`mobileRNA` works on systems with `R` and `ShortStack` (>= 4.0) installed.
+Please consider that `ShortStack` is not available for Windows, hence, Windows 
+users will either need to opt to use a virtual machine or 
 [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 In either case, both `R` and `ShortStack` will need to be installed and used on 
 the Linux side.
 
-Please head to ShortStack to see the recommended installation instructions at 
+Please head to `ShortStack` to see the recommended installation instructions at 
 \link{https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended}
-and please ensure its dependencies are stored within the same environment. This
-is required for the alignment step. 
-
-Note that if `ShortStack` is not found in R's PATH, or you want to use a 
-specific version, you can manually specify the desired directory in R with:
-
-```{r}
-
-options(shortstack_path = "[shortstack path]" )
-
-```
-
+for installation with Conda. This will ensure all dependencies are available
+within the same environment. This is required for the alignment step.
 
 
 ## Example data set
@@ -389,7 +379,7 @@ with the chromosome names used for alignment.*
 
 ### Merging Genome Assemblies
 
-Firstly, lets load the examples:
+Firstly, lets load the example FASTA gene files:
 <br>
 ```{r}
 
@@ -412,15 +402,16 @@ fasta_2 <- bfcrpath(cache, fasta_2_url)
 Here we merge the two reference genomes into a merged genome using the
 `RNAmergeGenomes()` function. 
 <br>
-```{r, eval = FALSE}
+```{r}
 
-# define temporary output directory 
-output_assembly_file <- tempfile("merged_annotation", fileext = ".fa")
+# define temporary output directory - replace with your directory
+output_assembly_file <- file.path(tempfile("merged_annotation", 
+                                           fileext = ".fa"))
 
 # merge assemblies into a single file
 RNAmergeGenomes(genomeA = fasta_1,
                genomeB = fasta_2,
-               out_dir = output_assembly_file)
+               output_file = output_assembly_file)
 
 ```
 <br>
@@ -432,7 +423,7 @@ analysis, for example to identify genomic features which overlap the sRNA
 producing loci. 
 
 ### Merge genomic features annotations
-Firstly, lets load the examples:
+Firstly, lets load the example GFF files:
 <br>
 ```{r}
 # Construct URL to example GFF files
@@ -448,20 +439,21 @@ anno2 <- bfcrpath(cache, anno2_url)
 Here, we merge the GFF annotation files using the `RNAmergeAnnotations()`
 function.
 <br>
-```{r, eval = FALSE}
+```{r}
 # define temporary output directory 
-output_annotation_file <- tempfile("merged_annotation", fileext = ".gff3")
+output_annotation_file <- file.path(tempfile("merged_annotation", 
+                                             fileext = ".gff3"))
 
 # merge annotation files into a single file
 merged_annotation <- RNAmergeAnnotations(annotationA = anno1,
                                          annotationB = anno2,
-                                         out_dir = output_annotation_file)
+                                         output_file = output_annotation_file)
 
 ```
 
 ### Merge annotations storing repetitive regions:
 
-Firstly, lets load the examples:
+Firstly, lets load the example GFF repeat region files:
 <br>
 ```{r}
 
@@ -478,14 +470,15 @@ repeats2 <- bfcrpath(cache, repeats2_url)
 Here, we merge the GFF annotation files using the `RNAmergeAnnotations()`
 function.
 <br>
-```{r, eval = FALSE}
+```{r}
 # define temporary output directory 
-output_annotation_file <- tempfile("merged_annotation", fileext = ".gff3")
+output_annotation_file <- file.path(tempfile("merged_annotation", 
+                                             fileext = ".gff3"))
 
 # merge annotation files into a single file
 merged_repeatregions <-RNAmergeAnnotations(annotationA = repeats1,
                                            annotationB = repeats2,
-                                           out_dir = output_annotation_file)
+                                           output_file = output_annotation_file)
 
 ```
 
@@ -499,11 +492,11 @@ The `sRNAmapper()` function requires three core inputs:
 * 2 - The directory to store the output 
 * 3 - The directory to genome assembly file (.fa or .fasta)
 
-The function invokes a system command to  `ShortStack`; an application which 
-employs bowtie mapping and performs comprehensive de novo annotation and 
+The function invokes a system command to `ShortStack`; an application which 
+employs Bowtie mapping and performs comprehensive de novo annotation and 
 quantification of sRNA genes. The function first undertakes de novo sRNA
 cluster detection and then quantification of sRNA genes. The function outputs
-a plain text file (`locifile.txt`) and two directories (`1_map` and `2_map`). 
+two directories (`1_de_novo_detection` and `2_alignment_results`). 
 The plain text file contains the de novo sRNA clusters detected across the 
 entire experimental design, and the directories contain one folder per sample. 
 Each sample folder stored the `ShortStack` output reports which report on 
@@ -511,16 +504,8 @@ several parameters of each sRNA gene annotation. As default, the function only
 retains the most important reports required for downstream analysis which will 
 be imported into R in the analysis steps of the vignette. 
 
-Note that if `ShortStack` is not found in R's PATH, or you want to use a 
-specific version, you can manually specify the desired directory in R with:
 
-```{r,  eval=FALSE}
-
-options(shortstack_path = "[shortstack path]" )
-
-```
-
-Then, align samples in the directory to the merged genome: 
+Align samples in the directory to the merged genome: 
 
 ```{r,eval=FALSE}
 samples <- file.path(system.file("extdata",package="mobileRNA"))
@@ -533,6 +518,8 @@ sRNAmapper(input_files_dir = samples,
 
 ```
 
+If there are issues utilising this function, the manual steps are illustrated in 
+the appendix. 
 
 # Core sRNA Analysis
 Here, we will analyse the output reports from the alignment data to identify 
@@ -543,7 +530,7 @@ abundant.
 <br>
 
 ## Import data
-The sRNAseq mapping steps generate a directory (`2_map`) containing a folder 
+The sRNAseq mapping steps generate a directory (`2_alignment_results`) containing a folder 
 for each sample storing the mapping reports. Here, we will use the `RNAimport()` 
 function to import the report file called `Results.txt` for each sample into R. 
 This will generate a dataframe where rows represent sRNA clusters and 
@@ -565,7 +552,7 @@ following after the underscore:
 
 
 The function requires the directory storing the output folders (ie. the path to 
-the 2_map folder generated by the `sRNAmapper()` function), as well as a vector 
+the 2_alignment_results folder generated by the `sRNAmapper()` function), as well as a vector 
 containing the names of each sample to include in the import. It is critical 
 that the names provided correspond exactly to the folder names in the directory. 
 
@@ -573,7 +560,7 @@ that the names provided correspond exactly to the folder names in the directory.
 ```{r, eval = FALSE, message=FALSE}
 
 ## state file path to mapping report directory
-results_dir <- file.path(output_location, "2_map")
+results_dir <- file.path(output_location, "2_alignment_results")
 
 ## state names of folders ie. samples
 sample_names <- c("heterograft_1","heterograft_2", "heterograft_3",
@@ -775,7 +762,7 @@ dicercall. Ultimately in the bid to reduce noise in the data.
 # define consensus, store as a data summary file.
 sRNA_data_consensus <- RNAdicercall(data = sRNA_data, 
                                      chimeric = TRUE, 
-                                     genome.ID = "B_", 
+                                     genome.ID = "A_", 
                                      controls = c("selfgraft_1", 
                                                   "selfgraft_2", 
                                                   "selfgraft_3"))
@@ -962,14 +949,14 @@ control_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 ## Identify potential tomato mobile molecules
 mobile_sRNA <- RNAmobile(data = sRNA_DESeq2, 
                          controls = control_names,
-                         genome.ID = "B_",
+                         genome.ID = "A_",
                          task = "keep", 
                          statistical = FALSE)
 
 ## Identify statistically significant potential tomato mobile molecules 
 mobile_sRNA_significant <- RNAmobile(data = sRNA_DESeq2, 
                          controls = control_names,
-                         genome.ID = "B_",
+                         genome.ID = "A_",
                          task = "keep", 
                          statistical = TRUE) # change this parameter
 
@@ -1268,7 +1255,7 @@ gained_sRNA <- RNApopulation(data = sRNA_DESeq2,
                                                  "heterograft_2" , 
                                                  "heterograft_3"),
                                   chimeric = TRUE, 
-                                  genome.ID = "B_", 
+                                  genome.ID = "A_", 
                                   controls = c("selfgraft_1",
                                                "selfgraft_2", 
                                                "selfgraft_3"))
@@ -1367,6 +1354,92 @@ means <- RNAmean(data = sRNA_DESeq2, conditions = selected_samples)
 ```
  <br>
 
+# Appendix 
+
+## Manual mapping steps with `ShortStack`
+If the user is unable to undertake the analysis using the `sRNAmapper()` 
+function. The manual steps are shown below, of which, will need modifying 
+to suit your files and directory names. 
+
+## Auto-detection of sRNA cluster
+Here we identify and build a list sRNA-producing loci within each sample to 
+assist the alignment to ensure consistency across the analysis. This step
+is very important to consider as it prevents false assumptions. This step aligns 
+a replicate to the given genome assembly and the outputs contains loci where 
+sRNA clusters were found. 
+
+### Step 1 - Cluster analysis with `ShortStack`
+
+``` bash
+ShortStack \
+--readfile <selfgraft_1.fastq> \
+--genomefile <merged_reference.fa> \
+--threads 6 \
+--mmap u \
+--nohp \
+--outdir <./output/directory/1_de_novo_detection>
+
+```
+
+### Step 2 - Build sRNA cluster list 
+
+Now, we collate all the sRNA loci information from each sample into a text file. 
+```{r, eval=FALSE}
+# names of samples, represented by folder names produced in previous step
+samples <- c("heterograft_1", "heterograft_2" , "heterograft_3", 
+             "selfgraft_1", "selfgraft_2", "selfgraft_3" )
+
+# location of output folders from previous step
+dir <- "[./output/directory/1_de_novo_detection]"
+
+# merge information of the detected de novo sRNA clusters
+gff_alignment <- GenomicRanges::GRangesList()
+  for (i in samples) {
+    file_path <- file.path(dir, i, "Results.gff3")
+    if (file.exists(file_path)) {
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
+    } else{
+      Stop("File does not exist:", file_path, "\n")
+    }
+  }
+  
+  gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
+                                      ignore.strand = TRUE)
+  gff_merged <- Repitools::annoGR2DF(gff_merged)
+  locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
+                                            gff_merged$start,"-", 
+                                            gff_merged$end), 
+                             Cluster = paste0("cluster_", 
+                                              seq_len(nrow(gff_merged))))
+  
+  # save output to location 
+  dir_locifile <- "[./output/directory/]"
+  loci_out <- file.path(output_locifile,"locifile.txt")
+  utils::write.table(locifile_txt, file = loci_out, quote = FALSE, 
+                     sep = "\t", row.names = FALSE, col.names = TRUE)
+   
+```
+
+
+## Mapping   
+
+Each sample is mapped to the merged reference genome with the list of sRNA 
+clusters. 
+
+
+``` bash
+ShortStack \
+--readfile <selfgraft_1.fastq> \
+--genomefile <merged_reference.fa> \
+--locifile <./output/directory/locifile.txt> \
+--threads 6 \
+--mmap u \
+--nohp \
+--mincov 5 \
+--outdir <./output/directory/2_alignment_results/>
+
+```
+<br>
 # Session information
 ```{r}
 sessionInfo()

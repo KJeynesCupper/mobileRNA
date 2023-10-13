@@ -69,5 +69,4 @@ sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
                    
 RNAsummary(sRNA_DESeq2)
                                  
-
 }

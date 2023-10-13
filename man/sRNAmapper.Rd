@@ -8,10 +8,11 @@ sRNAmapper(
   input_files_dir,
   output_dir,
   genomefile,
+  condaenv,
   threads = 6,
   mmap = "u",
   dicermin = 20,
-  dicermax = 25,
+  dicermax = 24,
   mincov = 2,
   pad = 75,
   tidy = TRUE
@@ -25,6 +26,9 @@ this function.}
 \item{output_dir}{path; directory to store output.}
 
 \item{genomefile}{path; path to a FASTA file.}
+
+\item{condaenv}{character; name or directory of the Conda environment to use
+where \code{ShortStack} (>4.0) is installed}
 
 \item{threads}{numeric; set the number of threads to use where more threads
 means a faster completion time. Default is 6.}
@@ -41,16 +45,43 @@ from other loci. Default is 20.}
 
 \item{dicermax}{integer; the maximum size in nucleotides of a valid small
 RNA. This option sets the bounds to discriminate dicer-derived small RNA loci
-from other loci.  Default is 25.}
+from other loci.  Default is 24.}
 
 \item{mincov}{numeric; minimum alignment depth, in units of reads per
 million, required to nucleate a small RNA cluster during de novo cluster
 search. Must be an floating point number > 0. Default is 2.}
 
-\item{pad}{interger; initial peaks are merged if they are this distance or
+\item{pad}{integer; initial peaks are merged if they are this distance or
 less from each other. Must >= 1, default is 75.}
 
 \item{tidy}{logical; removes unnecessary extra output files when set to TRUE.}
+}
+\value{
+The OS commands generate output into the users desired location, generating
+two folders:
+\itemize{
+\item "1_de_novo_detection" : Stores output from the detection of de novo sRNA-producing loci
+\item "2_alignment_results" : Stores output from alignment
+}
+
+The first folder stores the novo detection of sRNA-producing loci and
+alignment, where the output of each are stored in their respective folders in
+the users desired location. The de novo detection of sRNA-producing loci
+analyses each sample to identify de novo sRNA-producing loci (ie. sRNA
+clusters), and joins these results into a single file called "locifile.txt".
+The second folder stores the alignment and clustering results for each sample
+to the genome reference along with the file containing the de novo sRNA
+clusters. The output of each sample is stored within its own sample folder.
+
+The alignment results generate one folder per sample, where the results
+are stored. As default this includes the alignment files (BAM) and
+sRNA results (.txt). The sRNA results (.txt) are imported into R for
+downstream analysis by utilizing the \code{\link[=RNAimport]{RNAimport()}} function.
+
+The function generates a number of extra files for each sample and are not
+required for the downstream analysis. See \code{ShortStack} documentation for more
+information (\link{https://github.com/MikeAxtell/ShortStack}). As default
+these files are deleted. This is determined by the \code{tidy} argument.
 }
 \description{
 Map sRNAseq FASTQ samples to a given genome assembly using
@@ -59,32 +90,24 @@ ShortStack.
 \details{
 This function undertakes our recommended workflow for mapping sRNAseq reads
 to a given genome for the analysis of small RNAs in a biological system.
+See appendix of vignette for manual pipeline.
 
-The function invokes a number of OS commands, and is dependent on the
-installation of \code{ShortStack} and it's dependencies within the same
-environment. Please refer to \link{} for more information. Please not that
-\code{ShortStack} is only compartible with Linux and Mac operating systems.
+The \code{sRNAmapper()} function invokes a number of OS commands, and is dependent
+on the installation of \code{ShortStack} (>= 4.0) with Conda.  Please refer to
+\link{https://github.com/MikeAxtell/ShortStack} for more information. Please
+note that \code{ShortStack} is only compatible with Linux and Mac operating
+systems.
 
-It uses \code{ShortStack} to map and cluster sRNAs for each sample
-within a directory. Within the output directory (\code{output_dir}), the function
-generates two new directories called  "1_map" and "2_map", plus, a plain
-text file called "locifile.txt". The function undertakes an initial mapping
-step in order to generate a list of de novo sRNA-producing loci. The results
-for each sample are saved to "1_map", producing one folder for each sample.
-The de novo sRNA-producing loci identified in each sample are merged;
-generating the "locifile.txt" file. The second mapping step utilises the
-"locifile.txt" file to optimise the analysis. The results of mapping step two
-are saved to the "2_map" directory, where one folder for each sample is
-generated and stores the results.
-
-The function generates a number of extra files for each sample and are not
-required for the downstream analysis. Hence, as default these files are
-deleted. This is determined by the \code{tidy} argument.
+The pipeline undertakes de novo detection of sRNA-producing loci and
+alignment, where the output of each are stored in their respective folders in
+the users desired location. The de novo detection of sRNA-producing loci
+analyses each sample to identify de novo sRNA-producing loci (ie. sRNA
+clusters), and joins these results into a single file called "locifile.txt".
+The alignment step aligns and clusters each sample to the genome reference
+along with the file containing the de novo sRNA clusters.
 }
 \examples{
 \dontrun{
-
-options(shortstack_path = "[path to shortstack]")
 
 samples <- file.path(system.file("extdata",package="mobileRNA"))
 
@@ -92,10 +115,11 @@ output_location <- tempdir()
 
 sRNAmapper(input_files_dir = samples, 
 output_dir = output_location, 
-genomefile = output_assembly_file)
+genomefile = output_assembly_file,
+condaenv = "ShortStack4")
 }
 
-
-
-
+}
+\references{
+ShortStack \link{https://github.com/MikeAxtell/ShortStack}
 }

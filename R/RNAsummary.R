@@ -56,7 +56,7 @@
 #'                    
 #' RNAsummary(sRNA_DESeq2)
 #'                                  
-#' 
+#' @export
 RNAsummary <- function(data, alpha = 0.1, chimeric = FALSE,
                          controls = NULL, genome.ID = NULL) {
   # Check if 'data' is a data frame

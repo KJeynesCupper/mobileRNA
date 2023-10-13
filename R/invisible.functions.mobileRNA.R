@@ -114,6 +114,22 @@ find_complementary_sequenceDNA <- function(seq) {
   return(output)
 }
 
+
+
+################## check shortstack version and existance  ####################
+
+shortstack_exists <- function(){
+  # Replace "your_package_name" with the name of the package you want to check
+  package_name <- "shortstack"
+  cmd <- c(shQuote(package_name),  "--version")
+  cmd_a <- paste(cmd,collapse = " ")
+  cmd_b <- gsub("^ *| *$", "", cmd_a)
+  out <- system(cmd_b, intern=TRUE )
+  version <- gsub(".*?([0-9.]+).*", "\\1", out)
+  return(version)
+}
+
+
 ################## global variable storage #####################################
 utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "nt_23", "nt_24", "group", "qc", "score", "phase",

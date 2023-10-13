@@ -6,35 +6,17 @@
 #'
 #'
 #' @details
-#' Supply the directory to the folder storing the various sample replicate
-#' folders produced by ShortStack analysis. Within each sample replicate folder,
-#' there is "Result.txt". This file contains many different columns, but
-#' for the analysis the columns of interest are  "Locus", "DicerCall", "Reads",
-#' and "RPM" which will all be imported and loads into the new data frame.
-#' Note that "Reads" will be converted to "Counts" as output of the function.
-#' Locus contains the genomic locations of clusters,
-#' Dicercall contains the most likely size of the cluster, Reads contains the
-#' number of reads mapped to the cluster (recommended to use unique mapping,
-#' hence these will be the number of uniquely mapped reads, ie, not including
-#' multimapped reads). Lastly, RPM contains the Reads per Million score.
-#'
-#' \code{"RNAimport"} takes the results from  pre-processed sRNAseq data which
-#' has been mapped and undertaken cluster analysis through ShortStack, organises
-#'  into a single data frame. Each row represent an sRNA dicer-derived cluster
-#'  within the analysis and columns 1 - 5 supply information on the cluster
-#'  including the locus, the separated coordinates
-#' (chromosome, start, end) and cluster name.
-#'
-#' Further columns represent data imported for each samples including DicerCall,
-#' Counts and RPM. The DicerCall represents the size of most
-#' abundant small RNA size based on the parameter used in ShortStack.
-#' The Count column represents the number of aligned sRNA-seq reads that overlap
-#' the locus. The RPM represents the reads per million.
-#' For each replicate included in the analysis, these columns are labeled with
-#' the type and then then name of the sample, for example, for
-#' a sample called "Sample1", the information from this sample will be stored in
-#' columns DicerCall_Sample1, Count_Sample1 and RPM_Sample1.
-#'
+#' The `RNAimport()` function requires the user to supply a directory path and 
+#' a character vector. The path must be to the mapping/alignment output. 
+#' Following the `mobileRNA` method, this path will be to the 
+#' `2_alignment_results` folder produced by the [mobileRNA::sRNAmapper()] 
+#' function. The `RNAimport()` function requires a vector storing the names of 
+#' the replicates in the analysis. These should represent and mirror the names 
+#' of the folders stored within the `2_alignment_results` folder. 
+#'  
+#'  Together this information allows the function to extract the information 
+#'  stored in "Result.txt" files of each sample. 
+#'  
 #'@references ShortStack (https://github.com/MikeAxtell/ShortStack)
 #'@param input string; define type of Next-Generation Sequencing dataset.
 #'"sRNA" is the only valid inputs at this time.
@@ -48,11 +30,30 @@
 #'@param tidy logical; tidy-up dataframe by removing sRNA clusters 
 #'where there are zero counts across all replicates.
 #'
+#'@param FPKM logical; calculate the FPKM for each sample
 #'
 #'@return A dataframe where rows represent sRNA clusters and columns represent
-#'replicate information. Replicate information includes Dicercall, Counts, RPM
+#'replicate information. Replicate information includes Dicercall, Counts,
 #'and MajorRNA sequence. Each replicate information is distinguishable as
-#'the replicate name is ajoined as a prefix to each column name.
+#'the replicate name is joined as a suffix to each column name. For example, for
+#' a sample called "Sample1", the columns will include DicerCall_Sample1, 
+#' Count_Sample1, MajorRNA_Sample1 and RPM_Sample1
+#'
+#'The breakdown of each column:
+#'
+#'* `Locus` : sRNA cluster locus
+#'* `Chr` : Chromosome 
+#'* `start` : start coordinate of cluster
+#'* `end` : end coordinate of cluster
+#'* `Cluster` : name of cluster 
+#'* `DicerCall_` : the size in nucleotides of most abundant sRNA in the cluster
+#'* `Counts_` :  number of uniquely aligned sRNA-seq reads that overlap the locus
+#'* `MajorRNA_` : RNA sequence of the most abundant sRNA in the cluster
+#'* `RPM_` : reads per million
+#'* `FPKM_` : Fragments Per Kilobase of transcript per Million mapped reads (only if option activated)
+#'
+#'  
+#'
 #'
 #' @examples
 #' \dontrun{
@@ -87,9 +88,8 @@
 #' @importFrom dplyr "where"
 #' @importFrom stats "setNames"
 #' @importFrom utils "flush.console"
-
 RNAimport <- function(input = c("sRNA"), directory, samples,
-                       tidy = TRUE) {
+                       tidy = TRUE, FPKM = FALSE) {
   if (base::missing(input) || !input %in% c("sRNA")) {
     stop("Please state the data-type to the `input` paramter. Currently, only 
           `sRNA` data is accepted.")
@@ -122,7 +122,7 @@ RNAimport <- function(input = c("sRNA"), directory, samples,
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
     message("Checking data content...")
-    required_cols <- c("Locus", "DicerCall", "Reads", "RPM", "MajorRNA")
+    required_cols <- c("Locus", "DicerCall", "Reads", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
         stop("Sample data frame does not contain all required columns: ",
@@ -143,15 +143,24 @@ RNAimport <- function(input = c("sRNA"), directory, samples,
       dt_match <- loci_all[dt, on = join_cols, nomatch = 0]
       # Aggregate the matching rows by chromosome, start coordinate, & end coor,
       # and compute the sum of DicerCall, Reads, and RPM values for each group
-      dt_agg <- dt_match[, .(DicerCall = as.character(DicerCall),
+      dt_agg <- dt_match[, .(Width=sum(Length),
+                             DicerCall = as.character(DicerCall),
                              Count=sum(Reads),
-                             RPM = sum(RPM),
                              MajorRNA = as.character(MajorRNA)),
                          by = join_cols]
       # Rename the aggregated columns
-      col_names <- paste0(c("DicerCall_", "Count_", "RPM_", "MajorRNA_"),  i)
-      data.table::setnames(dt_agg, c("Locus", col_names))
-
+      total_counts <- sum(dt_agg$Count)
+      RPM_cal <- (dt_agg$Count / total_counts) * 1e6
+      dt_agg$RPM <- RPM_cal
+      if(FPKM){
+        dt_agg$FPKM <- (dt_agg$RPM / (dt_agg$Width / 1000)) / sum(dt_agg$RPM) * 1e6
+        col_names <- paste0(c("DicerCall_", "Count_", "MajorRNA_", "RPM_", "FPKM_"),  i)
+        data.table::setnames(dt_agg, c("Locus","Width", col_names))
+      }else {
+        col_names <- paste0(c("DicerCall_", "Count_", "MajorRNA_", "RPM_"),  i)
+        data.table::setnames(dt_agg, c("Locus","Width", col_names))
+      }
+      
       # Merge the aggregated values back into df1
       loci_all[dt_agg, on = join_cols, (col_names) := mget(col_names)]
 
@@ -196,10 +205,17 @@ count_columns <- grep("^Count", names(df_final))
 rows_to_remove <- apply(df_final[count_columns], 1, function(row) all(row == 0))
 # Remove rows with all zero values in Count columns
 df_final <- df_final[!rows_to_remove, ]   
-                        
     # return values
     return(df_final)
-
   } 
 }
+
+
+
+
+
+
+
+
+
 

@@ -22,7 +22,7 @@
 #' controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 #' 
 #' reorder_df <- RNAreorder(sRNA_data_consensus, controls)
-#' 
+#' @export
 RNAreorder <- function(data, controls) {
   if (!is.data.frame(data)) {
     stop("Input 'data' must be a data frame.")
