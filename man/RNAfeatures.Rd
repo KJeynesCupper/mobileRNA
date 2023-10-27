@@ -8,7 +8,7 @@ RNAfeatures(
   data,
   annotation,
   repeats = NULL,
-  promoterRegions = 2000,
+  promoterRegions = 1000,
   percentage = TRUE
 )
 }
@@ -25,7 +25,7 @@ required, however if there is a specific repeats annotation file for the
 genome it is suggested to supply it.}
 
 \item{promoterRegions}{numeric; define promoter region upstream of genes.
-Default is \code{promoterRegions=2000} , ie promoters set at 2kb upstream of genes}
+Default is \code{promoterRegions=1000} , ie promoters set at 1kb upstream of genes}
 
 \item{percentage}{returns results as a percentage of the total, when
 \code{percentage = TRUE} (default). While \code{percentage = FALSE}, results
@@ -39,7 +39,7 @@ as genes, repeats, introns, exons.
 }
 \description{
 Calculates the absolute or relative (percentage) number of
-sRNA dicer-derived clusters which overlap with genomic features, including
+sRNA clusters which overlap with genomic features, including
 promoter regions, repeat regions, exons, introns, and 3'/'5 untranslated
 regions.
 }
@@ -57,7 +57,7 @@ annotation file.
 \examples{
 \dontrun{
 
-dis_features <- RNAfeatures(data = sRNA_data_consensus,
+dis_features <- RNAfeatures(data = sRNA_data_dicercall,
                        annotation = "./annotation/eggplant_genome.gff3",
                        repeats = "./annotation/eggplant_genome_repeats.gff3")
 }

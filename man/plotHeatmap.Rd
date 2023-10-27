@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotHeatmap.R
 \name{plotHeatmap}
 \alias{plotHeatmap}
-\title{Heatmap of log-transformed RPM data}
+\title{Heatmap of log-transformed read length normalization data}
 \usage{
 plotHeatmap(
   data,
@@ -51,11 +51,7 @@ differences and patterns in expression across samples using a heatmap.
 }
 \details{
 Undertakes FPKM/RPM normalisation using a pseudocount and then
-transforms the normalised-RPM data using log-scale. The
-\code{mobileRNA::RNAimport()} function will  include the RPM data
-columns for sRNAseq data processed by ShortStack, while with mRNAseq data
-the function calculates FPKM.
-The data is then plotted as a heatmap, utilising the \code{pheatmaps} package.
+transforms the normalised-RPM data using log-scale.
 
 This function expects to receive a dataframe containing FPKM/RPM data from
 sRNA-seq studies. This function employs the use of a pseudocount during

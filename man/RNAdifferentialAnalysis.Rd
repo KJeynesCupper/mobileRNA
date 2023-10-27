@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAdifferentialAnalysis.R
 \name{RNAdifferentialAnalysis}
 \alias{RNAdifferentialAnalysis}
-\title{Differential Expression (DE) Analysis of sRNA dicer-derived clusters
+\title{Differential Expression (DE) Analysis of sRNA clusters or mRNA
 using \code{DESeq2} or \code{edgeR}}
 \usage{
 RNAdifferentialAnalysis(
@@ -41,8 +41,8 @@ adds the results to the supplied dataframe. This includes:
 }
 \description{
 This function allows you to compute the differential expression
-of sRNA dicer-derived clusters. The function allows the choice between
-analysis with \code{DESeq2} or \code{edgeR}.
+of sRNA dicer-derived clusters and mRNA. The function allows the choice
+between analysis with \code{DESeq2} or \code{edgeR}.
 }
 \details{
 The analysis allows the users to choose the method which best suits
@@ -52,16 +52,16 @@ dispersion value, based on similar data, to use this feature. The dispersion
 value is other wise known as the common Biological squared coefficient
 of variation. A typical dispersion value is 0.4 for human data sets, 0.1 for
 data on genetically identical model organisms or 0.01 for technical
-replicate. See the User’s Guide for the  ‘EdgeR’ package for more details,
+replicate. See the User’s Guide for the \code{edgeR} package for more details,
 \link[edgeR:edgeR-package]{edgeR::edgeR}.
 }
 \examples{
 # load data 
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
-reorder_df <- RNAreorder(sRNA_data_consensus, controls)
+reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
 
 # sample conditions.
 groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
@@ -69,13 +69,13 @@ groups <- c("Selfgraft", "Selfgraft", "Selfgraft",
 
 
 ## Differential analysis: DEseq2 method
-sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
+sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_dicercall,
                              group = groups,
                              method = "DESeq2" )
 
 
 ## Differential analysis: edgeR method
-sRNA_edgeR <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
+sRNA_edgeR <- RNAdifferentialAnalysis(data = sRNA_data_dicercall,
                             group = groups,
                             method = "edgeR" )
 }

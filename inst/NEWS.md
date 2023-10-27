@@ -1,3 +1,10 @@
+# mobileRNA 0.99.9 
+
+* Alteration of vignette and README
+* Included clean FASTQ files as example data sets 
+* Updates R data objects
+* Updates citation & news files 
+
 # mobileRNA 0.99.9
 
 * updates inline with bioconductor requirements 
@@ -5,7 +12,7 @@
 * Deletion of RNAloci function
 * Amended RNAmergeGenomes and RNAmergeAnnotations
 * Improved vignette 
-* Removed lazyloading of package data
+* Removed lazy loading of package data
 * RNAanalysis changed name to RNAdifferentialAnalysis
 
 # mobileRNA 0.99.9

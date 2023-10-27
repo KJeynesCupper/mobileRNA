@@ -104,8 +104,8 @@ p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
 # load data with dicer-derived consensus calculated
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
-p6 <- RNAdistribution(data = sRNA_data_consensus, style = "consensus")
+p6 <- RNAdistribution(data = sRNA_data_dicercall, style = "consensus")
 
 }

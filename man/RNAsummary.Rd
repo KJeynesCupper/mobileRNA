@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAsummary.R
 \name{RNAsummary}
 \alias{RNAsummary}
-\title{Summarise the abundance of sRNA clusters}
+\title{Summarise differential analysis results abundance of sRNA clusters}
 \usage{
 RNAsummary(
   data,
@@ -28,7 +28,7 @@ genomes/genotypes.}
 chimeric system}
 }
 \value{
-Prints a summary of the sRNA clusters which align with the
+Prints a summary of the sRNA clusters or mRNAs which align with the
 adjusted p-value cutoff and states the number which have a positive and
 negative log-fold change. Where a positive log-fold change represents an
 increase in abundance and a negative value represents a decrease in abundance
@@ -36,7 +36,7 @@ between the conditions.
 }
 \description{
 Print a summary of the statistical analysis of sRNA clusters
-from a mobileRNA analysis
+(sRNAseq analysis) or mRNAs (mRNAseq) from a mobileRNA analysis
 }
 \details{
 When working with a chimeric system, for example interspecific grafting,
@@ -50,11 +50,11 @@ parameter & the control condition samples names to the \code{controls} parameter
 \examples{
 
 # load data 
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
-reorder_df <- RNAreorder(sRNA_data_consensus, controls)
+reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
 
 # sample conditions.
 groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
@@ -62,11 +62,11 @@ groups <- c("Selfgraft", "Selfgraft", "Selfgraft",
 
 
 ## Differential analysis: DEseq2 method
-sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_consensus,
+sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_dicercall,
                              group = groups,
                              method = "DESeq2" )
                           
                    
-RNAsummary(sRNA_DESeq2)
+res<- RNAsummary(sRNA_DESeq2)
                                  
 }

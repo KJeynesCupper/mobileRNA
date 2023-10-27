@@ -1,7 +1,7 @@
 #' Distribution of sRNA cluster loci across genomic features
 #'
 #' @description Calculates the absolute or relative (percentage) number of
-#' sRNA dicer-derived clusters which overlap with genomic features, including 
+#' sRNA clusters which overlap with genomic features, including 
 #' promoter regions, repeat regions, exons, introns, and 3'/'5 untranslated 
 #' regions.
 #'
@@ -32,7 +32,7 @@
 #'
 #'
 #' @param promoterRegions numeric; define promoter region upstream of genes.
-#' Default is `promoterRegions=2000` , ie promoters set at 2kb upstream of genes
+#' Default is `promoterRegions=1000` , ie promoters set at 1kb upstream of genes
 #' @param percentage returns results as a percentage of the total, when
 #' \code{percentage = TRUE} (default). While \code{percentage = FALSE}, results
 #' are returned as a count value representing the number of sRNA clusters
@@ -47,11 +47,11 @@
 #' @examples
 #' \dontrun{
 #'
-#' dis_features <- RNAfeatures(data = sRNA_data_consensus,
+#' dis_features <- RNAfeatures(data = sRNA_data_dicercall,
 #'                        annotation = "./annotation/eggplant_genome.gff3",
 #'                        repeats = "./annotation/eggplant_genome_repeats.gff3")
 #' }
-#'@importFrom rtracklayer "import.gff3"
+#'@importFrom rtracklayer "import"
 #'@importFrom GenomicRanges "setdiff"
 #'@importFrom stats "start"
 #'@importFrom stats "end"
@@ -68,7 +68,7 @@
 #'@export
 RNAfeatures <- function(data, annotation,
                         repeats = NULL,
-                        promoterRegions = 2000,
+                        promoterRegions = 1000,
                         percentage = TRUE){
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
@@ -77,14 +77,15 @@ RNAfeatures <- function(data, annotation,
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame.")
   }
-  if (missing(annotation) || is.null(annotation) || annotation == "") {
+  if (missing(annotation) || is.null(annotation) || annotation == "" || 
+      !file.exists(annotation)) {
     stop("annotation parameter is missing or empty.")
   }
     if (!dir.exists(annotation)) {
     stop("The specified directory does not exist, please ammend the annotation 
           parameter.")
   }
-  annotation_info <-rtracklayer::import.gff3(annotation)
+  annotation_info <-rtracklayer::import(annotation)
   anno_repeats <- repeats
   if(is.null(anno_repeats)) {
     # features

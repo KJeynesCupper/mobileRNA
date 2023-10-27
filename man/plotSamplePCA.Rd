@@ -56,8 +56,8 @@ brackets). For example, \code{ggplot.theme=ggplot2::theme_classic}.}
 A PCA plot to show sample distance.
 }
 \description{
-Draws a principal component analysis (PCA) plot. The function
-undertakes rlog transformation of the data in an unbiased manner
+Draws a principal component analysis (PCA) plot of PC1 and PC2.
+The function undertakes rlog transformation of the data in an unbiased manner
 (\code{blind=TRUE}).
 }
 \details{
@@ -73,12 +73,12 @@ and switch to a variance stabilizing transformation method
 (\code{`vst=TRUE`}).
 }
 \examples{
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
             
-p <-  plotSamplePCA(data = sRNA_data_consensus,group = groups )
+p <-  plotSamplePCA(data = sRNA_data_dicercall,group = groups )
 
 plot(p)
 

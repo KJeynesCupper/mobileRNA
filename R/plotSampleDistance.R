@@ -23,8 +23,8 @@
 #'
 #' @examples
 #'
-#' data("sRNA_data_consensus")
-#' plotSampleDistance(sRNA_data_consensus)
+#' data("sRNA_data_dicercall")
+#' plotSampleDistance(sRNA_data_dicercall)
 #'
 #' @export
 #' @importFrom DESeq2 "rlog"
@@ -40,7 +40,6 @@ plotSampleDistance <- function(data,
     stop("data must be an object of class data.frame containing raw count data")
   }
 
-  message("Checking data...")
   data <- as.matrix(data %>% dplyr::select(tidyselect::starts_with("Count")))
 
   if(vst == TRUE){
@@ -53,14 +52,14 @@ plotSampleDistance <- function(data,
       message("Transforming the count data to the log2 scale... \n")
       rld <- DESeq2::rlog(data, blind = TRUE) # log transform the data.
     }
-  message("Calculating distance matrix...")
+  message("---Calculating distance matrix.")
   sample_names <- colnames(data)
   sample_names <- sub("Count_", "", sample_names)
   distance <- stats::dist(t(rld))
   distance_matrix <- as.matrix(distance)
   rownames(distance_matrix) <- paste(sample_names)
   colnames(distance_matrix) <- NULL
-  message("Generating sample distance plot...")
+  message("---Generating sample distance plot.")
   plot <- pheatmap::pheatmap(distance_matrix,
                              clustering_distance_rows = distance,
                              clustering_distance_cols = distance,

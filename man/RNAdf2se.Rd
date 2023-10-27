@@ -36,7 +36,7 @@ the data appropriately.
 \strong{For mRNAseq data}
 \itemize{
 \item The rownames contain the gene names
-\item The assays represent the additional information including Count &FPKM.
+\item The assays represent the additional information including Count & FPKM.
 \item The rowData includes the gene & the SampleCounts.
 \item The colnames represents the sample replicate names
 }

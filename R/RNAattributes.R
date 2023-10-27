@@ -49,6 +49,8 @@
 #' @importFrom IRanges "IRanges"
 #' @importFrom S4Vectors "mcols" 
 #' @importFrom IRanges "ranges"
+#' @importFrom S4Vectors "elementMetadata"
+#' @importFrom GenomeInfoDb "seqnames"
 #' @examples
 #' \dontrun{
 #'  # load data 
@@ -64,28 +66,31 @@
 #'
 RNAattributes <- function(data, annotation, match = c("within", "genes"),
                           bufferRegion = 1000){
-  if (base::missing(data)) {
+  if (base::missing(data) || nrow(data) == 0) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
            DataFrame")
   }
-  if (missing(annotation) || is.null(annotation) || annotation == "") {
+  
+  if (missing(annotation) || is.null(annotation) ) {
     stop("annotation parameter is missing or empty.")
   }
-  if (!dir.exists(annotation)) {
-    stop("The specified directory does not exist, please ammend the annotation 
-          parameter.")
-  }
-
-  annotation <- rtracklayer::import(annotation)
+  
+  if (is.character(annotation) || file.exists(annotation)|| 
+      !grepl("\\.(gff|gff1|gff2|gff3)$",annotation)) {
+    annotation <- suppressMessages(rtracklayer::import(annotation)) 
+  } else 
+    if(!is(annotation, "GRanges")){
+      stop("The annotation does not exist, must either be a path or GRange object.") 
+    }
+  
   if(match == "within"){
     features_gr <-  annotation
     # convert data to granges 
-    data_gr <- GenomicRanges::GRanges(
-      seqnames = data$chr,
-      ranges = IRanges::IRanges(start = data$start, end = data$end)
+    data_gr <- GenomicRanges::GRanges(data$chr,
+                  ranges = IRanges::IRanges(start = data$start, end = data$end)
     )
     # Find overlaps between genomic loci and adjusted GRanges
-    overlaps <- GenomicRanges::findOverlaps(data_gr, features_gr)
+    overlaps <- suppressWarnings(GenomicRanges::findOverlaps(data_gr, features_gr)) 
     
     # Get the indices of overlapping genomic loci ie row number 
     queryHits_ot <- S4Vectors::queryHits(overlaps)
@@ -102,7 +107,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     
     data[,col_diff] <- NA
     
-    for (i in 1:nrow(subjectHits_ot)) {
+    for (i in 1:length(subjectHits_ot)) {
       row_index <- subjectHits_ot[i]
       row_vals <- features_gr_df[row_index, ]
       row_vals<- row_vals[,col_diff] # only extra columns. 
@@ -114,13 +119,21 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
         }
       }
     }
+    if(length(subjectHits_ot) == 0 ){
+      stop("No genomic features matched the sRNA clusters")
+    }
     # remove columsn with only NAs
     data <- data  %>% dplyr::select_if(~sum(!is.na(.)) > 0)
   }
   
   if(match == "genes"){
+    # find clumn with 
+    meta <- as.data.frame(S4Vectors::mcols(annotation))
+    # select column with cells contain "gene", but if they contain "gene" then nothing else. 
+    gene_columns <- which(sapply(meta, function(x) any(grepl("^gene$", x))))
+    gene_col_name <- names(meta)[gene_columns]
     # select genes
-    genes <- annotation[annotation$type == "gene"]
+    genes <- annotation[S4Vectors::elementMetadata(annotation)[,gene_col_name] == "gene"]
     # amend ranges
     adjusted_ranges <- IRanges::IRanges(
       start = start(IRanges::ranges(genes)) - bufferRegion,
@@ -129,7 +142,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     
     #add ranges to genes info  
     adjusted_grange <- GenomicRanges::GRanges(
-      seqnames(genes),
+      GenomeInfoDb::seqnames(genes),
       ranges = adjusted_ranges,
       metadata = S4Vectors::mcols(genes)
     )
@@ -141,7 +154,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     )
     
     # Find overlaps between genomic loci and adjusted GRanges
-    overlaps <- GenomicRanges::findOverlaps(data_gr, adjusted_grange)
+    overlaps <- suppressWarnings(GenomicRanges::findOverlaps(data_gr, adjusted_grange)) 
     
     # Get the indices of overlapping genomic loci ie row number 
     queryHits_ot <- S4Vectors::queryHits(overlaps)
@@ -159,7 +172,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     col_diff <- col_diff[!col_diff %in% rm_extra]
     data[,col_diff] <- NA
     
-    for (i in 1:nrow(subjectHits_ot)) {
+    for (i in 1:length(subjectHits_ot)) {
       row_index <- subjectHits_ot[i]
       row_vals <- adjusted_grange_df[row_index, ]
       row_vals<- row_vals[,col_diff] # only extra columns. 
@@ -171,6 +184,9 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
                                         !!rlang::sym(j)))
         }
       }
+    }
+    if(length(subjectHits_ot) == 0 ){
+      stop("No genomic features matched the sRNA clusters")
     }
     # remove columns with na
     data <- data[,colSums(is.na(data))<nrow(data)]

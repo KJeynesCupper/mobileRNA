@@ -1,4 +1,4 @@
-#' Heatmap of log-transformed RPM data
+#' Heatmap of log-transformed read length normalization data
 #'
 #' @description Undertakes RPM/FPKM normalisation using a pseudocount and 
 #' transforms the data using log-scale, to enable visualization of the 
@@ -28,11 +28,7 @@
 #' @param border.color border colour, default is no border, NA. 
 #'
 #' @details Undertakes FPKM/RPM normalisation using a pseudocount and then 
-#' transforms the normalised-RPM data using log-scale. The 
-#' `mobileRNA::RNAimport()` function will  include the RPM data 
-#' columns for sRNAseq data processed by ShortStack, while with mRNAseq data 
-#' the function calculates FPKM.
-#' The data is then plotted as a heatmap, utilising the `pheatmaps` package.  
+#' transforms the normalised-RPM data using log-scale. 
 #' 
 #' This function expects to receive a dataframe containing FPKM/RPM data from 
 #' sRNA-seq studies. This function employs the use of a pseudocount during 
@@ -41,7 +37,7 @@
 #' replicates will contain zero values for the candidate mobile sRNA clusters. 
 #' 
 #' 
-#'@return Produces a list of objects, including the plot.
+#'@return Produces a list of objects, including the plot. 
 #'
 #' @examples
 #'
@@ -57,12 +53,7 @@
 #' @importFrom dplyr "%>%"
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
-#' @importFrom stats "dist"
-#' @importFrom stats "hclust"
-#' @importFrom stats "as.dendrogram"
-#' @importFrom stats "reorder"
 #' @importFrom pheatmap "pheatmap"
-#' @importFrom stats "na.omit"
 #' @importFrom grDevices "colorRampPalette"
 #' @importFrom RColorBrewer "brewer.pal"
 plotHeatmap <- function (data, value = "RPM", pseudocount = 1e-6, 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNApopulation.R
 \name{RNApopulation}
 \alias{RNApopulation}
-\title{Identify unique sRNA populations between treatment and control conditions}
+\title{Identify unique RNA populations between treatment and control conditions}
 \usage{
 RNApopulation(
   data,
@@ -30,8 +30,8 @@ column named \code{padjusted} must be present. See
 
 \item{alpha}{numeric; user defined numeric value to represent the adjusted
 p-value threshold to define statistic significance. Defaults setting
-\code{alpha=0.05}. Returns sRNA clusters with an adjusted p-values equal or lower
-than the threshold value.}
+\code{alpha=0.05}. Returns sRNA clusters or mRNA with an adjusted p-values equal
+or lower than the threshold value.}
 
 \item{chimeric}{logical; state whether system is chimeric: contains multiple
 genomes/genotypes.}
@@ -49,18 +49,18 @@ A refined version of the working data frame supplied, subset to
 contain only the unique sRNA clusters which are only found in replicates.
 Prints summary metric of results including:
 \itemize{
-\item the total number of sRNA clusters in the dataset
-\item the number & percentage of unique sRNA clusters to your condition
+\item the total number of sRNA clusters or mRNA in the dataset
+\item the number & percentage of unique sRNA clusters or mRNA to your condition
 \item the samples in the condition
 }
 }
 \description{
-Identify unique sRNA populations within a set of samples,
-typically within the same condition, compared to the other samples in the
-analysis.
+Identify unique sRNA or mRNA populations within a set of
+samples, typically within the same condition, compared to the other samples
+in the analysis.
 }
 \details{
-The function undertakes selects sRNA clusters which are unique to a given
+The function selects sRNA clusters or mRNA which are unique to a given
 condition and absent in the samples within the other condition(s).
 For instance, a treatment might encourage the production of unique sRNAs
 which are not produced in the control samples. The function can also select
@@ -77,11 +77,11 @@ parameter & the control condition sample names to the \code{controls} parameter.
 }
 \examples{
 
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
 # Select sRNA clusters only in the heterograft samples (ie. treatment)
 
-heterograft_pop <- RNApopulation(data = sRNA_data_consensus, 
+heterograft_pop <- RNApopulation(data = sRNA_data_dicercall, 
                                  conditions = c("heterograft_1", 
                                                 "heterograft_2", 
                                                 "heterograft_3"))

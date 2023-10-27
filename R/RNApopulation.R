@@ -1,11 +1,11 @@
-#' Identify unique sRNA populations between treatment and control conditions
+#' Identify unique RNA populations between treatment and control conditions
 #'
-#' @description Identify unique sRNA populations within a set of samples, 
-#' typically within the same condition, compared to the other samples in the
-#' analysis. 
+#' @description Identify unique sRNA or mRNA populations within a set of 
+#' samples, typically within the same condition, compared to the other samples 
+#' in the analysis. 
 #'
 #' @details
-#' The function undertakes selects sRNA clusters which are unique to a given
+#' The function selects sRNA clusters or mRNA which are unique to a given
 #' condition and absent in the samples within the other condition(s). 
 #' For instance, a treatment might encourage the production of unique sRNAs 
 #' which are not produced in the control samples. The function can also select
@@ -34,8 +34,8 @@
 #'
 #' @param alpha numeric; user defined numeric value to represent the adjusted 
 #' p-value threshold to define statistic significance. Defaults setting 
-#' `alpha=0.05`. Returns sRNA clusters with an adjusted p-values equal or lower 
-#' than the threshold value.
+#' `alpha=0.05`. Returns sRNA clusters or mRNA with an adjusted p-values equal 
+#' or lower than the threshold value.
 #'
 #'@param chimeric logical; state whether system is chimeric: contains multiple 
 #'genomes/genotypes. 
@@ -52,17 +52,17 @@
 #' contain only the unique sRNA clusters which are only found in replicates. 
 #' Prints summary metric of results including:
 #' 
-#' - the total number of sRNA clusters in the dataset 
-#' - the number & percentage of unique sRNA clusters to your condition
+#' - the total number of sRNA clusters or mRNA in the dataset 
+#' - the number & percentage of unique sRNA clusters or mRNA to your condition
 #' - the samples in the condition
 #'
 #' @examples
 #'
-#' data("sRNA_data_consensus")
+#' data("sRNA_data_dicercall")
 #'
 #' # Select sRNA clusters only in the heterograft samples (ie. treatment)
 #' 
-#' heterograft_pop <- RNApopulation(data = sRNA_data_consensus, 
+#' heterograft_pop <- RNApopulation(data = sRNA_data_dicercall, 
 #'                                  conditions = c("heterograft_1", 
 #'                                                 "heterograft_2", 
 #'                                                 "heterograft_3"))
@@ -71,7 +71,7 @@
 #' @importFrom dplyr "filter"
 #' @importFrom dplyr "select"
 #' @importFrom tidyselect "starts_with"
-#' @importFrom dplyr "case_when"
+#' @importFrom stats na.omit
 
 RNApopulation <- function(data,conditions,statistical = FALSE,alpha = 0.05,
                           chimeric = FALSE, controls = NULL, 

@@ -24,9 +24,9 @@ between controls and treatment are in the correct arrangement.
 }
 \examples{
 # load data 
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
-reorder_df <- RNAreorder(sRNA_data_consensus, controls)
+reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
 }

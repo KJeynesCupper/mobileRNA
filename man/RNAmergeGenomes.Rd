@@ -20,8 +20,8 @@ FASTA format (.fa/.fasta).}
 \item{genomeB}{path; directory path to a genome reference assembly file in
 FASTA format (.fa/.fasta).}
 
-\item{output_file}{path; a character string or a \code{base::connections()} open
-for writing. Including file output name, and file extension of \code{.fa}.}
+\item{output_file}{path; a character string or a \code{base::connections()}
+open for writing. Including file output name, and file extension of \code{.fa}.}
 
 \item{abbreviationGenomeA}{character; string to represent prefix added to
 existing chromosome names in \code{genomeA}. Default set as "A", which is
@@ -44,6 +44,8 @@ directory.
 \description{
 Merges two reference genomes (.fa/.fasta). into one single
 reference with modified chromosome names to ensure distinguishability.
+Typically, use genomeA as the origin tissue genome assembly, and genomeB as
+the mobile/foreign genome.
 }
 \details{
 The function merges two FASTA files, however, when merging genomic files it

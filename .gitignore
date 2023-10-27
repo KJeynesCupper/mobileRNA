@@ -11,6 +11,7 @@ _pkgdown.yml
 .DS_Store
 .RDataTmp
 .RDataTmp2
+.RDataTmp3
 ./inst/.RData
 ./inst/.Rhistory
 ./inst/.Rproj.user

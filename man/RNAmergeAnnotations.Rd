@@ -9,8 +9,7 @@ RNAmergeAnnotations(
   annotationB,
   output_file,
   abbreviationAnnoA = "A",
-  abbreviationAnnoB = "B",
-  exportFormat = "GFF"
+  abbreviationAnnoB = "B"
 )
 }
 \arguments{
@@ -30,10 +29,6 @@ separated from existing chromosome names by an underscore (_).}
 \item{abbreviationAnnoB}{character; string to represent prefix added to
 existing chromosome names in \code{annotationB}. Default set as "B", which is
 separated from existing chromosome names by an underscore (_).}
-
-\item{exportFormat}{The format of the annotation output. If missing or the
-format does not match the file type, an error will occur. Default set to "GFF"
-format.}
 }
 \value{
 The function output the individually altered annotation files, plus, a merged

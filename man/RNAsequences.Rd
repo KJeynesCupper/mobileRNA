@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAsequences.R
 \name{RNAsequences}
 \alias{RNAsequences}
-\title{Extract sRNA cluster sequences}
+\title{Extracts the RNA sequence from each sRNA cluster}
 \usage{
 RNAsequences(
   data,
@@ -43,23 +43,13 @@ function. The results includes:
 }
 }
 \description{
-Extract sRNA cluster sequences; identifies whether the most
-abundant sRNA for a sRNA cluster is consistent across a defined number of
-replicates, and if so extracts the sRNA nucleotide sequence.
+Extract the RNA sequence from each sRNA cluster; identifies
+whether the most abundant RNA sequence for a sRNA cluster is consistent across
+a defined number of replicates, and if so extracts the RNA sequence. Ties
+can be handled at random, or excluded.
 
 The function also calculates the RNA & DNA complementary sequences, as well
 as stating the length of the sequence.
-
-The results can be stored in the the working dataframe supplied to the
-function or stored as a new dataframe containing only the results from the
-function. This includes:
-\itemize{
-\item Match:  whether the sRNA sequence is consistent across replicates
-\item Sequence:  character; sequence of the most abundant sRNA within a cluster
-\item Complementary_RNA: character; complementary RNA nucleotide sequence
-\item Complementary_DNA: character; complementary DNA nucleotide sequence
-\item Width: numeric; length of nucleotide sequence
-}
 }
 \details{
 As default, the function checks whether each sample in the dataset shares

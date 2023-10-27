@@ -2,9 +2,10 @@
 % Please edit documentation in R/RNAmobile.R
 \name{RNAmobile}
 \alias{RNAmobile}
-\title{Identify potential mobile sRNA molecules}
+\title{Identify potential mobile RNA molecules}
 \usage{
 RNAmobile(
+  input = c("sRNA", "mRNA"),
   data,
   controls,
   genome.ID,
@@ -15,58 +16,68 @@ RNAmobile(
 )
 }
 \arguments{
-\item{data}{Numeric data frame}
+\item{input}{character; must be either "sRNA" or "mRNA" to represent the type
+of data, required when setting threshold.}
+
+\item{data}{dataframe; generated through the \pkg{mobileRNA} method.}
 
 \item{controls}{Character vector; containing names of control samples.}
 
-\item{genome.ID}{a character string related to the chromosomes in a
+\item{genome.ID}{character; string related to the chromosomes in a
 particular genome. A distinguishing feature of the genome of interest or
 non-interest in the chromosome name (\code{chr} column).}
 
-\item{task}{an option to keep or remove the chromosomes containing the
-identifying string. To keep the chromosomes with the ID, set task=keep.
-To remove, set \code{task="remove"}. As default, task is set to \code{keep}.}
+\item{task}{character; string to set the method to keep or remove the
+chromosomes containing the identifying string. To keep the chromosomes with
+the ID, set task=keep. To remove, set \code{task="remove"}. As default, task is
+set to \code{keep}.}
 
 \item{statistical}{If TRUE, will undertake statistical filtering based on the
 a p-value or adjusted p-value threshold stated by \code{alpha}.Default
 set at FALSE. Requires presence of columns containing statistical data.
 In order to filter by the adjusted p-value, a column named \code{padjusted} must
-be present. See \code{\link[=RNAanalysis]{RNAanalysis()}} to calculate statistical values.}
+be present. See \code{\link[=RNAdifferentialanalysis]{RNAdifferentialanalysis()}} to calculate
+statistical values.}
 
 \item{alpha}{numeric; adjusted p-value cutoff as the target FDR for
 independent filtering. Default is 0.1. Only mobile molecules with adjusted
 p-values equal or lower than specified are returned.}
 
-\item{threshold}{numeric; set a threshold level. For sRNAseq, this represents
-filtering by the minimum number of replicates that defined the
-consensus dicercall which is stored in the \code{DicerCounts} column.}
-
-\item{input}{character; must be either "sRNA" or "mRNA" to represent the type
-of data, required when setting threshold.}
+\item{threshold}{numeric; set a threshold level. For sRNA analysis, this
+represents filtering by the minimum number of replicates that defined the
+consensus dicercall which is stored in the \code{DicerCounts} column. While,
+for mRNA analysis this represents the number of replicates which contained
+reads for the mRNA molecule which is stored in the \code{SampleCounts} column.}
 }
 \value{
-A data-frame containing candidate mobile sRNAs, which could be
-further filtered based on statistical significance and the ability to
-by-pass the threshold which determines the number of replicates that
-defined the consensus dicercall.
+A data-frame containing candidate mobile sRNAs or mRNAs, which could
+have been further filtered based on statistical significance and the ability
+to by-pass the thresholds which determine the number of replicates that
+defined the consensus dicercall (sRNA) or contributed to reads counts (mRNA).
 }
 \description{
-A function to identify potential mobile sRNA molecules
-detected in a tissue which originated from a different genotype, usually
-related to a chimeric system.
+A function to identify potential mobile sRNA or mRNA molecules
+detected in a tissue from a different genotype.
 }
 \details{
-The function identifies candidate mobile sRNAs, by selecting sRNA clusters
-mapped to the foreign genome. It does so by either keeping or removing sRNA
-mapped to a given genome. To do so, it requires a common pre-fix across
-chromosomes of the same genome. See \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} for more
-information.
+The function identifies candidate mobile sRNAs or mRNAs, by selecting those
+that mapped to the foreign genome (Genome B). It does so by either keeping or
+removing those mapped to a given genome. To do so, it requires a common
+pre-fix across chromosomes of the same genome. See
+\code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} for more information.
 
+\strong{For sRNAseq:}
 A greater confidence in the mobile sRNA candidates can be achieved by setting
 a threshold that considers the number of replicates which contributed to
 defining the consensus dicercall (ie. consensus sRNA classification). This
 parameter filters based on the \code{DicerCounts} column introduced by the
 \code{\link[=RNAdicercall]{RNAdicercall()}} function.
+
+\strong{For mRNAseq:}
+A greater confidence in the mobile mRNA candidates can be achieved by setting
+a threshold that considers the number of replicates which contained reads
+for the mRNA molecule. This parameter filters based on the \code{SampleCounts}
+column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
 
 \strong{Statistical Analysis}
 The function also allows for filtering using statistical inference generated
@@ -78,7 +89,7 @@ by \code{alpha}.
 \examples{
 
 
-data("sRNA_data_consensus")
+data("sRNA_data_dicercall")
 
 
 # vector of control names
@@ -86,7 +97,7 @@ controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 
 # Locate potentially mobile sRNA clusters associated to tomato, no
 # statistical analysis
-mobile_df1 <- RNAmobile(data =  sRNA_data_consensus,
+mobile_df1 <- RNAmobile(data =  sRNA_data_dicercall,
                     controls = controls,
                     genome.ID = "B_",
                     task = "keep",

@@ -2,7 +2,8 @@
 #'
 #' @description Merges two reference genomes (.fa/.fasta). into one single
 #' reference with modified chromosome names to ensure distinguishability.
-#'
+#' Typically, use genomeA as the origin tissue genome assembly, and genomeB as 
+#' the mobile/foreign genome. 
 #'
 #'@param genomeA path; directory path to a genome reference assembly file in
 #'FASTA format (.fa/.fasta).
@@ -10,8 +11,8 @@
 #'@param genomeB path; directory path to a genome reference assembly file in
 #'FASTA format (.fa/.fasta).
 #'
-#'@param output_file path; a character string or a \code{base::connections()} open
-#'for writing. Including file output name, and file extension of `.fa`. 
+#'@param output_file path; a character string or a \code{base::connections()} 
+#'open for writing. Including file output name, and file extension of `.fa`. 
 #'
 #'@param abbreviationGenomeA character; string to represent prefix added to 
 #'existing chromosome names in `genomeA`. Default set as "A", which is 
@@ -103,18 +104,18 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
                              abbreviationGenomeA = "A",
                              abbreviationGenomeB = "B",
                             BPPARAM = BiocParallel::SerialParam()) {
-  if (missing(genomeA)) {
+  if (missing(genomeA) || !file.exists(genomeA)) {
     stop("Please specify genomeA, a connection to a FASTA file in local")
   }
-  if (missing(genomeB)) {
+  if (missing(genomeB) || !file.exists(genomeB)) {
     stop("Please specify annotationA, a connection to a FASTA file in local")
   }
   if (missing(output_file) || !grepl("\\.fa$", output_file)) {
-    stop("Please specify output_file, a connection to a local directory to write and 
-          save merged annotation. Ensure file name with extension 
-          (.fa or .fasta) is supplied.")
+    stop("Please specify output_file, a connection to a local directory to write 
+    and save merged annotation. Ensure file name with extension (.fa or .fasta) 
+         is supplied.")
   }
-  message("-- Note:Please be patient, this next step may take a long time \n")
+  message("-- Note: Please be patient, this next step may take a long time -- \n")
 
   # progress bar
   pb <- progress::progress_bar$new(
@@ -122,7 +123,7 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
     total = 5)
   pb$tick(0)  # start the progress bar
     # 1- load each genome into R 
-  ref1_fragments <- Biostrings::readDNAStringSet(genomeA)
+  #ref1_fragments <- Biostrings::readDNAStringSet(genomeA)
   ref1_fragments <- BiocParallel::bplapply(genomeA, 
                                            FUN = Biostrings::readDNAStringSet,
                                            BPPARAM=BPPARAM)

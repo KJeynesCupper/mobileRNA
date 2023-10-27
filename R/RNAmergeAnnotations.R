@@ -58,8 +58,9 @@
 #'@param annotationB path; directory path to genome annotation assembly file in
 #'GFF format.
 #'
-#'@param output_file path; a character string or a \code{base::connections()} open
-#'for writing. Including file output name, and file extension of GFF format. 
+#'@param output_file path; a character string or a \code{base::connections()} 
+#'open for writing. Including file output name, and must have a `.gff3` 
+#'extension. 
 #'
 #'
 #'@param abbreviationAnnoA character; string to represent prefix added to 
@@ -72,9 +73,8 @@
 #'existing chromosome names in `annotationB`. Default set as "B", which is 
 #'separated from existing chromosome names by an underscore (_). 
 #' 
-#'@param exportFormat The format of the annotation output. If missing or the 
-#'format does not match the file type, an error will occur. Default set to "GFF"
-#'format. 
+#' @param format format of GFF output, either gff, gff1, gff2, gff3. Default is 
+#' gff3.  
 #'
 #'
 #' @examples
@@ -104,66 +104,80 @@
 #'                                    output_file = output_file)
 #'                                    
 #' 
-#'
-#' @importFrom GenomeInfoDb "seqlevels"
+#' @importFrom rtracklayer "import"
 #' @importFrom rtracklayer "export"
 #' @importFrom GenomicRanges "GRangesList"
-#' @importFrom rtracklayer "import"
-#' @importFrom progress progress_bar
+#' @importFrom progress "progress_bar"
+#' @importFrom S4Vectors "elementMetadata" 
+#' @importFrom GenomeInfoDb "seqlevels"
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
                                output_file,
                                abbreviationAnnoA = "A",
-                               abbreviationAnnoB = "B", 
-                               exportFormat = "GFF"){
+                               abbreviationAnnoB = "B",
+                               format = "gff3"){
 
-  if (base::missing(annotationA) || !base::inherits(annotationA, "character")) {
+  if (base::missing(annotationA) || !base::inherits(annotationA, "character") ||
+      !file.exists(annotationA)) {
     stop("Please specify annotationA object; path to GFF file.")
   }
-  if (base::missing(annotationB) || !base::inherits(annotationB, "character")){
+  if (base::missing(annotationB) || !base::inherits(annotationB, "character") ||
+      !file.exists(annotationB)){
     stop("Please specify annotationA; path to GFF file.")
   }
   if (base::missing(output_file) || 
-      !grepl("\\.(gff|gff1|gff2|gff3)$",output_file)) {
+      !grepl("\\.(gff3)$",output_file)) {
     stop("Please specify output_file, a connection to a local directory to write 
-    and save merged annotation. \n Ensure file name with extension (GFF) is 
+    and save merged annotation. \n Ensure file name with .gff3 extension is 
     supplied.")
   }
-  # progress bar
+  # start the progress bar
   pb <- progress::progress_bar$new(
     format = "[:bar] :percent :current/:total :eta",
     total = 6)
+  pb$tick(0)  
   
-  
-  pb$tick(0)  # start the progress bar
+  # import gff
   annotationA <- rtracklayer::import(annotationA)
-  annotationB <- rtracklayer::import(annotationB)  
-  pb$tick(0) 
-  # replace names with prefix and remove punc.
+  annotationB <- rtracklayer::import(annotationB) 
+  pb$tick()
+  
+  # remove full-stop
   annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   
-                                          GenomeInfoDb::seqlevels(annotationA)))
+                                                 GenomeInfoDb::seqlevels(annotationA)))
   annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",
-                                          GenomeInfoDb::seqlevels(annotationB)))
-  # rename 
+                                                 GenomeInfoDb::seqlevels(annotationB)))
+  
+  # change seqnames
   GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames
   GenomeInfoDb::seqlevels(annotationB) <- annotationB_seqnames
-  # Write out altered GFF files
+
+  pb$tick()
+ # change classes 
+  annotationA_gff <- convertChar2Factor(annotationA)
+  annotationB_gff <- convertChar2Factor(annotationB)
+  # output location
   location <- dirname(output_file)
-  annoA_save <- file.path(location, "annotationA_altered.gff")
-  annoB_save <- file.path(location, "annotationB_altered.gff")
-  pb$tick(0) 
-  rtracklayer::export(annotationA, annoA_save, format = exportFormat)
-  message("New annotation file annotationA: ", annoA_save)
-  pb$tick(0) 
-  rtracklayer::export(annotationB, annoB_save, format = exportFormat)
-  message("New annotation file annotationB: ", annoB_save)
-  pb$tick(0) 
-  gr_list <- GenomicRanges::GRangesList(annotationA, annotationB)
+  annoA_save <- file.path(location, paste0("annotationA_altered.", format))
+  annoB_save <- file.path(location, paste0("annotationB_altered.", format))
+  pb$tick() 
+
+  # export individual gffs
+  rtracklayer::export(annotationA_gff, annoA_save)
+  rtracklayer::export(annotationB_gff, annoB_save)
+  pb$tick()
+  # join 
+  gr_list <- GenomicRanges::GRangesList(annotationA_gff, annotationB_gff)
   concatenated_gff <- unlist(gr_list)
-  rtracklayer::export(concatenated_gff, output_file, format = exportFormat)
-  message("New merged annnotation with modified chromosome names has been 
-created saved to: ", output_file)
-  pb$tick(0) 
+  # export merged 
+  rtracklayer::export(concatenated_gff, output_file, format=format)
+  pb$tick()
+  cat("\n")
+  message("Output files have been saved to: ")
+  message("---- annotationA:", annoA_save)
+  message("---- annotationB:", annoB_save)
+  message("---- Merged genome:", output_file)
+ 
   return(concatenated_gff)
 }

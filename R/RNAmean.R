@@ -15,7 +15,6 @@
 #'As default, the FPKM means will be stored in the column named `mean_RPM`,
 #'while the count means are stored in column names `mean_Count`.
 #'
-#'@importFrom stringr "str_detect"
 #'@importFrom dplyr "mutate"
 #'@importFrom dplyr "select"
 #'@importFrom dplyr "%>%"

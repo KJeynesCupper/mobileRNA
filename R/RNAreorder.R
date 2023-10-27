@@ -17,11 +17,11 @@
 #' the control sample columns. 
 #' @examples
 #' # load data 
-#' data("sRNA_data_consensus")
+#' data("sRNA_data_dicercall")
 #' 
 #' controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 #' 
-#' reorder_df <- RNAreorder(sRNA_data_consensus, controls)
+#' reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
 #' @export
 RNAreorder <- function(data, controls) {
   if (!is.data.frame(data)) {
@@ -39,7 +39,7 @@ RNAreorder <- function(data, controls) {
   # to place columns after the first 5
   control_indices <- control_indices[control_indices > 5]
   # Reorder the columns
-  new_order <- c(1:5, control_indices, setdiff(6:ncol(data), control_indices))
+  new_order <- c(1:5, control_indices, base::setdiff(6:ncol(data), control_indices))
   data <- data[, new_order]
   return(data)
 }

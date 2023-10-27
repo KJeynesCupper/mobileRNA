@@ -110,7 +110,7 @@ To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassifie
 conditions <- c("heterograft_1", "heterograft_2", "heterograft_3")
 
 # Run function to define sRNA class for each cluster.
-sRNA_data_consensus <- RNAdicercall(data = sRNA_data,
+sRNA_data_dicercall <- RNAdicercall(data = sRNA_data,
                                   conditions = conditions,
                                   tidy=TRUE)
 

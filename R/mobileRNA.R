@@ -82,11 +82,11 @@ NULL
 #'  data("sRNA_data")
 NULL
 
-#' @name sRNA_data_consensus
-#' @title sRNA_data_consensus: simulated data for biological replicates
+#' @name sRNA_data_dicercall
+#' @title sRNA_data_dicercall: simulated data for biological replicates
 #' @docType data
 #' @keywords dataset
-#' @usage data(sRNA_data_consensus)
+#' @usage data(sRNA_data_dicercall)
 #' @description Simulated sRNAseq dataset with RNA consensus
 #' @details Simulates data is taken from eggplant and tomato sRNAseq samples and
 #' created to simulate to movement of sRNA molecules from an Tomato rootstock to
@@ -99,7 +99,7 @@ NULL
 #' [RNAdicercall()] function has been employed. 
 #' @return Dataframe in global environment 
 #' @examples
-#'  data("sRNA_data_consensus")
+#'  data("sRNA_data_dicercall")
 NULL
 
 #' @name sRNA_data_mobile
