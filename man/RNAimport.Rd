@@ -10,6 +10,7 @@ RNAimport(
   samples,
   analysisType = "mobile",
   annotation,
+  idattr = "Name",
   FPKM = FALSE
 )
 }
@@ -30,6 +31,11 @@ counts. Only for sRNA data.}
 
 \item{annotation}{path; directory to genome annotation (GFF) file used for
 alignment.}
+
+\item{idattr}{character; GFF attribute to be used as feature ID containing
+mRNA names. Several GFF ines with the same feature ID will be considered as
+parts of the same  feature. The feature ID is used to identity the counts in
+the output table. Default is "Name".}
 
 \item{FPKM}{logical; calculate the FPKM for each sample}
 }

@@ -9,7 +9,8 @@ RNAmergeAnnotations(
   annotationB,
   output_file,
   abbreviationAnnoA = "A",
-  abbreviationAnnoB = "B"
+  abbreviationAnnoB = "B",
+  format = "gff3"
 )
 }
 \arguments{
@@ -19,8 +20,9 @@ GFF format.}
 \item{annotationB}{path; directory path to genome annotation assembly file in
 GFF format.}
 
-\item{output_file}{path; a character string or a \code{base::connections()} open
-for writing. Including file output name, and file extension of GFF format.}
+\item{output_file}{path; a character string or a \code{base::connections()}
+open for writing. Including file output name, and must have a \code{.gff3}
+extension.}
 
 \item{abbreviationAnnoA}{character; string to represent prefix added to
 existing chromosome names in \code{annotationA}. Default set as "A", which is
@@ -29,6 +31,9 @@ separated from existing chromosome names by an underscore (_).}
 \item{abbreviationAnnoB}{character; string to represent prefix added to
 existing chromosome names in \code{annotationB}. Default set as "B", which is
 separated from existing chromosome names by an underscore (_).}
+
+\item{format}{format of GFF output, either gff, gff1, gff2, gff3. Default is
+gff3.}
 }
 \value{
 The function output the individually altered annotation files, plus, a merged
@@ -101,6 +106,5 @@ output_file <- tempfile("merged_annotation", fileext = ".gff3")
 merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
                                    output_file = output_file)
                                    
-
 
 }

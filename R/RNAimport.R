@@ -39,7 +39,10 @@
 #'@param annotation path; directory to genome annotation (GFF) file used for 
 #'alignment. 
 #'
-#'
+#'@param idattr character; GFF attribute to be used as feature ID containing 
+#'mRNA names. Several GFF ines with the same feature ID will be considered as 
+#'parts of the same  feature. The feature ID is used to identity the counts in 
+#'the output table. Default is "Name". 
 #'
 #'@return 
 #'**For sRNAseq:**
@@ -130,6 +133,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
                       samples, 
                       analysisType = "mobile",
                       annotation,
+                      idattr = "Name", 
                       FPKM = FALSE) {
   if (base::missing(input) || !input %in% c("sRNA", "mRNA")) {
     stop("Please state the data-type to the `input` paramter.")
@@ -320,27 +324,25 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     genes <- lapply(sample_data, "[", , "mRNA")
     genes_all <- unique(Reduce(merge,genes))
     
-    # add gene length
-    annotation_file <- rtracklayer::import(annotation, format = "gff3")
-    # select column with cells contain "gene", but if they contain "gene" then nothing else. 
-    gene_columns <- which(sapply(annotation_file, function(x) any(grepl("^mRNA$", x))))
-    gene_col_name <- names(annotation_file)[gene_columns]
-    # select genes
-    genes_info <- subset(annotation_file, type == "mRNA")
-    width <- paste0(as.numeric(genes_info$end)-as.numeric(genes_info$start))
+    # add mRNA locus and width etc
+    annotation_file <- rtracklayer::import(annotation)
+    gene_columns <- which(sapply(elementMetadata(annotation_file) , function(x) any(grepl("^mRNA$", x))))
+    gene_col_name <- names(elementMetadata(annotation_file))[gene_columns]
+    genes_info <- as.data.frame(subset(annotation_file, type == "mRNA"))
     Locus <- paste0(genes_info$seqname, ":",genes_info$start,"-",
                     genes_info$end)
     
-    genes_info <- cbind(Locus, genes_info,width)
-    
+    genes_info <- cbind(Locus, genes_info)
+    colnames(genes_info)[colnames(genes_info) %in% idattr] <- "mRNA"
     # merge gene list with annotation info. 
-    merged_gene_info <- merge(genes_all, genes_info, by = "Locus", all.x = TRUE)
-    #merged_gene_info <- merged_gene_info[stats::complete.cases(merged_gene_info), ]
+    merged_gene_info <- merge(genes_all, genes_info, by = "mRNA", all.x = TRUE) %>%
+      select(mRNA, Locus, seqnames, start, end, width, strand, type)%>% 
+      rename(chr = seqnames)
     gene_widths <- merged_gene_info$width
     
     # ADDs sample information to the genes_all object
     for (i in seq_along(sample_data)){
-      matches <- merged_gene_info[sample_data[[i]], on = "Locus", nomatch = 0]
+      matches <- merged_gene_info[sample_data[[i]], on = "mRNA", nomatch = 0]
       matches_values <- matches[, .(Count=sum(Count)),by = "mRNA"]
       
       # Rename the aggregated columns
@@ -358,14 +360,14 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
                                   ~tidyr::replace_na(.,0)))
     # set genes as rownames 
     fpkm <- apply(X = subset(mRNA_information, 
-                             select = c(-Locus, -mRNA, -chr, -start, -end, -width)),
+                             select = c(-Locus, -mRNA, -chr, -start, -end, -width, -strand, -type)),
                   MARGIN = 2, 
                   FUN = function(x) {
                     sum_x <- sum(as.numeric(x))
                     if (sum_x == 0) {
                       t <- 0
                     } else {
-                      t <- 10^9 * x / gene_widths / sum_x
+                      t <- 10^9 * x / as.numeric(gene_widths) / sum_x
                     }
                     t
                   })

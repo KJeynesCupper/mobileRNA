@@ -158,19 +158,19 @@ gff_import <- function(gff_file, nrows = -1) {
 ################### convert character to factor in gramges #####
 
 convertChar2Factor <- function(gr) {
-  charCols <- sapply(elementMetadata(gr), is.character)
+  charCols <- sapply(S4Vectors::elementMetadata(gr), is.character)
   
   if (any(charCols)) {
-    gr_metadata <- elementMetadata(gr)
+    gr_metadata <- S4Vectors::elementMetadata(gr)
     gr_metadata[charCols] <- lapply(gr_metadata[charCols], as.factor)
-    elementMetadata(gr) <- gr_metadata
+    S4Vectors::elementMetadata(gr) <- gr_metadata
   }
-  metadata_cols <- elementMetadata(gr)
+  metadata_cols <- S4Vectors::elementMetadata(gr)
   charlist_cols <- sapply(metadata_cols, function(col) class(col) == "CompressedCharacterList")
   
  if (any(charlist_cols)) {
    metadata_cols <- metadata_cols[!charlist_cols]
-  elementMetadata(gr) <- metadata_cols
+   S4Vectors::elementMetadata(gr) <- metadata_cols
   }
   return(gr)
 }

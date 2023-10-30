@@ -338,15 +338,17 @@ For sRNAseq & mRNAseq alignment, we provide demo fastq files; these have a
 reduced number of reads and do not cluster as expected which are stored 
 within `inst/extdata`. 
 
-Hence, we also provide a more comprehensive data set, called `sRNA_data`, 
-which stores an example dataframe produced by the importation step with 
-`RNAimport()`. This can be loaded in the R environment by using the following 
-command:
+Hence, we also provide more comprehensive data sets, for small RNA it is called
+`sRNA_data` and for messenger RNA it is called `mRNA_data`. Each stores an 
+example dataframe produced by the importation step with  `RNAimport()`. This can 
+be loaded in the R environment by using the following command:
 
 
 ```{r Load, message=FALSE}
 
 data("sRNA_data")
+
+data("mRNA_data")
 
 ```
 
@@ -397,8 +399,8 @@ cache <- BiocFileCache(cache_dir)
 # Construct URL to example FASTA files
 url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
 
-fasta_1_url <- file.path(url_remote, "chr101112_Eggplant_V4.1.fa")
-fasta_2_url <- file.path(url_remote,"chr123_S_lycopersicum_chromosomes.4.00.fa")
+fasta_1_url <- file.path(url_remote, "chr12_Eggplant_V4.1.fa.gz")
+fasta_2_url <- file.path(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
 
 # Download example FASTA files and add them to cache
 fasta_1 <- bfcrpath(cache, fasta_1_url)
@@ -427,8 +429,8 @@ in the assembly file.*
 ```{r}
 
 # Construct URL to example GFF files
-anno1_url<-file.path(url_remote,"Eggplant_V4.1_function_IPR_final.gff")
-anno2_url<-file.path(url_remote,"ITAG4.1_release/ITAG4.1_gene_models.gff")
+anno1_url<-file.path(url_remote,"chr12_Eggplant_V4.1_function_IPR_final.gff")
+anno2_url<-file.path(url_remote,"chr2_ITAG4.0_gene_models.gff")
 
 # Download example GFF files and add them to cache
 anno1 <- bfcrpath(cache, anno1_url)
@@ -451,8 +453,8 @@ For downstream analysis, we may wish to see how many RNA molecules overlap with
 repetitive regions in genome(s). 
 ```{r}
 # Construct URL to example GFF files
-repeats1_url <-file.path(urlFTP_1,"Eggplant_V4.1_repeats.gff3")
-repeats2_url <-file.path(urlFTP_2,"ITAG4.0_release/ITAG4.0_REPET_repeats_aggressive.gff")
+repeats1_url <-file.path(url_remote,"chr12_Eggplant_V4.1_repeats.gff3")
+repeats2_url <-file.path(url_remote,"chr2_ITAG4.0_REPET_repeats_aggressive.gff")
 
 # Download example GFF files and add them to cache
 repeats1 <- bfcrpath(cache, repeats1_url)
@@ -463,7 +465,7 @@ output_annotationRR_file<- file.path(tempfile("merged_annotation_RR",
                                               fileext = ".gff3"))
 
 # merge annotation files into a single file
-merged_repeatregions <-RNAmergeAnnotations(annotationA = repeats1,
+merged_repeatRegions <-RNAmergeAnnotations(annotationA = repeats1,
                                            annotationB = repeats2,
                                         output_file = output_annotationRR_file)
 ```
@@ -489,8 +491,8 @@ sRNA genes (stored in`2_alignment_results`).
 have a reduced size for the package. This data will not be used for the 
 continued analysis step, instead you will load the full dataset ** 
 
-```{r,eval=FALSE}
-samples <- file.path(system.file("extdata",package="mobileRNA"))
+```{r, eval=FALSE}
+samples <- file.path(system.file("inst/extdata/sRNAseq",package="mobileRNA"))
 
 output_location <- tempdir()
 
@@ -498,7 +500,7 @@ mapRNA(input = "sRNA",
        input_files_dir = samples, 
        output_dir = output_location, 
        genomefile = output_assembly_file,
-       condaenv = "ShortStack4",
+       condaenv = "/Users/U2093048/miniconda3/envs/ShortStack4",
        mmap = "n")
 
 ```
@@ -514,7 +516,7 @@ Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
 output folders and the same of the samples to import from the directory.
 
-```{r,  eval=FALSE}
+```{r, eval=FALSE}
 # Directory containing results
 results_dir <-  file.path(output_location,"2_alignment_results")
 
@@ -523,7 +525,7 @@ sample_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3",
                   "heterograft_1", "heterograft_2", "heterograft_3")
 
 
-sRNA_data <- RNAimport(input = "sRNA", 
+sRNA_data_demo <- RNAimport(input = "sRNA", 
                        directory = results_dir,
                        samples = sample_names)
                            
@@ -677,7 +679,7 @@ replicates, and more.
     extreme than what was actually observed
 -   `padjusted` : A p-value adjustment
 -   `logCPM` : log counts per million, measure of expression level <br>
-
+-   `comparision.order` : Comparison conditions
 
 ## mRNA analysis
 
@@ -690,38 +692,33 @@ note:not runnable
 ```{r, eval=FALSE}
 
 sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
-                                     "selfgraft_3", "heterograft_1", 
-                                     "heterograft_2", "heterograft_3"),
+                                    "heterograft_1", "heterograft_2"),
                         mate1 = c("selfgraft_1_1.fq", "selfgraft_2_1.fq", 
-                                   "selfgraft_3_1.fq", "heterograft_1_1.fq", 
-                                    "heterograft_2_1.fq", "heterograft_3_1.fq"),
-                         mate2 = c("selfgraft_1_2.fq", "selfgraft_2_2.fq", 
-                                    "selfgraft_3_2.fq", "heterograft_1_2.fq", 
-                                    "heterograft_2_2.fq", "heterograft_3_2.fq"))
+                                  "heterograft_1_1.fq", "heterograft_2_1.fq"))
 
-samples <- file.path(system.file("extdata",package="mobileRNA"))
+samples <- file.path(system.file("inst/extdata/mRNAseq",package="mobileRNA"))
 output_location <- tempdir()
  
 mapRNA(input = "mRNA",
        input_files_dir = samples, 
        output_dir = output_location, 
        genomefile = output_assembly_file,
-       annotationfile =output_annotation_file,
+       annotationfile = output_annotation_file,
        sampleData = sampleData, 
-       condaenv = "ShortStack4")
+       condaenv = "/Users/U2093048/miniconda3/envs/ShortStack4")
 
 ```
 
 <br>
 
-### 2. Import Pre-Processed Data into R
+### 2. Import Pre-Processed Data into R 
 
 Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
 output folders and the same of the samples to import from the directory.
 
 note:not runnable
-```{r,  eval=FALSE}
+```{r, eval=FALSE}
 # Directory containing results
 results_dir <-  file.path(output_location,"1_mRNA_preprocessing")
 
@@ -730,7 +727,7 @@ sample_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3",
                   "heterograft_1", "heterograft_2", "heterograft_3")
 
 
-mRNA_data <- RNAimport(input = "mRNA", 
+mRNA_data_demo <- RNAimport(input = "mRNA", 
                        directory = results_dir,
                        samples = sample_names)
                            
@@ -739,7 +736,7 @@ mRNA_data <- RNAimport(input = "mRNA",
 <br>
 
 ### 3. Import example data 
-
+Import a more comprehensive dataset: 
 ```{r, eval=FALSE}
 data("mRNA_data")
 ```
@@ -750,10 +747,10 @@ Undertake differential analysis of sRNA within the experimental design
 to explore changes in abundance. The function allows for two methods;
 `edgeR` or `DESeq`.
 
-```{r, eval=FALSE}
+```{r}
 ## sample conditions in order within dataframe
-groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
-            "Heterograft", "Heterograft", "Heterograft")
+groups <- c("Selfgraft", "Selfgraft", 
+            "Heterograft", "Heterograft")
 
 
 ## Differential analysis of whole dataset: DESeq22 method 
@@ -772,7 +769,7 @@ write.table(mRNA_DESeq2, "./sRNA_DA_output.txt")
 
 Summarise results:
 
-```{r, eval=FALSE}
+```{r}
 
 RNAsummary(mRNA_DESeq2)
 
@@ -781,7 +778,7 @@ RNAsummary(mRNA_DESeq2)
 How about summarizing the sRNA population which are statistically
 significant:
 
-```{r, eval=FALSE}
+```{r}
 
 RNAsummary(mRNA_DESeq2, alpha=0.05)
 
@@ -794,14 +791,14 @@ requires supplying the function with a unique identifier of the
 rootstock genome. The merging step placed the prefix "B" to the tomato
 chromosomes.
 
-```{r, eval=FALSE}
+```{r}
 # define control samples
-controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
+controls <- c("selfgraft_1", "selfgraft_2")
 
-mobile_mRNA <- RNAmobile(data = mRNA_DESeq2, 
-                       controls = controls,
-                       genome.ID = "B", 
-                       task = "keep")
+mobile_mRNA <- RNAmobile(input = "mRNA",
+                         data = mRNA_DESeq2, 
+                         controls = controls,genome.ID = "B", 
+                         task = "keep")
 
 
 
@@ -830,7 +827,8 @@ replicates, and more.
 -   `log2FoldChange` : Log2FoldChange--The effect size estimate
 -   `pvalue` : P value, the probability under the assumption of no effect or no difference, of obtaining a result equal to or more extreme than what was actually observed
 -   `padjusted` : A p-value adjustment
--   `logCPM` : log counts per million, measure of expression level <br>
+-   `logCPM` : log counts per million, measure of expression level 
+-   `comparision.order` : Comparison conditions
 
 ##### Information on each sample replicate:
 
@@ -841,12 +839,6 @@ replicates, and more.
 # Advanced analysis 
 
 Continuing the analysis from after the importation step in the Quick-Start. 
-Here we will demonstrate sRNA analysis with the pre-loaded data. 
-```{r}
-
-data("sRNA_data")
-
-```
 
 ## Core sRNA analysis
 ### Quality control

@@ -99,7 +99,7 @@ exclude multimapped reads.}
 \item{type}{character; feature type (3rd column in GFF file) to be used,
 all features of other type are ignored. Default is "mRNA".}
 
-\item{idattr}{character: GFF attribute to be used as feature ID. Several GFF
+\item{idattr}{character; GFF attribute to be used as feature ID. Several GFF
 lines with the same feature ID will be considered as parts of the same
 feature. The feature ID is used to identity the counts in the output table.
 Default is "Name".}
