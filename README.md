@@ -131,16 +131,6 @@ vignette("mobileRNA")
 <br>
 
 ## Quick Start
-
-Below is the summary workflow:
-
-```{r, fig.align="centre", echo=FALSE,out.width="750", out.height="750",fig.cap="The basic analysis pipeline for mobileRNA" }
-
-knitr::include_graphics("../man/figures/mobileRNA_graphic_1.png")
-```
-
-<br><br><br>
-
 ## 1. Example Data Set
 
 The package includes a simulated data set to replicate the grafting
