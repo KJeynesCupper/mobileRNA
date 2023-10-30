@@ -74,7 +74,7 @@ a chimeric system** <br>
 <br>
 
 <p>
-    <img src="../man/figures/mobileRNA_graphic_1.png" align="centre" />
+    <img src="./man/figures/mobileRNA_graphic_1.png" width = 850 height= 700 align="centre" />
 </p>
 
 
