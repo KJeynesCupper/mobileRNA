@@ -72,6 +72,11 @@ a chimeric system** <br>
 
 *Look-out for developments that accommodates mRNA movement* <br>
 
+```{r, fig.align="centre",fig.cap="The analysis pipeline for mobileRNA" }
+
+knitr::include_graphics("../man/figures/mobileRNA_graphic_1.png")
+```
+<br>
 Author
 --------
 Katie Jeynes-Cupper, University of Birmingham,
