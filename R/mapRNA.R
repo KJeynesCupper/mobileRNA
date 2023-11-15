@@ -13,10 +13,8 @@
 #' 
 #' ** For sRNA analysis** 
 #' The function invokes a number of OS commands, and is dependent 
-#' on the installation of `ShortStack` (>= 4.0) with Conda.  Please refer to 
-#' \link{https://github.com/MikeAxtell/ShortStack} for more information. Please 
-#' note that `ShortStack` is only compatible with Linux and Mac operating 
-#' systems. 
+#' on the installation of `ShortStack` (>= 4.0) with Conda. Please note that 
+#' `ShortStack` is only compatible with Linux and Mac operating systems. 
 #' 
 #' The pipeline undertakes de novo detection of sRNA-producing loci and
 #' alignment, where the output of each are stored in their respective folders in 
@@ -29,21 +27,22 @@
 #' 
 #' ** For mRNA analysis** 
 #' The function invokes a number of OS commands, and is dependent 
-#' on the installation of `HISAT2`,  `HTSeq` and `SAMtools` with Conda. Please 
-#' refer to \link{https://anaconda.org/bioconda/hisat2}, 
-#' \link{https://anaconda.org/bioconda/htseq} and 
-#' \link{https://anaconda.org/bioconda/samtools} for more information. 
-#' 
+#' on the installation of `HISAT2`,  `HTSeq` and `SAMtools` with Conda. 
 #' The pipeline can undertake single- or pair-end analysis, and do to do so 
 #' requires a data frame stating the sample information where each row 
 #' represents a sample. The cleaned reads are mapped using HISAT and then the 
 #' raw counts are estimated by HTSeq.
 #' 
 #' 
-#' @references ShortStack \link{https://github.com/MikeAxtell/ShortStack}
-#' HISAT2 \link{https://anaconda.org/bioconda/hisat2}
-#' HTSeq \link{https://anaconda.org/bioconda/htseq} 
-#' SAMtools \link{https://anaconda.org/bioconda/samtools}
+#' @references 
+#' \url{"https://github.com/MikeAxtell/ShortStack"},
+#' \url{https://anaconda.org/bioconda/hisat2},
+#' \url{https://anaconda.org/bioconda/htseq},
+#' \url{https://anaconda.org/bioconda/samtools}
+#' 
+#' @param input string; define type of Next-Generation Sequencing dataset.
+#'"sRNA" for sRNAseq data and "mRNA" for mRNAseq data. 
+#'
 #' @param input_files_dir path; directory containing only the FASTQ sRNAseq 
 #' samples for analysis. Note that all samples in this directory will be used by 
 #' this function. 
@@ -143,7 +142,7 @@
 #' 
 #' The function generates a number of extra files for each sample and are not 
 #' required for the downstream analysis. See `ShortStack` documentation for more
-#' information (\link{https://github.com/MikeAxtell/ShortStack}). As default
+#' information (\url{https://github.com/MikeAxtell/ShortStack}). As default
 #' these files are deleted. This is determined by the `tidy` argument. 
 #' 
 #' ** For mRNA analysis**
@@ -154,8 +153,8 @@
 #' function excludes multi-mapped mRNAs. 
 #' 
 #' 
-#' @examples \dontrun{
-#' 
+#' @examples 
+#' \dontrun{
 #' samples <- file.path(system.file("extdata",package="mobileRNA"))
 #' 
 #' output_location <- tempdir()
@@ -176,31 +175,17 @@
 #' @importFrom utils write.table
 #' 
 #' @export
-mapRNA <- function(input = c("mRNA", "sRNA"), 
-                   sampleData = NULL, 
-                       input_files_dir, 
-                       output_dir, 
-                       genomefile, 
-                       annotationfile=NULL,
-                       condaenv,
-                       threads = 6, 
-                       mmap = "n", 
-                       dicermin = 20,
-                       dicermax = 24, 
-                       mincov = 0.5, 
-                       pad = 200,
-                       order = pos,
-                       stranded = no,
-                       mode = union,
-                       nonunique = none,
-                       type = mRNA,
-                       idattr=Name, 
-                       tidy = TRUE){
+mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, 
+                   input_files_dir, output_dir, genomefile, annotationfile=NULL,
+                   condaenv, threads = 6, mmap = "n", dicermin = 20,
+                   dicermax = 24, mincov = 0.5, pad = 200,order = pos,
+                   stranded = no, mode = union, nonunique = none, type = mRNA,
+                   idattr=Name, tidy = TRUE){
   # check inputs 
-  if (base::missing(input) || !input %in% c("sRNA", "mRNA")) {
+  if (base::missing(input) || !input %in% c("sRNA", "mRNA")){
     stop("Please state the data-type to the `input` paramter.")
   }
-  if (base::missing(input_files_dir)) {
+  if (base::missing(input_files_dir)){
     stop("Please specify an accessable directory where files are stored")
   }
   # check it only contains fq 
@@ -213,7 +198,7 @@ mapRNA <- function(input = c("mRNA", "sRNA"),
   }
 
   if (missing(genomefile) || !file.exists(genomefile) || 
-      !grepl("\\.fa$", genomefile)) {
+      !grepl("\\.fa$", genomefile)){
     stop("Please specify genomefile, a connection to a FASTA file in local")
   }
   
@@ -224,7 +209,7 @@ mapRNA <- function(input = c("mRNA", "sRNA"),
   
   # 1 - Verify that the OS is either Linux or macOS
   os <- tolower(Sys.info()[['sysname']])
-  if (os != "linux" && os != "darwin") {
+  if (os != "linux" && os != "darwin"){
     stop("ShortStack can only run on Linux or macOS.")
   }
   # set conda envrioment of shortstack

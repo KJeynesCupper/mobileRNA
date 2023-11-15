@@ -1,23 +1,26 @@
 ---
-title: "mobileRNA: Explore candidate mobile sRNAs & sRNAs population-scale changes"
+title: "mobileRNA: Explore candidate mobile sRNAs or mRNAs & sRNAs population-scale changes"
 author: Katie Jeynes-Cupper, Marco Catoni
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document
-toc_depth: 3
-number_sections: true
-theme: united
-highlight: tango
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+    highlight: tango
 fig_width: 7
 vignette: >
  %\VignetteIndexEntry{mobileRNA}
  %\VignetteEngine{knitr::rmarkdown}}
  %\VignetteEncoding{UTF-8}
  %\VignettePackage{mobileRNA}
+ %\VignetteDepends{mobileRNA}
  %\VignetteDepends{dplyr}
  %\usepackage[utf8]{inputenc}
 ---
-<br>
+
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -27,8 +30,6 @@ knitr::opts_chunk$set(
   warning=FALSE,
   comment = "#>"
 )
-
-library(dplyr)
 ```
 
 # Introduction
@@ -279,9 +280,9 @@ devtools::install_github("KJeynesCupper/mobileRNA", ref = "main")
 ```
 
 
-```{r,message=FALSE}
+```{r, message=FALSE}
 
-library(mobileRNA)
+library("mobileRNA")
 
 ```
 
@@ -390,22 +391,12 @@ reference file stored in your desired directory.Eggplant represent the scion
 B. 
 
 
-```{r}
-# pull genomes 
-library(BiocFileCache)
-cache_dir <- tools::R_user_dir("mobileRNA", which = "cache")
-cache <- BiocFileCache(cache_dir)
+```{r, eval=FALSE}
+fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", 
+                       package="mobileRNA")
 
-# Construct URL to example FASTA files
-url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-
-fasta_1_url <- file.path(url_remote, "chr12_Eggplant_V4.1.fa.gz")
-fasta_2_url <- file.path(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
-
-# Download example FASTA files and add them to cache
-fasta_1 <- bfcrpath(cache, fasta_1_url)
-fasta_2 <- bfcrpath(cache, fasta_2_url)
-
+fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa",
+                      package="mobileRNA")
 # define temporary output directory - replace with your directory
 output_assembly_file <- file.path(tempfile("merged_assembly", 
                                            fileext = ".fa"))
@@ -426,15 +417,13 @@ files -  otherwise the annotation file will not align with the chromosome names
 in the assembly file.*
 <br>
 
-```{r}
+```{r, eval=FALSE}
 
-# Construct URL to example GFF files
-anno1_url<-file.path(url_remote,"chr12_Eggplant_V4.1_function_IPR_final.gff")
-anno2_url<-file.path(url_remote,"chr2_ITAG4.0_gene_models.gff")
+anno1 <- system.file("extdata","reduced_chr12_Eggplant.gff",
+                     package="mobileRNA")
 
-# Download example GFF files and add them to cache
-anno1 <- bfcrpath(cache, anno1_url)
-anno2 <- bfcrpath(cache, anno2_url)
+anno2 <- system.file("extdata","reduced_chr2_Tomato.gff", 
+                     package="mobileRNA")
 
 # define temporary output directory 
 output_annotation_file <- file.path(tempfile("merged_annotation", 
@@ -445,29 +434,6 @@ merged_annotation <- RNAmergeAnnotations(annotationA = anno1,
                                          annotationB = anno2,
                                          output_file = output_annotation_file)
 
-```
-
-
-## 3. Merging Genome Annotations with Repetitive Regions (optional)
-For downstream analysis, we may wish to see how many RNA molecules overlap with
-repetitive regions in genome(s). 
-```{r}
-# Construct URL to example GFF files
-repeats1_url <-file.path(url_remote,"chr12_Eggplant_V4.1_repeats.gff3")
-repeats2_url <-file.path(url_remote,"chr2_ITAG4.0_REPET_repeats_aggressive.gff")
-
-# Download example GFF files and add them to cache
-repeats1 <- bfcrpath(cache, repeats1_url)
-repeats2 <- bfcrpath(cache, repeats2_url)
-
-# define temporary output directory 
-output_annotationRR_file<- file.path(tempfile("merged_annotation_RR", 
-                                              fileext = ".gff3"))
-
-# merge annotation files into a single file
-merged_repeatRegions <-RNAmergeAnnotations(annotationA = repeats1,
-                                           annotationB = repeats2,
-                                        output_file = output_annotationRR_file)
 ```
 
 ## sRNA analysis
@@ -492,7 +458,7 @@ have a reduced size for the package. This data will not be used for the
 continued analysis step, instead you will load the full dataset ** 
 
 ```{r, eval=FALSE}
-samples <- file.path(system.file("inst/extdata/sRNAseq",package="mobileRNA"))
+samples <- system.file("extdata/sRNAseq",package="mobileRNA")
 
 output_location <- tempdir()
 
@@ -593,11 +559,10 @@ groups <- c("Selfgraft", "Selfgraft", "Selfgraft",
 sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data,
                                        group = groups,
                                        method = "DESeq2")
-                              
+```
 
 
-
-                              
+```{r, eval=FALSE}
 # save output as txt file 
 write.table(sRNA_DESeq2, "./sRNA_DA_output.txt")
 
@@ -636,9 +601,10 @@ mobile_sRNA <- RNAmobile(input = "sRNA",
                          controls = controls,
                          genome.ID = "B",
                          task = "keep")
+```
 
 
-
+```{r, eval=FALSE}
 # save output as txt file 
 write.table(mobile_sRNA, "./sRNA_mobile_output.txt")
 
@@ -696,7 +662,7 @@ sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2",
                         mate1 = c("selfgraft_1_1.fq", "selfgraft_2_1.fq", 
                                   "heterograft_1_1.fq", "heterograft_2_1.fq"))
 
-samples <- file.path(system.file("inst/extdata/mRNAseq",package="mobileRNA"))
+samples <- system.file("extdata/mRNAseq",package="mobileRNA")
 output_location <- tempdir()
  
 mapRNA(input = "mRNA",
@@ -737,7 +703,7 @@ mRNA_data_demo <- RNAimport(input = "mRNA",
 
 ### 3. Import example data 
 Import a more comprehensive dataset: 
-```{r, eval=FALSE}
+```{r}
 data("mRNA_data")
 ```
 
@@ -757,11 +723,10 @@ groups <- c("Selfgraft", "Selfgraft",
 mRNA_DESeq2 <- RNAdifferentialAnalysis(data = mRNA_data,
                                        group = groups,
                                        method = "DESeq2")
-                              
+```
 
 
-
-                              
+```{r, eval=FALSE}
 # save output as txt file 
 write.table(mRNA_DESeq2, "./sRNA_DA_output.txt")
 
@@ -799,9 +764,10 @@ mobile_mRNA <- RNAmobile(input = "mRNA",
                          data = mRNA_DESeq2, 
                          controls = controls,genome.ID = "B", 
                          task = "keep")
+```
 
 
-
+```{r, eval=FALSE}
 # save output as txt file 
 write.table(mobile_mRNA, "./mRNA_mobile_output.txt")
 
@@ -1443,7 +1409,7 @@ and adding a buffer region of 1 kb upstream and downstream of the each gene.
 
 mobile_attributes <- RNAattributes(data = mobile_sRNA, 
                                       match ="genes",
-                                      annotation = merged_annotation)
+                                      annotation = anno2)
 
 ```
 <br>
@@ -1453,7 +1419,8 @@ Very similar to before, we can find stricter overlaps between our candidate
 sRNA clusters and genomic features. However, this time we can calculate the 
 relative or absolute number of sRNA clusters which are associated to each type 
 of feature. These include promoter regions, exon, introns, untranslated regions 
-and repeat regions.The results can either be displayed in the dataframe as an
+and repeat regions (if, annotation contains repeat regions or supplied 
+additionally).The results can either be displayed in the dataframe as an 
 absolute value or as a percentage of the total:
 
 NOTE: This function look for the exact matches in the locus (chromosome, 
@@ -1462,9 +1429,7 @@ start and end regions) between the sRNA cluster and the annotation file.
 
 ```{r, eval=FALSE}
 
-mobile_features <- RNAfeatures(data = mobile_sRNA,
-                            annotation = merged_annotation, 
-                            repeats = merged_repeatregions)
+mobile_features <- RNAfeatures(data = mobile_sRNA, annotation = anno2)
 
 ```
 <br>
@@ -1523,7 +1488,6 @@ For a tool like `psRNATarget`, we can manipulate the output of `RNAsequences()`
 to match the input style for target prediction using the following code:
 
 ```{r, message=FALSE}
-library(dplyr)
 # select the cluster and sequence columns 
 sequences <-mobile_sequences %>% select(Cluster, Sequence)
 
@@ -1550,7 +1514,7 @@ Other steps can be take at this stage including alignment of the mobile sRNA
 sequences to identify consensus sequences. For example this can be undertaken 
 with the R package `bioseq`. 
 
-```{r}
+```{r, eval = FALSE}
 
 library(bioseq)
 

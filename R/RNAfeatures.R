@@ -81,10 +81,7 @@ RNAfeatures <- function(data, annotation,
       !file.exists(annotation)) {
     stop("annotation parameter is missing or empty.")
   }
-    if (!dir.exists(annotation)) {
-    stop("The specified directory does not exist, please ammend the annotation 
-          parameter.")
-  }
+  
   annotation_info <-rtracklayer::import(annotation)
   anno_repeats <- repeats
   if(is.null(anno_repeats)) {
@@ -111,12 +108,14 @@ RNAfeatures <- function(data, annotation,
                                                        type=="three_prime_UTR")
   three_UTR<-GenomicRanges::setdiff(three_UTR, c(five_UTR, repeats),
                                     ignore.strand=TRUE)
+  
   exons<-subset(annotation_info[IRanges::overlapsAny(annotation_info,
                                                            genes,
                                                            ignore.strand=TRUE)],
                 type=="exon")
   exons<-GenomicRanges::setdiff(exons, c(five_UTR, three_UTR, repeats),
                                 ignore.strand=TRUE)
+  
   introns <- GenomicRanges::setdiff(genes, c(exons, five_UTR, three_UTR),
                                     ignore.strand=TRUE)
 
@@ -136,7 +135,7 @@ RNAfeatures <- function(data, annotation,
                                                     three_UTR,introns),
                                        ignore.strand=TRUE)
   #get others
-  others <-   BiocGenerics::setdiff(subset(annotation, type=="chromosome"),
+  others <-   BiocGenerics::setdiff(subset(annotation_info, type=="chromosome"),
                                     c(repeats, exons,five_UTR,three_UTR,introns,
                                       promoters), ignore.strand=TRUE)
   # data frame
@@ -155,18 +154,13 @@ RNAfeatures <- function(data, annotation,
   # select sample
   sRNA_df <-  data %>% dplyr::select(chr, start, end)
   sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
-  sRNA_features_df[2,1] <- sum(BiocGenerics::width(intersect(
-    promoters,sRNA_df)))
-  sRNA_features_df[2,2] <- sum(BiocGenerics::width(intersect(
-    exons,sRNA_df)))
-  sRNA_features_df[2,3] <- sum(BiocGenerics::width(intersect(
-    introns,sRNA_df)))
-  sRNA_features_df[2,4] <- sum(BiocGenerics::width(intersect(
-    five_UTR,sRNA_df)))
-  sRNA_features_df[2,5] <- sum(BiocGenerics::width(intersect(
-    three_UTR,sRNA_df)))
-  sRNA_features_df[2,6] <- sum(BiocGenerics::width(intersect(repeats,sRNA_df)))
-  sRNA_features_df[2,7] <- sum(BiocGenerics::width(intersect(others,sRNA_df)))
+  sRNA_features_df[2,1] <- length(GenomicRanges::intersect(promoters,sRNA_df))
+  sRNA_features_df[2,2] <- length(GenomicRanges::intersect(exons,sRNA_df))
+  sRNA_features_df[2,3] <- length(GenomicRanges::intersect(introns,sRNA_df))
+  sRNA_features_df[2,4] <- length(GenomicRanges::intersect(five_UTR,sRNA_df))
+  sRNA_features_df[2,5] <- length(GenomicRanges::intersect(three_UTR,sRNA_df))
+  sRNA_features_df[2,6] <- length(GenomicRanges::intersect(repeats,sRNA_df))
+  sRNA_features_df[2,7] <- length(GenomicRanges::intersect(others,sRNA_df))
   if(percentage == TRUE){
     # convert to percentage
     sRNA_features_df <- data.frame(t(sRNA_features_df)) %>%

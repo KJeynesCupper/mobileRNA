@@ -28,6 +28,9 @@ mapRNA(
 )
 }
 \arguments{
+\item{input}{string; define type of Next-Generation Sequencing dataset.
+"sRNA" for sRNAseq data and "mRNA" for mRNAseq data.}
+
 \item{sampleData}{dataframe; stores mRNA sample data where rows represent
 each sample in the analysis. Column one stores the sample names, while column
 two stores the the name(s) of the fastq file(s) for mate 1 (e.g. flyA_1.fq,
@@ -131,7 +134,7 @@ downstream analysis by utilizing the \code{\link[=RNAimport]{RNAimport()}} funct
 
 The function generates a number of extra files for each sample and are not
 required for the downstream analysis. See \code{ShortStack} documentation for more
-information (\link{https://github.com/MikeAxtell/ShortStack}). As default
+information (\url{https://github.com/MikeAxtell/ShortStack}). As default
 these files are deleted. This is determined by the \code{tidy} argument.
 
 ** For mRNA analysis**
@@ -155,10 +158,8 @@ reported for each analysis.
 
 ** For sRNA analysis**
 The function invokes a number of OS commands, and is dependent
-on the installation of \code{ShortStack} (>= 4.0) with Conda.  Please refer to
-\link{https://github.com/MikeAxtell/ShortStack} for more information. Please
-note that \code{ShortStack} is only compatible with Linux and Mac operating
-systems.
+on the installation of \code{ShortStack} (>= 4.0) with Conda. Please note that
+\code{ShortStack} is only compatible with Linux and Mac operating systems.
 
 The pipeline undertakes de novo detection of sRNA-producing loci and
 alignment, where the output of each are stored in their respective folders in
@@ -171,11 +172,7 @@ are imported into R using \code{\link[=RNAimport]{RNAimport()}}.
 
 ** For mRNA analysis**
 The function invokes a number of OS commands, and is dependent
-on the installation of \code{HISAT2},  \code{HTSeq} and \code{SAMtools} with Conda. Please
-refer to \link{https://anaconda.org/bioconda/hisat2},
-\link{https://anaconda.org/bioconda/htseq} and
-\link{https://anaconda.org/bioconda/samtools} for more information.
-
+on the installation of \code{HISAT2},  \code{HTSeq} and \code{SAMtools} with Conda.
 The pipeline can undertake single- or pair-end analysis, and do to do so
 requires a data frame stating the sample information where each row
 represents a sample. The cleaned reads are mapped using HISAT and then the
@@ -183,7 +180,6 @@ raw counts are estimated by HTSeq.
 }
 \examples{
 \dontrun{
-
 samples <- file.path(system.file("extdata",package="mobileRNA"))
 
 output_location <- tempdir()
@@ -198,8 +194,8 @@ mmap = "n".)
 
 }
 \references{
-ShortStack \link{https://github.com/MikeAxtell/ShortStack}
-HISAT2 \link{https://anaconda.org/bioconda/hisat2}
-HTSeq \link{https://anaconda.org/bioconda/htseq}
-SAMtools \link{https://anaconda.org/bioconda/samtools}
+\url{"https://github.com/MikeAxtell/ShortStack"},
+\url{https://anaconda.org/bioconda/hisat2},
+\url{https://anaconda.org/bioconda/htseq},
+\url{https://anaconda.org/bioconda/samtools}
 }

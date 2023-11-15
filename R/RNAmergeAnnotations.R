@@ -79,31 +79,21 @@
 #'
 #' @examples
 #' 
-#' # Initialize a cache directory, using the BiocFileCache package, to store the downloads used in this example
-#' library(BiocFileCache)
-#' cache_dir <- tools::R_user_dir("mobileRNA", which = "cache")
-#' cache <- BiocFileCache(cache_dir)
+#' anno1 <- system.file("extdata", "reduced_chr12_Eggplant.gff", 
+#' package="mobileRNA")
 #' 
-#' # Construct URL to example GFF files
-#' url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-#' anno1_url <- file.path(url_remote,"chr12_Eggplant_V4.1_function_IPR_final.gff")
-#' anno2_url <- file.path(url_remote, "chr2_ITAG4.0_gene_models.gff")
-#' 
-#' # Download example GFF files and add them to cache
-#' anno1 <- bfcrpath(cache, anno1_url)
-#' anno2 <- bfcrpath(cache, anno2_url)
+#' anno2 <- system.file("extdata","reduced_chr2_Tomato.gff", package="mobileRNA")
 #' 
 #' # Merge annotations and write them to a file in output_file.
 #' # For this example, the result is written to a temporary file.
-#' # For real use cases, the output_file should be an appropriate location on your 
-#' # computer.
+#' # For real use cases, the output_file should be an appropriate location on 
+#' # your computer.
 #' 
 #' output_file <- tempfile("merged_annotation", fileext = ".gff3")
 #' 
-#' merged_anno <- RNAmergeAnnotations(annotationA = anno1,annotationB = anno2,
+#' merged_anno <- RNAmergeAnnotations(annotationA = anno1, annotationB = anno2,
 #'                                    output_file = output_file)
 #'                                    
-#' 
 #' @importFrom rtracklayer "import"
 #' @importFrom rtracklayer "export"
 #' @importFrom GenomicRanges "GRangesList"

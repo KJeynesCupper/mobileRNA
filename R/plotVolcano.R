@@ -7,7 +7,7 @@
 #'
 #' @param data Dataframe; Must follow the structure created by 
 #' `mobileRNA::RNAimport()` and contain columns contributed by statistical 
-#' analysis using `mobileRNA::RNAanalysis()`
+#' analysis using `mobileRNA::RNAdifferentialAnalysis()`
 #'
 #' @param labels Add labels molecules with the most significant changes
 #'

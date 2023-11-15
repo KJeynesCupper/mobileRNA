@@ -26,7 +26,7 @@
 #' **Statistical Analysis**
 #' The function also allows for filtering using statistical inference generated
 #' from the differential analysis of the total dataset using the function
-#' [mobileRNA::RNAanalysis()]. When `statistical=TRUE`, the feature is enabled
+#' [mobileRNA::RNAdifferentialAnalysis()]. When `statistical=TRUE`, the feature is enabled
 #' and selected mobile molecules that meet the adjusted p-value cutoff defined 
 #' by `alpha`. 
 #'
@@ -51,7 +51,7 @@
 #' a p-value or adjusted p-value threshold stated by `alpha`.Default
 #' set at FALSE. Requires presence of columns containing statistical data.
 #' In order to filter by the adjusted p-value, a column named `padjusted` must
-#' be present. See [mobileRNA::RNAdifferentialanalysis()] to calculate 
+#' be present. See [mobileRNA::RNAdifferentialAnalysis()] to calculate 
 #' statistical values.
 #'
 #' @param alpha numeric; adjusted p-value cutoff as the target FDR for 
@@ -80,11 +80,8 @@
 #'
 #' # Locate potentially mobile sRNA clusters associated to tomato, no
 #' # statistical analysis
-#' mobile_df1 <- RNAmobile(data =  sRNA_data_dicercall,
-#'                     controls = controls,
-#'                     genome.ID = "B_",
-#'                     task = "keep",
-#'                     statistical = FALSE)
+#' mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data_dicercall,
+#' controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 #'
 #'
 #' @export

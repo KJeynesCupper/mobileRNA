@@ -11,9 +11,7 @@
 #'
 #' The most important functions in the \pkg{mobileRNA} are:
 #' \describe{
-#' \item{\code{\link{RNAloci}}}{reads the ShortStack report files to identify 
-#'  all de novo sRNA cluster loci across the experimental design}
-#'  \item{\code{\link{RNAimport}}}{reads the ShortStack Results report files in 
+#'  \item{\code{\link{RNAimport}}}{reads the pre-processing report files in 
 #'  to a dataframe for all conditions}
 #'  \item{\code{\link{RNAdicercall}}}{calculates the consensus sRNA 
 #'  dicercall class}
@@ -21,11 +19,11 @@
 #'  defined sRNA class}
 #'  \item{\code{\link{RNAdifferentialAnalysis}}}{undertakes differential 
 #'  analysis using either the edgeR or DESeq2 method for data structure}
-#'  \item{\code{\link{RNAmobile}}}{identifies candidates to be potentially 
-#'  mobile sRNA molecules in a chimeric system}
-#'  \item{\code{\link{RNApopulation}}}{selects the sRNAs unique to the defined
+#'  \item{\code{\link{RNAmobile}}}{identifies mobile candidates in chimeric 
+#'  systems}
+#'  \item{\code{\link{RNApopulation}}}{selects unique RNAs within the defined
 #'  sample replicates}
-#'  \item{\code{\link{RNAsummary}}}{Summarise the abundance of sRNA clusters}
+#'  \item{\code{\link{RNAsummary}}}{Summarise the differential abundance of RNAs}
 #'   \item{\code{\link{RNAreorder}}}{Reorder the data frame for differential 
 #'   analysis, ensuring control verse treatment comparison}
 #'  \item{\code{\link{RNAsequences}}}{defines the consensus RNA sequence for a 
@@ -80,6 +78,25 @@ NULL
 #'  This data was imported and organised by the [RNAimport()] function. 
 #' @examples
 #'  data("sRNA_data")
+NULL
+
+
+#' @name mRNA_data
+#' @title mRNA_data: simulated messenger RNA data for biological replicates
+#' @docType data
+#' @usage data(mRNA_data)
+#' @description Simulated mRNAseq dataset
+#' @return Dataframe in global environment 
+#' @details Simulates data is taken from eggplant and tomato mRNAseq samples and
+#' created to simulate to movement of mRNA molecules from an Tomato rootstock to
+#' an Eggplant Scion. Two Eggplant replicates were spiked with the same 150
+#' tomato mRNA clusters, and named "heterograft_" 1 to 2. The analysis compares
+#' these heterografts to two Eggplant self-grafts which are the original
+#'  un-spiked Eggplant replicates, called "selfgraft_" 1 to 2. 
+#'  
+#'  This data was imported and organised by the [RNAimport()] function. 
+#' @examples
+#'  data("mRNA_data")
 NULL
 
 #' @name sRNA_data_dicercall

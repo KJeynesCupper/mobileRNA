@@ -62,13 +62,15 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     # create gene locations
     if("DicerCounts" %in% colnames(data)) {
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(data$start,data$end),
+                                          IRanges::IRanges(as.numeric(data$start),
+                                                           as.numeric(data$end)),
                                           Cluster = data$Cluster, 
                                           DicerCounts = data$DicerCounts,
                                           DicerConsensus= data$DicerConsensus)
     } else {
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(data$start,data$end),
+                                          IRanges::IRanges(as.numeric(data$start),
+                                                           as.numeric(data$end)),
                                           Cluster = data$Cluster)
     }
     
@@ -116,11 +118,11 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
       # create gene locations
       
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(data$start, 
-                                                           data$end, 
-                                                           data$width),
+                                          IRanges::IRanges(as.numeric(data$start), 
+                                                           as.numeric(data$end), 
+                                                           as.numeric(data$width)),
                                           Gene = data$Gene, 
-                                          SampleCounts = data$SampleCounts)
+                                          SampleCounts = as.numeric(data$SampleCounts))
       
       # create table for the columns
       col_names <- colnames(data) # extract sample names 

@@ -65,36 +65,23 @@
 #'
 #'
 #' @examples
-#' 
-#' # Initialize a cache directory, using the BiocFileCache package, to store the 
-#' # downloads used in this example
-#' library(BiocFileCache)
-#' cache_dir <- tools::R_user_dir("mobileRNA", which = "cache")
-#' cache <- BiocFileCache(cache_dir)
-#' 
-#' 
-#' # Construct URL to example FASTA files
-#' url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-#' 
-#' fasta_1_url <- file.path(url_remote, "chr12_Eggplant_V4.1.fa.gz")
-#' fasta_2_url <- file.path(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
-#' 
-#' # Download example FASTA files and add them to cache
-#' fasta_1 <- bfcrpath(cache, fasta_1_url)
-#' fasta_2 <- bfcrpath(cache, fasta_2_url)
+#' fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", package="mobileRNA")
+#' fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa",
+#' package="mobileRNA")
 #' 
 #' 
 #' # Merge FASTA files and write them to a file in output_file.
 #' # For this example, the result is written to a temporary file.
-#' # For real use cases, the output_file should be an appropriate location on your 
-#' # computer.
+#' # For real use cases, the output_file should be an appropriate location on 
+#' # your computer.
 #' 
 #' output_file <- tempfile("merged_annotation", fileext = ".fa")
 #' 
 #' merged_ref <- RNAmergeGenomes(genomeA = fasta_1, 
 #' genomeB = fasta_2,
 #' output_file = output_file)
-#'             
+#' 
+#' 
 #' @importFrom Biostrings "readDNAStringSet"
 #' @importFrom Biostrings "writeXStringSet"
 #' @importFrom BiocParallel bplapply

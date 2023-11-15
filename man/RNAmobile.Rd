@@ -36,7 +36,7 @@ set to \code{keep}.}
 a p-value or adjusted p-value threshold stated by \code{alpha}.Default
 set at FALSE. Requires presence of columns containing statistical data.
 In order to filter by the adjusted p-value, a column named \code{padjusted} must
-be present. See \code{\link[=RNAdifferentialanalysis]{RNAdifferentialanalysis()}} to calculate
+be present. See \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} to calculate
 statistical values.}
 
 \item{alpha}{numeric; adjusted p-value cutoff as the target FDR for
@@ -82,7 +82,7 @@ column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
 \strong{Statistical Analysis}
 The function also allows for filtering using statistical inference generated
 from the differential analysis of the total dataset using the function
-\code{\link[=RNAanalysis]{RNAanalysis()}}. When \code{statistical=TRUE}, the feature is enabled
+\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. When \code{statistical=TRUE}, the feature is enabled
 and selected mobile molecules that meet the adjusted p-value cutoff defined
 by \code{alpha}.
 }
@@ -97,11 +97,8 @@ controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 
 # Locate potentially mobile sRNA clusters associated to tomato, no
 # statistical analysis
-mobile_df1 <- RNAmobile(data =  sRNA_data_dicercall,
-                    controls = controls,
-                    genome.ID = "B_",
-                    task = "keep",
-                    statistical = FALSE)
+mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data_dicercall,
+controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 
 
 }

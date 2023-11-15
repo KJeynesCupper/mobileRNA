@@ -101,5 +101,5 @@ RNAsummary <- function(data, alpha = 0.1, chimeric = FALSE,
     paste(total_rows2, "sRNA clusters met the adjusted p-value cutoff \n"),
     paste("LFC > 0 (higher) :", n_up, ",", round(percent_up, 1), "%", "\n"),
     paste("LFC < 0 (lower)  :", n_down, ",", round(percent_down, 1), "%", "\n"))
-  show(cat(result_text, collapse = " "))
+  methods::show(cat(result_text, collapse = " "))
 }

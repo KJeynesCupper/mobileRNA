@@ -9,7 +9,7 @@ plotVolcano(data, labels = FALSE, top.molecules = 10, colour.scheme = NULL)
 \arguments{
 \item{data}{Dataframe; Must follow the structure created by
 \code{mobileRNA::RNAimport()} and contain columns contributed by statistical
-analysis using \code{mobileRNA::RNAanalysis()}}
+analysis using \code{mobileRNA::RNAdifferentialAnalysis()}}
 
 \item{labels}{Add labels molecules with the most significant changes}
 

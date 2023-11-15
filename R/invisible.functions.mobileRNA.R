@@ -241,7 +241,7 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     if (file.exists(file_path)) {
       gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
     } else{
-      Stop("File does not exist:", file_path, "\n")
+      stop("File does not exist:", file_path, "\n")
     }
   }
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
@@ -475,7 +475,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     if (file.exists(file_path)) {
       gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
     } else{
-      Stop("File does not exist:", file_path, "\n")
+      stop("File does not exist:", file_path, "\n")
     }
   }
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
@@ -829,5 +829,7 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "Dataset" ,"setNames" , "DicerCall" , "Reads" , "RPM" ,
                          "MajorRNA", "i", "other", "report", "DicerCounts", 
                          "Sequence", "new_df",  "PC1", "PC2", "Conditions",
-                         "name"))
+                         "name", "Length", "Locus", "Name", "SampleCounts", 
+                         "UniqueReads", "groups", "is", "log2FoldChange", "mRNA",
+                         "no", "none", "pos", "significance", "tidy"))
 

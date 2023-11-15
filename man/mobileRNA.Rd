@@ -17,9 +17,7 @@ quality control and plotting functions.
 \details{
 The most important functions in the \pkg{mobileRNA} are:
 \describe{
-\item{\code{\link{RNAloci}}}{reads the ShortStack report files to identify
-all de novo sRNA cluster loci across the experimental design}
-\item{\code{\link{RNAimport}}}{reads the ShortStack Results report files in
+\item{\code{\link{RNAimport}}}{reads the pre-processing report files in
 to a dataframe for all conditions}
 \item{\code{\link{RNAdicercall}}}{calculates the consensus sRNA
 dicercall class}
@@ -27,11 +25,11 @@ dicercall class}
 defined sRNA class}
 \item{\code{\link{RNAdifferentialAnalysis}}}{undertakes differential
 analysis using either the edgeR or DESeq2 method for data structure}
-\item{\code{\link{RNAmobile}}}{identifies candidates to be potentially
-mobile sRNA molecules in a chimeric system}
-\item{\code{\link{RNApopulation}}}{selects the sRNAs unique to the defined
+\item{\code{\link{RNAmobile}}}{identifies mobile candidates in chimeric
+systems}
+\item{\code{\link{RNApopulation}}}{selects unique RNAs within the defined
 sample replicates}
-\item{\code{\link{RNAsummary}}}{Summarise the abundance of sRNA clusters}
+\item{\code{\link{RNAsummary}}}{Summarise the differential abundance of RNAs}
 \item{\code{\link{RNAreorder}}}{Reorder the data frame for differential
 analysis, ensuring control verse treatment comparison}
 \item{\code{\link{RNAsequences}}}{defines the consensus RNA sequence for a
