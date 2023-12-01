@@ -7,6 +7,7 @@
 mapRNA(
   input = c("mRNA", "sRNA"),
   sampleData = NULL,
+  tidy = TRUE,
   input_files_dir,
   output_dir,
   genomefile,
@@ -18,13 +19,13 @@ mapRNA(
   dicermax = 24,
   mincov = 0.5,
   pad = 200,
-  order = pos,
-  stranded = no,
-  mode = union,
-  nonunique = none,
-  type = mRNA,
-  idattr = Name,
-  tidy = TRUE
+  order = "pos",
+  stranded = "no",
+  a = 10,
+  mode = "union",
+  nonunique = "none",
+  type = "mRNA",
+  idattr = "Name"
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ two stores the the name(s) of the fastq file(s) for mate 1 (e.g. flyA_1.fq,
 flyB_1.fq) and column three stores the the name(s) of the fastq file(s) for
 mate 2 (e.g. flyA_2.fq,flyB_2.fq). If data is single ended, column three
 will not hold any values. Only for mRNA analysis.}
+
+\item{tidy}{logical; removes unnecessary extra output files when set to TRUE.}
 
 \item{input_files_dir}{path; directory containing only the FASTQ sRNAseq
 samples for analysis. Note that all samples in this directory will be used by
@@ -90,6 +93,9 @@ For mRNA analysis only.}
 \item{stranded}{whether the data is from a strand-specific assay, either
 "yes"/"no"/"reverse". Default is "no".  For mRNA analysis only.}
 
+\item{a}{numeric; skip all reads with alignment quality lower than the given
+minimum value (default: 10)}
+
 \item{mode}{character; states mode to handle reads overlapping more than one
 feature. Either "union", "intersection-strict" and "intersection-nonempty".
 Default is "union". For mRNA analysis only.}
@@ -106,8 +112,6 @@ all features of other type are ignored. Default is "mRNA".}
 lines with the same feature ID will be considered as parts of the same
 feature. The feature ID is used to identity the counts in the output table.
 Default is "Name".}
-
-\item{tidy}{logical; removes unnecessary extra output files when set to TRUE.}
 }
 \value{
 ** For sRNA analysis**
@@ -189,7 +193,7 @@ input_files_dir = samples,
 output_dir = output_location, 
 genomefile = output_assembly_file,
 condaenv = "ShortStack4", 
-mmap = "n".)
+mmap = "n")
 }
 
 }

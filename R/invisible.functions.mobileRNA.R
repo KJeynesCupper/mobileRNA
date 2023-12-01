@@ -17,7 +17,6 @@
     data <- data
   } else
     data <- data[-x,]
-  
   return(data)
 }
 
@@ -166,7 +165,8 @@ convertChar2Factor <- function(gr) {
     S4Vectors::elementMetadata(gr) <- gr_metadata
   }
   metadata_cols <- S4Vectors::elementMetadata(gr)
-  charlist_cols <- sapply(metadata_cols, function(col) class(col) == "CompressedCharacterList")
+  charlist_cols <- sapply(metadata_cols@listData, function(col) 
+    inherits(col, "CompressedCharacterList"))
   
  if (any(charlist_cols)) {
    metadata_cols <- metadata_cols[!charlist_cols]
@@ -297,9 +297,11 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     map_1_files <- list.dirs(path_1, full.names = TRUE, recursive = TRUE)
     map_1_files <- map_1_files[!map_1_files == path_1]
     
-    # Iterate over each directory and remove files that don't match the conditions
+    # Iterate over each directory and remove files that don't match the 
+    # conditions
     for (j in seq_along(map_1_files)) {
-      rm_cmd_1 <- paste0("find '", map_1_files[j], "' -type f ! -name '*.bam' -exec rm {} \\;")
+      rm_cmd_1 <- paste0("find '", map_1_files[j],
+                         "' -type f ! -name '*.bam' -exec rm {} \\;")
       system(rm_cmd_1, intern=FALSE)
     }
     
@@ -307,9 +309,11 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     map_2_files <- list.dirs(path_2, full.names = TRUE, recursive = TRUE)
     map_2_files <- map_2_files[!map_2_files == path_2]
     
-    # Iterate over each directory and remove files that don't match the conditions
+    # Iterate over each directory and remove files that don't match the 
+    # conditions
     for (k in seq_along(map_2_files)) {
-      rm_cmd_2 <- paste0("find '", map_2_files[k], "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
+      rm_cmd_2 <- paste0("find '", map_2_files[k], 
+    "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
       system(rm_cmd_2, intern=FALSE)
     }
   }
@@ -365,7 +369,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
                           shQuote(stats), "2>&1") 
     bowtie_build_cmd <- paste(bowtie_build_cmd,collapse = " ")
     bowtie_build_cmd <- gsub("^ *| *$", "", bowtie_build_cmd)
-    system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to a summary doc. 
+    system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to summarydoc. 
     cat("\n")
     message("Genome index build. ")
   }
@@ -379,7 +383,9 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
   #bw message 
   bowtie_cmd_message <-c("Mapping with Bowtie, Running Command: 
-  bowtie -p", threads, "-v 0 -a -m 1 --sam -x [genomefile] [fastqfile] | samtools view -bS | samtools sort -o [outputfile]")
+  bowtie -p", threads, 
+  "-v 0 -a -m 1 --sam -x [genomefile] [fastqfile] | samtools view -bS",
+  "| samtools sort -o [outputfile]")
   bowtie_cmd_message <- paste(bowtie_cmd_message,collapse = " ")
   bowtie_cmd_message <- gsub("^ *| *$", "", bowtie_cmd_message)
   cat(bowtie_cmd_message, file = stats, append = TRUE)
@@ -519,7 +525,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   stats_2 <- file.path(path_2, "alignment_stats.txt")
   system(paste0(">> ", stats_2))
   
-  clustering_cmd_message <-c("echo Running Clustering with Loci information... >>", 
+  clustering_cmd_message<-c("echo Running Clustering with Loci information >>", 
                              shQuote(stats_2))
   
   clustering_cmd_message <- paste(clustering_cmd_message,collapse = " ")
@@ -569,7 +575,8 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     
     # Iterate over each directory and remove files that don't match the conditions
     for (k in seq_along(map_2_files)) {
-      rm_cmd_2 <- paste0("find '", map_2_files[k], "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
+      rm_cmd_2 <- paste0("find '", map_2_files[k], 
+     "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
       system(rm_cmd_2, intern=FALSE)
     }
   }
@@ -596,6 +603,7 @@ mRNA_map <- function(sampleData,
                      annotationfile,
                      threads,  
                      order ,
+                     a, 
                      stranded,
                      mode,
                      nonunique,
@@ -633,7 +641,7 @@ mRNA_map <- function(sampleData,
                           shQuote(stats), "2>&1") 
     hisat_build_cmd <- paste(hisat_build_cmd,collapse = " ")
     hisat_build_cmd <- gsub("^ *| *$", "", hisat_build_cmd)
-    system(hisat_build_cmd, intern=FALSE) ## -- get it to print to a summary doc. 
+    system(hisat_build_cmd, intern=FALSE) ## -- get it to print to summary doc. 
     cat("\n")
     message("Genome index build. ")
   }
@@ -645,7 +653,7 @@ mRNA_map <- function(sampleData,
     "-x [genomefile] 
      -1 shQuote([fastqfile_1.fq]) 
      -2 shQuote([fastqfile_2.fq]) 
-    | samtools view -bS | samtools sort -o [outputfile.bam]' >>", shQuote(stats))
+    | samtools view -bS | samtools sort -o [outputfile.bam]' >>",shQuote(stats))
     
     pairend_cmd_message <- paste(pairend_cmd_message,collapse = " ")
     pairend_cmd_message <- gsub("^ *| *$", "", pairend_cmd_message)
@@ -656,6 +664,7 @@ mRNA_map <- function(sampleData,
     'python -m HTSeq.scripts.count
     --format=bam 
     --order=", shQuote(order),
+    "--a=", shQuote(a),                          
     "--stranded=",shQuote(stranded), 
     "--mode=",shQuote(mode), 
     "--nonunique=",shQuote(none), 
@@ -700,6 +709,7 @@ mRNA_map <- function(sampleData,
         HTseq_cmd <- c("python -m HTSeq.scripts.count",
                        "--format=bam", 
                        "--order=",shQuote(order), 
+                       "--a=", shQuote(a),    
                        "--stranded=",shQuote(stranded), 
                        "--mode=",shQuote(mode), 
                        "--nonunique=",shQuote(none), 
@@ -720,8 +730,10 @@ mRNA_map <- function(sampleData,
         
       }
   } else {# single end 
-    singleend_cmd_message <-c("echo Running HISAT2 Command: 'hist2 -p", shQuote(threads), "-x [genomefile] 
-                    -U shQuote([fastqfile_1.fastq]) | samtools view -bS | samtools sort -o [outputfile.bam]' >>", shQuote(stats))
+    singleend_cmd_message <-c("echo Running HISAT2 Command: 'hist2 -p", 
+    shQuote(threads), "-x [genomefile] 
+                    -U shQuote([fastqfile_1.fastq]) | samtools view -bS",
+                    "| samtools sort -o [outputfile.bam]' >>", shQuote(stats))
     
     singleend_cmd_message <- paste(singleend_cmd_message,collapse = " ")
     singleend_cmd_message <- gsub("^ *| *$", "", singleend_cmd_message)
@@ -731,6 +743,7 @@ mRNA_map <- function(sampleData,
     'python -m HTSeq.scripts.count
     --format=bam 
     --order=", shQuote(order),
+    "--a=", shQuote(a),                                
     "--stranded=",shQuote(stranded), 
     "--mode=",shQuote(mode), 
     "--nonunique=",shQuote(none), 
@@ -774,6 +787,7 @@ mRNA_map <- function(sampleData,
      HTseq_cmd <- c("python -m HTSeq.scripts.count", 
                     "--format=bam", 
                     "--stranded=",shQuote(stranded), 
+                    "--a=", shQuote(a),    
                     "--mode=",shQuote(mode), 
                     "--nonunique=",shQuote(nonunique), 
                     "--type=",shQuote(type),
@@ -814,7 +828,7 @@ exists_conda <- function(package_name){
   return(res)
 }
 
-
+"hisat2"
 
 
 
@@ -830,6 +844,6 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "MajorRNA", "i", "other", "report", "DicerCounts", 
                          "Sequence", "new_df",  "PC1", "PC2", "Conditions",
                          "name", "Length", "Locus", "Name", "SampleCounts", 
-                         "UniqueReads", "groups", "is", "log2FoldChange", "mRNA",
-                         "no", "none", "pos", "significance", "tidy"))
+                         "UniqueReads", "groups", "is", "log2FoldChange","mRNA",
+                         "no", "none", "pos", "significance", "tidy", "a"))
 

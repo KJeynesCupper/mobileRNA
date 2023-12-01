@@ -52,17 +52,13 @@
 #' @importFrom S4Vectors "elementMetadata"
 #' @importFrom GenomeInfoDb "seqnames"
 #' @examples
-#' \dontrun{
 #'  # load data 
 #' data("sRNA_data")
 #'
 #' attributes_df <- RNAattributes(data = sRNA_data,
-#'                     annotation = "./annotation/merged_annotation.gff3",
+#'                     annotation = system.file("extdata",
+#'                     "reduced_chr2_Tomato.gff", package="mobileRNA"),
 #'                     match = "genes")
-#'
-#'
-#'
-#' }
 #'
 RNAattributes <- function(data, annotation, match = c("within", "genes"),
                           bufferRegion = 1000){

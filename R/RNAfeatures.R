@@ -45,12 +45,11 @@
 #' as genes, repeats, introns, exons.
 #'
 #' @examples
-#' \dontrun{
-#'
-#' dis_features <- RNAfeatures(data = sRNA_data_dicercall,
-#'                        annotation = "./annotation/eggplant_genome.gff3",
-#'                        repeats = "./annotation/eggplant_genome_repeats.gff3")
-#' }
+#' data("sRNA_data_dicercall")
+#' features <- RNAfeatures(data = sRNA_data_dicercall,
+#'                        annotation = system.file("extdata",
+#'                        "reduced_chr2_Tomato.gff", package="mobileRNA"))
+#'                        
 #'@importFrom rtracklayer "import"
 #'@importFrom GenomicRanges "setdiff"
 #'@importFrom stats "start"

@@ -82,7 +82,7 @@
 #' anno1 <- system.file("extdata", "reduced_chr12_Eggplant.gff", 
 #' package="mobileRNA")
 #' 
-#' anno2 <- system.file("extdata","reduced_chr2_Tomato.gff", package="mobileRNA")
+#' anno2 <- system.file("extdata","reduced_chr2_Tomato.gff",package="mobileRNA")
 #' 
 #' # Merge annotations and write them to a file in output_file.
 #' # For this example, the result is written to a temporary file.
@@ -135,9 +135,9 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   
   # remove full-stop
   annotationA_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoA, "_",   
-                                                 GenomeInfoDb::seqlevels(annotationA)))
+                                          GenomeInfoDb::seqlevels(annotationA)))
   annotationB_seqnames <- gsub("\\.", "", paste0(abbreviationAnnoB, "_",
-                                                 GenomeInfoDb::seqlevels(annotationB)))
+                                         GenomeInfoDb::seqlevels(annotationB)))
   
   # change seqnames
   GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames

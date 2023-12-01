@@ -17,6 +17,8 @@ quality control and plotting functions.
 \details{
 The most important functions in the \pkg{mobileRNA} are:
 \describe{
+\item{\code{\link{mapRNA}}}{Pre-processing of sRNAseq and mRNAseq
+(Alignment, raw count, cluster analysis)}
 \item{\code{\link{RNAimport}}}{reads the pre-processing report files in
 to a dataframe for all conditions}
 \item{\code{\link{RNAdicercall}}}{calculates the consensus sRNA

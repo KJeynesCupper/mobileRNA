@@ -115,6 +115,8 @@
 #'  "all". Default is "none". For mobile mRNA, ensure the default is utilized to 
 #'  exclude multimapped reads. 
 #'  
+#' @param a numeric; skip all reads with alignment quality lower than the given 
+#' minimum value (default: 10)
 #'  
 #' @return
 #' 
@@ -164,7 +166,7 @@
 #' output_dir = output_location, 
 #' genomefile = output_assembly_file,
 #' condaenv = "ShortStack4", 
-#' mmap = "n".)
+#' mmap = "n")
 #' }
 #' 
 #' @importFrom reticulate "use_condaenv" 
@@ -175,12 +177,13 @@
 #' @importFrom utils write.table
 #' 
 #' @export
-mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, 
+mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
                    input_files_dir, output_dir, genomefile, annotationfile=NULL,
                    condaenv, threads = 6, mmap = "n", dicermin = 20,
-                   dicermax = 24, mincov = 0.5, pad = 200,order = pos,
-                   stranded = no, mode = union, nonunique = none, type = mRNA,
-                   idattr=Name, tidy = TRUE){
+                   dicermax = 24, mincov = 0.5, pad = 200, 
+                   order = "pos",stranded = "no", a = 10, 
+                   mode = "union", nonunique = "none", 
+                   type = "mRNA", idattr = "Name"){
   # check inputs 
   if (base::missing(input) || !input %in% c("sRNA", "mRNA")){
     stop("Please state the data-type to the `input` paramter.")
@@ -257,7 +260,7 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL,
       if (base::missing(sampleData) || !base::inherits(sampleData,
                                                        c("matrix","data.frame", 
                                                          "DataFrame"))) {
-        stop("sampleData must be an object of class matrix, data.frame, DataFrame.
+      stop("sampleData must be an object of class matrix, data.frame, DataFrame.
           See ?plotHeatmap for more information.")
       }
       
@@ -286,10 +289,11 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL,
                input_files_dir, 
                output_dir,
                genomefile, 
-               annotationfile,
                condaenv,
+               annotationfile,
                threads,  
                order ,
+               a, 
                stranded,
                mode,
                nonunique,

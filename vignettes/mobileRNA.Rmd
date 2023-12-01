@@ -1,21 +1,33 @@
 ---
-title: "mobileRNA: Explore candidate mobile sRNAs or mRNAs & sRNAs population-scale changes"
-author: Katie Jeynes-Cupper, Marco Catoni
-date: "`r Sys.Date()`"
+title: "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes"
+author: "Katie Jeynes-Cupper, Marco Catoni"
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+abstract: >
+  In my different instances, a growing number of researchers are turning to 
+  genomic analysis to identify putative difference between RNA populations and 
+  specifically to identify molecules which originate from a foriegn genome or 
+  genotype. For which, plant grafting is a perfect example which has been 
+  used for such studies as the technique can join differnt plant species or 
+  accession together generating a plant with combined tissues two distinct 
+  genotypes. For the identification of mobile or forign RNAs, such as messenger 
+  RNA or small RNA, genomic pipelines typically manipulate RNA-seq workflows 
+  with consequential mapping to each genome in the system. This comes with 
+  benefits and disadvantages. Here, we addess the main disadvantages; the high
+  levels of data noise and false positives. The package mobileRNA provides
+  methods to pre-processs, analyse and visualse the sRNA and mRNA populations. 
+  This vignette explains the use of the package and demonstrates quick and 
+  more advanced workflows. 
 output:
-  html_document:
+  rmarkdown::html_document:
+    highlight: pygments
     toc: true
-    toc_depth: 3
-    number_sections: true
-    theme: united
-    highlight: tango
-fig_width: 7
+    fig_width: 5
+bibliography: library.bib
 vignette: >
  %\VignetteIndexEntry{mobileRNA}
- %\VignetteEngine{knitr::rmarkdown}}
+ %\VignetteEngine{knitr::rmarkdown}
  %\VignetteEncoding{UTF-8}
- %\VignettePackage{mobileRNA}
- %\VignetteDepends{mobileRNA}
+ %\VignetteDepends{bioseq}
  %\VignetteDepends{dplyr}
  %\usepackage[utf8]{inputenc}
 ---
@@ -30,6 +42,8 @@ knitr::opts_chunk$set(
   warning=FALSE,
   comment = "#>"
 )
+library(dplyr)
+library(bioseq)
 ```
 
 # Introduction
@@ -257,8 +271,7 @@ abundance. While both core and mobile analysis, the user can extract the
 consensus RNA sequence for each sRNA cluster for target prediction analysis, as 
 well as identifying genomic features associates with each sRNA clusters, such 
 as genes. This can be utilised, for example, to explore the RNA expression of 
-sRNA-producing genes in parallel analysis. Similarly, for mRNA data sets, a 
-volcano plot can be used. 
+sRNA-producing genes in parallel analysis.
 
 
 # Installation
@@ -293,23 +306,25 @@ library("mobileRNA")
 data different OS dependencies installed via Conda are required for the 
 alignment steps. 
 
-For sRNA data, `ShortStack` (>= 4.0) is requires. Please consider that 
-`ShortStack` is not available for Windows, hence, Windows users will either need 
-to opt to use a virtual machine or 
+For sRNA data, `ShortStack` (>= 4.0) (Axtell 2013) is requires. Please consider 
+that `ShortStack` is not available for Windows, hence, Windows users will either 
+need to opt to use a virtual machine or 
 [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 In either case, both `R` and `ShortStack` will need to be installed and used on 
 the Linux side.Please head to `ShortStack` to see the recommended installation 
 instructions at 
-\link{https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended}
-for installation with Conda. This will ensure all dependencies are available
-within the same environment. 
+\url{https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended}
+for installation with Conda (Anaconda Inc. 2020). This will ensure all 
+dependencies are available within the same environment. 
 
-For mRNA data, `HISTAT2`, `HTSeq`, `SAMtools` are required within the same 
-Conda environment. Please refer to \link{https://anaconda.org/bioconda/hisat2},
-\link{https://anaconda.org/bioconda/htseq} and 
-\link{https://anaconda.org/bioconda/samtools} for more information. 
+For mRNA data, `HISAT2` (Kim et al., 2015), `HTSeq` (Anders 2014), `SAMtools` 
+(Danecek et al., 2021) are required within the same 
+Conda environment (Anaconda Inc. 2020). Please refer to 
+\url{https://anaconda.org/bioconda/hisat2},
+\url{https://anaconda.org/bioconda/htseq} and 
+\url{https://anaconda.org/bioconda/samtools} for more information. 
 
-## Example data set
+## Example Data
 
 The package includes a simulated data set to replicate the grafting
 between eggplant-tomato (*Solanium melongena*-*Solanium lycopersicum*) where 
@@ -352,7 +367,12 @@ data("sRNA_data")
 data("mRNA_data")
 
 ```
+The sRNA simulated data was generated from the data published by Li 2022 and 
+Qing 2022 and the mRNA simulated data was generated from the data published
+by Villanueva et al., 2023 and Tomato Genome Consortium 2012. 
 
+Tomato and Eggplant reduced genome assemblies and annotations have been provided
+based on those generated by Hosmani et al., 2019 and Barchi et al., 2021.
 ## Data organisation
 It is recommended to rename your files before beginning to names you wish for 
 them to be represented as within the analysis; named in the dataframe and shown 
@@ -391,7 +411,7 @@ reference file stored in your desired directory.Eggplant represent the scion
 B. 
 
 
-```{r, eval=FALSE}
+```{r}
 fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", 
                        package="mobileRNA")
 
@@ -417,7 +437,7 @@ files -  otherwise the annotation file will not align with the chromosome names
 in the assembly file.*
 <br>
 
-```{r, eval=FALSE}
+```{r}
 
 anno1 <- system.file("extdata","reduced_chr12_Eggplant.gff",
                      package="mobileRNA")
@@ -457,7 +477,7 @@ sRNA genes (stored in`2_alignment_results`).
 have a reduced size for the package. This data will not be used for the 
 continued analysis step, instead you will load the full dataset ** 
 
-```{r, eval=FALSE}
+```{r}
 samples <- system.file("extdata/sRNAseq",package="mobileRNA")
 
 output_location <- tempdir()
@@ -482,13 +502,14 @@ Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
 output folders and the same of the samples to import from the directory.
 
-```{r, eval=FALSE}
+```{r}
 # Directory containing results
 results_dir <-  file.path(output_location,"2_alignment_results")
 
 # Sample names and total number of reads, in the same order. 
-sample_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3",
-                  "heterograft_1", "heterograft_2", "heterograft_3")
+sample_names <- c("selfgraft_demo_1", "selfgraft_demo_2", 
+                  "selfgraft_demo_3", "heterograft_demo_1",
+                  "heterograft_demo_2", "heterograft_demo_3")
 
 
 sRNA_data_demo <- RNAimport(input = "sRNA", 
@@ -655,12 +676,12 @@ Align mRNA sequencing reads to the merged genome using our unique
 alignment pipeline wrapped by the `mapRNA()` function.
 
 note:not runnable
-```{r, eval=FALSE}
+```{r}
 
 sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
                                     "heterograft_1", "heterograft_2"),
-                        mate1 = c("selfgraft_1_1.fq", "selfgraft_2_1.fq", 
-                                  "heterograft_1_1.fq", "heterograft_2_1.fq"))
+                        mate1 = c("selfgraft_mRNAdemo_1.fq", "selfgraft_mRNAdemo_2.fq", 
+                                  "heterograft_mRNAdemo_1.fq", "heterograft_mRNAdemo_2.fq"))
 
 samples <- system.file("extdata/mRNAseq",package="mobileRNA")
 output_location <- tempdir()
@@ -684,7 +705,7 @@ Import the results from the alignment step into R using the
 output folders and the same of the samples to import from the directory.
 
 note:not runnable
-```{r, eval=FALSE}
+```{r}
 # Directory containing results
 results_dir <-  file.path(output_location,"1_mRNA_preprocessing")
 
@@ -1531,10 +1552,6 @@ bioseq::seq_consensus(mobileRNA_seq)
 
 The *mobileRNA* package offers several optional functions to aid analysis. 
 
-## Plot a volcano diagram for mRNA data 
-
-
-
 ## Calculate RPM and Count means for specific samples
 This function calculates the RPM mean and Count mean across specific samples.The 
 output of the calculation is added as an additional column to the input 
@@ -1559,219 +1576,6 @@ means <- RNAmean(data = sRNA_DESeq2, conditions = selected_samples)
 
 
 ```
- <br>
-
-# Appendix 
-
-## Manual sRNA mapping steps with `ShortStack`
-If the user is unable to undertake the analysis using the `mapRNA()` 
-function. The manual steps are shown below, of which, will need modifying 
-to suit your files and directory names. 
-
-### Core sRNA analysis
-#### Step 1 - De novo sRNA analysis with `ShortStack`
-
-```{bash, eval=FALSE}
-ShortStack \
---readfile "[fastqfile.fq]" \
---genomefile "[genomefile.fa]" \
---threads 6 \
---mmap u \
---pad 200 \
---mincov 0.5 \
---nohp \
---outdir "[output_dir]"
-
-```
-
-#### Step 2 - Build sRNA cluster list 
-Collate all the sRNA loci information from each sample into a text file. 
-```{r, eval=FALSE}
-# names of samples, represented by folder names produced in previous step
-samples <- c("[sample names]")
-
-# location of output folders from previous step
-dir <- "[output_dir]"
-
-# merge information of the detected de novo sRNA clusters
-gff_alignment <- GenomicRanges::GRangesList()
-  for (i in samples) {
-    file_path <- file.path(dir, i, "Results.gff3")
-    if (file.exists(file_path)) {
-    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
-    } else{
-      Stop("File does not exist:", file_path, "\n")
-    }
-  }
-  
-  gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
-                                      ignore.strand = TRUE)
-  gff_merged <- Repitools::annoGR2DF(gff_merged)
-  locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
-                                            gff_merged$start,"-", 
-                                            gff_merged$end), 
-                             Cluster = paste0("cluster_", 
-                                              seq_len(nrow(gff_merged))))
-  
-  # save output to location 
-  dir_locifile <- "[output directory]"
-  loci_out <- file.path(output_locifile,"locifile.txt")
-  utils::write.table(locifile_txt, file = loci_out, quote = FALSE, 
-                     sep = "\t", row.names = FALSE, col.names = TRUE)
-   
-```
-
-
-#### Mapping   
-Each sample is mapped to the merged reference genome with the list of sRNA 
-clusters. 
-
-```{bash, eval=FALSE}
-ShortStack \
---readfile "[fastqfile.fq]" \
---genomefile "[genomefile.fa]" \
---locifile "[locifile]"  \
---threads 6 \
---mmap u \
---nohp \
---mincov 5 \
---outdir "[output_dir_2]"
-
-```
-<br>
-
-### Mobile sRNA analysis
-#### Step 1 - De novo sRNA analysis with `ShortStack`
-First map with Bowtie, to exclude multi-mapped reads. 
-```{bash, eval=FALSE}
-#index reference genome 
-bowtie-build --threads 6 [genomefile.fa] [genomefile]
-
-# alignemnt 
-bowtie -p 6 -v 0 -a -m 1 --sam -x [genomefile] [fastqfile.fq] | samtools view -bS | samtools sort -o [outputfile.bam]
-
-# cluster analysis with ShortStack - use the alignment files as input
-ShortStack \
---bamfile "[outputfile.bam]" \
---genomefile "[genomefile.fa]" \
---threads 6 \
---pad 200 \
---mincov 0.5 \
---nohp \
---outdir "[output_dir]"
-
-```
-
-#### Step 2 - Build sRNA cluster list 
-Collate all the sRNA loci information from each sample into a text file. 
-```{r, eval=FALSE}
-# names of samples, represented by folder names produced in previous step
-samples <- c(["sample names"])
-
-# location of output folders from previous step
-dir <- "[output_dir]"
-
-# merge information of the detected de novo sRNA clusters
-gff_alignment <- GenomicRanges::GRangesList()
-  for (i in samples) {
-    file_path <- file.path(dir, i, "Results.gff3")
-    if (file.exists(file_path)) {
-    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
-    } else{
-      Stop("File does not exist:", file_path, "\n")
-    }
-  }
-  
-  gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
-                                      ignore.strand = TRUE)
-  gff_merged <- Repitools::annoGR2DF(gff_merged)
-  locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
-                                            gff_merged$start,"-", 
-                                            gff_merged$end), 
-                             Cluster = paste0("cluster_", 
-                                              seq_len(nrow(gff_merged))))
-  
-  # save output to location 
-  dir_locifile <- "[output directory]"
-  loci_out <- file.path(output_locifile,"locifile.txt")
-  utils::write.table(locifile_txt, file = loci_out, quote = FALSE, 
-                     sep = "\t", row.names = FALSE, col.names = TRUE)
-   
-```
-
-
-#### Mapping   
-Each sample is mapped to the merged reference genome with the list of sRNA 
-clusters. 
-
-```{bash, eval=FALSE}
-ShortStack \
---bamfile "[outputfile.bam]" \
---genomefile "[genomefile.fa]" \
---locifile "[locifile.txt]" \
---threads 6 \
---mmap u \
---nohp \
---mincov 5 \
---outdir "[output_dir_2]"
-
-```
-<br>
-
-
-## Manual mRNA mapping steps with `HISAT2` and `HTSeq`
-If the user is unable to undertake the analysis using the `mapRNA()` 
-function. The manual steps are shown below, of which, will need modifying 
-to suit your files and directory names. 
-
-If required, index the genome assembly:
-```{bash, eval=FALSE}
-hisat2-build--threads 6 [genomefile.fa] [genomefile]
-```
-
-
-### Single-End Sequencing Reads 
-```{bash, eval=FALSE}
-# alignment with hisat2
-hist2 -p 6 -x [genomefile] \
--U [fastqfile_1.fq] | samtools view -bS | samtools sort -o [outputfile.bam]
-
-# raw count with HTSeq
-python -m HTSeq.scripts.count \
---format=bam  \
---order=pos \
---stranded=no\
---mode=union \
---nonunique=none \
---type=mRNA \
---idattr=Name \
-[outputfile.bam] [annotationfile.gff]
-    
-```
-
-### Pair-End Sequencing Reads 
-
-```{bash ,eval=FALSE}
-# alignment with hisat2
-hist2 -p 6 -x [genomefile] \
--1 [fastqfile_1.fq] \
--2 [fastqfile_2.fq] \
-| samtools view -bS | samtools sort -o [outputfile.bam]
-
-# raw count with HTSeq
-python -m HTSeq.scripts.count \
---format=bam  \
---order=pos \
---stranded=no\
---mode=union \
---nonunique=none \
---type=mRNA \
---idattr=Name \
-[outputfile.bam] [annotationfile.gff]
-
-```
-
-
 
 
 # Session information

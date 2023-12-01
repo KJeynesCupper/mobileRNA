@@ -85,7 +85,7 @@ genome,that you treat the input annotations in the same way.
 anno1 <- system.file("extdata", "reduced_chr12_Eggplant.gff", 
 package="mobileRNA")
 
-anno2 <- system.file("extdata","reduced_chr2_Tomato.gff", package="mobileRNA")
+anno2 <- system.file("extdata","reduced_chr2_Tomato.gff",package="mobileRNA")
 
 # Merge annotations and write them to a file in output_file.
 # For this example, the result is written to a temporary file.

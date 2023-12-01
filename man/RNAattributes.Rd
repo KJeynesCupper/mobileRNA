@@ -50,16 +50,12 @@ inline with these can be accomplished using the
 \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function.
 }
 \examples{
-\dontrun{
  # load data 
 data("sRNA_data")
 
 attributes_df <- RNAattributes(data = sRNA_data,
-                    annotation = "./annotation/merged_annotation.gff3",
+                    annotation = system.file("extdata",
+                    "reduced_chr2_Tomato.gff", package="mobileRNA"),
                     match = "genes")
-
-
-
-}
 
 }
