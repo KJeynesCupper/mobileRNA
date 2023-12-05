@@ -477,7 +477,7 @@ sRNA genes (stored in`2_alignment_results`).
 have a reduced size for the package. This data will not be used for the 
 continued analysis step, instead you will load the full dataset ** 
 
-```{r}
+```{r, eval=FALSE}
 samples <- system.file("extdata/sRNAseq",package="mobileRNA")
 
 output_location <- tempdir()
@@ -486,7 +486,7 @@ mapRNA(input = "sRNA",
        input_files_dir = samples, 
        output_dir = output_location, 
        genomefile = output_assembly_file,
-       condaenv = "/Users/U2093048/miniconda3/envs/ShortStack4",
+       condaenv = "/Users/user-name/miniconda3/envs/ShortStack4",
        mmap = "n")
 
 ```
@@ -502,7 +502,7 @@ Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
 output folders and the same of the samples to import from the directory.
 
-```{r}
+```{r, eval=FALSE}
 # Directory containing results
 results_dir <-  file.path(output_location,"2_alignment_results")
 
@@ -676,14 +676,14 @@ Align mRNA sequencing reads to the merged genome using our unique
 alignment pipeline wrapped by the `mapRNA()` function.
 
 note:not runnable
-```{r}
+```{r, eval=FALSE}
 
 sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
                                     "heterograft_1", "heterograft_2"),
                         mate1 = c("selfgraft_mRNAdemo_1.fq", "selfgraft_mRNAdemo_2.fq", 
                                   "heterograft_mRNAdemo_1.fq", "heterograft_mRNAdemo_2.fq"))
 
-samples <- system.file("extdata/mRNAseq",package="mobileRNA")
+samples <- system.file("extdata/mRNAseq", package="mobileRNA")
 output_location <- tempdir()
  
 mapRNA(input = "mRNA",
@@ -692,7 +692,7 @@ mapRNA(input = "mRNA",
        genomefile = output_assembly_file,
        annotationfile = output_annotation_file,
        sampleData = sampleData, 
-       condaenv = "/Users/U2093048/miniconda3/envs/ShortStack4")
+       condaenv = "/Users/user-name/miniconda3")
 
 ```
 
@@ -705,7 +705,7 @@ Import the results from the alignment step into R using the
 output folders and the same of the samples to import from the directory.
 
 note:not runnable
-```{r}
+```{r, eval=FALSE}
 # Directory containing results
 results_dir <-  file.path(output_location,"1_mRNA_preprocessing")
 

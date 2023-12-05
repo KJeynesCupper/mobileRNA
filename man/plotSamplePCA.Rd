@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotSamplePCA.R
 \name{plotSamplePCA}
 \alias{plotSamplePCA}
-\title{PCA plot to illustrate sample distance.}
+\title{PCA plot of PC1 and PC2}
 \usage{
 plotSamplePCA(
   data,
@@ -43,8 +43,7 @@ will not suit all experimental designs.}
 Default \code{size.ratio=2}, double the plot dimension.}
 
 \item{colours}{character; vector of HEX colour codes. Must match the number of
-conditions. For example,
-\code{colours = c("#E69F00", "#56B4E9", "#CC79A7", "#009E73")}}
+conditions.}
 
 \item{point.shape}{logical; set whether the point shapes should be different
 for each condition.}
@@ -61,7 +60,7 @@ The function undertakes rlog transformation of the data in an unbiased manner
 (\code{blind=TRUE}).
 }
 \details{
-This function utilises the \code{DESeq2} package to organise and plot the
+This function uses the \code{DESeq2} package to organise and plot the
 data. It organises the data into a DESeqDataSet which undergoes
 log-transformation where the results are used to undertake the PCA analysis.
 The results are plotted against the principle components 1 and 2.

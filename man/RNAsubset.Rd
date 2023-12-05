@@ -27,16 +27,18 @@ A dataframe containing only sRNA clusters defined with a specific
 sRNA dicer-derived consensus size.
 }
 \description{
-Creates a dataframe containing the desired sRNA class(s) based
-on the consensus dicercall determination.
+Subset the existing dataframe to contain only the desired sRNA
+class(s) based on the consensus dicercall determination and statistical
+significance.
 }
 \details{
-See \code{\link[=RNAdicercall]{RNAdicercall()}} for information on defining the sRNA
-dicercall class for each cluster. The function allows the choice to filtered
-the data by statistical statisticalnificance based on differential expression
+See \code{\link[=RNAdicercall]{RNAdicercall()}} for information on defining the consensus
+sRNA dicercall class for each cluster. The function allows the choice to
+filtered the data by statistical significance based on differential expression
 analysis, see \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. Set
-\code{statistical=TRUE} to filtered by statisticalnificance (p-adjusted).
-It is important to consider the point in your analysis you subset the data
+\code{statistical=TRUE} to filtered by statistical significance (p-adjusted).
+
+It is important to consider what point in your analysis you subset the data
 or/and undertake differential analysis to achieve statistical values.
 Subsetting the dataset into groups based on the sRNA class will
 create a smaller set of data for each to draw statistical differences.

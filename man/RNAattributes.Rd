@@ -39,7 +39,7 @@ additional buffer region at the start/end of the gene is added improve hits,
 and align with the assumptions about promoter regions.
 }
 \details{
-The function merges an annotation (.gff/.gff3) file with
+The function merges an annotation (GFF format) file with
 the sRNA data set based on the chromosome, start and end coordinates.
 
 It is important that any alteration which were made to the genome reference

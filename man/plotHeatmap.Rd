@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotHeatmap.R
 \name{plotHeatmap}
 \alias{plotHeatmap}
-\title{Heatmap of log-transformed read length normalization data}
+\title{Heatmap of log-transformed normalization data}
 \usage{
 plotHeatmap(
   data,

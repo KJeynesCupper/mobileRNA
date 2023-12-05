@@ -1,4 +1,4 @@
-#' Heatmap of log-transformed read length normalization data
+#' Heatmap of log-transformed normalization data
 #'
 #' @description Undertakes RPM/FPKM normalisation using a pseudocount and 
 #' transforms the data using log-scale, to enable visualization of the 

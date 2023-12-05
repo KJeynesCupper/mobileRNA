@@ -20,20 +20,20 @@ columns (\code{original=TRUE}), or output as new dataframe (\code{original=FALSE
 by default, FALSE}
 
 \item{match.threshold}{numeric; the minimum number of replicates
-required to share the sRNA sequence to count as a match}
+required to share the sRNA sequence to count as a match. Default is 1.}
 
 \item{duplicates}{character; string to define how to deal with a tie,
-\code{"random"} as default. Options include \code{"random"} and \code{"exclude"}}
+"random" as default. Options include "random" and "exclude".}
 
 \item{tidy}{logical; tidy-up data set by removing sRNA clusters with a
 unknown or unclassified consensus sRNA sequence result. By default,
-\code{tidy=FALSE}, but while \code{tidy=TRUE} sRNA clusters with
-undetermined consensus RNA sequence will be removed.}
+\code{tidy=FALSE}, while \code{tidy=TRUE} removes sRNA clusters with
+an undetermined consensus RNA sequence.}
 }
 \value{
-The results can be stored in the the working dataframe supplied to the
-function or stored as a new dataframe containing only the results from the
-function. The results includes:
+The results can be added as additional columns to the the working
+dataframe supplied to the function or stored as a new dataframe containing
+only the results from the function. The results includes:
 \itemize{
 \item Match: whether the RNA sequence is consistent across replicates
 \item Sequence:  character; sequence of the most abundant sRNA within a cluster

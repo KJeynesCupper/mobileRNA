@@ -1,13 +1,13 @@
 #' Identify potential mobile RNA molecules
 #'
-#' @description A function to identify potential mobile sRNA or mRNA molecules 
-#' detected in a tissue from a different genotype.
-#'
+#' @description A function to identify the putative sRNA or mRNA mobilome. 
+#' 
+#' 
 #' @details
 #' The function identifies candidate mobile sRNAs or mRNAs, by selecting those
-#' that mapped to the foreign genome (Genome B). It does so by either keeping or 
-#' removing those mapped to a given genome. To do so, it requires a common 
-#' pre-fix across chromosomes of the same genome. See 
+#' that mapped to the genome of mobile molecules (Genome B). It does so by
+#' either keeping or removing those mapped to a given genome. To do so, it 
+#' requires a common pre-fix across chromosomes of the same genome. See 
 #' [mobileRNA::RNAmergeGenomes()] for more information.
 #'
 #' **For sRNAseq:**
@@ -26,16 +26,16 @@
 #' **Statistical Analysis**
 #' The function also allows for filtering using statistical inference generated
 #' from the differential analysis of the total dataset using the function
-#' [mobileRNA::RNAdifferentialAnalysis()]. When `statistical=TRUE`, the feature is enabled
-#' and selected mobile molecules that meet the adjusted p-value cutoff defined 
-#' by `alpha`. 
+#' [mobileRNA::RNAdifferentialAnalysis()]. When `statistical=TRUE`, the feature 
+#' is enabled and selected mobile molecules that meet the adjusted p-value 
+#' cutoff defined by `alpha`. 
 #'
 #' @param input character; must be either "sRNA" or "mRNA" to represent the type
 #' of data, required when setting threshold. 
 #'  
-#' @param data  dataframe; generated through the \pkg{mobileRNA} method. 
+#' @param data data.frame; generated through the \pkg{mobileRNA} method. 
 #'
-#' @param controls Character vector; containing names of control samples.
+#' @param controls character vector; containing names of control samples.
 #'
 #' @param genome.ID character; string related to the chromosomes in a 
 #' particular genome. A distinguishing feature of the genome of interest or 

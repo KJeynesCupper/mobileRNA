@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAmergeAnnotations.R
 \name{RNAmergeAnnotations}
 \alias{RNAmergeAnnotations}
-\title{Merge two GFF genome annotation files}
+\title{Merge two genome annotation files (GFF Format)}
 \usage{
 RNAmergeAnnotations(
   annotationA,
@@ -21,34 +21,32 @@ GFF format.}
 GFF format.}
 
 \item{output_file}{path; a character string or a \code{base::connections()}
-open for writing. Including file output name, and must have a \code{.gff3}
+open for writing. Including file output name, and must have a GFF file
 extension.}
 
 \item{abbreviationAnnoA}{character; string to represent prefix added to
-existing chromosome names in \code{annotationA}. Default set as "A", which is
-separated from existing chromosome names by an underscore (_).}
+existing chromosome names in \code{annotationA}. Default set as "A".}
 
 \item{abbreviationAnnoB}{character; string to represent prefix added to
-existing chromosome names in \code{annotationB}. Default set as "B", which is
-separated from existing chromosome names by an underscore (_).}
+existing chromosome names in \code{annotationB}. Default set as "B".}
 
-\item{format}{format of GFF output, either gff, gff1, gff2, gff3. Default is
-gff3.}
+\item{format}{format of GFF output, either "gff", "gff1", "gff2", "gff3."
+Default is "gff3".}
 }
 \value{
 The function output the individually altered annotation files, plus, a merged
-annotation file to the global environment and the given directory.
+annotation file the given directory.
 The altered annotation files contain either default or custom alterations to
 the chromosome names and are written to the same directory as the merged file,
 with the given names addition of \code{annotationA_altered.gff} and
 \code{annotationB_altered.gff}, respectively.
 }
 \description{
-Merges two genomes annotation files (\verb{GFF format}) into one
-single GFF file saved to desired directory. Adds prefix to each chromosome
-name in the genome annotations to ensure each assembly is distinguishable
-within the merged file, and saved the individually altered references to
-local directory.
+Merges two genomes annotation files (GFF) into one
+single GFF format file saved to the desired directory. This function adds a
+unique prefix to the chromosome name in each genome annotation to ensure each
+assembly is distinguishable within the merged file. The individually altered
+references are saved to local directory as well.
 }
 \details{
 The functions primary goal is to merge two GFF files, however, when
@@ -57,23 +55,20 @@ by the chromosome names. As a default setting, the function extracts the
 chromosome names for a given GFF file and adds an ID before each chromosome
 name and removes any periods.
 
-As default, the function as a prefix to chromosomes which contains a either
-"A" or "B" and "\emph{". It will rename the chromosome names in \code{annotationA}
-to "A}". For example, A_0, A_1, A_2 etc. To set a custom chromosome name for
-\code{annotationA} alter the argument \code{abbreviationAnnoA}. While, for
+As default, the function as a prefix to chromosomes and separate the original
+chromosome name and the prefix with an understore ("\emph{").
+It will rename the chromosome names in \code{annotationA}to "A}". For example,
+A_0, A_1, A_2 etc. To set a custom chromosome name for \code{annotationA} alter
+the argument \code{abbreviationAnnoA}. While, for
 \code{annotationB} as default the chromosome names will be named "B_",
 for example, B_0, B_1, B_2 etc. To set a custom chromosome name for
-\code{annotationB} alter the argument \code{abbreviationAnnoB}. Please note that
-the underscore is added automatically, hence, when setting a custom prefix
-just include character values.
+\code{annotationB} alter the argument \code{abbreviationAnnoB}.
 
 The merged genome is saved to the specified output directory, and requires
-the user to set the name with a \code{gff} extension. The user must load the
-annotations into the R Global Environment, hence, the alterations made by
-this function will alter the variable. The altered annotations will also
-be saved to the same directory as supplied for the output file, with a fixed
-output name of \code{annotationA_altered.gff} and \code{annotationB_altered.gff},
-respectively.
+the user to set the name with a GFF extension. The altered annotations will
+be saved to the same directory as supplied for the megered output file, with
+a fixed output name of \code{annotationA_altered.gff} and
+\code{annotationB_altered.gff}, respectively.
 
 \emph{IMPORTANT:} The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used

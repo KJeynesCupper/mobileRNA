@@ -2,8 +2,7 @@
 % Please edit documentation in R/RNAdifferentialAnalysis.R
 \name{RNAdifferentialAnalysis}
 \alias{RNAdifferentialAnalysis}
-\title{Differential Expression (DE) Analysis of sRNA clusters or mRNA
-using \code{DESeq2} or \code{edgeR}}
+\title{Differential Analysis of sRNA clusters or mRNA using \code{DESeq2} or \code{edgeR}}
 \usage{
 RNAdifferentialAnalysis(
   data,
@@ -40,8 +39,8 @@ adds the results to the supplied dataframe. This includes:
 }
 }
 \description{
-This function allows you to compute the differential expression
-of sRNA dicer-derived clusters and mRNA. The function allows the choice
+This function allows you to compute the differential analysis
+of sRNA dicer-derived clusters or mRNA. The function allows the choice
 between analysis with \code{DESeq2} or \code{edgeR}.
 }
 \details{

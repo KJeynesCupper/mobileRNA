@@ -45,7 +45,7 @@ to include in the facet. This argument is piped into the \code{ ncol}  argument 
 \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} to define the number of columns. By default, this is
 set to 3.}
 
-\item{colour}{colour; Default colour is "black".}
+\item{colour}{character; Default colour is "black".}
 
 \item{together}{logical; generates a single line graph, containing all
 sample replicate information. Default \code{together=TRUE}.}

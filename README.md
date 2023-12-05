@@ -15,12 +15,10 @@ analysis, respectively.
 
 Plant grafting has been used to study RNA movement and the mechanisms
 associated with their action. Research has established that sRNA
-molecules can travel between the plant roots and shoots and can
-introduce changes to gene expression. There are two key classes of
-sRNAs, 24-nt small interfering RNAs (siRNAs) which can introduce DNA
-methylation via the RNA-directed DNA methylation pathway and the
-21/22-nt microRNAs (miRNAs) which are associated to post-transcriptional
-gene silencing. Similarly, studies have shown that mRNAs can move across 
+molecules can travel between the roots and shoots and can introduce changes to 
+gene expression. The sRNAs can introduce transcriptional gene silencing through
+blocking or cleavage of mRNA and/or through the addition of de novo DNA 
+methylation. While, studies have shown that mRNAs can move across 
 distances, and it is thought they may translate into proteins which act as 
 transcription factors in the recipient tissues. Changes in these RNA populations 
 could instigate or facilitate grafting-induced traits, such as improved plant 
@@ -130,7 +128,7 @@ vignette("mobileRNA")
 
 <br>
 
-## Quick Start
+# Quick Start for mobile sRNA analysis
 ## 1. Example Data Set
 
 The package includes a simulated data set to replicate the grafting
@@ -139,35 +137,25 @@ represents the rootstock. The FASTQ files represent sRNAseq data
 extracted from the eggplant leaf tissue. Here we will locate sRNA
 produced by tomato roots which have traveled into the eggplant leaves.
 
-## 2. Merging Genome Assemblies {#merging-genome-assemblies}
+## 2. Merging Genome Assemblies
 
 Merge the FASTA genome assemblies of tomato and eggplant into a single
 reference file stored in your desired directory.
 
 ```r
-# pull genomes 
-library(BiocFileCache)
-cache_dir <- tools::R_user_dir("mobileRNA", which = "cache")
-cache <- BiocFileCache(cache_dir)
+fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", 
+                       package="mobileRNA")
 
-# Construct URL to example FASTA files
-url_remote <- "https://github.com/KJeynesCupper/assemblies/raw/main/"
-
-fasta_1_url <- file.path(url_remote, "chr12_Eggplant_V4.1.fa.gz")
-fasta_2_url <- file.path(url_remote,"chr2_S_lycopersicum_chromosomes.4.00.fa.gz")
-
-# Download example FASTA files and add them to cache
-fasta_1 <- bfcrpath(cache, fasta_1_url)
-fasta_2 <- bfcrpath(cache, fasta_2_url)
-
+fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa",
+                      package="mobileRNA")
 # define temporary output directory - replace with your directory
-output_assembly_file <- file.path(tempfile("merged_annotation", 
+output_assembly_file <- file.path(tempfile("merged_assembly", 
                                            fileext = ".fa"))
 
 # merge
 merged_reference <- RNAmergeGenomes(genomeA = fasta_1,
                                     genomeB = fasta_2,
-                                    out_dir = output_assembly_file)
+                                    output_file = output_assembly_file)
 ```
 
 <br>
@@ -178,7 +166,7 @@ Align sRNA sequencing reads to the merged genome using our unique
 alignment pipeline wrapped by the `mapRNA()` function.
 
 ``` r
-samples <- file.path(system.file("extdata",package="mobileRNA"))
+samples <- system.file("extdata/sRNAseq",package="mobileRNA")
 
 output_location <- tempdir()
 
@@ -186,7 +174,7 @@ mapRNA(input = "sRNA",
        input_files_dir = samples, 
        output_dir = output_location, 
        genomefile = output_assembly_file,
-       condaenv = "ShortStack4",
+       condaenv = "/Users/user-name/miniconda3/envs/ShortStack4",
        mmap = "n")
 
 ```
@@ -204,8 +192,8 @@ output folders and the same of the samples to import from the directory.
 results_dir <-  file.path(output_location,"2_alignment_results")
 
 # Sample names and total number of reads, in the same order. 
-sample_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3",
-                  "heterograft_1", "heterograft_2", "heterograft_3")
+sample_names <- c("selfgraft_demo_1", "selfgraft_demo_2", "selfgraft_demo_3",
+              "heterograft_demo_1", "heterograft_demo_2", "heterograft_demo_3")
 
 
 sRNA_data <- RNAimport(input = "sRNA", 
@@ -214,7 +202,7 @@ sRNA_data <- RNAimport(input = "sRNA",
                            
 ```
 
-or, load the pre-processed data:
+Now lets use the comprehensive dataset, load the pre-processed data:
 
 ```{r Load, message=FALSE}
 

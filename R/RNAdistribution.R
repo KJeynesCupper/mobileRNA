@@ -26,7 +26,7 @@
 #' [ggplot2::facet_wrap()] to define the number of columns. By default, this is
 #' set to 3.
 #'
-#' @param colour colour; Default colour is "black".
+#' @param colour character; Default colour is "black".
 #'
 #' @param style character; \code{style="line"}, \code{style="bar"} or 
 #' \code{style="consensus"}. Instructs how to plot the data. Where 

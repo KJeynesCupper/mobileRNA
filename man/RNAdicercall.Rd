@@ -40,8 +40,8 @@ genomes/genotypes.}
 
 \item{controls}{character; vector of control condition sample names.}
 
-\item{genome.ID}{character; chromosome identifier of foreign genome in
-chimeric system.}
+\item{genome.ID}{character; chromosome identifier of genome where mobile
+molecules are produced in the chimeric system}
 }
 \value{
 A data frame containing all existing columns in the input data object,
@@ -90,14 +90,9 @@ unclassified ("N"). However, when there is a tie between the choice of a
 class or unclassified result the \code{exclude} option will always select the
 class choice over the unclassified result.
 
-When working with a chimeric system, for example interspecific grafting,
-mapping errors can easily be recognized and eliminated if the genotypes in
-the system are distantly related ie. different species.Here, these can be
-eliminated by supplying some extra parameter information. State
-\code{chimeric=TRUE} and supply the chromosome identifier of the foreign genome
-(ie. not the tissue sample genotype, but the genotype from which any
-potential mobile molecules could be traveling from) to the \code{genome.ID}
-parameter & the control condition samples names to the \code{controls} parameter.
+If users are working with a chimeric system, utilise the \code{chimeric=TRUE}
+parameter and state \code{genome.ID} and \code{controls} parameter variables. This will
+remove any potential mapping errors which could introduce false interpretation.
 
 To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassified
 ("N") sRNA clusters, resulting in a reduced dataset size.

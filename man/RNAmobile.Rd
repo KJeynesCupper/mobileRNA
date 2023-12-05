@@ -19,9 +19,9 @@ RNAmobile(
 \item{input}{character; must be either "sRNA" or "mRNA" to represent the type
 of data, required when setting threshold.}
 
-\item{data}{dataframe; generated through the \pkg{mobileRNA} method.}
+\item{data}{data.frame; generated through the \pkg{mobileRNA} method.}
 
-\item{controls}{Character vector; containing names of control samples.}
+\item{controls}{character vector; containing names of control samples.}
 
 \item{genome.ID}{character; string related to the chromosomes in a
 particular genome. A distinguishing feature of the genome of interest or
@@ -56,14 +56,13 @@ to by-pass the thresholds which determine the number of replicates that
 defined the consensus dicercall (sRNA) or contributed to reads counts (mRNA).
 }
 \description{
-A function to identify potential mobile sRNA or mRNA molecules
-detected in a tissue from a different genotype.
+A function to identify the putative sRNA or mRNA mobilome.
 }
 \details{
 The function identifies candidate mobile sRNAs or mRNAs, by selecting those
-that mapped to the foreign genome (Genome B). It does so by either keeping or
-removing those mapped to a given genome. To do so, it requires a common
-pre-fix across chromosomes of the same genome. See
+that mapped to the genome of mobile molecules (Genome B). It does so by
+either keeping or removing those mapped to a given genome. To do so, it
+requires a common pre-fix across chromosomes of the same genome. See
 \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} for more information.
 
 \strong{For sRNAseq:}
@@ -82,9 +81,9 @@ column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
 \strong{Statistical Analysis}
 The function also allows for filtering using statistical inference generated
 from the differential analysis of the total dataset using the function
-\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. When \code{statistical=TRUE}, the feature is enabled
-and selected mobile molecules that meet the adjusted p-value cutoff defined
-by \code{alpha}.
+\code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. When \code{statistical=TRUE}, the feature
+is enabled and selected mobile molecules that meet the adjusted p-value
+cutoff defined by \code{alpha}.
 }
 \examples{
 

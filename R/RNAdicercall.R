@@ -31,14 +31,10 @@
 #' class or unclassified result the `exclude` option will always select the 
 #' class choice over the unclassified result.
 #'  
-#' When working with a chimeric system, for example interspecific grafting, 
-#' mapping errors can easily be recognized and eliminated if the genotypes in 
-#' the system are distantly related ie. different species.Here, these can be 
-#' eliminated by supplying some extra parameter information. State 
-#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
-#' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `genome.ID` 
-#' parameter & the control condition samples names to the `controls` parameter. 
+#' If users are working with a chimeric system, utilise the `chimeric=TRUE`
+#' parameter and state `genome.ID` and `controls` parameter variables. This will
+#' remove any potential mapping errors which could introduce false interpretation. 
+#' 
 #' 
 #' 
 #' To remove excess data noise, `tidy=TRUE` can be used to removed unclassified 
@@ -70,8 +66,8 @@
 #'
 #'@param controls character; vector of control condition sample names. 
 #'
-#'@param genome.ID character; chromosome identifier of foreign genome in 
-#'chimeric system.
+#'@param genome.ID character; chromosome identifier of genome where mobile 
+#'molecules are produced in the chimeric system
 #'
 #'@return A data frame containing all existing columns in the input data object,
 #'plus, two additional columns of data: 

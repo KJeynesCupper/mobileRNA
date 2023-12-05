@@ -1,10 +1,10 @@
-#' Merge two GFF genome annotation files
+#' Merge two genome annotation files (GFF Format)
 #'
-#' @description Merges two genomes annotation files (`GFF format`) into one
-#' single GFF file saved to desired directory. Adds prefix to each chromosome
-#' name in the genome annotations to ensure each assembly is distinguishable
-#' within the merged file, and saved the individually altered references to
-#' local directory.
+#' @description Merges two genomes annotation files (GFF) into one
+#' single GFF format file saved to the desired directory. This function adds a
+#' unique prefix to the chromosome name in each genome annotation to ensure each 
+#' assembly is distinguishable within the merged file. The individually altered 
+#' references are saved to local directory as well. 
 #'
 #' @details
 #' The functions primary goal is to merge two GFF files, however, when
@@ -14,25 +14,21 @@
 #' name and removes any periods.
 #'
 #'
-#' As default, the function as a prefix to chromosomes which contains a either
-#' "A" or "B" and "_". It will rename the chromosome names in `annotationA`
-#' to "A_". For example, A_0, A_1, A_2 etc. To set a custom chromosome name for
-#' `annotationA` alter the argument \code{abbreviationAnnoA}. While, for
+#' As default, the function as a prefix to chromosomes and separate the original
+#' chromosome name and the prefix with an understore ("_"). 
+#' It will rename the chromosome names in `annotationA`to "A_". For example,
+#'  A_0, A_1, A_2 etc. To set a custom chromosome name for `annotationA` alter 
+#'  the argument \code{abbreviationAnnoA}. While, for
 #' `annotationB` as default the chromosome names will be named "B_", 
 #' for example, B_0, B_1, B_2 etc. To set a custom chromosome name for 
-#' `annotationB` alter the argument \code{abbreviationAnnoB}. Please note that 
-#' the underscore is added automatically, hence, when setting a custom prefix 
-#' just include character values. 
-#' 
+#' `annotationB` alter the argument \code{abbreviationAnnoB}. 
 #' 
 #'
 #' The merged genome is saved to the specified output directory, and requires
-#' the user to set the name with a `gff` extension. The user must load the
-#' annotations into the R Global Environment, hence, the alterations made by
-#' this function will alter the variable. The altered annotations will also
-#' be saved to the same directory as supplied for the output file, with a fixed
-#' output name of `annotationA_altered.gff` and `annotationB_altered.gff`,
-#' respectively.
+#' the user to set the name with a GFF extension. The altered annotations will 
+#' be saved to the same directory as supplied for the megered output file, with 
+#' a fixed output name of `annotationA_altered.gff` and 
+#' `annotationB_altered.gff`, respectively.
 #'
 #'
 #'
@@ -43,7 +39,7 @@
 #'
 #'@return
 #'The function output the individually altered annotation files, plus, a merged
-#'annotation file to the global environment and the given directory.
+#'annotation file the given directory.
 #'The altered annotation files contain either default or custom alterations to
 #'the chromosome names and are written to the same directory as the merged file,
 #' with the given names addition of `annotationA_altered.gff` and
@@ -59,22 +55,20 @@
 #'GFF format.
 #'
 #'@param output_file path; a character string or a \code{base::connections()} 
-#'open for writing. Including file output name, and must have a `.gff3` 
+#'open for writing. Including file output name, and must have a GFF file
 #'extension. 
 #'
 #'
 #'@param abbreviationAnnoA character; string to represent prefix added to 
-#'existing chromosome names in `annotationA`. Default set as "A", which is 
-#'separated from existing chromosome names by an underscore (_). 
+#'existing chromosome names in `annotationA`. Default set as "A".
 #'
 #'
 #'
 #'@param abbreviationAnnoB character; string to represent prefix added to 
-#'existing chromosome names in `annotationB`. Default set as "B", which is 
-#'separated from existing chromosome names by an underscore (_). 
+#'existing chromosome names in `annotationB`. Default set as "B".
 #' 
-#' @param format format of GFF output, either gff, gff1, gff2, gff3. Default is 
-#' gff3.  
+#' @param format format of GFF output, either "gff", "gff1", "gff2", "gff3."
+#'  Default is "gff3".  
 #'
 #'
 #' @examples
@@ -125,7 +119,7 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   # start the progress bar
   pb <- progress::progress_bar$new(
     format = "[:bar] :percent :current/:total :eta",
-    total = 6)
+    total = 5)
   pb$tick(0)  
   
   # import gff

@@ -1,8 +1,9 @@
 citEntry(entry="Unpublished",
-	author = "Jeynes-Cupper, K, Catoni, M",
+author = personList(as.person("Katie Jeynes-Cupper"),
+                              as.person("Marco Catoni")),
 	year = "2023",
-	title = "mobileRNA: Explore candidate mobile sRNAs and sRNAs population changes.",
+	title = "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes.",
 	note = "Unpublished", 
 	textVersion = paste("Katie Jeynes-Cupper, Marco Catoni.","(2023)",
-	 "mobileRNA: Explore candidate mobile sRNAs and sRNAs population changes.")
+	 "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes")
 )

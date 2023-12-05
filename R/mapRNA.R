@@ -1,8 +1,8 @@
-#' Pre-processing of sRNAseq and mRNAseq (Alignment, raw count, cluster analysis)
+#' mobileRNA pre-processing of sRNAseq & mRNAseq (alignment, raw count or cluster analysis)
 #'
-#' @description For the mobileRNA workflow, undertakes pre-processing of clean
-#' sequencing reads. For sRNAseq, undertakes alignment with Bowtie and sRNA 
-#' cluster analysis with ShortStack. For mRNAseq, undertakes alignment with 
+#' @description The mobileRNA workflow includes specific pre-processing 
+#' guidelines. For sRNAseq, this undertakes alignment with Bowtie and sRNA 
+#' cluster analysis with ShortStack. For mRNAseq, this undertakes alignment with 
 #' HISAT2 and HTSeq. All OS software should be installed within a Conda 
 #' environment. 
 #' 
@@ -28,8 +28,8 @@
 #' ** For mRNA analysis** 
 #' The function invokes a number of OS commands, and is dependent 
 #' on the installation of `HISAT2`,  `HTSeq` and `SAMtools` with Conda. 
-#' The pipeline can undertake single- or pair-end analysis, and do to do so 
-#' requires a data frame stating the sample information where each row 
+#' The pipeline can undertake single- or pair-end analysis, and to do so 
+#' requires a dataframe stating the sample information where each row 
 #' represents a sample. The cleaned reads are mapped using HISAT and then the 
 #' raw counts are estimated by HTSeq.
 #' 
@@ -43,42 +43,42 @@
 #' @param input string; define type of Next-Generation Sequencing dataset.
 #'"sRNA" for sRNAseq data and "mRNA" for mRNAseq data. 
 #'
-#' @param input_files_dir path; directory containing only the FASTQ sRNAseq 
-#' samples for analysis. Note that all samples in this directory will be used by 
-#' this function. 
+#' @param input_files_dir path; directory containing only the FASTQ samples for 
+#' analysis. Note that all samples in this directory will be used by this 
+#' function. 
+#' 
 #' @param condaenv character; name or directory of the Conda environment to use
-#' where `ShortStack` (>4.0) is installed for sRNA analysis or `HISAT` & `HTSeq`
-#' for mRNA analysis. 
+#' where OS dependencies are stored. 
 #' 
 #' @param output_dir path; directory to store output. 
-#' @param genomefile path; path to a FASTA file. 
+#' @param genomefile path; path to a FASTA genome referecne file. 
 #' @param threads numeric; set the number of threads to use where more threads 
 #' means a faster completion time. Default is 6. 
 #' 
 #' @param mmap character; define how to handle multi-mapped reads. Choose from 
-#' "u", "f" or "r" or "n". For core sRNA analysis, use either "u", "f" or "r" 
+#' "u", "f" , "r" or "n". For core sRNA analysis, use either "u", "f" or "r" 
 #' options. Where "u" means only uniquely-aligned reads are used as 
 #' weights for placement of multi-mapped reads. Where "f" means fractional 
 #' weighting scheme for placement of multi-mapped reads and "r" mean 
 #' multi-mapped read placement is random. While for mobile sRNAseq, it is 
 #' important to use "n", to not consider multi-mapped reads, only unique reads 
 #' as we cannot distinguish which genome the reads mapped to multiple locations
-#' in. 
+#' in. While the mRNA pipeline only uses uniquely mapped reads. 
 #' 
 #' @param dicermin integer; the minimum size in nucleotides of a valid small 
 #' RNA. This option sets the bounds to discriminate dicer-derived small RNA loci 
 #' from other loci. Default is 20. For sRNA analysis only. 
 #' @param dicermax integer; the maximum size in nucleotides of a valid small 
 #' RNA. This option sets the bounds to discriminate dicer-derived small RNA loci 
-#' from other loci.  Default is 24.For sRNA analysis only. 
+#' from other loci. Default is 24. For sRNA analysis only. 
 #' 
 #' @param mincov numeric; minimum alignment depth, in units of reads per 
 #' million, required to nucleate a small RNA cluster during de novo cluster 
-#' search. Must be an floating point number > 0. Default is 2. For sRNA analysis 
-#' only. 
+#' search. Must be a number > 0. Default is 2. For sRNA analysis only. 
 #' 
 #' @param pad integer; initial peaks are merged if they are this distance or 
 #' less from each other. Must >= 1, default is 75. For sRNA analysis only. 
+#' 
 #' @param tidy logical; removes unnecessary extra output files when set to TRUE. 
 #' 
 #' @param sampleData dataframe; stores mRNA sample data where rows represent 
@@ -89,12 +89,13 @@
 #' will not hold any values. Only for mRNA analysis.  
 #' 
 #'  
-#' @param annotationfile path; path to a GFF file. Only for mRNA analysis.  
-#'  For mRNA analysis only. 
+#' @param annotationfile path; path to a GFF file. For mRNA analysis only. 
+#'  
 #' @param order character; either "name" or "pos" to indicate how the input data
 #' has been sorted. For paired-end data only, this sorts the data either by 
 #' read name or by alignment position. Default is "pos", to sort by position. 
-#'  For mRNA analysis only. 
+#' For mRNA analysis only. 
+#' 
 #' @param stranded whether the data is from a strand-specific assay, either 
 #' "yes"/"no"/"reverse". Default is "no".  For mRNA analysis only. 
 #'
@@ -104,19 +105,20 @@
 #' 
 #' @param type character; feature type (3rd column in GFF file) to be used, 
 #' all features of other type are ignored. Default is "mRNA". 
+#' For mRNA analysis only. 
 #' 
 #' @param idattr character; GFF attribute to be used as feature ID. Several GFF 
 #' lines with the same feature ID will be considered as parts of the same 
 #' feature. The feature ID is used to identity the counts in the output table. 
-#' Default is "Name". 
+#' Default is "Name". For mRNA analysis only. 
 #' 
 #' @param nonunique character; states the mode to handle reads that align to or
 #'  are assigned to more than one feature in the overlap. Either "none" and 
 #'  "all". Default is "none". For mobile mRNA, ensure the default is utilized to 
-#'  exclude multimapped reads. 
+#'  exclude multimapped reads. For mRNA analysis only. 
 #'  
 #' @param a numeric; skip all reads with alignment quality lower than the given 
-#' minimum value (default: 10)
+#' minimum value (default: 10). For mRNA analysis only. 
 #'  
 #' @return
 #' 
@@ -129,10 +131,10 @@
 #' 
 #' 
 #' The first folder stores the novo detection of sRNA-producing loci and
-#' alignment, where the output of each are stored in their respective folders in 
-#' the users desired location. The de novo detection of sRNA-producing loci
-#' analyses each sample to identify de novo sRNA-producing loci (ie. sRNA
-#' clusters), and joins these results into a single file called "locifile.txt". 
+#' alignment files, where the output of each sample are stored in a named 
+#' folder. The de novo detection of sRNA-producing loci analyses each sample to
+#' identify de novo sRNA-producing loci (ie. sRNA clusters), and joins these 
+#' results into a single file called "locifile.txt". 
 #' The second folder stores the alignment and clustering results for each sample 
 #' to the genome reference along with the file containing the de novo sRNA 
 #' clusters. The output of each sample is stored within its own sample folder. 
@@ -157,7 +159,7 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' samples <- file.path(system.file("extdata",package="mobileRNA"))
+#' samples <- file.path(system.file("extdata/sRNAseq",package="mobileRNA"))
 #' 
 #' output_location <- tempdir()
 #' 

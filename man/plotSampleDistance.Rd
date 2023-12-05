@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotSampleDistance.R
 \name{plotSampleDistance}
 \alias{plotSampleDistance}
-\title{Sample quality control heatmap plot}
+\title{Sample distance matrix}
 \usage{
 plotSampleDistance(
   data,
@@ -24,7 +24,7 @@ will not suit all experimental designs.}
 A blue scale heatmap illustrating the sample distance.
 }
 \description{
-A function to draw a simple hierarchical clustered heatmap to observe
+Draws a simple hierarchical clustered heatmap to observe
 sample distance. Ideal for quality control of sequencing data.
 }
 \details{

@@ -14,7 +14,7 @@ RNAreorder(data, controls)
 }
 \value{
 A re-ordered/re-organised working data frame with control samples
-after the 5 cluster information columns,and treatment sample columns after
+after the 5 cluster information columns, and treatment sample columns after
 the control sample columns.
 }
 \description{

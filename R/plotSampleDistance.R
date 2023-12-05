@@ -1,6 +1,7 @@
-#' Sample quality control heatmap plot
+#' Sample distance matrix 
 #'
-#'A function to draw a simple hierarchical clustered heatmap to observe
+#'
+#'Draws a simple hierarchical clustered heatmap to observe
 #'sample distance. Ideal for quality control of sequencing data.
 #'
 #'

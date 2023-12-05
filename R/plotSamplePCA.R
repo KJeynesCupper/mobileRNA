@@ -1,4 +1,4 @@
-#' PCA plot to illustrate sample distance.
+#' PCA plot of PC1 and PC2
 #'
 #' @description Draws a principal component analysis (PCA) plot of PC1 and PC2. 
 #' The function undertakes rlog transformation of the data in an unbiased manner
@@ -29,8 +29,7 @@
 #' Default `size.ratio=2`, double the plot dimension. 
 #'
 #'@param colours character; vector of HEX colour codes. Must match the number of 
-#'conditions. For example, 
-#'`colours = c("#E69F00", "#56B4E9", "#CC79A7", "#009E73")`
+#'conditions. 
 #'
 #'@param point.shape logical; set whether the point shapes should be different
 #'for each condition. 
@@ -40,7 +39,7 @@
 #'
 #' @return A PCA plot to show sample distance.
 #'
-#' @details This function utilises the `DESeq2` package to organise and plot the
+#' @details This function uses the `DESeq2` package to organise and plot the
 #' data. It organises the data into a DESeqDataSet which undergoes 
 #' log-transformation where the results are used to undertake the PCA analysis. 
 #' The results are plotted against the principle components 1 and 2.

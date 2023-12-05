@@ -22,8 +22,7 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    bioseq,
-    BiocFileCache
+    bioseq
 Imports: 
     dplyr,
     tidyr, 

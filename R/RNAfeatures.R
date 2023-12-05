@@ -1,21 +1,19 @@
 #' Distribution of sRNA cluster loci across genomic features
 #'
-#' @description Calculates the absolute or relative (percentage) number of
-#' sRNA clusters which overlap with genomic features, including 
-#' promoter regions, repeat regions, exons, introns, and 3'/'5 untranslated 
-#' regions.
+#' @description Calculates the absolute or relative number of sRNA clusters 
+#' which overlap with genomic features, including promoter regions, repeat
+#' regions, exons, introns, and 3'/'5 untranslated regions.
 #'
 #'
 #' @details
 #' The function calculates the number or percentage of sRNA dicer-derived
 #' clusters which overlap with genomic features based on their genomic
-#' coordinates. This is outputted as either a matrix or data frame,
-#' respectively.
+#' coordinates. 
 #'
 #' This function can be utilised at different steps in your analysis, but is
-#' particularly powerful when observing the genomic location of potential mobile
-#' sRNA, and can be overlapped with a specific genome or with a merged
-#' annotation file.
+#' particularly useful when identifying whether identified sRNAs meet 
+#' expectations and to identify any patterns in the loci which produce mobile
+#' sRNAs. 
 #' 
 #' @seealso [mobileRNA::RNAmergeAnnotations()] to merge 2 GFF files into 1. 
 #'
@@ -29,16 +27,15 @@
 #' sequences in the genome (.gff/.gff1/.gff2/.gff3). By default, this is not
 #' required, however if there is a specific repeats annotation file for the
 #' genome it is suggested to supply it.
-#'
-#'
+#' 
 #' @param promoterRegions numeric; define promoter region upstream of genes.
-#' Default is `promoterRegions=1000` , ie promoters set at 1kb upstream of genes
+#' Default is `promoterRegions=1000` , ie promoters set at 1-kb upstream of
+#' genes
+#' 
 #' @param percentage returns results as a percentage of the total, when
 #' \code{percentage = TRUE} (default). While \code{percentage = FALSE}, results
 #' are returned as a count value representing the number of sRNA clusters
 #' that overlap with a given genomic feature.
-#'
-#'
 #'
 #' @return Returns a table containing the number or percentage of overlaps in
 #' the supplied dataset with specific regions in the genome annotation such

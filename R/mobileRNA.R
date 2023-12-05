@@ -1,54 +1,53 @@
-#' mobileRNA: Explore candidate mobile sRNAs & sRNAs population-scale changes
+#' mobileRNA: Explore RNA mobilome & population-scale changes
 #'
-#' Uses small RNA sequencing data in two conditions and identifies
-#' changes in the small RNA population, but mainly, identify foriegn mobile 
-#' small RNAs in chimeric systems. For example, in plant graft systems. The 
-#' input is the Results report files produced by ShortStack and the output is a 
-#' dataframe of small RNA clusters, including a consensus dicercall and 
-#' differential analysis results. Output can also consist of the consensus RNA
-#' sequence of small RNA clusters within the determined population. Includes
+#' Uses small RNA or messenger RNA sequencing data in two conditions and 
+#' identifies changes in the RNA population, but mainly, identify a putative RNA 
+#' mobilome in a chimeric system. For example, in plant graft systems. The 
+#' input is the report files produced by the pre-processing steps and the output 
+#' is a data-frame of RNA molecules. Output can also consist of the consensus 
+#' RNA sequence of small RNA clusters within the determined population. Includes
 #' quality control and plotting functions. 
 #'
 #' The most important functions in the \pkg{mobileRNA} are:
 #' \describe{
+#' \item{\code{\link{RNAmergeGenomes}}}{Merge two genome assembly files (FASTA)}
+#'  \item{\code{\link{RNAmergeAnnotations}}}{Merge two genome annotation files
+#'  (GFF)}
 #'  \item{\code{\link{mapRNA}}}{Pre-processing of sRNAseq and mRNAseq 
-#'  (Alignment, raw count, cluster analysis)}
-#'  \item{\code{\link{RNAimport}}}{reads the pre-processing report files in 
+#'  (alignment, raw count, cluster analysis)}
+#'  \item{\code{\link{RNAimport}}}{Reads the pre-processing report files in 
 #'  to a dataframe for all conditions}
-#'  \item{\code{\link{RNAdicercall}}}{calculates the consensus sRNA 
+#'  \item{\code{\link{RNAdicercall}}}{Calculates the consensus sRNA 
 #'  dicercall class}
-#'  \item{\code{\link{RNAsubset}}}{subsets the working data set to select a 
+#'  \item{\code{\link{RNAsubset}}}{Subsets the working data set to select a 
 #'  defined sRNA class}
-#'  \item{\code{\link{RNAdifferentialAnalysis}}}{undertakes differential 
+#'  \item{\code{\link{RNAdifferentialAnalysis}}}{Undertakes differential 
 #'  analysis using either the edgeR or DESeq2 method for data structure}
-#'  \item{\code{\link{RNAmobile}}}{identifies mobile candidates in chimeric 
+#'  \item{\code{\link{RNAmobile}}}{Identifies mobile candidates in chimeric 
 #'  systems}
-#'  \item{\code{\link{RNApopulation}}}{selects unique RNAs within the defined
+#'  \item{\code{\link{RNApopulation}}}{Selects unique RNAs within the defined
 #'  sample replicates}
 #'  \item{\code{\link{RNAsummary}}}{Summarise the differential abundance of RNAs}
 #'   \item{\code{\link{RNAreorder}}}{Reorder the data frame for differential 
 #'   analysis, ensuring control verse treatment comparison}
-#'  \item{\code{\link{RNAsequences}}}{defines the consensus RNA sequence for a 
+#'  \item{\code{\link{RNAsequences}}}{Defines the consensus RNA sequence for a 
 #'  sRNA cluster}
-#'  \item{\code{\link{RNAattributes}}}{overlaps the sRNA clusters with a GFF
+#'  \item{\code{\link{RNAattributes}}}{Overlaps the sRNA clusters with a GFF
 #'  annotation file and adds overlapping features to the sRNA cluster 
 #'  information}
 #'  \item{\code{\link{RNAdistribution}}}{Plot the distribution of sRNA 
 #'  lengths/classes}
-#'  \item{\code{\link{plotHeatmap}}}{plots a heatmap of log2-transformed 
+#'  \item{\code{\link{plotHeatmap}}}{Plots a heatmap of log2-transformed 
 #'  normalised RPM/FPKM values}
-#'  \item{\code{\link{plotSampleDistance}}}{plots a sample distance heatmap for
+#'  \item{\code{\link{plotSampleDistance}}}{Plots a sample distance heatmap for
 #'  quality control}
-#'  \item{\code{\link{plotSamplePCA}}}{plots a PCA plot, customise ratio, 
+#'  \item{\code{\link{plotSamplePCA}}}{Plots a PCA plot, customise ratio, 
 #'  colours and shapes}
-#'  \item{\code{\link{RNAfeatures}}}{overlaps the sRNA clusters with a GFF
+#'  \item{\code{\link{RNAfeatures}}}{Overlaps the sRNA clusters with a GFF
 #'  annotation file and calculates the percentage of clusters which overlap with 
 #'  specific genomic features}
-#'  \item{\code{\link{RNAmean}}}{calculate mean RPM and mean raw count across 
+#'  \item{\code{\link{RNAmean}}}{Calculate mean RPM and mean raw count across 
 #'  given samples}
-#'  \item{\code{\link{RNAmergeGenomes}}}{Merge two FASTA genome assembly files}
-#'  \item{\code{\link{RNAmergeAnnotations}}}{Merge two GFF genome annotation 
-#'  files}
 #'  \item{\code{\link{RNAdf2se}}}{Convert `mobileRNA` dataframe to 
 #'  a SummarizedExperiment object }
 #' }
@@ -140,4 +139,235 @@ NULL
 #' @examples
 #'  data("sRNA_data_mobile")
 NULL
+
+
+
+#' @name reduced_chr12_Eggplant.gff
+#' @title reduced_chr12_Eggplant.gff
+#' @docType data
+#' @keywords GFF
+#' @usage base::system.file("extdata","reduced_chr12_Eggplant.gff",package="mobileRNA")
+#' @description Sample GFF file 
+#' @return GFF file 
+#' @details A small selection of genomic features from chromosome 12 of 
+#' Eggplant (Solanum melongena) from Sol Genomics Network 
+#' (https://solgenomics.net/)
+#' @examples
+#'  reduced_chr12_Eggplant <- base::system.file("extdata",
+#'  "reduced_chr12_Eggplant.gff",package="mobileRNA")
+NULL
+
+
+#' @name reduced_chr2_Tomato.gff
+#' @title reduced_chr2_Tomato.gff
+#' @docType data
+#' @keywords GFF
+#' @usage base::system.file("extdata","reduced_chr2_Tomato.gff",package="mobileRNA")
+#' @description Sample GFF file 
+#' @return GFF file 
+#' @details A small selection of genomic features from chromosome 2 of 
+#' Tomato (Solanum lycopersicum) from Sol Genomics Network 
+#' (https://solgenomics.net/)
+#' @examples
+#'  reduced_chr2_Tomato <- base::system.file("extdata",
+#'  "reduced_chr2_Tomato.gff",package="mobileRNA")
+NULL
+
+
+#' @name reduced_chr12_Eggplant.fa
+#' @title reduced_chr12_Eggplant.fa
+#' @docType data
+#' @keywords FASTA
+#' @usage base::system.file("extdata","reduced_chr12_Eggplant.fa",package="mobileRNA")
+#' @description Sample FASTA file 
+#' @return FASTA file 
+#' @details Reduced nucleotide sequence of chromosome 12 of 
+#' Eggplant (Solanum melongena) from Sol Genomics Network 
+#' (https://solgenomics.net/)
+#' @examples
+#'  reduced_chr12_Eggplant <- base::system.file("extdata",
+#'  "reduced_chr12_Eggplant.fa",package="mobileRNA")
+NULL
+
+
+#' @name reduced_chr2_Tomato.fa
+#' @title reduced_chr2_Tomato.fa
+#' @docType data
+#' @keywords FASTA
+#' @usage base::system.file("extdata","reduced_chr2_Tomato.fa",package="mobileRNA")
+#' @description Sample FASTA file 
+#' @return FASTA file 
+#' @details Reduced nucleotide sequence of chromosome 2 of Tomato 
+#' (Solanum lycopersicum) from Sol Genomics Network 
+#' (https://solgenomics.net/)
+#' @examples
+#'  reduced_chr2_Tomato <- base::system.file("extdata",
+#'  "reduced_chr2_Tomato.fa",package="mobileRNA")
+NULL
+
+
+#' @name selfgraft_demo_1.fq
+#' @title selfgraft_demo_1.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/sRNAseq","selfgraft_demo_1.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo sRNAseq FASTQ file for a self-graft control Eggplant 
+#' (Solanum melongena) sample. This file has been majorly reduced and does not
+#' represent true data. For pre-processing purposes. 
+#' @examples
+#'  selfgraft_demo_1 <- base::system.file("extdata/sRNAseq","selfgraft_demo_1.fq",
+#'  package="mobileRNA")
+NULL
+
+#' @name selfgraft_demo_2.fq
+#' @title selfgraft_demo_2.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/sRNAseq","selfgraft_demo_2.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo sRNAseq FASTQ file for a self-graft control Eggplant 
+#' (Solanum melongena) sample. This file has been majorly reduced and does not
+#' represent true data. For pre-processing purposes. 
+#' @examples
+#'  selfgraft_demo_2 <- base::system.file("extdata/sRNAseq","selfgraft_demo_2.fq",
+#'  package="mobileRNA")
+NULL
+
+#' @name selfgraft_demo_3.fq
+#' @title selfgraft_demo_3.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/sRNAseq","selfgraft_demo_3.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo sRNAseq FASTQ file for a self-graft control Eggplant 
+#' (Solanum melongena) sample. This file has been majorly reduced and does not
+#' represent true data. For pre-processing purposes. 
+#' @examples
+#'  selfgraft_demo_3 <- base::system.file("extdata/sRNAseq","selfgraft_demo_3.fq",
+#'  package="mobileRNA")
+NULL
+
+
+#' @name heterograft_demo_1.fq
+#' @title heterograft_demo_1.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/sRNAseq","heterograft_demo_1.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo sRNAseq FASTQ file for a heterograft sample where the sample 
+#' was taken from the shoot of the scion. The scion is Eggplant 
+#' (Solanum melongena) and the rootstock is Tomato (Solanum lycopersicum). 
+#' This file has been majorly reduced and does not represent true data. 
+#' For pre-processing purposes. 
+#' @examples
+#'  heterograft_demo_1 <- base::system.file("extdata/sRNAseq","heterograft_demo_1.fq",
+#'  package="mobileRNA")
+NULL
+
+#' @name heterograft_demo_2.fq
+#' @title heterograft_demo_2.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/sRNAseq","heterograft_demo_2.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo sRNAseq FASTQ file for a heterograft sample where the sample 
+#' was taken from the shoot of the scion. The scion is Eggplant 
+#' (Solanum melongena) and the rootstock is Tomato (Solanum lycopersicum). 
+#' This file has been majorly reduced and does not represent true data. 
+#' For pre-processing purposes. 
+#' @examples
+#'  heterograft_demo_2 <- base::system.file("extdata/sRNAseq","heterograft_demo_2.fq",
+#'  package="mobileRNA")
+NULL
+
+#' @name heterograft_demo_3.fq
+#' @title heterograft_demo_3.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/sRNAseq","heterograft_demo_3.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo sRNAseq FASTQ file for a heterograft sample where the sample 
+#' was taken from the shoot of the scion. The scion is Eggplant 
+#' (Solanum melongena) and the rootstock is Tomato (Solanum lycopersicum). 
+#' This file has been majorly reduced and does not represent true data. 
+#' For pre-processing purposes. 
+#' @examples
+#'  heterograft_demo_3 <- base::system.file("extdata/sRNAseq","heterograft_demo_3.fq",
+#'  package="mobileRNA")
+NULL
+
+#' @name selfgraft_mRNAdemo_1.fq
+#' @title selfgraft_mRNAdemo_1.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/mRNAseq","selfgraft_mRNAdemo_1.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo mRNAseq FASTQ file for a self-graft control Eggplant 
+#' (Solanum melongena) sample. This file has been majorly reduced and does not
+#' represent true data. For pre-processing purposes. 
+#' @examples
+#'  selfgraft_mRNAdemo_1 <- base::system.file("extdata/mRNAseq","selfgraft_mRNAdemo_1.fq",
+#'  package="mobileRNA")
+NULL
+
+#' @name selfgraft_mRNAdemo_2.fq
+#' @title selfgraft_mRNAdemo_2.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/mRNAseq","selfgraft_mRNAdemo_2.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo mRNAseq FASTQ file for a self-graft control Eggplant 
+#' (Solanum melongena) sample. This file has been majorly reduced and does not
+#' represent true data. For pre-processing purposes. 
+#' @examples
+#'  selfgraft_mRNAdemo_2 <- base::system.file("extdata/mRNAseq","selfgraft_mRNAdemo_2.fq",
+#'  package="mobileRNA")
+NULL
+
+
+#' @name heterograft_mRNAdemo_1.fq
+#' @title heterograft_mRNAdemo_1.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/mRNAseq","heterograft_mRNAdemo_1.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo mRNAseq FASTQ file for a heterograft sample where the sample 
+#' was taken from the shoot of the scion. The scion is Eggplant 
+#' (Solanum melongena) and the rootstock is Tomato (Solanum lycopersicum). 
+#' This file has been majorly reduced and does not represent true data. 
+#' For pre-processing purposes. 
+#' @examples
+#'  heterograft_mRNAdemo_1 <- base::system.file("extdata/mRNAseq",
+#'  "heterograft_mRNAdemo_1.fq", package="mobileRNA")
+NULL
+
+
+#' @name heterograft_mRNAdemo_2.fq
+#' @title heterograft_mRNAdemo_2.fq
+#' @docType data
+#' @keywords FASTQ
+#' @usage base::system.file("extdata/mRNAseq","heterograft_mRNAdemo_2.fq",package="mobileRNA")
+#' @description Demo FASTQ file 
+#' @return FASTQ file 
+#' @details Demo mRNAseq FASTQ file for a heterograft sample where the sample 
+#' was taken from the shoot of the scion. The scion is Eggplant 
+#' (Solanum melongena) and the rootstock is Tomato (Solanum lycopersicum). 
+#' This file has been majorly reduced and does not represent true data. 
+#' For pre-processing purposes. 
+#' @examples
+#'  heterograft_mRNAdemo_2 <- base::system.file("extdata/mRNAseq",
+#'  "heterograft_mRNAdemo_2.fq", package="mobileRNA")
+NULL
+
+
 

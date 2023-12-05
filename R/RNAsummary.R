@@ -1,5 +1,4 @@
-#' Summarise differential analysis results abundance of sRNA clusters 
-#' 
+#' Summarise differential analysis results 
 #' 
 #' @description Print a summary of the statistical analysis of sRNA clusters 
 #' (sRNAseq analysis) or mRNAs (mRNAseq) from a mobileRNA analysis
@@ -16,19 +15,17 @@
 #'
 #'@param controls character; vector of control condition sample names. 
 #'
-#'@param genome.ID character; chromosome identifier of foreign genome in 
-#'chimeric system
+#'
+#'@param genome.ID character; chromosome identifier of genome from mobile
+#' molecules in chimeric system.  
 #'
 #'@details 
-#'When working with a chimeric system, for example interspecific grafting, 
-#' mapping errors can easily be recognised and eliminated. Here, these can be 
-#' eliminated by supplying some extra parameter information. State 
-#' `chimeric=TRUE` and supply the chromosome identifier of the foreign genome 
-#' (ie. not the tissue sample genotype, but the genotype from which any 
-#' potential mobile molecules could be traveling from) to the `genome.ID` 
-#' parameter & the control condition samples names to the `controls` parameter.
+#' To look only at the differential abundance from RNAs in the mobilome, use the 
+#' `chimeric=TRUE` parameter and supply the chromosome identifier of the genome 
+#' from which mobile molecules originate from to the `genome.ID` parameter & 
+#' the control condition samples names to the `controls` parameter. 
 #' 
-#' @return Prints a summary of the sRNA clusters or mRNAs which align with the 
+#' @return Prints a summary of the RNAs which align with the 
 #' adjusted p-value cutoff and states the number which have a positive and 
 #' negative log-fold change. Where a positive log-fold change represents an 
 #' increase in abundance and a negative value represents a decrease in abundance
@@ -57,7 +54,6 @@
 #' res<- RNAsummary(sRNA_DESeq2)
 #'                                  
 #' @export
-
 RNAsummary <- function(data, alpha = 0.1, chimeric = FALSE,
                          controls = NULL, genome.ID = NULL) {
   # Check if 'data' is a data frame
