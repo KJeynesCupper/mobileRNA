@@ -75,7 +75,7 @@
 #'
 #' p1 <- RNAdistribution(data = sRNA_data, style = "line")
 #'
-#' p2 <- RNAdistribution(data = sRNA_data, style = "line", together =FALSE )
+#' p2 <- RNAdistribution(data = sRNA_data, style = "line", together = FALSE)
 #'
 #' p3 <- RNAdistribution(data = sRNA_data, style = "bar")
 #'
@@ -88,13 +88,9 @@
 #' p5 <- RNAdistribution(data = sRNA_data, style = "bar",
 #'                       facet = TRUE, facet.arrange = 2 )
 #'
-#' # calculate data with dicer-derived consensus :
-#' conditions <- c("heterograft_1", "heterograft_2", "heterograft_3")
 #'
 #' # Run function to define sRNA class for each cluster.
-#' sRNA_data_dicercall <- RNAdicercall(data = sRNA_data,
-#'                                   conditions = conditions,
-#'                                   tidy=TRUE)
+#' sRNA_data_dicercall <- RNAdicercall(data = sRNA_data, tidy=TRUE)
 #'
 #'p6 <- RNAdistribution(data = sRNA_data_dicercall, style = "consensus")
 #'
@@ -111,6 +107,11 @@
 #' @importFrom ggplot2 "geom_bar"
 #' @importFrom ggplot2 "labs"
 #' @importFrom ggplot2 "aes"
+#' @importFrom ggplot2 "element_text"
+#' @importFrom ggplot2 "element_blank"
+#' @importFrom ggplot2 "element_line"
+#' @importFrom ggplot2 "element_rect"
+#' @importFrom ggplot2 "margin"
 #' @importFrom tidyr "gather"
 #' @importFrom data.table "melt"
 #' @importFrom ggplot2 "facet_wrap"
@@ -145,14 +146,39 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                             y = freq, group = 1)) + 
         ggplot2::geom_point() + 
         ggplot2::geom_line() + ggplot2::theme_classic() + 
-        ggplot2::xlab("RNA Class") + ggplot2::ylab("Relative frequency")
+        ggplot2::xlab("sRNA Class") + ggplot2::ylab("Relative frequency")+
+        scale_y_continuous(expand = c(0, 0), limits = c(0, 1))  +
+        ggplot2::theme_bw()+
+        ggplot2::theme(legend.position = "none",
+              legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+              legend.title = ggplot2::element_text(size = 14, face = "bold"),
+              axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+              axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+              panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+              panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+              panel.border = ggplot2::element_rect(color = "white", size = 1),
+              axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+              axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+              plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
     }
     else 
       p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                             y = n, group = 1)) + 
         ggplot2::geom_point() + ggplot2::geom_line() + 
-        ggplot2::theme_classic() + ggplot2::xlab("RNA Class") + 
-        ggplot2::ylab("Counts")
+        ggplot2::theme_classic() + ggplot2::xlab("sRNA Class") + 
+        ggplot2::ylab("Count")+
+        ggplot2::theme_bw()+
+        ggplot2::theme(legend.position = "none",
+               legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+               legend.title = ggplot2::element_text(size = 14, face = "bold"),
+               axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+               axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+               panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+               panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+               panel.border = ggplot2::element_rect(color = "white", size = 1),
+               axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+               axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+               plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
     out <- list(plot = p1, data = x)
     return(out)
     print(x)
@@ -212,7 +238,20 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                        ggplot2::aes_string(x = "Class",y =col))+ 
                          ggplot2::geom_bar(stat = "identity",fill = colour) + 
                          ggplot2::theme_classic() + 
-                         ggplot2::labs(title = col, x = "RNA Class",y = "Count")
+                         ggplot2::labs(title = paste0("Sample: ", col), x = "sRNA Class", y = "Count")+
+                         ggplot2::theme_bw()+
+                         ggplot2::theme(legend.position = "right",
+                                        plot.title = ggplot2::element_text(face = "bold", size = 18), 
+                                        legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                                        legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                                        axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                                        axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                                        panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                                        panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                                        panel.border = ggplot2::element_rect(color = "white", size = 1),
+                                        axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                                        axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                                        plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
                      }, 
                      simplify = FALSE)
       sn <- names(plist)
@@ -220,8 +259,23 @@ RNAdistribution  <- function (data, samples = NULL, style,
         p <- ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class), 
                              ggplot2::aes(Class, Count)) + 
           ggplot2::geom_bar(stat = "identity", fill = colour) + 
-          ggplot2::theme_classic() + 
-          ggplot2::facet_wrap(~key, scales = "free_y", ncol = facet.arrange)
+          ggplot2::facet_wrap(~key, scales = "free_y", ncol = facet.arrange)+
+          ggplot2::theme_bw()+
+          ggplot2::theme(legend.position = "right",
+                         legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                         legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                         strip.placement = "outside",
+                         strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "white"),
+                         strip.text = ggplot2::element_text(size = 12,face="italic" ),
+                         axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                         axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                         panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                         panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                         panel.border = ggplot2::element_rect(color = "white", size = 1),
+                         axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                         axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                         plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+        
         out <- list(plot = p, data = counts.df)
         
       }
@@ -244,9 +298,22 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                                             col = variable, 
                                                             group = 1)) + 
             ggplot2::geom_point() + 
-            ggplot2::geom_line() + ggplot2::theme_classic() + 
-            ggplot2::xlab("RNA Class") + ggplot2::ylab("Counts") + 
-            ggplot2::labs(color = "Samples")
+            ggplot2::geom_line() + 
+            ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
+            ggplot2::labs(color = "Samples")+ 
+            guides(fill = guide_legend(override.aes = list(shape = 21, size = 8))) +
+            ggplot2::theme_bw()+
+            ggplot2::theme(legend.position = "right",
+                  legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                  legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                  axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                  axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                  panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                  panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                  panel.border = ggplot2::element_rect(color = "white", size = 1),
+                  axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                  axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                  plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
           out <- list(plot = p, data = counts.df)
         }
         else 
@@ -257,9 +324,21 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                                          value, col = variable, 
                                                          group = 1)) + 
               ggplot2::geom_point(colour = colour) + 
-              ggplot2::geom_line(colour = colour) + ggplot2::theme_classic() + 
-              ggplot2::xlab("RNA Class") + ggplot2::ylab("Counts") + 
-              ggplot2::labs(color = "Samples")
+              ggplot2::geom_line(colour = colour) + 
+              ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
+              ggplot2::labs(color = "Samples")+ 
+              ggplot2::theme_bw()+
+              ggplot2::theme(legend.position = "right",
+                    legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                    legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                    axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                    axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                    panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                    panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                    panel.border = ggplot2::element_rect(color = "white", size = 1),
+                    axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                    axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                    plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
             out <- list(plot = p, data = counts.df)
           }
       }
@@ -271,9 +350,24 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                    ggplot2::aes(Class, Count, group = 1)) + 
                 ggplot2::geom_point(colour = colour) + 
                 ggplot2::geom_line(colour = colour) + 
-                ggplot2::theme_classic() + 
                 ggplot2::facet_wrap(~key, scales = "free_y", 
-                                    ncol = facet.arrange)
+                                    ncol = facet.arrange)+
+                ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
+                ggplot2::theme_bw()+
+                ggplot2::theme(legend.position = "right",
+                      legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                      legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                      strip.placement = "outside",
+                      strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "white"),
+                      strip.text = ggplot2::element_text(size = 12,face="italic" ),
+                      axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                      axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                      panel.border = ggplot2::element_rect(color = "white", size = 1),
+                      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                      plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
               
             }
             else if (!is.null(samples)) {
@@ -285,7 +379,22 @@ RNAdistribution  <- function (data, samples = NULL, style,
                 ggplot2::geom_point(colour = colour) + 
                 ggplot2::geom_line(colour = colour) + 
                 ggplot2::theme_classic() + 
-                ggplot2::facet_wrap(~key, scales = "free_y", ncol=facet.arrange)
+                ggplot2::facet_wrap(~key, scales = "free_y", ncol=facet.arrange)+
+                ggplot2::theme_bw()+
+                ggplot2::theme(legend.position = "right",
+                      legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                      legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                      strip.placement = "outside",
+                      strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "white"),
+                      strip.text = ggplot2::element_text(size = 12,face="italic" ),
+                      axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                      axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                      panel.border = ggplot2::element_rect(color = "white", size = 1),
+                      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                      plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
             }
             out <- list(plot = p, data = counts.df)
             return(out)
@@ -303,7 +412,20 @@ RNAdistribution  <- function (data, samples = NULL, style,
                   ggplot2::geom_point(colour = colour) + 
                   ggplot2::theme_classic() + 
                   ggplot2::geom_line(colour = colour) + 
-                  ggplot2::labs(title = col, x = "RNA Class", y = "Count")}, 
+                  ggplot2::labs(title = paste0("Sample: ", col), x = "sRNA Class", y = "Count")+
+                  ggplot2::theme_bw()+
+                  ggplot2::theme(legend.position = "right",
+                        plot.title = ggplot2::element_text(face = "bold", size = 18), 
+                        legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
+                        legend.title = ggplot2::element_text(size = 14, face = "bold"),
+                        axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+                        axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
+                        panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                        panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                        panel.border = ggplot2::element_rect(color = "white", size = 1),
+                        axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
+                        axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
+                        plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )}, 
               simplify = FALSE)
             sn <- names(plist2)
             p <- plist2
