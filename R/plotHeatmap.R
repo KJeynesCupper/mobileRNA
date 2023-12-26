@@ -40,8 +40,15 @@
 #'@return Produces a list of objects, including the plot. 
 #'
 #' @examples
+#'data("sRNA_data")
 #'
-#' data("sRNA_data_mobile")
+#' # vector of control names
+#' controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
+#'
+#' # Locate potentially mobile sRNA clusters associated to tomato, no
+#' # statistical analysis
+#' sRNA_data_mobile <- RNAmobile(input = "sRNA", data =  sRNA_data,
+#' controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 #'
 #' # plot heatmap of potential mobile sRNAs
 #'  p1 <-  plotHeatmap(sRNA_data_mobile, row.names = FALSE)

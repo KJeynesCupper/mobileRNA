@@ -35,7 +35,7 @@
 #' 
 #' 
 #' @references 
-#' \url{"https://github.com/MikeAxtell/ShortStack"},
+#' \url{https://github.com/MikeAxtell/ShortStack},
 #' \url{https://anaconda.org/bioconda/hisat2},
 #' \url{https://anaconda.org/bioconda/htseq},
 #' \url{https://anaconda.org/bioconda/samtools}

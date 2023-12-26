@@ -74,11 +74,11 @@ remove any potential mapping errors which could introduce false interpretation.
 }
 \examples{
 
-data("sRNA_data_dicercall")
+data("sRNA_data")
 
 # Select sRNA clusters only in the heterograft samples (ie. treatment)
 
-heterograft_pop <- RNApopulation(data = sRNA_data_dicercall, 
+heterograft_pop <- RNApopulation(data = sRNA_data, 
                                  conditions = c("heterograft_1", 
                                                 "heterograft_2", 
                                                 "heterograft_3"))

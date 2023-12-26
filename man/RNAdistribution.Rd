@@ -103,8 +103,13 @@ p4 <- RNAdistribution(data = sRNA_data, style = "bar", facet = FALSE)
 p5 <- RNAdistribution(data = sRNA_data, style = "bar",
                       facet = TRUE, facet.arrange = 2 )
 
-# load data with dicer-derived consensus calculated
-data("sRNA_data_dicercall")
+# calculate data with dicer-derived consensus :
+conditions <- c("heterograft_1", "heterograft_2", "heterograft_3")
+
+# Run function to define sRNA class for each cluster.
+sRNA_data_dicercall <- RNAdicercall(data = sRNA_data,
+                                  conditions = conditions,
+                                  tidy=TRUE)
 
 p6 <- RNAdistribution(data = sRNA_data_dicercall, style = "consensus")
 

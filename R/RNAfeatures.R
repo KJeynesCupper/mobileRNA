@@ -42,8 +42,8 @@
 #' as genes, repeats, introns, exons.
 #'
 #' @examples
-#' data("sRNA_data_dicercall")
-#' features <- RNAfeatures(data = sRNA_data_dicercall,
+#' data("sRNA_data")
+#' features <- RNAfeatures(data = sRNA_data,
 #'                        annotation = system.file("extdata",
 #'                        "reduced_chr2_Tomato.gff", package="mobileRNA"))
 #'                        

@@ -35,7 +35,7 @@ and switch to a variance stabilizing transformation method (\code{vst=TRUE}).
 }
 \examples{
 
-data("sRNA_data_dicercall")
-plotSampleDistance(sRNA_data_dicercall)
+data("sRNA_data")
+plotSampleDistance(sRNA_data)
 
 }

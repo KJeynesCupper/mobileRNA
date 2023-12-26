@@ -37,7 +37,16 @@
 #' sRNA dicer-derived consensus size.
 #' 
 #' @examples
-#' data("sRNA_data_dicercall")
+#' # load data 
+#'  data("sRNA_data")
+#'
+#' # define consensus sRNA classes.
+#' conditions <- c("heterograft_1", "heterograft_2", "heterograft_3")
+#'
+#' # Run function to define sRNA class for each cluster.
+#' sRNA_data_dicercall <- RNAdicercall(data = sRNA_data,
+#'                                   conditions = conditions,
+#'                                   tidy=TRUE)
 #'
 #' # Subset data for  24-nt sRNAs
 #' sRNA_24 <- RNAsubset(sRNA_data_dicercall, class = 24)

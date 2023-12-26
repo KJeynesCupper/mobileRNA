@@ -88,7 +88,7 @@ cutoff defined by \code{alpha}.
 \examples{
 
 
-data("sRNA_data_dicercall")
+data("sRNA_data")
 
 
 # vector of control names
@@ -96,7 +96,7 @@ controls <- c("selfgraft_1", "selfgraft_2" , "selfgraft_3")
 
 # Locate potentially mobile sRNA clusters associated to tomato, no
 # statistical analysis
-mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data_dicercall,
+mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data,
 controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 
 

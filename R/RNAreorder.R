@@ -17,11 +17,11 @@
 #' the control sample columns. 
 #' @examples
 #' # load data 
-#' data("sRNA_data_dicercall")
+#' data("sRNA_data")
 #' 
 #' controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 #' 
-#' reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
+#' reorder_df <- RNAreorder(sRNA_data, controls)
 #' @export
 RNAreorder <- function(data, controls) {
   if (!is.data.frame(data)) {

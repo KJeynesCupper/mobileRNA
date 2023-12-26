@@ -52,12 +52,12 @@
 #'
 #'
 #' @examples
-#' data("sRNA_data_dicercall")
+#' data("sRNA_data")
 #'
 #' groups <- c("Heterograft", "Heterograft", "Heterograft",
 #'             "Selfgraft", "Selfgraft", "Selfgraft")
 #'             
-#' p <-  plotSamplePCA(data = sRNA_data_dicercall,group = groups )
+#' p <-  plotSamplePCA(data = sRNA_data,group = groups )
 #'
 #' plot(p)
 #'

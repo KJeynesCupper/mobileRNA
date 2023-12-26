@@ -34,11 +34,11 @@
 #' @examples
 #' 
 #' # load data 
-#' data("sRNA_data_dicercall")
+#' data("sRNA_data")
 #' 
 #' controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 #' 
-#' reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
+#' reorder_df <- RNAreorder(sRNA_data, controls)
 #' 
 #'# sample conditions.
 #'groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
@@ -46,7 +46,7 @@
 #'
 #'
 #'## Differential analysis: DEseq2 method
-#'sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data_dicercall,
+#'sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data,
 #'                              group = groups,
 #'                              method = "DESeq2" )
 #'                           

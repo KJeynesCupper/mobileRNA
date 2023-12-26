@@ -72,7 +72,7 @@
 #' @examples
 #'
 #'
-#'data("sRNA_data_dicercall")
+#'data("sRNA_data")
 #'
 #'
 #' # vector of control names
@@ -80,7 +80,7 @@
 #'
 #' # Locate potentially mobile sRNA clusters associated to tomato, no
 #' # statistical analysis
-#' mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data_dicercall,
+#' mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data,
 #' controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 #'
 #'

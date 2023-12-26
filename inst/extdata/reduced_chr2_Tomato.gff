@@ -1,6 +1,3 @@
-##gff-version 3
-##source-version rtracklayer 1.48.0
-##date 2023-11-12
-B_SL40ch02	maker	gene	33641454	33642864	.	+	.	ID=gene:Solyc02g063520.4;Name=Solyc02g063520.4;
-B_SL40ch02	maker_ITAG	gene	41218350	41220659	.	-	.	ID=gene:Solyc02g078570.3;Name=Solyc02g078570.3;length=2309;
-B_SL40ch02	maker_ITAG	gene	49209522	49211495	.	-	.	ID=gene:Solyc02g089300.3;Name=Solyc02g089300.3;length=1973;
+SL4.0ch02	maker	gene	33641454	33642864	.	+	.	ID=gene:Solyc02g063520.4;Name=Solyc02g063520.4
+SL4.0ch02	maker_ITAG	gene	41218350	41220659	.	-	.	ID=gene:Solyc02g078570.3;Alias=Solyc02g078570;Name=Solyc02g078570.3;length=2309
+SL4.0ch02	maker_ITAG	gene	49209522	49211495	.	-	.	ID=gene:Solyc02g089300.3;Alias=Solyc02g089300;Name=Solyc02g089300.3;length=1973
