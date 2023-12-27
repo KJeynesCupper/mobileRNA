@@ -186,7 +186,7 @@ Undertake differential analysis of sRNA within the experimental design
 to explore changes in abundance. The function allows for two methods;
 `edgeR` or `DESeq`.
 
-```{r}
+``` r
 ## sample conditions in order within dataframe
 groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
             "Heterograft", "Heterograft", "Heterograft")
@@ -208,7 +208,7 @@ write.table(sRNA_DESeq2, "./sRNA_DA_output.txt")
 
 Summarise results:
 
-```{r}
+```r
 
 RNAsummary(sRNA_DESeq2)
 
@@ -217,7 +217,7 @@ RNAsummary(sRNA_DESeq2)
 How about summarizing the sRNA population which are statistically
 significant:
 
-```{r}
+``` r
 
 RNAsummary(sRNA_DESeq2, alpha=0.05)
 
@@ -230,7 +230,7 @@ requires supplying the function with a unique identifier of the
 rootstock genome. The merging step placed the prefix "B" to the tomato
 chromosomes.
 
-```{r}
+``` r
 # define control samples
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
