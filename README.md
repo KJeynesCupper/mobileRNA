@@ -1,12 +1,23 @@
 mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 ======================================================================
-<br>
+An `R` package for analysis of sRNA & mRNA populations in plants and animals. Specalised in the identification of populations in systems with molecules produced by two different genotypes, such as plant graft systems. 
+
+<br> 
 
 <!-- badges: start -->
 [![R build
 status](https://github.com/KJeynesCupper/mobileRNA/workflows/R-CMD-check/badge.svg)](https://github.com/KJeynesCupper/mobileRNA/actions)
 <!-- badges: end -->
 
+
+Table of Contents
+======================================================================
+-   [Overview](#Overview)
+-   [Installation](#installation)
+-   [Quick Start](#Quick-Start)
+-   [Output](#Output)
+-   [Advanced Analysis](#Advanced-Analysis)
+<br>
 
 Overview
 ======================================================================
@@ -44,14 +55,6 @@ putative mobile RNA molecules.
 
 **Figure 1: Basic diagram of mobileRNA workflows.**
 
-<br> 
-
-Table of Contents
------------------
--   [Installation](#installation)
--   [Quick Start](#Quick-Start)
--   [Output](#Output)
--   [Advanced Analysis](#Advanced-Analysis)
 
 <br> 
 
@@ -318,8 +321,7 @@ Advanced features also include tools to assist functional analysis:
 * Identify genomic features associates with the sRNA clusters (ie. to explore the RNA expression of sRNA-producing genes in parallel analysis)
 * Extract consensus RNA sequence for target prediction analysis
 
-Please head to the vignette for the advanced analysis options.
-<br> <br>
-------------------------------------------------------------------------
+<br>
+<br>
 
 *Last updated:* 18-10-2023
