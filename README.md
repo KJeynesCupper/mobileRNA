@@ -2,90 +2,48 @@ mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/log
 ======================================================================
 <br>
 
+<!-- badges: start -->
+[![R build
+status](https://github.com/KJeynesCupper/mobileRNA/workflows/R-CMD-check/badge.svg)](https://github.com/KJeynesCupper/mobileRNA/actions)
+<!-- badges: end -->
+
+
 Overview
 ======================================================================
 
 **mobileRNA** is an `R` package that provides a pipeline for 
 pre-processing and analysis of small RNA (sRNA) and messenger RNA (mRNA) 
 sequencing data, primarily for the identification of mobile RNAs in plant graft 
-systems. As well as typical treatment vs control analysis to identify changes in
-sRNA population such as abundance and production. These two analysis
-workflows have be separated as mobile RNA analysis and the core RNA
-analysis, respectively.
+systems. But, likely has other applications for systems containing more than 
+one genotype, such as dual-host systems, to identify RNA molecules produced by 
+each genotypes. **mobileRNA** also supports routine treatment vs control 
+analysis to identify changes in sRNA population (abundance & production). These 
+two workflows have be separated as mobile RNA analysis & the core RNA analysis, 
+respectively.
 
-Plant grafting has been used to study RNA movement and the mechanisms
-associated with their action. Research has established that sRNA
-molecules can travel between the roots and shoots and can introduce changes to 
-gene expression. The sRNAs can introduce transcriptional gene silencing through
-blocking or cleavage of mRNA and/or through the addition of de novo DNA 
-methylation. While, studies have shown that mRNAs can move across 
-distances, and it is thought they may translate into proteins which act as 
-transcription factors in the recipient tissues. Changes in these RNA populations 
-could instigate or facilitate grafting-induced traits, such as improved plant 
-vigour or stress resistance.
-
-When plants are grafted it joins two distinct genotypes to form a
-chimeric plant. The sequence variation between the two genomes involved
-can be used to discriminate the origin of a sequenced RNA molecule.
-Hence, if an RNA molecule sequenced from tissues of the grafted
-partners has found matching the genome of the other grafting partner,
-this could empirically demonstrate it's movement across the graft
-junction.
-
-Most available genomics approaches to implement this analysis are based
-on sRNA sequencing, following by alignment on a genotype of reference
-and post alignment screening of genetic variants to identify molecules
-which have better match for the genotype of the grafted partner. These
-methods have many limitations, which might include:
-
--   High dependency on arbitrary thresholds to determined mapped and
-    unmapped RNA sequencing reads.
--   Use of additional statistical test to discriminate genetic
-    variations from sequencing noise in post alignment analysis.
--   High false positive rates.
-
-Here, to circumvents such problems we propose a method inspired by the
-RNAseq analysis of plant hybrids, including an alignment step performed
-simultaneously on both genomes involved. The rational of this approach
-considers that alignment tools already implement an algorithm ideal for
-identification of the best matches (accordingly to set parameters) in a
-given genome reference, but they do not account for potential matches to
-DNA sequences which are not provided as reference. Therefore, the two
-genomes from all partners involved in the chimeric system are merged in
-a single FASTA file and used as reference for the unique alignment with
-the `Bowtie` for sRNAseq or `HISAT2` for mRNAseq. This is in a bid to supply the 
-algorithm with as much information as possible to make the best possible
-predictions and placement of sequencing reads to each genome. These 
-pre-processing steps and downstream analysis is all supported by `mobileRNA`.
-
-The downstream analysis allows for differential analysis for the
-comparison in abundance, the identification of changes in RNA
+Most available genomics approaches to identify RNA molecules produced by two
+different genotypes in a biological sample involve the alignment on a genotype 
+of reference and post alignment screening of genetic variants. These methods 
+have many possible limitations. **mobileRNA** aims to circumvents such problems 
+with an alignment step which is simultaneously performed on both genomes 
+involved. This approach considers that alignment tools already implement an 
+algorithm ideal for identifying the best matches of reads to a given genome 
+reference, but they do not account for potential matches to DNA sequences which 
+are not provided as reference. The downstream analysis allows for differential 
+analysis for the comparison in abundance, the identification of changes in RNA
 production and the identification of putative mobile RNA molecules via
 the filtering of RNA molecules which uniquely map to the mobile genome
 of to the other grafting partner involved, which would represent the
 putative mobile RNA molecules.
-
-**Below is a quick-start guide to the identification of mobile sRNAs in
-a chimeric system** <br>
-
-*Look-out for developments that accommodates mRNA movement* <br>
-<br>
 
 <p>
     <img src="./man/figures/mobileRNA_graphic_1.png" width = 850 height= 700 align="centre" />
 </p>
 
 
-Author
---------
-Katie Jeynes-Cupper, University of Birmingham,
-[kej031\@student.bham.ac.uk](mailto:kej031@student.bham.ac.uk){.email}
-<br>
-
 Table of Contents
 -----------------
 -   [Installation](#installation)
--   [Getting Help](#Getting-Help)
 -   [Quick Start](#Quick-Start)
 -   [Output](#Output)
 -   [Advanced Analysis](#Advanced-Analysis)
@@ -112,23 +70,8 @@ library(mobileRNA)
 ```
 <br>
 
-Getting Help
+Quick Start for mobile sRNA analysis
 ------------------------------------------------------------------------
-For additional information on each function, please read through the
-documentation in the `mobileRNA` package by typing the `?` help operator
-before any of the function names in the package or by using the `help()`
-function.
-
-For an in-depth step-by-step analysis, consider reading the vignette
-provided with this package:
-
-``` r
-vignette("mobileRNA")
-```
-
-<br>
-
-# Quick Start for mobile sRNA analysis
 ## 1. Example Data Set
 
 The package includes a simulated data set to replicate the grafting

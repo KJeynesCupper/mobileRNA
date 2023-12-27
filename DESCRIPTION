@@ -11,7 +11,7 @@ Description:The mobileRNA package allows for the identifcation of mobile
   mobileRNA can utilise sRNAseq or mRNAseq data types.
 License: MIT + file LICENSE
 Depends:
-    R (>= 4.3.0)
+    R (>= 4.0.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
