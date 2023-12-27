@@ -19,7 +19,7 @@ one genotype, such as dual-host systems, to identify RNA molecules produced by
 each genotypes. **mobileRNA** also supports routine treatment vs control 
 analysis to identify changes in sRNA population (abundance & production). These 
 two workflows have be separated as mobile RNA analysis & the core RNA analysis, 
-respectively [(Figure 1)](https://github.com/KJeynesCupper/mobileRNA/man/figures/mobileRNA_graphic_1.png).
+respectively [(Figure 1)](https://github.com/KJeynesCupper/mobileRNA/blob/main/man/figures/mobileRNA_graphic_1.png).
 
 Most available genomics approaches to identify RNA molecules produced by two
 different genotypes in a biological sample involve the alignment on a genotype 
