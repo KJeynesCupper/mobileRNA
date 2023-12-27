@@ -31,7 +31,6 @@ Imports:
     BiocGenerics,
     DESeq2,
     edgeR,
-    Repitools,
     ggrepel,
     grDevices,
     pheatmap,
