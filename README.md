@@ -59,7 +59,7 @@ putative mobile RNA molecules.
 <br> 
 
 Installation 
-------------------------------------------------------------------------
+======================================================================
 The latest version of the package can be install directly from this
 GitHub repo:
 
@@ -81,8 +81,8 @@ library(mobileRNA)
 <br>
 
 Quick Start for mobile sRNA analysis
-------------------------------------------------------------------------
-### 1. Example Data Set
+======================================================================
+## 1. Example Data Set
 
 The package includes a simulated data set to replicate the grafting
 between eggplant-tomato where eggplant represents the scion and tomato
@@ -90,7 +90,7 @@ represents the rootstock. The FASTQ files represent sRNAseq data
 extracted from the eggplant leaf tissue. Here we will locate sRNA
 produced by tomato roots which have traveled into the eggplant leaves.
 
-### 2. Merging genome assemblies
+## 2. Merging genome assemblies
 
 Merge the FASTA genome assemblies of tomato and eggplant into a single
 reference file stored in your desired directory.
@@ -113,7 +113,7 @@ merged_reference <- RNAmergeGenomes(genomeA = fasta_1,
 
 <br>
 
-### 3. Alignment
+## 3. Alignment
 
 Align sRNA sequencing reads to the merged genome using our unique
 alignment pipeline wrapped by the `mapRNA()` function.
@@ -134,7 +134,7 @@ mapRNA(input = "sRNA",
 
 <br>
 
-### 4. Import pre-processed data into R
+## 4. Import pre-processed data into R
 
 Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
@@ -165,7 +165,7 @@ data("sRNA_data")
 
 <br>
 
-### 5. Calculate the consensus dicercall
+## 5. Calculate the consensus dicercall
 
 For a given sRNA cluster, each replicate has determined the dicercall,
 also known as the sRNA class, based on the length in nucleotides of the
@@ -180,7 +180,7 @@ sRNA_data_summary <- RNAdicercall(data = sRNA_data, tidy = TRUE )
 
 <br>
 
-### 6. Differential analysis of sRNA population
+## 6. Differential analysis of sRNA population
 
 Undertake differential analysis of sRNA within the experimental design
 to explore changes in abundance. The function allows for two methods;
@@ -223,7 +223,7 @@ RNAsummary(sRNA_DESeq2, alpha=0.05)
 
 ```
 
-### 7. Identify putuative mobile sRNA
+## 7. Identify putuative mobile sRNA
 
 Select the putative mobile sRNA clusters using `RNAmobile()`. This
 requires supplying the function with a unique identifier of the
@@ -250,7 +250,7 @@ write.table(mobile_sRNA, "./sRNA_mobile_output.txt")
 <br>
 
 Output
-------------------------------------------------------------------------
+======================================================================
 A data frame where rows represent potential mobile sRNA clusters. The
 columns include information on the cluster, individual sample
 replicates, and more.
@@ -287,9 +287,10 @@ replicates, and more.
 -   `padjusted` : A p-value adjustment
 -   `logCPM` : log counts per million, measure of expression level <br>
 
+<br>
 
 Mobile mRNA Analysis
-------------------------------------------------------------------------
+======================================================================
 For the identification of mobile mRNA, the same `mobileRNA` workflow can be
 used. For the alignment step, as well as using a merged genome assembly file
 (FASTA) the user will also need to generate a merged genome gene annotation file
@@ -300,9 +301,10 @@ column 3 stores the fastq file name for mate 2. While for all other downstream
 functions simply change some of the parameters to set the option to mRNA input 
 data type. 
 
+<br>
 
 Advanced Analysis
-------------------------------------------------------------------------
+======================================================================
 The quick start analysis allows for the retrieval of a data frame the
 sRNA total population in the experimental design and also the candidate
 mobile sRNAs. Users may want to advance the analysis and plot the data:
