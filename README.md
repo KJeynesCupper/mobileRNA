@@ -19,7 +19,7 @@ one genotype, such as dual-host systems, to identify RNA molecules produced by
 each genotypes. **mobileRNA** also supports routine treatment vs control 
 analysis to identify changes in sRNA population (abundance & production). These 
 two workflows have be separated as mobile RNA analysis & the core RNA analysis, 
-respectively.
+respectively [(Figure 1)](https://github.com/KJeynesCupper/mobileRNA/man/figures/mobileRNA_graphic_1.png).
 
 Most available genomics approaches to identify RNA molecules produced by two
 different genotypes in a biological sample involve the alignment on a genotype 
@@ -36,10 +36,15 @@ the filtering of RNA molecules which uniquely map to the mobile genome
 of to the other grafting partner involved, which would represent the
 putative mobile RNA molecules.
 
+<br>
+
 <p>
-    <img src="./man/figures/mobileRNA_graphic_1.png" width = 850 height= 700 align="centre" />
+    <img src="./man/figures/mobileRNA_graphic_1.png" width = 800 height= 550 align="centre" />
 </p>
 
+**Figure 1: Basic diagram of mobileRNA workflows.**
+
+<br> 
 
 Table of Contents
 -----------------
@@ -47,6 +52,8 @@ Table of Contents
 -   [Quick Start](#Quick-Start)
 -   [Output](#Output)
 -   [Advanced Analysis](#Advanced-Analysis)
+
+<br> 
 
 Installation 
 ------------------------------------------------------------------------
@@ -72,7 +79,7 @@ library(mobileRNA)
 
 Quick Start for mobile sRNA analysis
 ------------------------------------------------------------------------
-## 1. Example Data Set
+### 1. Example Data Set
 
 The package includes a simulated data set to replicate the grafting
 between eggplant-tomato where eggplant represents the scion and tomato
@@ -80,7 +87,7 @@ represents the rootstock. The FASTQ files represent sRNAseq data
 extracted from the eggplant leaf tissue. Here we will locate sRNA
 produced by tomato roots which have traveled into the eggplant leaves.
 
-## 2. Merging Genome Assemblies
+### 2. Merging genome assemblies
 
 Merge the FASTA genome assemblies of tomato and eggplant into a single
 reference file stored in your desired directory.
@@ -103,7 +110,7 @@ merged_reference <- RNAmergeGenomes(genomeA = fasta_1,
 
 <br>
 
-## 3. Alignment
+### 3. Alignment
 
 Align sRNA sequencing reads to the merged genome using our unique
 alignment pipeline wrapped by the `mapRNA()` function.
@@ -124,7 +131,7 @@ mapRNA(input = "sRNA",
 
 <br>
 
-## 4. Import Pre-Processed Data into R
+### 4. Import pre-processed data into R
 
 Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
@@ -155,7 +162,7 @@ data("sRNA_data")
 
 <br>
 
-## 5. Calculate the Consensus Dicercall
+### 5. Calculate the consensus dicercall
 
 For a given sRNA cluster, each replicate has determined the dicercall,
 also known as the sRNA class, based on the length in nucleotides of the
@@ -170,7 +177,7 @@ sRNA_data_summary <- RNAdicercall(data = sRNA_data, tidy = TRUE )
 
 <br>
 
-## 6. Differential Analysis of sRNA Population
+### 6. Differential analysis of sRNA population
 
 Undertake differential analysis of sRNA within the experimental design
 to explore changes in abundance. The function allows for two methods;
@@ -213,7 +220,7 @@ RNAsummary(sRNA_DESeq2, alpha=0.05)
 
 ```
 
-## 7. Identify Potential Mobile sRNA
+### 7. Identify putuative mobile sRNA
 
 Select the putative mobile sRNA clusters using `RNAmobile()`. This
 requires supplying the function with a unique identifier of the
