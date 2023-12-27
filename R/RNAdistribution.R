@@ -302,7 +302,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
             ggplot2::geom_line() + 
             ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
             ggplot2::labs(color = "Samples")+ 
-            guides(fill = guide_legend(override.aes = list(shape = 21, size = 8))) +
+            ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = 21, size = 8))) +
             ggplot2::theme_bw()+
             ggplot2::theme(legend.position = "right",
                   legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
