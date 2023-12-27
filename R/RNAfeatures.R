@@ -60,7 +60,6 @@
 #'@importFrom dplyr "%>%"
 #'@importFrom IRanges "overlapsAny"
 #'@importFrom BiocGenerics "width"
-#'@importFrom Repitools "annoGR2DF"
 #'@export
 RNAfeatures <- function(data, annotation,
                         repeats = NULL,
@@ -116,7 +115,11 @@ RNAfeatures <- function(data, annotation,
                                     ignore.strand=TRUE)
 
   # define promoter regions
-  gene_promoters <-Repitools::annoGR2DF(genes)
+  gene_promoters <-as.data.frame(genes)
+  colnames(gene_promoters)[1] <- "chr"
+  if('*' %in% gene_promoters$strand){
+    gene_promoters <- gene_promoters[, -match("strand", colnames(gene_promoters))]
+  }
   pos_strand_promoter <- gene_promoters %>%
     dplyr::filter(strand == "+") %>% dplyr::mutate(end=start) %>%
     dplyr::filter(strand == "+") %>% dplyr::mutate(start=start-promoterRegions)

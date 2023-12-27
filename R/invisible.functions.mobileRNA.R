@@ -246,7 +246,12 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   }
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
                                       ignore.strand = TRUE)
-  gff_merged <- Repitools::annoGR2DF(gff_merged)
+  gff_merged <- as.data.frame(gff_merged)
+  colnames(gff_merged)[1] <- "chr"
+  if('*' %in% gff_merged$strand){
+    gff_merged <- gff_merged[, -match("strand", colnames(gff_merged))]
+  }
+  
   locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
                                             gff_merged$start,"-", 
                                             gff_merged$end), 
@@ -486,7 +491,11 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   }
   gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
                                       ignore.strand = TRUE)
-  gff_merged <- Repitools::annoGR2DF(gff_merged)
+  gff_merged <- as.data.frame(gff_merged)
+  colnames(gff_merged)[1] <- "chr"
+  if('*' %in% gff_merged$strand){
+    gff_merged <- gff_merged[, -match("strand", colnames(gff_merged))]
+  }
   locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
                                             gff_merged$start,"-", 
                                             gff_merged$end), 

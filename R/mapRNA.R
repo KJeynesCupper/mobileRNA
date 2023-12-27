@@ -173,7 +173,6 @@
 #' 
 #' @importFrom reticulate "use_condaenv" 
 #' @importFrom GenomicRanges GRangesList
-#' @importFrom Repitools annoGR2DF
 #' @importFrom rtracklayer import.gff
 #' @importFrom GenomicRanges reduce
 #' @importFrom utils write.table
