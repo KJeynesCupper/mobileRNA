@@ -146,8 +146,9 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                             y = freq, group = 1)) + 
         ggplot2::geom_point() + 
         ggplot2::geom_line() + ggplot2::theme_classic() + 
-        ggplot2::xlab("sRNA Class") + ggplot2::ylab("Relative frequency")+
-        scale_y_continuous(expand = c(0, 0), limits = c(0, 1))  +
+        ggplot2::xlab("sRNA Class") + 
+        ggplot2::ylab("Relative frequency")+
+        ggplot2::scale_y_continuous(expand = c(0, 0), limits = c(0, 1))  +
         ggplot2::theme_bw()+
         ggplot2::theme(legend.position = "none",
               legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
@@ -159,7 +160,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
               panel.border = ggplot2::element_rect(color = "white", size = 1),
               axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
               axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-              plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+              plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
     }
     else 
       p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
@@ -178,7 +179,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                panel.border = ggplot2::element_rect(color = "white", size = 1),
                axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-               plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+               plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
     out <- list(plot = p1, data = x)
     return(out)
     print(x)
@@ -251,7 +252,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                                         panel.border = ggplot2::element_rect(color = "white", size = 1),
                                         axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                                         axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                                        plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+                                        plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
                      }, 
                      simplify = FALSE)
       sn <- names(plist)
@@ -274,7 +275,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                          panel.border = ggplot2::element_rect(color = "white", size = 1),
                          axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                          axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                         plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+                         plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
         
         out <- list(plot = p, data = counts.df)
         
@@ -313,7 +314,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                   panel.border = ggplot2::element_rect(color = "white", size = 1),
                   axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                   axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                  plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+                  plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
           out <- list(plot = p, data = counts.df)
         }
         else 
@@ -338,7 +339,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                     panel.border = ggplot2::element_rect(color = "white", size = 1),
                     axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                     axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                    plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+                    plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
             out <- list(plot = p, data = counts.df)
           }
       }
@@ -367,7 +368,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                       panel.border = ggplot2::element_rect(color = "white", size = 1),
                       axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                       axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                      plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+                      plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
               
             }
             else if (!is.null(samples)) {
@@ -394,7 +395,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                       panel.border = ggplot2::element_rect(color = "white", size = 1),
                       axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                       axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                      plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+                      plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
             }
             out <- list(plot = p, data = counts.df)
             return(out)
@@ -425,7 +426,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                         panel.border = ggplot2::element_rect(color = "white", size = 1),
                         axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 18, face = "bold"),
                         axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 18, face = "bold"),
-                        plot.margin = unit(c(0.1, 0.1,0.1, 0.1),"inches") )}, 
+                        plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )}, 
               simplify = FALSE)
             sn <- names(plist2)
             p <- plist2
