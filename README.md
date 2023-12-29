@@ -64,17 +64,22 @@ The latest version of the package can be install directly from this
 GitHub repo:
 
 ``` r
-# Github installation 
+
 if (!require("devtools")) install.packages("devtools")
 devtools::install_github("KJeynesCupper/mobileRNA", ref = "main")
 
+```
+To install from Bioconductor:
+``` r
 
-# Bioconductor installation 
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("mobileRNA")
 
-# load into R library
+```
+Load package into R library:
+``` r
+
 library(mobileRNA)
 
 ```
@@ -82,15 +87,15 @@ library(mobileRNA)
 
 Quick Start for mobile sRNA analysis
 ======================================================================
-## 1. Example Data Set
+The example data set included with **mobileRNA** simulates grafting
+between eggplant and tomato where the scion is eggplant and tomato
+is the rootstock. There is example mRNAseq and sRNAseq files which represent
+samples taken from an eggplant leaf tissue. Here we will locate sRNA
+produced by the tomato rootstock which have traveled into the eggplant leaves
 
-The package includes a simulated data set to replicate the grafting
-between eggplant-tomato where eggplant represents the scion and tomato
-represents the rootstock. The FASTQ files represent sRNAseq data
-extracted from the eggplant leaf tissue. Here we will locate sRNA
-produced by tomato roots which have traveled into the eggplant leaves.
+<br>
 
-## 2. Merging genome assemblies
+## 1. Merging genome assemblies
 
 Merge the FASTA genome assemblies of tomato and eggplant into a single
 reference file stored in your desired directory.
@@ -113,7 +118,7 @@ merged_reference <- RNAmergeGenomes(genomeA = fasta_1,
 
 <br>
 
-## 3. Alignment
+## 2. Alignment
 
 Align sRNA sequencing reads to the merged genome using our unique
 alignment pipeline wrapped by the `mapRNA()` function.
@@ -134,7 +139,7 @@ mapRNA(input = "sRNA",
 
 <br>
 
-## 4. Import pre-processed data into R
+## 3. Import pre-processed data into R
 
 Import the results from the alignment step into R using the
 `RNAimport()` function. This requires the directory storing the sample
@@ -165,7 +170,7 @@ data("sRNA_data")
 
 <br>
 
-## 5. Calculate the consensus dicercall
+## 4. Calculate the consensus dicercall
 
 For a given sRNA cluster, each replicate has determined the dicercall,
 also known as the sRNA class, based on the length in nucleotides of the
@@ -180,7 +185,7 @@ sRNA_data_summary <- RNAdicercall(data = sRNA_data, tidy = TRUE )
 
 <br>
 
-## 6. Differential analysis of sRNA population
+## 5. Differential analysis of sRNA population
 
 Undertake differential analysis of sRNA within the experimental design
 to explore changes in abundance. The function allows for two methods;
@@ -223,7 +228,7 @@ RNAsummary(sRNA_DESeq2, alpha=0.05)
 
 ```
 
-## 7. Identify putuative mobile sRNA
+## 6. Identify putuative mobile sRNA
 
 Select the putative mobile sRNA clusters using `RNAmobile()`. This
 requires supplying the function with a unique identifier of the
