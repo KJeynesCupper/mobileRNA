@@ -1,5 +1,6 @@
 mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 ======================================================================
+
 An `R` package for analysis of sRNA & mRNA populations in plants and animals. Specalised in the identification of populations in systems with molecules produced by two different genotypes, such as plant graft systems. 
 
 <br> 
@@ -90,18 +91,19 @@ Installation of OS dependencies
 In order to utilise the **mobileRNA** method, please install the following
 OS dependencies within a Conda environment: 
 
-For sRNA data, `ShortStack` (>= 4.0) [@Axtell2013] is requires. Please consider 
+For sRNA data, `ShortStack` (>= 4.0) (Axtell 2013) is requires. Please consider 
 that `ShortStack` is not available for Windows, hence, Windows users will either 
 need to opt to use a virtual machine or 
 [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 In either case, both `R` and `ShortStack` will need to be installed and used on 
 the Linux side. Please head to [ShortStack](https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended) 
-to see the recommended installation instructions with Conda [@Anaconda].
+to see the recommended installation instructions with Conda.
 This will ensure all dependencies are available within the same environment. 
 
-For mRNA data, [HISAT2](https://anaconda.org/bioconda/hisat2) [@Kim2015], 
-[HTSeq](https://htseq.readthedocs.io/en/master/install.html) [@Anders2014], 
-[SAMtools](https://anaconda.org/bioconda/samtools) [@Danecek2021] are required 
+For mRNA data, [HISAT2](https://anaconda.org/bioconda/hisat2) (Kim 2015), 
+[HTSeq](https://htseq.readthedocs.io/en/master/install.html) 
+(Anders, Pyl, and Huber 2014), 
+[SAMtools](https://anaconda.org/bioconda/samtools) (Danecek P 2021) are required 
 within the same Conda environment [@Anaconda].
 
 
@@ -350,5 +352,15 @@ Advanced features also include tools to assist functional analysis:
 
 <br>
 <br>
+
+
+# References 
+Anders, Simon, Paul Theodor Pyl, and Wolfgang Huber. 2014. “HTSeq – A Python framework to work with high-throughput sequencing data.” Bioinformatics. http://dx.doi.org/10.1093/bioinformatics/btu638.
+
+Axtell, MJ. 2013. “ShortStack: comprehensive annotation and quantification of small RNA genes.” Rna 19: 740–51. https://doi.org/10.1093/nar/gky316.
+
+Danecek P, Liddle J, Bonfield JK. 2021. “Twelve years of SAMtools and BCFtools.” GigaScience 10. http://dx.doi.org/10.1186/s13059-014-0550-8.
+
+Kim, Langmead, D. 2015. “HISAT: a fast spliced aligner with low memory requirements.” Nature Methods 12. https://www.nature.com/articles/nmeth.3317.
 
 *Last updated:* 18-10-2023

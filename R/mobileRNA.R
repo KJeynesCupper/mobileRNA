@@ -1,12 +1,15 @@
 #' mobileRNA: Explore RNA mobilome & population-scale changes
 #'
 #' Uses small RNA or messenger RNA sequencing data in two conditions and 
-#' identifies changes in the RNA population, but mainly, identify a putative RNA 
-#' mobilome in a chimeric system. For example, in plant graft systems. The 
-#' input is the report files produced by the pre-processing steps and the output 
-#' is a data-frame of RNA molecules. Output can also consist of the consensus 
-#' RNA sequence of small RNA clusters within the determined population. Includes
-#' quality control and plotting functions. 
+#' identifies changes in the RNA population. mobileRNA was primarily designed
+#' for the identification of a putative RNA mobilome in a chimeric system. For 
+#' example, in plant graft systems. As input, mobileRNA takes sRNAseq or mRNAseq
+#' fastq files. Output consists of a dataframe with putative differences 
+#' between two conditions along with a number of plots. 
+#'
+#'View the vignette here: 
+#'[mobileRNA](https://github.com/KJeynesCupper/mobileRNA/tree/devel/docs/articles/mobileRNA.html)
+#'
 #'
 #' The most important functions in the \pkg{mobileRNA} are:
 #' \describe{
