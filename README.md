@@ -85,6 +85,26 @@ library(mobileRNA)
 ```
 <br>
 
+Installation of OS dependencies 
+======================================================================
+In order to utilise the **mobileRNA** method, please install the following
+OS dependencies within a Conda environment: 
+
+For sRNA data, `ShortStack` (>= 4.0) [@Axtell2013] is requires. Please consider 
+that `ShortStack` is not available for Windows, hence, Windows users will either 
+need to opt to use a virtual machine or 
+[Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+In either case, both `R` and `ShortStack` will need to be installed and used on 
+the Linux side. Please head to [ShortStack](https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended) 
+to see the recommended installation instructions with Conda [@Anaconda].
+This will ensure all dependencies are available within the same environment. 
+
+For mRNA data, [HISAT2](https://anaconda.org/bioconda/hisat2) [@Kim2015], 
+[HTSeq](https://htseq.readthedocs.io/en/master/install.html) [@Anders2014], 
+[SAMtools](https://anaconda.org/bioconda/samtools) [@Danecek2021] are required 
+within the same Conda environment [@Anaconda].
+
+
 Quick Start for mobile sRNA analysis
 ======================================================================
 The example data set included with **mobileRNA** simulates grafting

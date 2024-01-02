@@ -117,7 +117,7 @@ The OS commands generate output into the users desired location, generating
 two folders:
 \itemize{
 \item "1_de_novo_detection" : Stores output from the detection of de novo sRNA-producing loci
-\item "2_alignment_results" : Stores output from alignment
+\item "2_sRNA_results" : Stores output from alignment
 }
 
 The first folder stores the novo detection of sRNA-producing loci and
@@ -174,7 +174,7 @@ are imported into R using \code{\link[=RNAimport]{RNAimport()}}.
 
 ** For mRNA analysis**
 The function invokes a number of OS commands, and is dependent
-on the installation of \code{HISAT2},  \code{HTSeq} and \code{SAMtools} with Conda.
+on the installation of \code{HISAT2},\code{HTSeq} and \code{SAMtools} with Conda.
 The pipeline can undertake single- or pair-end analysis, and to do so
 requires a dataframe stating the sample information where each row
 represents a sample. The cleaned reads are mapped using HISAT and then the
@@ -198,6 +198,6 @@ mmap = "n")
 \references{
 \url{https://github.com/MikeAxtell/ShortStack},
 \url{https://anaconda.org/bioconda/hisat2},
-\url{https://anaconda.org/bioconda/htseq},
+\url{https://htseq.readthedocs.io/en/master/install.html},
 \url{https://anaconda.org/bioconda/samtools}
 }

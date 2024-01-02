@@ -187,7 +187,7 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
   # 3 - generate output folders (check if they exist )
   path_1 <- file.path(output_dir, "1_de_novo_detection")
-  path_2 <- file.path(output_dir, "2_alignment_results")
+  path_2 <- file.path(output_dir, "2_sRNA_results")
   if (!dir.exists(path_1)) {
     dir.create(path_1)
   }
@@ -198,8 +198,49 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   # run command
   names_input_files_dir <- list.files(input_files_dir)
   message("mapping with ShortStack ...")
-  stats <- file.path(path_1, "alignment_stats.txt")
+  stats <- file.path(path_1, "log.txt")
   system(paste0(">> ", stats))
+  
+  # 1 - bowtie - build 
+  # check is alread y done
+  index_extension <- "ebwt"
+  base_genomefile <- tools::file_path_sans_ext(basename(genomefile))
+  dir_genomfile <- dirname(genomefile)
+  files_dir <- c("ls", dir_genomfile)
+  files_dir <- paste(files_dir,collapse = " ")
+  files_dir <- gsub("^ *| *$", "", files_dir)
+  files_dir_res <- system(files_dir, intern=TRUE)
+  
+  index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
+                            "$", sep = ""), files_dir_res)
+  base_genomefile_path <- tools::file_path_sans_ext(genomefile)
+  
+  if (length(index_found) > 0) {
+    message("Genome index already built.")
+    nline <- paste("echo Genome index already built. >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+  } else {
+    message("Genome index not already built. Building with Bowtie.")
+    nline <- paste("echo Genome index not already built. Building with Bowtie: >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    
+    bowtie_build_cmd <- c("bowtie-build --threads", threads, 
+                          genomefile, base_genomefile_path, ">>", 
+                          shQuote(stats), "2>&1") 
+    bowtie_build_cmd <- paste(bowtie_build_cmd,collapse = " ")
+    bowtie_build_cmd <- gsub("^ *| *$", "", bowtie_build_cmd)
+    system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to summarydoc. 
+    cat("\n")
+    message("Genome index build. ")
+    nline <- paste("echo Genome index complete! >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+  }
   
   for (i in seq_along(names_input_files_dir)){
     # file name:
@@ -207,6 +248,13 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     # step 1 - map as per 
     # file out put: 
     file_outdir <- file.path(path_1, readfile_name)
+    cat("\n", file = stats, append = TRUE)
+    time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
+                        "Working with sample:", 
+                        shQuote(readfile_name),
+                        ">>", shQuote(stats)), collapse = " ")
+    time_cmd <- gsub("^ *| *$", "", time_cmd)
+    system(time_cmd, intern=FALSE)
     
     shortstack_cmd_1 <- c(
       shQuote(Sys.which("shortstack")),
@@ -263,7 +311,7 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
                      sep = "\t", row.names = FALSE, col.names = FALSE)
   
   # 6 - mapping 2
-  stats_2 <- file.path(path_2, "alignment_stats.txt")
+  stats_2 <- file.path(path_2, "log.txt")
   system(paste0(">> ", stats_2))
   ###################.  check bam location ull is correct 
   for (i in seq_along(names_input_files_dir)){
@@ -272,7 +320,13 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     # step 1 - map as per 
     # file out put: 
     file_outdir <- file.path(path_2, readfile_name)
-    
+    cat("\n", file = stats_2, append = TRUE)
+    time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
+                        "Working with sample:", 
+                        shQuote(readfile_name),
+                        ">>", shQuote(stats_2)), collapse = " ")
+    time_cmd <- gsub("^ *| *$", "", time_cmd)
+    system(time_cmd, intern=FALSE)
     shortstack_cmd_2 <- c(
       shQuote(Sys.which("shortstack")),
       "--bamfile", shQuote(file.path(path_1,readfile_name,
@@ -339,7 +393,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
   # 3 - generate output folders (check if they exist )
   path_1 <- file.path(output_dir, "1_de_novo_detection")
-  path_2 <- file.path(output_dir, "2_alignment_results")
+  path_2 <- file.path(output_dir, "2_sRNA_results")
   if (!dir.exists(path_1)) {
     dir.create(path_1)
   }
@@ -348,7 +402,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   }
   message("Begining pre-processing for mobile sRNAseq ...")
   
-  stats <- file.path(path_1, "alignment_stats.txt")
+  stats <- file.path(path_1, "log.txt")
   system(paste0(">> ", stats))
   
   # 1 - bowtie - build 
@@ -364,10 +418,19 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
    index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
                              "$", sep = ""), files_dir_res)
    base_genomefile_path <- tools::file_path_sans_ext(genomefile)
+
   if (length(index_found) > 0) {
     message("Genome index already built.")
+    nline <- paste("echo Genome index already built. >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
   } else {
-    message("Genome index not already built. Building with Bowtie... ")
+    message("Genome index not already built. Building with Bowtie.")
+    nline <- paste("echo Genome index not already built. Building with Bowtie: >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
     
     bowtie_build_cmd <- c("bowtie-build --threads", threads, 
                           genomefile, base_genomefile_path, ">>", 
@@ -377,6 +440,10 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to summarydoc. 
     cat("\n")
     message("Genome index build. ")
+    nline <- paste("echo Genome index complete! >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
   }
   
   # 2-  run bowtie mappling ## -- get it to print to a summary doc. 
@@ -429,7 +496,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
   #bw message 
   cat("\n", file = stats, append = TRUE)
-  clustering_cmd_message <-c("echo Running sRNA De Novo Detection... >>", 
+  clustering_cmd_message <-c("echo Running sRNA De Novo Detection: >>", 
                              shQuote(stats))
   
   clustering_cmd_message <- paste(clustering_cmd_message,collapse = " ")
@@ -531,10 +598,10 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   system(delete_align, intern=FALSE)
   
   ####### final clustering 
-  stats_2 <- file.path(path_2, "alignment_stats.txt")
+  stats_2 <- file.path(path_2, "log.txt")
   system(paste0(">> ", stats_2))
   
-  clustering_cmd_message<-c("echo Running Clustering with Loci information >>", 
+  clustering_cmd_message<-c("echo Running sRNA Clustering with loci information >>", 
                              shQuote(stats_2))
   
   clustering_cmd_message <- paste(clustering_cmd_message,collapse = " ")
@@ -645,7 +712,7 @@ mRNA_map <- function(sampleData,
   } else {
     message("Genome index not already built. Building with Bowtie... ")
     
-    hisat_build_cmd <- c("hisat2-build--threads", threads, 
+    hisat_build_cmd <- c("hisat2-build --threads", threads, 
                           genomefile, base_genomefile_path, ">>", 
                           shQuote(stats), "2>&1") 
     hisat_build_cmd <- paste(hisat_build_cmd,collapse = " ")
@@ -654,10 +721,12 @@ mRNA_map <- function(sampleData,
     cat("\n")
     message("Genome index build. ")
   }
- 
+  nline <- paste("echo '' >> ",  shQuote(stats))
+  system(nline, intern=FALSE)
+  
   # paired end 
   if(ncol(sampleData)>2){
-    pairend_cmd_message <-c("echo Running HISAT2 Command: 
+    pairend_cmd_message <-paste("echo Running HISAT2 Command: 
     'hist2 -p", shQuote(threads), 
     "-x [genomefile] 
      -1 shQuote([fastqfile_1.fq]) 
@@ -667,16 +736,17 @@ mRNA_map <- function(sampleData,
     pairend_cmd_message <- paste(pairend_cmd_message,collapse = " ")
     pairend_cmd_message <- gsub("^ *| *$", "", pairend_cmd_message)
     system(pairend_cmd_message, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
     
-    
-    pairend_cmd_2_message <-c("echo Running HTSeq Command: 
+    pairend_cmd_2_message <-paste("echo Running HTSeq Command: 
     'python -m HTSeq.scripts.count
     --format=bam 
     --order=", shQuote(order),
     "--a=", shQuote(a),                          
     "--stranded=",shQuote(stranded), 
     "--mode=",shQuote(mode), 
-    "--nonunique=",shQuote(none), 
+    "--nonunique=",shQuote(nonunique), 
     "--type=",shQuote(type),
     "--idattr=", shQuote(idattr), 
     "[outputfile.bam] [annotationfile.gff]' >>", shQuote(stats))
@@ -685,50 +755,56 @@ mRNA_map <- function(sampleData,
     pairend_cmd_2_message <- paste(pairend_cmd_2_message,collapse = " ")
     pairend_cmd_2_message <- gsub("^ *| *$", "", pairend_cmd_2_message)
     system(pairend_cmd_2_message, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
     
-    
-      for(i in seq_along(sampleData)){
+      for(i in seq_len(nrow(sampleData))){
         pair_files <- as.character(sampleData[i,])
         sample_name <- pair_files[1]
         fastq_1 <- pair_files[2]
         fastq_2 <- pair_files[3]
         unqiuefolder <- file.path(output_dir,sample_name)
-        unqiuefolder_mkdir <- dir.create(unqiuefolder) 
+        unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
         bam <-file.path(unqiuefolder, paste0(sample_name,".bam"))
         time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
                             shQuote(stats)), collapse = " ")
         time_cmd <- gsub("^ *| *$", "", time_cmd)
         system(time_cmd, intern=FALSE)
-        sample_cmd <- paste(c("echo Starting Sample:", 
+        sample_cmd <- paste(c("echo Working with sample:", 
                               shQuote(sample_name), ">>", shQuote(stats)),
                             collapse = " ")
         sample_cmd <- gsub("^ *| *$", "", sample_cmd)
         system(sample_cmd, intern=FALSE)
+        stateline <- paste("echo 1.Alignment: >> ",  shQuote(stats))
+        system(stateline, intern=FALSE)
 
         pairEndmap_cmd <- c("hisat2 -p", threads, 
                         "-x", shQuote(base_genomefile_path),"-1", 
-                        shQuote(fastq_1), "-2",shQuote(fastq_2),
+                        shQuote(file.path(input_files_dir, fastq_1)), 
+                        "-2",shQuote(file.path(input_files_dir, fastq_2)),
                         "| samtools view -bS | samtools sort -o", 
-                        shQuote(bam), ">>", shQuote(stats), "2>&1")
+                        shQuote(bam), "2>>", shQuote(stats))
         pairEndmap_cmd <- paste(pairEndmap_cmd,collapse = " ")
         pairEndmap_cmd <- gsub("^ *| *$", "", pairEndmap_cmd)
         system(pairEndmap_cmd, intern=FALSE)
+        stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
+        system(stateline, intern=FALSE)
         # counts --- 
         count_file <-file.path(unqiuefolder, "Results.txt")
-        HTseq_cmd <- c("python -m HTSeq.scripts.count",
-                       "--format=bam", 
-                       "--order=",shQuote(order), 
-                       "--a=", shQuote(a),    
-                       "--stranded=",shQuote(stranded), 
-                       "--mode=",shQuote(mode), 
-                       "--nonunique=",shQuote(none), 
-                       "--type=",shQuote(type),
-                       "--idattr=", shQuote(idattr), 
-                       shQuote(bam), 
-                       shQuote(annotationfile), 
-                       ">", shQuote(count_file),
-                       ">>", shQuote(stats), "2>&1")
-        HTseq_cmd <- paste(HTseq_cmd,collapse = " ")
+        HTseq_cmd <- c("python -m HTSeq.scripts.count", " ",
+                       "--format=bam", " ",
+                       "--order=",shQuote(order), " ",
+                       "--a=", shQuote(a)," ",
+                       "--stranded=",shQuote(stranded)," ",
+                       "--mode=",shQuote(mode), " ",
+                       "--nonunique=",shQuote(nonunique)," ",
+                       "--type=",shQuote(type)," ",
+                       "--idattr=", shQuote(idattr), " ",
+                       shQuote(bam), " ",
+                       shQuote(annotationfile), " ",
+                       " > ", shQuote(count_file),
+                       " 2>> ", shQuote(stats))
+        HTseq_cmd <- paste(HTseq_cmd,collapse = "")
         HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
         system(HTseq_cmd, intern=FALSE)
         
@@ -736,10 +812,11 @@ mRNA_map <- function(sampleData,
                             collapse = " ")
         complete_cmd <- gsub("^ *| *$", "", complete_cmd)
         system(complete_cmd, intern=FALSE)
-        
+        nline <- paste("echo '' >> ",  shQuote(stats))
+        system(nline, intern=FALSE)
       }
-  } else {# single end 
-    singleend_cmd_message <-c("echo Running HISAT2 Command: 'hist2 -p", 
+  } else {
+    singleend_cmd_message <- paste("echo Running HISAT2 Command: 'hist2 -p", 
     shQuote(threads), "-x [genomefile] 
                     -U shQuote([fastqfile_1.fastq]) | samtools view -bS",
                     "| samtools sort -o [outputfile.bam]' >>", shQuote(stats))
@@ -747,63 +824,70 @@ mRNA_map <- function(sampleData,
     singleend_cmd_message <- paste(singleend_cmd_message,collapse = " ")
     singleend_cmd_message <- gsub("^ *| *$", "", singleend_cmd_message)
     system(singleend_cmd_message, intern=FALSE)
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
     
-    singleend_cmd_2_message <-c("echo Running HTSeq Command: 
-    'python -m HTSeq.scripts.count
-    --format=bam 
-    --order=", shQuote(order),
-    "--a=", shQuote(a),                                
-    "--stranded=",shQuote(stranded), 
-    "--mode=",shQuote(mode), 
-    "--nonunique=",shQuote(none), 
-    "--type=",shQuote(type),
-    "--idattr=", shQuote(idattr), 
-    "[outputfile.bam] [annotationfile.gff]' >>", shQuote(stats))
-    
-    
-    singleend_cmd_2_message <- paste(singleend_cmd_2_message,collapse = " ")
+    singleend_cmd_2_message <- paste(
+      "echo 'Running HTSeq Command: python -m HTSeq.scripts.count --format=bam 
+      --order=",
+      shQuote(order), " ",
+      "--a=", shQuote(a), " ",                              
+      "--stranded=", shQuote(stranded), " ",
+      "--mode=", shQuote(mode), " ",
+      "--nonunique=", shQuote(nonunique), " ",
+      "--type=", shQuote(type), " ",
+      "--idattr=", shQuote(idattr), " ",
+      "[outputfile.bam] [annotationfile.gff]' >> ", shQuote(stats)
+    )
+  
+    singleend_cmd_2_message <- paste(singleend_cmd_2_message, collapse = "")
     singleend_cmd_2_message <- gsub("^ *| *$", "", singleend_cmd_2_message)
     system(singleend_cmd_2_message, intern=FALSE)
     
+    nline <- paste("echo '' >> ",  shQuote(stats))
+    system(nline, intern=FALSE)
     
-   for(k in seq_along(sampleData)) {
-     pair_files <- as.character(sampleData[i,])
+   for(k in seq_len(nrow(sampleData))) {
+     pair_files <- as.character(sampleData[k,])
      sample_name <- pair_files[1]
      fastq_1 <- pair_files[2]
-     unqiuefolder <- file.path(output_dir,sample_name)
-     unqiuefolder_mkdir <- dir.create(unqiuefolder) 
+     unqiuefolder <- file.path(path_1,sample_name)
+     unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
      bam <-file.path(unqiuefolder, paste0(sample_name,".bam"))
      time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
                          shQuote(stats)), collapse = " ")
      time_cmd <- gsub("^ *| *$", "", time_cmd)
      system(time_cmd, intern=FALSE)
-     sample_cmd <- paste(c("echo Starting Sample:", 
+     sample_cmd <- paste(c("echo Working with sample:", 
                            shQuote(sample_name), ">>", shQuote(stats)),
                          collapse = " ")
      sample_cmd <- gsub("^ *| *$", "", sample_cmd)
      system(sample_cmd, intern=FALSE)
-     
-     singleEndmap <- c("hisat2 -p", threads, 
+     stateline <- paste("echo 1.Alignment: >> ",  shQuote(stats))
+     system(stateline, intern=FALSE)
+     singleEndmap <- c("(hisat2 -p", threads, 
                      "-x", shQuote(base_genomefile_path),"-U", 
-                     shQuote(fastq_1), 
+                     shQuote(file.path(input_files_dir,fastq_1)), 
                      "| samtools view -bS | samtools sort -o", 
-                     shQuote(bam), ">>", shQuote(stats), "2>&1")
+                     shQuote(bam),") 2>>", shQuote(stats))
      singleEndmap <- paste(singleEndmap,collapse = " ")
      singleEndmap <- gsub("^ *| *$", "", singleEndmap)
      system(singleEndmap, intern=FALSE)
+     stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
+     system(stateline, intern=FALSE)
      # counts --- 
      count_file <-file.path(unqiuefolder, "Results.txt")
-     HTseq_cmd <- c("python -m HTSeq.scripts.count", 
-                    "--format=bam", 
-                    "--stranded=",shQuote(stranded), 
-                    "--a=", shQuote(a),    
-                    "--mode=",shQuote(mode), 
-                    "--nonunique=",shQuote(nonunique), 
-                    "--type=",shQuote(type),
-                    "--idattr=", shQuote(idattr),
-                    shQuote(bam), shQuote(annotationfile), 
-                    ">", shQuote(count_file),  ">>", shQuote(stats), "2>&1")
-     HTseq_cmd <- paste(HTseq_cmd,collapse = " ")
+     HTseq_cmd <- c("python -m HTSeq.scripts.count"," ", 
+                    "--format=bam", " ", 
+                    "--stranded=",shQuote(stranded), " ", 
+                    "-a=", shQuote(a), " ", 
+                    "--mode=",shQuote(mode), " ", 
+                    "--nonunique=",shQuote(nonunique), " ", 
+                    "--type=",shQuote(type)," ", 
+                    "--idattr=", shQuote(idattr)," ", 
+                    shQuote(bam), " ",  shQuote(annotationfile)," ",  
+                    " > ", shQuote(count_file),  " 2>> ", shQuote(stats))
+     HTseq_cmd <- paste(HTseq_cmd,collapse = "")
      HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
      system(HTseq_cmd, intern=FALSE)
      
@@ -811,6 +895,8 @@ mRNA_map <- function(sampleData,
                            collapse = " ")
      complete_cmd <- gsub("^ *| *$", "", complete_cmd)
      system(complete_cmd, intern=FALSE)
+     nline <- paste("echo '' >> ",  shQuote(stats))
+     system(nline, intern=FALSE)
      }
   }
   cat("\n")
@@ -837,7 +923,19 @@ exists_conda <- function(package_name){
   return(res)
 }
 
-"hisat2"
+exists_htseq <- function(package_name){
+  # Replace "your_package_name" with the name of the package you want to check
+  cmd <- paste("htseq-count --version", collapse = " ")
+  cmd_b <- gsub("^ *| *$", "", cmd)
+  out <- system(cmd_b, intern=TRUE )
+  
+  if (length(out) == 0) {
+    res <- FALSE
+  } else {
+    res <- TRUE
+  }
+  return(res)
+}
 
 
 

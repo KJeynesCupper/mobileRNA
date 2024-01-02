@@ -264,6 +264,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
                              ggplot2::aes(Class, Count)) + 
           ggplot2::geom_bar(stat = "identity", fill = colour) + 
           ggplot2::facet_wrap(~key, scales = "free_y", ncol = facet.arrange)+
+          ggplot2::labs(x = "sRNA Class", y = "Count")+
           ggplot2::theme_bw()+
           ggplot2::theme(legend.position = "right",
                          legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),

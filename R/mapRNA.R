@@ -27,7 +27,7 @@
 #' 
 #' ** For mRNA analysis** 
 #' The function invokes a number of OS commands, and is dependent 
-#' on the installation of `HISAT2`,  `HTSeq` and `SAMtools` with Conda. 
+#' on the installation of `HISAT2`,`HTSeq` and `SAMtools` with Conda. 
 #' The pipeline can undertake single- or pair-end analysis, and to do so 
 #' requires a dataframe stating the sample information where each row 
 #' represents a sample. The cleaned reads are mapped using HISAT and then the 
@@ -37,7 +37,7 @@
 #' @references 
 #' \url{https://github.com/MikeAxtell/ShortStack},
 #' \url{https://anaconda.org/bioconda/hisat2},
-#' \url{https://anaconda.org/bioconda/htseq},
+#' \url{https://htseq.readthedocs.io/en/master/install.html},
 #' \url{https://anaconda.org/bioconda/samtools}
 #' 
 #' @param input string; define type of Next-Generation Sequencing dataset.
@@ -127,7 +127,7 @@
 #' two folders:
 #' 
 #' * "1_de_novo_detection" : Stores output from the detection of de novo sRNA-producing loci
-#' * "2_alignment_results" : Stores output from alignment 
+#' * "2_sRNA_results" : Stores output from alignment 
 #' 
 #' 
 #' The first folder stores the novo detection of sRNA-producing loci and

@@ -1,22 +1,25 @@
 ---
-title: "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes"
+title: "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes
+in plant graft systems"
 author: "Katie Jeynes-Cupper, Marco Catoni"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 abstract: >
-  A growing number of researchers are turning to 
-  genomic analysis to identify putative difference between RNA populations and 
-  specifically to identify molecules which originate from a foriegn genome or 
-  genotype. For which, plant grafting is a perfect example which has been 
-  used for such studies as the technique can join differnt plant species or 
-  accession together generating a plant with combined tissues two distinct 
-  genotypes. For the identification of mobile or forign RNAs, such as messenger 
-  RNA or small RNA, genomic pipelines typically manipulate RNA-seq workflows 
-  with consequential mapping to each genome in the system. This comes with 
-  benefits and disadvantages. Here, we addess the main disadvantages; the high
-  levels of data noise and false positives. The package mobileRNA provides
-  methods to pre-processs, analyse and visualse the sRNA and mRNA populations. 
-  This vignette explains the use of the package and demonstrates quick and 
-  more advanced workflows. 
+  Genomic analysis can be utilised to identify difference between RNA 
+  populations between two conditions, both in abundance and absolte production.
+  This includes the identification of RNAs which are produced by another 
+  organism within a bioloigcal system. For example, RNAs produced by pathogens 
+  within a host. Or for our purposes, mobile RNAs produced by a plant grafting 
+  partner. Plant grafting is a technique which joina differnt plant species or 
+  accession together generating a plant with two distinct genotypes. RNAs have 
+  been found to be produced by one grafting partner and travel across the graft
+  junction to the other grafting partner. Locating and identifying these mobile 
+  or forign RNAs including messenger RNA or small RNA, genomic pipelines 
+  typically manipulate RNA-seq workflows with consequential mapping to each 
+  genome in the system. This comes with benefits and disadvantages. Here, we 
+  addess the main disadvantages; the high evels of data noise and false 
+  positives. The package mobileRNA provides methods to pre-processs, analyse and 
+  visualse the sRNA and mRNA populations. This vignette explains the use of the 
+  package and demonstrates quick or advanced workflows. 
 output:
   rmarkdown::html_document:
     highlight: pygments
@@ -75,17 +78,17 @@ assist the development of novel methods for transferring traits into crops, as
 alternatives to traditional breeding or transgenic approaches.
 
 Several genomic studies have used grafting to explore and characterise mobile 
-sRNAs in chimeric systems, however, it is clear that there is not a standardised 
-approach. To identify sRNA population which are mobile or native, analysts 
-currently adopt a general RNA sequencing pipeline. However, we believe these 
-approaches may have several limitations. Here we introduce the R package, 
-`mobileRNA`, a recommended pipeline and analysis workflow for the identification 
-of mobile sRNAs/mRNA. In addition, the flexibility supports standard sRNAseq 
-analysis between treatment and control conditions. For example, to identify sRNA 
-population changes due to the application of a treatment such as cold/heat 
-stress or exposure to a pest. `mobileRNA` ultimately assists pre-processing and
-analysis including the characterization of different populations, visualization 
-of the results, and supports output for functional analysis. 
+RNAs, however, it is clear that there is not a standardised approach. To 
+identify RNA population which are mobile or native, analysts currently adopt a 
+general RNA sequencing pipeline. However, we believe these approaches may have 
+several limitations. Here we introduce the R package, `mobileRNA`, a recommended 
+pipeline and analysis workflow for the identification of mobile sRNAs/mRNA. 
+In addition, the flexibility supports standard sRNA analysis between treatment
+and control conditions. For example, to identify sRNA population changes due to
+the application of a treatment such as cold/heat stress or exposure to a pest. 
+`mobileRNA` ultimately assists pre-processing and analysis including the 
+characterization of different populations, visualization of the results, and 
+supports output for functional analysis. 
 
 As stated this was developed for applications for plant grafting experimental 
 analysis, however, we believe it could have further application including 
@@ -95,13 +98,12 @@ the analysis of dual-host system.
 
 # Approach
 
-Mobile RNA molecules can travel systemically in plants systems. In grafted 
-plants, when different genotypes are used as rootstock and scions, the sequence 
-variation between the two genomes involved can be used to discriminate the 
-origin of a sequenced RNA molecule. Therefore, if an RNA molecule sequenced 
-from one of the grafted partners (scion or rootstock) has found matching the 
-genome of the other grafting partner, this could empirically demonstrate it's 
-movement across the graft junction.
+In grafted plants, when different genotypes are used as rootstock and scions, 
+the sequence variation between the two genomes involved can be used to 
+discriminate the origin of a sequenced RNA molecule. Therefore, if an RNA 
+molecule sequenced from one of the grafted partners (scion or rootstock) has 
+found matching the genome of the other grafting partner, this could empirically 
+demonstrate it's movement across the graft junction.
 
 Most available genomics approaches to implement this analysis are based on RNA 
 sequencing, following by alignment on a genotype of reference and post alignment 
@@ -114,43 +116,40 @@ might include:
 *	High false positive rates. 
 
 Here, to circumvents such problems we propose a method inspired by the RNAseq 
-analysis of plant hybrids, including an alignment step performed simultaneously 
-on both genomes involved. The rational of this approach considers that alignment 
-tools already implement an algorithm ideal for identification of the best 
-matches (accordingly to set parameters) in a given genome reference, but they do 
-not account for potential matches to DNA sequences which are not provided as 
-reference. Therefore, the two genomes from all partners involved in the 
-chimeric system are merged in a single FASTA file and used as reference for 
-the unique alignment. In a bid to supply the algorithm with as much 
-information as possible to make the best possible predictions and placement of
-sequencing reads to each genome. Then, `mobileRNA` will filter RNAs which 
-uniquely map on the genome of the other grafting partner involved, which 
-would represent the putative mobile RNA molecules.
+analysis of plant hybrids [@Lopez-Gomollon2022], including an alignment step 
+performed simultaneously on both genomes involved. The rational of this approach 
+considers that alignment tools already implement an algorithm ideal for 
+identification of the best matches (accordingly to set parameters) in a given 
+genome reference, but they do not account for potential matches to DNA sequences 
+which are not provided as reference. Therefore, the two genomes from all 
+partners involved in the system are merged in a single FASTA file and used as 
+reference for the unique alignment. Ultimately, in a bid to supply the algorithm 
+with as much information as possible to make the best possible predictions and 
+placement of sequencing reads to each genome.
 
-The summarised workflow is shown below, where it contains a core RNA analysis
-and a mobile sRNA/mRNA analysis. The core analysis represents the standard 
-workflow for the identification of native population difference, for example the 
-sRNA population difference between treatment and condition samples, or similarly 
-in a chimeric system, such as plant grafting, we might want to explore the 
-native sRNA population from the sample tissue origin (ie. leaf) which have been 
-lost or gained or changes in sRNA abundance. While the mobile analysis, 
-represents the workflow for the identification of putative mobile sRNAs or 
-mobile mRNA in a chimeric system.
+The summarised workflow is shown below 
+[(Figure 1)](https://github.com/KJeynesCupper/mobileRNA/blob/main/man/figures/mobileRNA_graphic_1.png) 
+where it contains a core RNA analysis and a mobile sRNA/mRNA analysis. The core 
+analysis represents the standard workflow for the identification of native 
+population difference, for example the sRNA population difference between 
+treatment and condition samples, or similarly in a chimeric system, such 
+as plant grafting, we might want to explore the native sRNA population from the
+sample tissue origin (ie. leaf) which have been lost or gained or changes in 
+sRNA abundance. While the mobile analysis, represents the workflow for the 
+identification of putative mobile sRNAs or mRNA in a plant graft system.
 
-As input, the pipeline requires clean small RNA sequencing reads in FASTQ 
+As input, the pipeline requires cleaned sRNA or mRNA sequencing reads in FASTQ 
 format, along with the genome assemblies which represent the genotypes in the
 system. 
 
 <br><br>
-```{r, fig.align="centre", echo=FALSE,out.width="800", out.height="750" }
-
+```{r, fig.align="centre", echo=FALSE,out.width="850", out.height="600" }
 knitr::include_graphics("../man/figures/mobileRNA_graphic_1.png")
 ```
-<br><br><br>
+<br>
+**Figure 1: Basic diagram of mobileRNA workflows.**
 
-The above figure illustrates workflow, including the merging of the two 
-reference which represent the two genotypes in the chimeric system, the
-designed alignment steps and the analysis steps. 
+<br><br>
 
 The analysis workflow can be completed in a simple process to identify 
 potentially mobile RNAs and/or to explore the population dynamics. The analysis
@@ -159,74 +158,79 @@ can be advanced with the following extra features:
 * Principal component analysis
 * Heatmaps 
 * Distribution plots
-* Statistical analysis with `edgeR` or `DESeq2` methods
+* Data subset 
 * Steps to assist functional analysis. 
 
 The diagram below illustrates the complete workflow using `mobileRNA`, including
 essential, optional and plotting functions:
 
 <br><br>
-```{r, fig.align="centre", echo=FALSE,out.width="700", out.height="750" }
-
+```{r, fig.align="centre", echo=FALSE }
 knitr::include_graphics("../man/figures/mobileRNA_graphic_2.png")
 ```
 <br>
+**Figure 2: Comprehensive diagram of complete mobileRNA workflows.**
 
 The analysis approach includes several underlying features to be aware of which 
 can alter the final output. When working with a chimeric system, the core steps 
 offer the ability to remove mapping errors by comparing control samples to the 
 treatment samples. If the genotypes in the chimeric system are fairly distantly 
-related, it is unexpected that unique reads aligned to the foreign/mobile
+related, it is unexpected that unique reads aligned to the mobile
 genotype will be found in the control samples. With that in mind, we can assume
-RNAs with reads mapped to the foreign/mobile genotype from the control 
+RNAs with reads mapped to the mobile genotype from the control 
 samples could be artifacts or mapping errors. Hence, these RNAs  are 
 removed from the analysis when the parameters are utilsed. Note that, if the 
 chimeric system is expected to share some or a high level of similarity it might 
 be insightful to the analysis to not remove these sRNA clusters. 
 
-After importing the data into R using `RNAimport()`, the second core 
-step is the consensus dicercall classification (see function 
-`RNAdicercall()`). For a given sRNA cluster, within each sample a 
-sRNA classification is predicted. This information is used to define the 
-classification of the cluster based on the consensus across replicates, which is
-added as an additional column to the dataframe. As well a further column which 
-states the number of replicates which contributed to the consensus class. There 
-is a range of parameters to control how these are drawn, making it either 
-stringent or loose, which may alter the downstream analysis. These are mainly
-related to handling ties. 
+After alignment of sequencing reads using `mapRNA()`, the results are importing 
+into R using `RNAimport()`. For core sRNA analysis, the consensus dicercall 
+classification (see function `RNAdicercall()`). For a given sRNA cluster, within 
+each sample a sRNA classification is predicted. This information is used to 
+define the classification of the cluster based on the consensus across 
+replicates, which is added as an additional column to the dataframe. As well a 
+further column which states the number of replicates which contributed to the 
+consensus class. There is a range of parameters to control how these are drawn, 
+making it either stringent or loose, which may alter the downstream analysis. 
+These are mainly related to handling ties. 
 
-The third core step involves the use of differential analysis. It should be 
-emphasized that this is an optional step for the identification of mobile RNAs, 
-while, for the exploration of population dynamics it is a mandatory step. 
-Here we include a single function which can be instructed to undertake 
-differential analysis using either the `edgeR` or `DESeq2` method (see function 
-`RNAdifferentialAnalysis()`).  The function outputs additional columns 
-to your working dataset, including the raw count mean, log2FoldChange, p-value 
-and adjusted p-value. 
+The next core step for either sRNA or mRNA analysis involves the use of 
+differential analysis. Any mobile RNAs will have a significant abundance and 
+hence, this information will instruct the user on mobile RNAs which are the most
+or least abundant. This step is not highly important to the analysis of mobile 
+RNAs as the statistically analysis defining mobile RNAs has already been 
+conducted at alignment by the mapping tools. While, for the exploration of 
+population dynamics this is much more important step to include, as it defines 
+the variation in RNA abundance and also absolute production between two 
+conditions. Here we include a function which can be instructed to undertake 
+differential analysis using either the `edgeR` [@edgeR_GLM] or `DESeq2` 
+[@Love2014] method (see function `RNAdifferentialAnalysis()`).  The function 
+outputs additional columns to your working dataset, including the raw count 
+mean, log2FoldChange, p-value and adjusted p-value. 
 
-Here we describe the final steps for each workflow. For mobile RNA analysis, we 
-introduce the `RNAmobile()` function. It contains parameter which can 
-either result in stringent or looser outcomes by utilises the number of 
-replicates which contributed to the consensus dicercall classification (sRNA) or
-which contribute to the raw read count (mRNA) as a threshold value. 
-For instance, it would be more stringent to select sRNA 
-clusters which were unambiguously classified across condition replicates. While,
-for the core RNA analysis, the final step to identify population changes is to 
+For the core RNA analysis, the final step to identify population changes is to 
 locate RNAs which are unique to the treatment replicate and a set of RNAs
 which are unique to the control replicates. Ultimately, this will identify 
 RNAs which were gained or lost due to the treatment in comparison to 
-the controls. Moreover, the RNA abundance explored to identify statistically 
-significant changes in abundance between RNAs in the treatment and 
-control samples. 
+the controls. Moreover, the RNA abundance can be explored by summerising the
+statistical inference, illustrating the number of RNAs with an significantly 
+increased or decreased abundance in the comparision between two conditions. 
 
-At the end of the basic analysis, the user will have generated a dataframe
+For mobile RNA analysis, we introduce the `RNAmobile()` function. It contains 
+parameter which can either result in stringent or looser outcomes by utilises 
+the number of replicates which contributed to the consensus dicercall 
+classification (sRNA) or which contribute to the raw read count (mRNA) as a 
+threshold value. For instance, it would be more stringent to select sRNA 
+clusters which were unambiguously classified across condition replicates. 
+
+At the end of the analysis, the user will have generated a dataframe
 where rows represent either sRNA clusters or mRNAs and the columns include 
 information on the sRNA clusters or mRNAs, individual sample replicates, 
 and more: 
 
-** For sRNA analysis ** 
+#### sRNA Analysis
 
-#### Information on the sRNA cluster:
+##### Information on the sRNA cluster:
 
 - `Locus`: Genomic location
 - `chr`: Name of the chromosome or scaffold
@@ -241,7 +245,7 @@ and more:
 - `padjusted` : Adjusted p-value (Calculated by `RNAdifferentialAnalysis()`)
 - `logCPM` : Log counts per million (CPM/RPM) (Calculated by `RNAdifferentialAnalysis()`)
 
-#### Information on each sample replicate:
+##### Information on each sample replicate:
 
 - `DicerCall_` : The size of most abundant sRNA 
 - `Count_` : Number of aligned sRNA reads. As default, these are uniquely aligned (*e.g.* not multi-mapping).
@@ -250,9 +254,9 @@ and more:
 - `MajorRNA_` : RNA sequence of most abundant sRNA in the cluster
 
 
-** For mRNA analysis ** 
+#### For mRNA Analysis
 
-#### Information on the mRNA:
+##### Information on the mRNA:
 - `Feature`: mRNA name
 - `SampleCounts` : Consensus dicercall (Calculated by `RNAdicercall()`)
 - `CountMean` :  Count mean (Calculated by `RNAdifferentialAnalysis()`)
@@ -261,21 +265,19 @@ and more:
 - `padjusted` : Adjusted p-value (Calculated by `RNAdifferentialAnalysis()`)
 - `logCPM` : Log counts per million (CPM/RPM) (Calculated by `RNAdifferentialAnalysis()`)
 
-#### Information on each sample replicate:
+##### Information on each sample replicate:
 
 - `Count_` : Number of aligned mRNA reads. As default, these are uniquely aligned (*e.g.* not multi-mapping).
 - `FPKM_` : Fragments Per Kilobase of transcript per Million mapped reads 
 
-If more advanced steps were taken a PCA plot, distance matrix, sRNA class 
-distribution plot and heatmap plots could have been generated. Plus, utilsation 
-of the functions to assist functional analysis can support the determination 
-of the biological implications.  From the core analysis, the user can 
-explore difference in RNA production within the samples and compare RNA 
-abundance. While both core and mobile analysis, the user can extract the 
-consensus RNA sequence for each sRNA cluster for target prediction analysis, as 
-well as identifying genomic features associates with each sRNA clusters, such 
-as genes. This can be utilised, for example, to explore the RNA expression of 
-sRNA-producing genes in parallel analysis.
+In addition, the user can utilise additional functions to plot a PCA, 
+distance matrix, sRNA class distribution and heatmaps. Plus, **mobileRNA** 
+offers functions to assist functional analysis to support the determination 
+of the biological implications. For instance within sRNA analysis, the user can 
+extract the consensus RNA sequence for each sRNA cluster for target prediction 
+analysis, as well as identifying genomic features associates with each sRNA 
+clusters, such as genes or repeat regions. This can be utilised, for example, 
+to explore the RNA expression of sRNA-producing genes in parallel analysis.
 
 
 # Installation
@@ -293,67 +295,61 @@ It is also available on GitHub:
 ```{r,  eval=FALSE, message=FALSE}
 if (!require("devtools")) install.packages("devtools")
 devtools::install_github("KJeynesCupper/mobileRNA", ref = "main")
-
 ```
 
-
+Load into R library:
 ```{r, message=FALSE}
-
 library("mobileRNA")
-
 ```
 
 
-## Installing OS dependancies 
+## Installing OS Dependancies 
 
 `mobileRNA` works on systems with `R`, and depending on the type of sequencing
-data different OS dependencies installed via Conda are required for the 
-alignment steps. 
+data different OS dependencies installed via Conda [@Anaconda] are required for 
+the alignment steps. 
 
-For sRNA data, `ShortStack` (>= 4.0) (Axtell 2013) is requires. Please consider 
+For sRNA data, `ShortStack` (>= 4.0) [@Axtell2013] is requires. Please consider 
 that `ShortStack` is not available for Windows, hence, Windows users will either 
 need to opt to use a virtual machine or 
 [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 In either case, both `R` and `ShortStack` will need to be installed and used on 
-the Linux side.Please head to [ShortStack](https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended) 
-to see the recommended installation instructions with Conda (Anaconda Inc. 2020). 
+the Linux side. Please head to [ShortStack](https://github.com/MikeAxtell/ShortStack#install-using-conda-recommended) 
+to see the recommended installation instructions with Conda [@Anaconda].
 This will ensure all dependencies are available within the same environment. 
 
-For mRNA data, [HISAT2](https://anaconda.org/bioconda/hisat2) (Kim et al., 2015), 
-[HTSeq](https://anaconda.org/bioconda/htseq) (Anders 2014), [SAMtools](https://anaconda.org/bioconda/samtools) 
-(Danecek et al., 2021) are required within the same Conda environment 
-(Anaconda Inc. 2020).
+For mRNA data, [HISAT2](https://anaconda.org/bioconda/hisat2) [@Kim2015], 
+[HTSeq](https://anaconda.org/bioconda/htseq) [@Anders2014], 
+[SAMtools](https://anaconda.org/bioconda/samtools) [@Danecek2021] are required 
+within the same Conda environment [@Anaconda].
 
 
 ## Example Data
 
 The package includes a simulated data set to replicate the grafting
-between eggplant-tomato (*Solanium melongena*-*Solanium lycopersicum*) where 
+between eggplant-tomato (*Solanium melongena* - *Solanium lycopersicum*) where 
 eggplant represents the scion and tomato represents the rootstock. The FASTQ 
-files represent sRNAseq data extracted from the eggplant leaf tissue. Here we 
-will locate sRNA produced by tomato roots which have traveled into the eggplant 
-leaves. There are three heterograft replicate, where each is an individual 
-tomato replicate spiked with the same random set of tomato sRNA clusters. 
-These are known as:
+files represent data extracted from the eggplant leaf tissue. Here we 
+will locate mobile RNAs produced by tomato roots which have traveled into the 
+eggplant leaves. In the example data set, there are heterograft replicate,
+where each is an individual tomato replicate spiked with the same random set of 
+tomato sRNA clusters. There are two sets of each for mRNA analysis and three 
+sets for sRNA analysis.These are known as:
 
 * `heterograft_1`
 * `heterograft_2`
-* `heterograft_3`  
+* `heterograft_3`  (sRNA analysis only)
 
-There are three self-graft replicates, where each is an individual tomato 
+There are self-graft replicates, where each is an individual tomato 
 replicate without the spiked tomato sRNA clusters. These are:
 
 * `selfgraft_1`
 * `selfgraft_2` 
-* `selfgraft_3`
+* `selfgraft_3` (sRNA analysis only)
 
 The replicates mirror each other where, for instance, `heterograft_1` 
 and `selfgraft_1` are the same replicate, either with or without the spiked 
 clusters. 
-
-For sRNAseq & mRNAseq alignment, we provide demo fastq files; these have a 
-reduced number of reads and do not cluster as expected which are stored 
-within `inst/extdata`. 
 
 Hence, we also provide more comprehensive data sets, for small RNA it is called
 `sRNA_data` and for messenger RNA it is called `mRNA_data`. Each stores an 
@@ -367,26 +363,28 @@ data("sRNA_data")
 
 # Load messenger RNA data
 data("mRNA_data")
-
 ```
-The sRNA simulated data was generated from the data published by Li 2022 and 
-Qing 2022 and the mRNA simulated data was generated from the data published
-by Villanueva et al., 2023 and Tomato Genome Consortium 2012. 
 
-Tomato and Eggplant reduced genome assemblies and annotations have been provided
-based on those generated by Hosmani et al., 2019 and Barchi et al., 2021.
+For sRNAseq & mRNAseq alignment step, we provide demo fastq files; these have a 
+reduced number of reads and do not cluster as expected, so should not be used 
+for downstream analysis. These are stored within `inst/extdata`. Tomato and 
+Eggplant reduced genome assemblies and annotations have been provided
+based on those generated by Hosmani et al., 2019 [@Hosmani2019] and Barchi 
+et al., 2021 [@Barchi2021].
 
+The simulated data was generated from the data published 
+[@Li2022, @Qing2022, @Villanueva2023, @TomatoGenomeConsortium2012].
 
-# Quick start
-This quick-start includes instructions for sRNA and mRNA analysis.
-## 1. Merging Genome Assemblies 
+# Quick Start
+
+<br>
+
+## Merging Genome Assemblies 
 Merge the FASTA genome assemblies of tomato and eggplant into a single
-reference file stored in your desired directory.Eggplant represent the scion
-(native) genome A, and tomato represents the rootstock (foreign/mobile) genome
-B. 
+reference file stored in your desired directory. Eggplant represents the scion 
+as genome A, and tomato represents the rootstock (foreign/mobile) as genome B. 
 
-
-```{r}
+```{r, message=FALSE}
 fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", 
                        package="mobileRNA")
 
@@ -403,17 +401,17 @@ merged_reference <- RNAmergeGenomes(genomeA = fasta_1,
 ```
 
 <br>
-## 2. Merging Genome Annotations 
+
+## Merging Genome Annotations 
 Now, repeat for the genome annotations (GFF) - this is required for downstream 
-analysis or for mRNA mapping
+analysis or for mRNA mapping.
 
 *It is important that the same alterations are made to each genome in the merged
-files -  otherwise the annotation file will not align with the chromosome names 
+files. Otherwise the annotation file will not align with the chromosome names 
 in the assembly file.*
 <br>
 
-```{r}
-
+```{r, message=FALSE}
 anno1 <- system.file("extdata","reduced_chr12_Eggplant.gff",
                      package="mobileRNA")
 
@@ -428,33 +426,37 @@ output_annotation_file <- file.path(tempfile("merged_annotation",
 merged_annotation <- RNAmergeAnnotations(annotationA = anno1,
                                          annotationB = anno2,
                                          output_file = output_annotation_file)
-
 ```
+<br>
 
-## sRNA analysis
+## sRNA Analysis: locate the sRNA mobilome in a plant grafting experiment
+This is a quick-start example analysis of sRNAseq data to locate putative mobile
+sRNAs from a plant grafting experiment between eggplant and tomato. Where the 
+aim is to locate putative sRNAs, produced by the tomato rootstock, which have 
+traveled across the graft junction into the eggplant leaf samples. 
+
+
 ### 1. Alignment 
-
 Here we will align our samples containing small RNA sequencing reads to the 
-merged genome assembly created earlier. The `mapRNA()` function requires 
-three core inputs:
-  
-* 1 - The directory containing the FASTQ files for all the samples in the analysis 
-* 2 - The directory to store the output 
-* 3 - The directory to genome assembly file (.fa or .fasta)
+merged genome assembly. The `mapRNA()` function invokes a system 
+command to `ShortStack`; an application which employs `Bowtie` [@Langmead2009] 
+mapping and performs comprehensive de novo annotation and quantification of 
+sRNA genes. The function first undertakes de novo sRNA cluster detection 
+(stored in `1_de_novo_detection`) and then quantification of sRNA genes 
+(stored in`2_sRNA_results`). Since we are using chimeric samples, we 
+use `mmap = n` to exclude multi-mapped reads. We exclude multimappers as we 
+currently do not have a method to distinguish whether a read is mapped to 
+multiple locations within one or both of the genomes in the merged reference. 
 
-The function invokes a system command to `ShortStack`; an application which 
-employs Bowtie mapping and performs comprehensive de novo annotation and 
-quantification of sRNA genes. The function first undertakes de novo sRNA
-cluster detection (stored in `1_de_novo_detection`) and then quantification of 
-sRNA genes (stored in`2_alignment_results`). 
-
-** PLEASE NOTE: For the alignment & import demo, we are using fastq files which 
+**PLEASE NOTE:** For the alignment & import demo, we are using fastq files which 
 have a reduced size for the package. This data will not be used for the 
-continued analysis step, instead you will load the full dataset ** 
+continued analysis step, instead you will need to load the full dataset. 
 
 ```{r, eval=FALSE}
+# directory containing only sRNAseq samples 
 samples <- system.file("extdata/sRNAseq",package="mobileRNA")
 
+# output location
 output_location <- tempdir()
 
 mapRNA(input = "sRNA",
@@ -463,23 +465,19 @@ mapRNA(input = "sRNA",
        genomefile = output_assembly_file,
        condaenv = "/Users/user-name/miniconda3/envs/ShortStack4",
        mmap = "n")
-
 ```
-Since we are using chimeric samples, we use `mmap = n` to exclude multi-mapped
-reads. 
 
 If there are issues utilising this function, the manual steps are illustrated in 
-the appendix. 
+the [Appendix](#Appendix)
 <br>
 
 ### 2. Import Pre-Processed Data into R 
-Import the results from the alignment step into R using the
-`RNAimport()` function. This requires the directory storing the sample
-output folders and the same of the samples to import from the directory.
+Import the results from the alignment step into R using the `RNAimport()` 
+function. 
 
 ```{r, eval=FALSE}
 # Directory containing results
-results_dir <-  file.path(output_location,"2_alignment_results")
+results_dir <-  file.path(output_location,"2_sRNA_results")
 
 # Sample names and total number of reads, in the same order. 
 sample_names <- c("selfgraft_demo_1", "selfgraft_demo_2", 
@@ -488,9 +486,8 @@ sample_names <- c("selfgraft_demo_1", "selfgraft_demo_2",
 
 
 sRNA_data_demo <- RNAimport(input = "sRNA", 
-                       directory = results_dir,
-                       samples = sample_names)
-                           
+                            directory = results_dir,
+                            samples = sample_names)
 ```
 <br>
 
@@ -504,48 +501,49 @@ contains the following columns:
 - `Cluster`: Cluster Name
 
 For each sample, the following columns will be present. Where the sample name 
-following after the underscore: 
+follows after the underscore: 
   
 - `DicerCall_` : The size of most abundant small RNA size
 - `Count_` : Number of uniquely aligned reads that overlap the locus.
 - `RPM_` : Reads per Million
--  `FPKM` : Fragments Per Kilobase of transcript per Million
+- `FPKM_` : Fragments Per Kilobase of transcript per Million
 - `MajorRNA_` : RNA sequence of the most abundant sRNA in the cluster
 
-
-
 ### 3. Import Example Data 
-Load full analysis dataset for more comprehensive analysis.
+Load the full analysis dataset for a more comprehensive analysis: 
 
 ```{r}
 data("sRNA_data")
-
 ```
 
 
 ### 4. Calculate the Consensus Dicercall
 
-For a given sRNA cluster, each replicate has determined the dicercall,
+For a given sRNA cluster, each replicate has a predicted dicercall,
 also known as the sRNA class, based on the length in nucleotides of the
-most abundant sRNA. This can be drawn from all samples or named samples.
-The output can be used as threshold values for downstream analysis, and
-to remove data noise depending on data quality.
+most abundant sRNA. Depending on your organism these lengths will vary, for 
+plants these are between 20-24 nucleotides and support predictions of their 
+sRNA class, such as microRNA or small interfering RNA. The consensus dicercall
+identifies the most likely sRNA class based on either all samples or 
+specifically named samples. The output can be used as threshold values for 
+downstream analysis, and to remove data noise depending on data quality.
 
-```{r}
-
+```{r, message=FALSE}
 sRNA_data_dicercall <- RNAdicercall(data = sRNA_data, tidy = TRUE )
-
 ```
 
 <br>
 
 ### 5. Differential Analysis of sRNA Population
 
-Undertake differential analysis of sRNA within the experimental design
-to explore changes in abundance. The function allows for two methods;
+Here, users can undertake differential analysis of sRNA within the experimental 
+design to explore changes in abundance. The function allows for two methods;
 `edgeR` or `DESeq`.
 
-```{r}
+Ensure that the working dataframe is correctly ordered to ensure proper control
+verses treatment statistical analysis. See `RNAreorder()` for more information.
+
+```{r, message=FALSE}
 # sample conditions in order within dataframe
 groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
             "Heterograft", "Heterograft", "Heterograft")
@@ -561,34 +559,29 @@ sRNA_DESeq2 <- RNAdifferentialAnalysis(data = sRNA_data,
 ```{r, eval=FALSE}
 # save output as txt file 
 write.table(sRNA_DESeq2, "./sRNA_DA_output.txt")
-
 ```
 
 Summarise results:
 
 ```{r}
-
 RNAsummary(sRNA_DESeq2)
-
 ```
 
 How about summarizing the sRNA population which are statistically
 significant:
 
 ```{r}
-
 RNAsummary(sRNA_DESeq2, alpha=0.05)
-
 ```
 
-### 6. Identify Potential Mobile sRNA
+### 6. Identify Potential Mobile sRNA clusters
 
 Select the putative mobile sRNA clusters using `RNAmobile()`. This
 requires supplying the function with a unique identifier of the
-rootstock genome. The merging step placed the prefix "B" to the tomato
-chromosomes.
+rootstock genome, which is the prefix "B" to the tomato chromosome names. Here, 
+the function retains sRNA clusters which were aligned to the tomato genome. 
 
-```{r}
+```{r, message=FALSE}
 # define control samples
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
@@ -603,16 +596,14 @@ mobile_sRNA <- RNAmobile(input = "sRNA",
 ```{r, eval=FALSE}
 # save output as txt file 
 write.table(mobile_sRNA, "./sRNA_mobile_output.txt")
-
 ```
 
 <br>
 
-### Output
-
-A data frame where rows represent potential mobile sRNA clusters. The
-columns include information on the cluster, individual sample
-replicates, and more.
+### 7. Output
+At the end of this analysis the user produces a data frame where rows represent
+potential mobile sRNA clusters and columns include information on the cluster, 
+individual sample replicates, and more: 
 
 ##### Information on the cluster:
 
@@ -636,9 +627,7 @@ replicates, and more.
 -   `DicerCounts` : Number of replicates which contributed to the consensus dicercall sRNA class
 -   `CountMean` : Count mean (Calculated by `RNAdifferentialAnalysis()`)
 -   `log2FoldChange` : Log2FoldChange--The effect size estimate
--   `pvalue` : P value, the probability under the assumption of no
-    effect or no difference, of obtaining a result equal to or more
-    extreme than what was actually observed
+-   `pvalue` : P value, the probability under the assumption of no effect or no difference, of obtaining a result equal to or more extreme than what was actually observed
 -   `padjusted` : A p-value adjustment
 -   `logCPM` : log counts per million, measure of expression level <br>
 -   `comparision.order` : Comparison conditions
@@ -647,23 +636,35 @@ replicates, and more.
 <br>
 
 
-## mRNA analysis
-This is a quick start analysis for mRNAseq data. 
+## mRNA Analysis: locate the mRNA mobilome in a plant grafting experiment
+This is a quick-start example analysis of mRNAseq data to locate putative mobile
+mRNAs from a plant grafting experiment between eggplant and tomato. Where the 
+aim is to locate putative mRNAs, produced by the tomato rootstock, which have 
+traveled across the graft junction into the eggplant leaf samples. 
+
 ### 1. Alignment 
 
-Align mRNA sequencing reads to the merged genome using our unique
-alignment pipeline wrapped by the `mapRNA()` function.
+Here, the user aligns mRNA sequencing reads to the merged genome using a 
+HISAT2 [@Kim2015] and HTSeq [@Anders2014] pipeline wrapped by the `mapRNA()` 
+function. This pipeline excludes multimapped reads from analysis, as there is 
+currently no implemented method to distinguish reads mapped to multiple 
+locations within either one or both of the genomes in the merged reference. 
 
 ```{r, eval=FALSE}
-
+# create sample data including name, and file mates: 
 sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
                                     "heterograft_1", "heterograft_2"),
-                        mate1 = c("selfgraft_mRNAdemo_1.fq", "selfgraft_mRNAdemo_2.fq", 
-                                  "heterograft_mRNAdemo_1.fq", "heterograft_mRNAdemo_2.fq"))
+                        mate1 = c("selfgraft_mRNAdemo_1.fq", 
+                                  "selfgraft_mRNAdemo_2.fq", 
+                                  "heterograft_mRNAdemo_1.fq", 
+                                  "heterograft_mRNAdemo_2.fq"))
+# location of fastq files
+samples <- system.file("extdata/mRNAseq/", package="mobileRNA")
 
-samples <- system.file("extdata/mRNAseq", package="mobileRNA")
+# location to store output
 output_location <- tempdir()
- 
+
+# run alignment
 mapRNA(input = "mRNA",
        input_files_dir = samples, 
        output_dir = output_location, 
@@ -671,15 +672,13 @@ mapRNA(input = "mRNA",
        annotationfile = output_annotation_file,
        sampleData = sampleData, 
        condaenv = "/Users/user-name/miniconda3")
-
 ```
 
 
 ### 2. Import Pre-Processed Data into R 
 
 Import the results from the alignment step into R using the
-`RNAimport()` function. This requires the directory storing the sample
-output folders and the same of the samples to import from the directory.
+`RNAimport()` function. 
 
 ```{r, eval=FALSE}
 # Directory containing results
@@ -693,29 +692,28 @@ sample_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3",
 mRNA_data_demo <- RNAimport(input = "mRNA", 
                        directory = results_dir,
                        samples = sample_names)
-                           
 ```
 
 
 ### 3. Import example data 
-Import a more comprehensive dataset: 
+Import a more comprehensive dataset for the downstream analysis:
 ```{r}
 data("mRNA_data")
 ```
 
 ### 3. Differential Analysis of mRNA Population
 
-Undertake differential analysis of sRNA within the experimental design
-to explore changes in abundance. The function allows for two methods;
-`edgeR` or `DESeq`.
-
-```{r}
-## sample conditions in order within dataframe
-groups <- c("Selfgraft", "Selfgraft", 
-            "Heterograft", "Heterograft")
+Undertake differential analysis of mRNA within the experimental design
+to explore changes in mRNA abundance. Here we utilise the DESeq2 analytical 
+method. 
 
 
-## Differential analysis of whole dataset: DESeq22 method 
+```{r, message=FALSE}
+# sample conditions in order within dataframe
+groups <- c("Selfgraft", "Selfgraft", "Heterograft", "Heterograft")
+
+
+# Differential analysis of whole dataset: DESeq22 method 
 mRNA_DESeq2 <- RNAdifferentialAnalysis(data = mRNA_data,
                                        group = groups,
                                        method = "DESeq2")
@@ -725,34 +723,30 @@ mRNA_DESeq2 <- RNAdifferentialAnalysis(data = mRNA_data,
 ```{r, eval=FALSE}
 # save output as txt file 
 write.table(mRNA_DESeq2, "./sRNA_DA_output.txt")
-
 ```
 
 Summarise results:
 
 ```{r}
-
 RNAsummary(mRNA_DESeq2)
-
 ```
 
-How about summarizing the sRNA population which are statistically
+How about summarizing the mRNA population which are statistically
 significant:
 
 ```{r}
-
 RNAsummary(mRNA_DESeq2, alpha=0.05)
-
 ```
 
-### 5. Identify Potential Mobile mRNA
+### 5. Identify Potential Mobile mRNA Molecules
 
-Select the putative mobile sRNA clusters using `RNAmobile()`. This
+Select the putative mobile mRNA clusters using `RNAmobile()`. This
 requires supplying the function with a unique identifier of the
-rootstock genome. The merging step placed the prefix "B" to the tomato
-chromosomes.
+rootstock genome (ie. mobile genome), which is the prefix "B" to the tomato 
+chromosome names. Here, the function retains mRNA molecules which were aligned
+to the tomato genome. 
 
-```{r}
+```{r, message=FALSE}
 # define control samples
 controls <- c("selfgraft_1", "selfgraft_2")
 
@@ -766,15 +760,14 @@ mobile_mRNA <- RNAmobile(input = "mRNA",
 ```{r, eval=FALSE}
 # save output as txt file 
 write.table(mobile_mRNA, "./mRNA_mobile_output.txt")
-
 ```
 
 
-### Output
+### 6. Output
 
-A data frame where rows represent potential mobile mRNA clusters. The
-columns include information on the cluster, individual sample
-replicates, and more.
+At the end of this analysis the user produces a data frame where rows represent
+potential mobile mRNA molecules and columns include information on the 
+following:
 
 ##### Information on the mRNA:
 
@@ -797,11 +790,12 @@ replicates, and more.
 -   `FPKM` : Fragments Per Kilobase of transcript per Million
 -   `SampleCounts` : Number of replicates which contribute a raw count value >0
 
-# Advanced analysis 
+# Advanced Analysis 
+For a more advanced analysis, users can include further steps. Here we 
+demonstrate a more advanced analysis for the Core RNA analysis and Mobile 
+RNA analysis, both demonstrated with the sRNAseq dataset.
 
-Continuing the analysis from after the importation step in the Quick-Start. 
-
-## Core RNA analysis
+## Core RNA Analysis
 ### Quality control
 A useful step before analysis is to assess the overall similarity between
 sample replicates to understand which samples are similar and different. This
@@ -809,12 +803,12 @@ is known as sample level quality control and can help us understand where the
 largest variation is introduced, whether the data meets the expectations and if 
 there are outliers. It is expected that between the conditions, the sample 
 replicates show enough variation to suggest that the replicates are from 
-different groups. Here we undertake sample-level quality control using three 
-different methods:
+different groups. Here we undertake quality control using three different 
+methods:
 
-- Distribution of sRNA classes within each sample
+- Distribution of sRNA classes
 - Principal Component Analysis (PCA)
-- Distance matrix using hierarchical clustering
+- Distance matrix using hierarchical clustering heatmap
 
 The PCA and heatmap both use an unsupervised clustering methods which involves 
 an unbiased log2-transformation of the raw counts. This will emphasis the 
@@ -825,8 +819,8 @@ clustering to improve visualization.
 Here, the `RNAdistribution()` function can generate a number of different 
 customized plots to represent the number of sRNA clusters within each 
 dicercall sRNA class in a sample. In plants, sRNAs are known to be produced 
-with length between 21-25 nucleotides, and the lengths signify the sRNA class 
-and specific functional role in epigenetic regulation. If there was an 
+with length between 20-24 nucleotides, and the lengths signify the sRNA class 
+and specific functional role in (epi)genetic regulation. If there was an 
 inconsistent size profile of sRNAs within the cluster, the dicercall is defined
 as "N", ie, unclassified. 
 
@@ -846,8 +840,7 @@ cap2 <- "An example facet bar graph to show the distribution of sRNA classes wit
 cap3 <- "An example line graph showing all the replicates on a single plot."
 ```
 
-```{r, message=FALSE}
-
+```{r}
 # plot each replicate as a line, separately, and facet 
 sample_distribution_line <- RNAdistribution(sRNA_data,
                                             style = "line",
@@ -866,28 +859,26 @@ sample_distribution_bar <- RNAdistribution(sRNA_data,
 sample_distribution <- RNAdistribution(sRNA_data,
                                            style = "line",
                                            together = TRUE)
-
 ```
 
 Lets view the plots:
 
-```{r, message=FALSE, fig.cap=cap1, fig.show="hold"}
+```{r, fig.cap=cap1, fig.show="hold", fig.height=7, fig.width=15}
 # View plot (only)
 sample_distribution_line$plot
-
 ```
 <br>
-```{r, message=FALSE, fig.cap=cap2, fig.show="hold"}
+```{r, fig.cap=cap2, fig.show="hold", fig.height=7, fig.width=15}
 # View plot (only)
 sample_distribution_bar$plot
-
 ```
 <br>
-```{r, message=FALSE, fig.cap=cap3, fig.show="hold"}
+```{r, fig.cap=cap3, fig.show="hold", fig.height=7, fig.width=15}
 # View plot
 sample_distribution$plot
-
 ```
+<br><br>
+
 
 #### PCA
 
@@ -897,22 +888,20 @@ the data set. Here, we introduce the function `plotSamplePCA()`
 
 ```{r, echo=FALSE}
 cap4 <-"An example of a PCA, illustracting the sRNA data set sample similarity"
-
 ```
 
 ```{r, message=FALSE, fig.cap=cap4, fig.show="hold", }
-
 group <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
 
 plotSamplePCA(sRNA_data, group)
-
 ```
+<br>
 
 This PCA is somewhat not what we would expect to see in a real data set. This is
-because PC1 is showing the variation between the non-spiked and spiked version 
-of the replicate while PC2 shows the natural variation between the replicates. 
-
+because PC1 is showing the variation between the control self-graft sample and 
+the simulated heterograft sample while PC2 shows the natural variation between 
+the replicates. 
 It is more likely that in a real sRNA data set, you might expect more or 
 less variation between the conditions. For example, analysis of a self-graft 
 vs heterograft may show little variation between the conditions. This might be 
@@ -920,7 +909,7 @@ expected because there may only be a very small number of endogenous
 mobile/foreign sRNAs that are present in the whole population while the
 population of sRNAs present in the destination tissue is expected to be 
 largely similar. 
-<br>
+<br><br>
 
 #### Distance matrix heatmap
 
@@ -934,15 +923,13 @@ cap5 <-"An example of a heatmap,illustrating the sRNA data set sample similarity
 ```
 
 ```{r ,message=FALSE, fig.cap=cap5, fig.show="hold"}
-
 plotSampleDistance(sRNA_data)
-
 ```
 <br>
 
 
-### Define the Consensus Dicercall
-Have a look at the `sRNA_data` object, you will see that for each sample the
+### Define the consensus dicercall
+Have a look at the `sRNA_data` dataframe, you will see that for each sample the
 sRNA class for a given cluster has been determined (see columns with names 
 containing with "DicerCall_") which, in this data, will state a number from 
 20-24. This value represent the length in nucleotides of the most abundant 
@@ -951,14 +938,14 @@ is more abundant than another, hence, it is stated as "NA" or "N", which is
 refereed to as being unclassified. 
 
 The `RNAdicercall()` function is used to calculate the consensus dicercall
-for each sRNA cluster. This is based of the classification predicted for the 
-cluster by each sample within the analysis, described above. There are several
+for each sRNA cluster. This is based on the classification predicted for the 
+cluster by each sample within the analysis. There are several
 parameters which will alter the output, including the handling of ties and the
 method to draw the consensus from. 
 
 Firstly, ties can be handled in two ways, either by selecting one of the tied 
-classes at `random` or select the cluster as unclassified through the `exclude`
-option. However, when there is a tie between the choice of a class or 
+classes at `random` or defining the cluster as unclassified through the 
+`exclude` option. However, when there is a tie between the choice of a class or 
 unclassified result the `exclude` option will always select the class choice 
 over the unclassified result. The `exclude` option is set as the default.
 
@@ -967,12 +954,12 @@ determined based on the dicercall class predictions across all replicates
 or by telling the algorithm to base it's decisions on a specific set of samples. 
 As default, it draws the consensus dicercall from all samples in the analysis.
 
-When working with along the mobile sRNA analysis workflow, the function contains 
-a specialised parameter which can be utilized where `chimeric=TRUE`, along
+When working along the mobile sRNA analysis workflow, the function contains 
+a specialised parameter which can be utilized. This is `chimeric=TRUE`, plus
 with the `genome.ID` and `controls` parameters. In the example below `B_` 
 represents the prefix added to the mobile/foreign genotype, which is 
-the tomato genome. This helps optimise classification by removal of potential 
-mapping errors. 
+the rootstock tomato genome. This helps optimise classification by removal of 
+potential mapping errors. 
 
 Plus, if the user utilises the `tidy=TRUE` parameter, this will further alter 
 the output as it removes sRNA clusters which have an unclassified (N) consensus 
@@ -980,7 +967,6 @@ dicercall. Ultimately in the bid to reduce noise in the data.
 
 
 ```{r, message=FALSE}
-
 # define consensus, store as a data summary file.
 sRNA_data_dicercall <- RNAdicercall(data = sRNA_data, 
                                      chimeric = TRUE, 
@@ -988,9 +974,6 @@ sRNA_data_dicercall <- RNAdicercall(data = sRNA_data,
                                      controls = c("selfgraft_1", 
                                                   "selfgraft_2", 
                                                   "selfgraft_3"))
-
-
-
 ```
 
 For the downstream analysis, it can be useful to define distinct groups of 
@@ -1005,20 +988,18 @@ For example, here we select from the population of sRNA the 24nt and also a
 however, it might be preferable to do so in your analysis - at any point. 
 
 ```{r, message=FALSE}
-
 # Subset data for analysis: 24-nt sRNAs
 sRNA_24 <- RNAsubset(sRNA_data_dicercall, class = 24)
 
 # Subset data for analysis: 21/22-nt sRNAs
 sRNA_2122 <- RNAsubset(sRNA_data_dicercall, class = c(21, 22))
-
 ```
 <br>
 
 
 #### Plot the consensus dicercall
 
-Similar to before, the `RNAdistriution()` function can be used to visualize the 
+The `RNAdistriution()` function can be used to visualize the 
 distribution of the consensus dicercall classes across the total data set.   
 
 The function can plot the absolute or relative frequency, use argument 
@@ -1026,31 +1007,29 @@ The function can plot the absolute or relative frequency, use argument
 frequency as well as the relative to observe whether the data meets your 
 expectations.
 
-```{r}
-
+```{r, message=FALSE}
 consensus_plot <- RNAdistribution(data = sRNA_data_dicercall,
                                   style = "consensus")
 ```
 
 ```{r, echo=FALSE}
 cap6<-"An example of the distribution of small RNA consensus dicer classifications. "
-
 ```
 Now, view the plot:
 ```{r, fig.cap=cap6}
-
 # view 
 consensus_plot$plot
 ```
 <br>
 
 
-### Differential Expression Analysis with `DESeq2` or `edgeR`
-Differential expression (DE) analysis is undertaken to identify sRNAs which 
+### Differential analysis with `DESeq2` or `edgeR`
+Differential analysis is undertaken to identify sRNAs which 
 are statistically significant to discover quantitative changes in the abundance
 levels between the treatment (heterografts) and the control (self-grafts)
 groups. This technique can be undertaken with a variety of tools, in `mobileRNA`
-users have the option to use the `DESeq2` or `edgeR` analytical method.
+users have the option to use the `DESeq2` [@Love2014] or `edgeR` [@edgeR_GLM] 
+analytical method.
 
 Based on your data, one analytical method might be preferable over another. 
 For instance, the applied `DESeq2` method is not appropriate when the experiment 
@@ -1059,21 +1038,16 @@ does not contain replicates (ie. one sample replicate per condition), while
 when the data does not contain replicates. This option can be employed by 
 setting a custom dispersion value, see argument `dispersionValue`.
 
-Please note that this step is optional and not a required part of the analysis
-for candidate mobile sRNA identification but is required for population changes
-difference for both chimeric or non-chimeric systems. 
-
 First lets re-order the dataframe so we are comparing control vs treatment
 (ie. Selfgraft vs Heterograft). When the data is imported, it may not be in the
 correct order/levels for comparison.  
-```{r}
+```{r, message=FALSE}
 controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
 reorder_df <- RNAreorder(sRNA_data_dicercall, controls)
 ```
 
 ```{r DEprep, message = FALSE, warning = FALSE}
-
 # sample conditions in order within dataframe
 groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
             "Heterograft", "Heterograft", "Heterograft")
@@ -1082,24 +1056,18 @@ groups <- c("Selfgraft", "Selfgraft", "Selfgraft",
 sRNA_DESeq2 <- RNAdifferentialAnalysis(data = reorder_df,
                               group = groups,
                               method = "DESeq2")
-
 ```
-<br>
 
 We can summarise the results using `RNAsummary()`:
 
 ```{r}
-
 RNAsummary(sRNA_DESeq2)
-
 ```
 
 How about looking at the sRNA population which are statistically significant:
 
 ```{r}
-
 RNAsummary(sRNA_DESeq2, alpha=0.05)
-
 ```
 
 #### Save output 
@@ -1117,7 +1085,7 @@ following after the underscore:
 - `DicerCall_` : The size of most abundant small RNA size
 - `Count_` : Number of uniquely aligned reads that overlap the locus.
 - `RPM_` : Reads per Million
-- `FPKM` : Fragments Per Kilobase of transcript per Million
+- `FPKM_` : Fragments Per Kilobase of transcript per Million
 - `MajorRNA_` : RNA sequence of the most abundant sRNA in the cluster
 
 As well as other information generated by the analysis steps including:
@@ -1132,9 +1100,7 @@ As well as other information generated by the analysis steps including:
 
 
 ```{r, eval = FALSE}
-
 write.table(sRNA_DESeq2, "./sRNA_core_dataset.txt")
-
 ```
 
 ### Explore sRNA population difference between treatment & control
@@ -1175,10 +1141,8 @@ significant_sRNAs <-  sRNA_DESeq2[sRNA_DESeq2$padjusted < 0.05, ]
 
 Plot the results:
 <br>
-```{r, fig.show="hold"}
-
+```{r, fig.show="hold", message=FALSE}
 p1 <- plotHeatmap(significant_sRNAs, row.names = FALSE)
-
 ```
 
 
@@ -1197,8 +1161,7 @@ however, you may want to only look at sRNA clusters which are statistically
 significant - generated in the previous section. 
 
 
-```{r}
-
+```{r, message=FALSE}
 # select sRNA clusters only found in treatment & not in the control samples
 gained_sRNA <- RNApopulation(data = sRNA_DESeq2, 
                                   conditions = c("heterograft_1", 
@@ -1212,13 +1175,11 @@ gained_sRNA <- RNApopulation(data = sRNA_DESeq2,
 
 # look at number of sRNA cluster only found in treatment 
 nrow(gained_sRNA)
-
 ```
 
 
 Now, the sRNA clusters lost and only produced in the control condition:
-```{r}
-
+```{r, message=FALSE}
 # select sRNA clusters only found in control & not in the treatment samples
 lost_sRNA <- RNApopulation(data = sRNA_DESeq2, 
                                 conditions = c("selfgraft_1", 
@@ -1226,9 +1187,7 @@ lost_sRNA <- RNApopulation(data = sRNA_DESeq2,
                                                "selfgraft_3"))
 # look at number of sRNA cluster only found in control  
 nrow(lost_sRNA)
-
 ```
-<br>
 
 The data here can be manipulated in many ways, you may wish to extract
 statistically significant sRNA clusters within a population to explore 
@@ -1238,18 +1197,17 @@ The plotting functions within the package can be used to display these results,
 specifically `RNAdistribution()` and `plotHeatmap()`. Similarly if you 
 are comparing several different treatments, a venn diagram could be plotted to 
 observe whether any gained or lost populations of sRNA are shared. 
+<br><br>
 
-#### Functional analysis of gained & lost sRNA populations 
+
+#### Functional analysis of gained sRNA populations 
 Now we have identified unique populations produced or not produced in our 
 treatment samples compared to our control samples, we can extract the RNA 
 sequences to undertaken target prediction and then onward to gene ontology 
 enrichment analysis. 
 
-```{r}
-
+```{r, message=FALSE}
 gained_sRNA_sequences <- RNAsequences(gained_sRNA)
-lost_sRNA_sequences <- RNAsequences(lost_sRNA)
-
 ```
 
 Moreover, we can identify genomic features associated with these sRNA clusters 
@@ -1258,26 +1216,14 @@ which are:
 * 1 - unique to the treatment and absent in the control ie. gained
 * 2 - unique to the controls but absent in the treatment ie. lost
 
-```{r, eval=FALSE}
-
+```{r, message=FALSE}
 gained_sRNA_attributes <- RNAattributes(data = gained_sRNA, 
                                         match ="genes",
-                            annotation = merged_annotation)
-
+                            annotation = output_annotation_file)
 ```
 <br>
-There were zero unique sRNA clusters lost due to the treatment, so this will
-generate an error:
-```{r, eval=FALSE}
 
-
-lost_sRNA_attributes <- RNAattributes(data = lost_sRNA, match ="genes",
-                            annotation = merged_annotation)
-```
-
-
-
-## Mobile RNA analysis 
+## Mobile RNA Analysis 
 We identify candidate mobile sRNAs by identifying clusters which are mapped 
 to the foreign/mobile genome. These can be isolated using the `RNAmobile()` 
 function. Then the user can undertake further steps to assist functional 
@@ -1303,7 +1249,6 @@ To consider, use `statistical=TRUE`
 
 
 ```{r , message=FALSE}
-
 # vector of control names
 control_names <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
@@ -1315,16 +1260,6 @@ mobile_sRNA <- RNAmobile(input = "sRNA",
                          genome.ID = "B_",
                          task = "keep", 
                          statistical = FALSE)
-
-## Identify statistically significant potential tomato mobile molecules 
-mobile_sRNA_significant <- RNAmobile(input = "sRNA", 
-                                     data = sRNA_DESeq2, 
-                                     controls = control_names,
-                                     genome.ID = "B_",
-                                     task = "keep", 
-                                     statistical = TRUE) # change this parameter
-
-
 ```
 <br>
 
@@ -1338,126 +1273,99 @@ Here we will plot all potential mobile molecules and those which are
 statistically significant:
 
 ```{r, echo=FALSE}
-cap7 <- "An example heatmap of candidate mobile small RNAs.Where the columns represent the sample replicates and the rows represent the small RNA cluster."
-
-cap8 <- "An example heatmap of candidate mobile small RNAs, which are statistically signifcant (adjusted pvalue < 0.05). Where the columns represent the sample replicates and the rows represent the small RNA cluster."
-
-
+cap7 <- "An example heatmap of candidate mobile small RNAs. Where the columns represent the sample replicates and the rows represent the small RNA cluster."
 
 ```
 
-```{r,fig.cap=cap7, fig.show="hold" }
-
-p10 <- plotHeatmap(mobile_sRNA, row.names = FALSE)
-
+```{r,fig.cap=cap7, fig.show="hold" , message=FALSE}
+p2 <- plotHeatmap(mobile_sRNA, row.names = FALSE)
 ```
 <br>
-
-```{r,fig.cap=cap8, fig.show="hold"}
-p11 <- plotHeatmap(mobile_sRNA_significant, row.names = FALSE)
-
-```
 
 ### Save output 
 
 ```{r, eval = FALSE}
-
 write.table(mobile_sRNA, "./candidate_mobile_sRNAs.txt")
-
 ```
 
 <br>
 
-### Functional analysis for mobile sRNA data
+### Functional analysis of putative mobile sRNA clusters
 At this point in the analysis, the user will have produced a dataframe 
 containing candidate mobile sRNAs. Now, we can extrapolate information to assist 
 the prediction of their targets and role in the biological system. 
 
-We offer three different tools to assist the functional analysis. The first, 
-can be used to identify genomic features associated with the sRNA producing 
-loci associated to each cluster. This function is known as `RNAattributes()`. 
-The second tool does something very similar, it identifies the same overlaps 
-but returns a value stating either the absolute or relative number of sRNA 
-clusters which over overlap with specific genomic features. This function 
-is known as `RNAfeatures()`. Finally, the last tool, called `RNAsequences()` 
-calculates the consensus sRNA sequence for each candidate and calculates the
-potential target DNA sequence. 
+**mobileRNA** offer three different tools to assist the functional analysis. 
+The first, can be used to identify genomic features associated with the sRNA 
+producing loci associated to each cluster. This function is known as 
+`RNAattributes()`. The second tool does something very similar, it identifies 
+the same overlaps but returns a value stating either the absolute or relative 
+number of sRNA clusters which over overlap with specific genomic features. 
+This function is known as `RNAfeatures()`. Finally, the last tool, called 
+`RNAsequences()` calculates the most common sRNA sequence for each candidate 
+and calculates the potential target DNA sequence. 
 
 
-IMPORTANT: Alterations to the genome assemblies by the RNAmergeGenomes()
+**IMPORTANT:** Alterations to the genome assemblies by the `RNAmergeGenomes()`
 function must be replicated in the annotations. A merged annotation with the 
-same amendments can be created with the function RNAmergeAnnotations(). 
+same amendments can be created with the function `RNAmergeAnnotations()`. 
 <br>
 
-
 #### Add genomic attributes to sRNA clusters   
-Each sRNA cluster contains coordinates, these can be matches with coordinates in
+Each sRNA cluster contains coordinates, these can be matched with coordinates in
 an annotation file. A match occurs when the cluster is found within the 
 coordinates of a feature. If there is a match, the function returns the input 
 dataframe with additional fields of information from the annotation file. 
 
-This will enable us to identify the genomic features generating the mobile 
-sRNAs. Here we will only be overlapping the data with genes, 
-and adding a buffer region of 1 kb upstream and downstream of the each gene. 
+This enables users to identify the genomic features producing the mobile 
+sRNAs. Here we will be overlapping the data with genes, and adding a buffer 
+region of 1 kb upstream and downstream of the each gene. 
 
 ```{r, eval=FALSE}
+annotation_file <- system.file("inst/extdata", 
+                                    "prefix_reduced_chr2_Tomato.gff",
+                                    package="mobileRNA")
 
 mobile_attributes <- RNAattributes(data = mobile_sRNA, 
                                       match ="genes",
-                                      annotation = anno2)
-
+                                      annotation = annotation_file)
 ```
 <br>
 
 #### Summarise sRNA cluster overlaps with genomic features 
 Very similar to before, we can find stricter overlaps between our candidate 
 sRNA clusters and genomic features. However, this time we can calculate the 
-relative or absolute number of sRNA clusters which are associated to each type 
-of feature. These include promoter regions, exon, introns, untranslated regions 
-and repeat regions (if, annotation contains repeat regions or supplied 
-additionally).The results can either be displayed in the dataframe as an 
+number of sRNA clusters which are associated to each type of feature. These 
+include promoter regions, exon, introns, untranslated regions and repeat 
+regions.The results can either be displayed in the dataframe as an 
 absolute value or as a percentage of the total:
 
-NOTE: This function look for the exact matches in the locus (chromosome, 
-start and end regions) between the sRNA cluster and the annotation file. 
-
-
 ```{r, eval=FALSE}
-
 mobile_features <- RNAfeatures(data = mobile_sRNA, annotation = anno2)
-
 ```
 <br>
 
 #### Retrieve RNA sequence from mobile sRNA clusters
 To predict the the targets of the mobile sRNA candidates, we need to extract
 the RNA sequence. Here, we introduce the `RNAsequences()` function which
-extrapolates the consensus RNA sequence and also calculate the complementary 
-sequences. It does so by identifying whether the most abundant sRNA is 
-consistent across replicates, and if so, it extracts the RNA sequence and 
-calculates the RNA & DNA complementary sequences, as well as stating the length 
-of the sequence. 
+extrapolates the most common RNA sequence for a cluster and determines the 
+complementary sequences.
 
 Determining how ties are handling will alter the results. If there is a tie 
-between the most abundant sequences within a cluster the user can utilise the 
-`duplicates` parameter to choose whether to set the consensus sequence as NA or 
+between the most common RNA sequences within a cluster the user can utilise the 
+`duplicates` parameter to choose whether to set the RNA sequence as NA or 
 to pick one at random. Similarly, to make the analysis more stringent there is a 
 threshold parameter which can be used to set the minimum number of replicates 
-required to share the sRNA sequence to count as a match. This is supplied to the 
+required to share the RNA sequence to count as a match. This is supplied to the 
 `match.threshold` argument. 
 
-```{r}
-
+```{r, message=FALSE}
 mobile_sequences <- RNAsequences(mobile_sRNA)
-
-
 ```
 <br>
 
-
-#### Save output 
-The output consists of a dataframe consisting of 6 columns and where rows 
-represent each putative sRNA cluster. The columns include:
+The output consists of a dataframe of 6 columns where rows represent each 
+putative sRNA cluster. The columns include:
 
 - `Cluster`: name of sRNA cluster
 - `Match`: whether the RNA sequence is consistent across replicates (either "No", "Yes" or "Duplicate"; where "Duplicate" indicates a tie)
@@ -1468,19 +1376,13 @@ represent each putative sRNA cluster. The columns include:
 
 
 ```{r, eval = FALSE}
-
 write.table(mobile_sequences, "./candidate_mobile_sRNA_sequences.txt")
-
 ```
 
-
-Target prediction tools such as `psRNATarget` can be used (Xinbin Dai, 
-Zhaohong Zhuang and Patrick X. Zhao (2018). psRNATarget: a plant small RNA 
-target analysis server (2017 release). Nucleic Acids Research. 
-doi: 10.1093/nar/gky316). 
-
-For a tool like `psRNATarget`, we can manipulate the output of `RNAsequences()` 
-to match the input style for target prediction using the following code:
+To predict the potential targets in a recipient tissue, a target prediction 
+tool such as `psRNATarget` [@Xinbin2018] can be used. For such a tool, we can 
+manipulate the output of `RNAsequences()` to match the input style for target 
+prediction using the following code:
 
 ```{r, message=FALSE}
 # select the cluster and sequence columns 
@@ -1501,30 +1403,25 @@ Save output:
 # save output 
 write.table(res, file ="./mobile_sRNA_sequences.txt",
             row.names = FALSE, col.names = FALSE, quote = FALSE)
-
 ```
 <br>
 
 Other steps can be take at this stage including alignment of the mobile sRNA 
-sequences to identify consensus sequences. For example this can be undertaken 
-with the R package `bioseq`. 
+sequences to identify consensus sequences. For example, this can be undertaken 
+with the R package `bioseq`:
 
 ```{r, eval = FALSE}
-
 library(bioseq)
 
 mobileRNA_seq <- bioseq::rna(mobile_sequences$Sequence)
-
 bioseq::seq_consensus(mobileRNA_seq)
-
-
 ```
 
 
 
-# Additional features
+# Additional Features
 
-The *mobileRNA* package offers several optional functions to aid analysis. 
+<br>
 
 ## Calculate RPM and Count Means for Specific Samples
 This function calculates the RPM mean and Count mean across specific samples.The 
@@ -1542,17 +1439,254 @@ will be skewed.
 Therefore, depending on your intended output this function could be approached 
 in multiple ways. 
 
-```{r}
-
+```{r, message=FALSE}
 # calculate mean RPM and mean Counts for heterograft samples
 selected_samples <- c("heterograft_1", "heterograft_2", "heterograft_3")
 means <- RNAmean(data = sRNA_DESeq2, conditions = selected_samples)
+```
+<br>
 
+# Appendix 
+
+## Manual sRNA Alignement Pipeline
+If users wish to undertake the alignment step independantly, the manual steps 
+are shown below, of which, will need modifying to suit your files and 
+directory names. 
+
+### Core sRNA Analysis
+#### Step 1 - De novo sRNA analysis
+Here, `ShortStack` [@Axtell2013] aligns the reads (includes multimapped reads) 
+with Bowtie [@Langmead2009] and undertakes de novo sRNA clustering analysis.
+
+*bash scripting*
+```{bash, eval=FALSE} 
+ShortStack \
+--readfile "[fastqfile.fq]" \
+--genomefile "[genomefile.fa]" \
+--threads 6 \
+--mmap u \
+--pad 200 \
+--mincov 0.5 \
+--nohp \
+--outdir "[output_dir]"
+```
+
+#### Step 2 - Build sRNA cluster list 
+Step 2 collates all the sRNA loci information from each sample into a text file.
+
+*R scripting*
+```{r, eval=FALSE}
+# names of samples, represented by folder names produced in previous step
+samples <- c("[sample names]")
+
+# location of output folders from previous step
+dir <- "[output_dir]"
+
+# merge information of the detected de novo sRNA clusters
+gff_alignment <- GenomicRanges::GRangesList()
+for (i in samples) {
+  file_path <- file.path(dir, i, "Results.gff3")
+  if (file.exists(file_path)) {
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
+  } else{
+    Stop("File does not exist:", file_path, "\n")
+  }
+}
+
+gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
+                                    ignore.strand = TRUE)
+
+gff_merged <- as.data.frame(gff_merged)
+colnames(gff_merged)[1] <- "chr"
+if('*' %in% gff_merged$strand){
+    gff_merged <- gff_merged[, -match("strand", colnames(gff_merged))]
+  }
+
+locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
+                                          gff_merged$start,"-", 
+                                          gff_merged$end), 
+                           Cluster = paste0("cluster_", 
+                                            seq_len(nrow(gff_merged))))
+
+# save output to location 
+dir_locifile <- "[output directory]"
+loci_out <- file.path(dir_locifile,"locifile.txt")
+utils::write.table(locifile_txt, file = loci_out, quote = FALSE, 
+                   sep = "\t", row.names = FALSE, col.names = TRUE)
 
 ```
+
+
+#### Step 3 - sRNA clustering    
+Finally, we repeat the sRNA clustering using the de novo sRNA loci list to 
+produce our results. The output folders are used as imput for the `RNAimport()`
+function.
+
+*bash scripting*
+```{bash, eval=FALSE}
+ShortStack \
+--readfile "[fastqfile.fq]" \
+--genomefile "[genomefile.fa]" \
+--locifile "[locifile]"  \
+--threads 6 \
+--mmap u \
+--nohp \
+--pad 200 \
+--mincov 0.5 \
+--outdir "[output_dir_2]"
+```
+<br>
+  
+### Mobile sRNA Analysis
+#### Step 1 - De novo sRNA analysis 
+Here, `Bowtie` [@Langmead2009] aligns the reads (excluding multimappers) and 
+`ShortStack` [@Axtell2013] undertakes de novo sRNA clustering analysis.
+
+*bash scripting*
+```{bash, eval=FALSE}
+#index reference genome 
+bowtie-build --threads 6 [genomefile.fa] [genomefile]
+
+# alignemnt 
+bowtie -p 6 -v 0 -a -m 1 --sam -x [genomefile] [fastqfile.fq] | samtools view -bS | samtools sort -o [outputfile.bam]
+
+# cluster analysis with ShortStack - use the alignment files as input
+ShortStack \
+--bamfile "[outputfile.bam]" \
+--genomefile "[genomefile.fa]" \
+--threads 6 \
+--pad 200 \
+--mincov 0.5 \
+--nohp \
+--outdir "[output_dir]"
+```
+
+#### Step 2 - Build sRNA cluster list 
+Step 2 collates all the sRNA loci information from each sample into a text file.
+
+*R scripting*
+```{r, eval=FALSE}
+# names of samples, represented by folder names produced in previous step
+samples <- c("[sample names]")
+
+# location of output folders from previous step
+dir <- "[output_dir]"
+
+# merge information of the detected de novo sRNA clusters
+gff_alignment <- GenomicRanges::GRangesList()
+for (i in samples) {
+  file_path <- file.path(dir, i, "Results.gff3")
+  if (file.exists(file_path)) {
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
+  } else{
+    Stop("File does not exist:", file_path, "\n")
+  }
+}
+
+gff_merged <- GenomicRanges::reduce(unlist(gff_alignment), 
+                                    ignore.strand = TRUE)
+
+gff_merged <- as.data.frame(gff_merged)
+colnames(gff_merged)[1] <- "chr"
+if('*' %in% gff_merged$strand){
+    gff_merged <- gff_merged[, -match("strand", colnames(gff_merged))]
+  }
+
+locifile_txt <- data.frame(Locus = paste0(gff_merged$chr, ":", 
+                                          gff_merged$start,"-", 
+                                          gff_merged$end), 
+                           Cluster = paste0("cluster_", 
+                                            seq_len(nrow(gff_merged))))
+
+# save output to location 
+dir_locifile <- "[output directory]"
+loci_out <- file.path(dir_locifile,"locifile.txt")
+utils::write.table(locifile_txt, file = loci_out, quote = FALSE, 
+                   sep = "\t", row.names = FALSE, col.names = TRUE)
+```
+
+#### Step 3 - sRNA clustering    
+Finally, we repeat the sRNA clustering using the de novo sRNA loci list to 
+produce our results. The output folders are used as imput for the `RNAimport()`
+function.
+
+*bash scripting*
+```{bash, eval=FALSE}
+ShortStack \
+--bamfile "[outputfile.bam]" \
+--genomefile "[genomefile.fa]" \
+--locifile "[locifile.txt]" \
+--threads 6 \
+--nohp \
+--mincov 0.5 \
+--pad 200 \
+--outdir "[output_dir_2]"
+```
+<br>
+  
+  
+## Manual mRNA Aligment pipeline 
+Below states the manual steps for mRNAseq alignment for mobile mRNA 
+identification. Keep in mind these commands need modifying to suit your files 
+and directory names. 
+
+These steps utilise HISAT2 [@Kim2015] and HTSeq [@Anders2014] OS software. 
+
+If required, index the genome assembly:
+*bash scripting*
+```{bash, eval=FALSE}
+hisat2-build --threads 6 [genomefile.fa] [genomefile]
+```
+
+
+### Single-End Sequencing Reads
+
+*bash scripting*
+```{bash, eval=FALSE}
+# alignment with hisat2
+hist2 -p 6 -x [genomefile] \
+-U [fastqfile_1.fq] | samtools view -bS | samtools sort -o [outputfile.bam]
+
+# raw count with HTSeq
+python -m HTSeq.scripts.count \
+--format=bam  \
+--order=pos \
+--stranded=no \
+--mode=union \
+--nonunique=none \
+--type=mRNA \
+--idattr=Name \
+[outputfile.bam] [annotationfile.gff]
+```
+
+### Pair-End Sequencing Reads 
+
+*bash scripting*
+```{bash ,eval=FALSE}
+# alignment with hisat2
+hist2 -p 6 -x [genomefile] \
+-1 [fastqfile_1.fq] \
+-2 [fastqfile_2.fq] \
+| samtools view -bS | samtools sort -o [outputfile.bam]
+
+# raw count with HTSeq
+python -m HTSeq.scripts.count \
+--format=bam  \
+--order=pos \
+--stranded=no \
+--mode=union \
+--nonunique=none \
+--type=mRNA \
+--idattr=Name \
+[outputfile.bam] [annotationfile.gff]
+```
+
 
 
 # Session Information
 ```{r}
 sessionInfo()
 ```
+<br>
+
+# References
