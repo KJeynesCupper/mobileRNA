@@ -1,0 +1,36 @@
+home:
+  title: "mobileRNA: RNA mobilome & RNA population-scale changes"
+  description: "Explore small RNA or messenger RNA abundance changes between 
+treatment and conditions from NGS data. Plus, identify putative mobile RNA 
+molecules, for example in plant grafting experiments."
+
+url: https://kjeynescupper.github.io/mobileRNA/
+
+deploy:
+  install_metadata: true
+  
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+navbar:
+  structure:
+    left: [intro, reference, vignettes, news]
+    right: [search, github]
+
+components:
+  vignettes:
+   text: Vignettes
+   menu:
+     - text: mobileRNA Manula
+       href: articles/mobileRNA.html
+
+figures:
+  dev: ragg::agg_png
+  dpi: 96
+  dev.args: []
+  fig.ext: png
+  fig.width: 7.2916667
+  fig.height: ~
+  fig.retina: 2
+  fig.asp: 1.618

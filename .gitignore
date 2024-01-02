@@ -6,7 +6,6 @@
 data-raw
 .Rbuildignore
 mobileRNA.Rproj
-_pkgdown.yml
 .RDataTmp1
 .DS_Store
 .RDataTmp
