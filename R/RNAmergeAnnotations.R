@@ -111,10 +111,10 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
     stop("Please specify annotationA; path to GFF file.")
   }
   if (base::missing(output_file) || 
-      !grepl("\\.(gff3)$",output_file)) {
+      !grepl("\\.(gff)$|\\.(gff1)$|\\.(gff2)$|\\.(gff3)$",output_file)) {
     stop("Please specify output_file, a connection to a local directory to write 
-    and save merged annotation. \n Ensure file name with .gff3 extension is 
-    supplied.")
+          and save merged annotation.
+          Ensure file contains suitable GFF extension.")
   }
   # start the progress bar
   pb <- progress::progress_bar$new(

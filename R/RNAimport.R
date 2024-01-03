@@ -31,6 +31,8 @@
 #' @param samples character; vector naming samples correlating
 #' to outputted folders within the `directory` path.
 #' 
+#' @param featuretype character; type of feature. Default is "mRNA", 
+#' only for mRNA data. 
 #'@param FPKM logical; calculate the FPKM for each sample. Default is FALSE. 
 #'
 #'@param analysisType character; either "core" or "mobile" to represent the sRNA
@@ -134,7 +136,8 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
                       analysisType = "mobile",
                       annotation,
                       idattr = "Name", 
-                      FPKM = FALSE) {
+                      FPKM = FALSE, 
+                      featuretype = "mRNA") {
   if (base::missing(input) || !input %in% c("sRNA", "mRNA")) {
     stop("Please state the data-type to the `input` paramter.")
   }
@@ -285,14 +288,15 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     condition <- rowSums(df_final[count_columns])
     filtered_data <-  df_final[rowSums(df_final[count_columns])>0,] 
     # return values
-    message("Complete!")
+    cat("\n")
+    message("---Complete!")
     return(filtered_data)
   } 
   if(input == "mRNA"){
     if (base::missing(annotation)) {
       stop(paste("Please specify a accessable path to a GFF file"))
     }
-    message("Importing mRNA data into R...")
+    message("Importing mRNA data into R:")
     # load data as list
     sample_data <- list()
     file_n  <- 0
@@ -326,12 +330,12 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     
     # add mRNA locus and width etc
     annotation_file <- rtracklayer::import(annotation)
-    gene_columns <- which(sapply(elementMetadata(annotation_file) , function(x) any(grepl("^mRNA$", x))))
-    gene_col_name <- names(elementMetadata(annotation_file))[gene_columns]
-    genes_info <- as.data.frame(subset(annotation_file, type == "mRNA"))
+    #gene_columns <- which(sapply(elementMetadata(annotation_file) , function(x) any(grepl("^mRNA$", x))))
+    #gene_col_name <- names(elementMetadata(annotation_file))[gene_columns]
+    #gene_columns <-subset(annotation_file, type %in% "mRNA")
+    genes_info <- as.data.frame(subset(annotation_file, type == featuretype))
     Locus <- paste0(genes_info$seqname, ":",genes_info$start,"-",
                     genes_info$end)
-    
     genes_info <- cbind(Locus, genes_info)
     colnames(genes_info)[colnames(genes_info) %in% idattr] <- "mRNA"
     # merge gene list with annotation info. 
@@ -394,13 +398,12 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     
     mRNA_information$SampleCounts <- SampleCounts_vals
     # remove rows with
-    if (tidy){
       mRNA_information <- mRNA_information %>%
         dplyr::filter(SampleCounts != 0)
-    }
-    message("Complete!")
+      cat("\n")
+    message("---Complete!")
+    return(as.data.frame(mRNA_information))
     
-    return(mRNA_information)
   }
 }
 

@@ -11,7 +11,8 @@ RNAimport(
   analysisType = "mobile",
   annotation,
   idattr = "Name",
-  FPKM = FALSE
+  FPKM = FALSE,
+  featuretype = "mRNA"
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ parts of the same  feature. The feature ID is used to identity the counts in
 the output table. Default is "Name". Only for mRNA data.}
 
 \item{FPKM}{logical; calculate the FPKM for each sample. Default is FALSE.}
+
+\item{featuretype}{character; type of feature. Default is "mRNA",
+only for mRNA data.}
 }
 \value{
 \strong{For sRNAseq:}
