@@ -81,10 +81,10 @@ create a merged genome annotation,that you treat the input references in the
 same way.
 }
 \examples{
-fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", 
+fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", 
 package="mobileRNA")
 
-fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa",
+fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa.gz",
 package="mobileRNA")
 
 

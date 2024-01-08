@@ -55,7 +55,7 @@ data("sRNA_data")
 
 attributes_df <- RNAattributes(data = sRNA_data,
                     annotation = system.file("extdata",
-                    "prefix_reduced_chr2_Tomato.gff", package="mobileRNA"),
+                    "prefix_reduced_chr2_Tomato.gff.gz", package="mobileRNA"),
                     match = "genes")
 
 }

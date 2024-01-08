@@ -57,7 +57,7 @@ sRNAs.
 data("sRNA_data")
 features <- RNAfeatures(data = sRNA_data,
                        annotation = system.file("extdata",
-                       "reduced_chr2_Tomato.gff", package="mobileRNA"))
+                       "reduced_chr2_Tomato.gff.gz", package="mobileRNA"))
                        
 }
 \seealso{

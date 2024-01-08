@@ -54,8 +54,6 @@ colours and shapes}
 \item{\code{\link{RNAfeatures}}}{Overlaps the sRNA clusters with a GFF
 annotation file and calculates the percentage of clusters which overlap with
 specific genomic features}
-\item{\code{\link{RNAmean}}}{Calculate mean RPM and mean raw count across
-given samples}
 \item{\code{\link{RNAdf2se}}}{Convert \code{mobileRNA} dataframe to
 a SummarizedExperiment object }
 }
