@@ -7,19 +7,29 @@
 .remove_mapping_errors <- function(data, controls) {
   class_colnames  <- data %>% dplyr::select(paste0("Count_", controls))
   x <- c()
-  for (j in seq_len(nrow(data))){
-    if(rowSums(class_colnames[j,])>0){
-      x <- c(x,j)
-    }else 
-      x <- c(x)
-  }
+  if (length(colnames(class_colnames)) > 1){
+    for (j in seq_len(nrow(data))){
+      if(rowSums(class_colnames[j,])>0){
+        x <- c(x,j)
+      }else 
+        x <- c(x)
+    }
+  } else
+    if(length(colnames(class_colnames)) == 1){
+      x <- c()
+      for (k in seq_len(nrow(data)) ){
+        if(stats::na.omit(as.numeric(data[k,colnames(class_colnames)],
+                                     na.rm=TRUE))!= 0){
+          x <- c(x,k)
+        }
+      }
+    }
   if(is.null(x)){
     data <- data
   } else
     data <- data[-x,]
   return(data)
 }
-
 ################ Remove mapping errors  #########################
 .remove_mapping_errors_V2 <- function(data,  controls, genome.ID) {
     if (base::missing(controls) || !base::inherits(controls, "character")) {
