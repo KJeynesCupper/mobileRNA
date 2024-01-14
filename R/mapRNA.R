@@ -60,10 +60,11 @@
 #' options. Where "u" means only uniquely-aligned reads are used as 
 #' weights for placement of multi-mapped reads. Where "f" means fractional 
 #' weighting scheme for placement of multi-mapped reads and "r" mean 
-#' multi-mapped read placement is random. While for mobile sRNAseq, it is 
-#' important to use "n", to not consider multi-mapped reads, only unique reads 
-#' as we cannot distinguish which genome the reads mapped to multiple locations
-#' in. While the mRNA pipeline only uses uniquely mapped reads. 
+#' multi-mapped read placement is random. For core mRNA analysis, to include 
+#' multimapped reads, use any parameter, other than "n". While for mobile sRNA 
+#' or mRNA, it is important to use "n", to not consider multi-mapped reads, 
+#' only unique reads as we cannot distinguish which genome the reads mapped to 
+#' multiple locations in. 
 #' 
 #' @param dicermin integer; the minimum size in nucleotides of a valid small 
 #' RNA. This option sets the bounds to discriminate dicer-derived small RNA loci 
@@ -286,6 +287,7 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
         stop("SAMtools application :
     --- SAMtools is not installed within conda environment.")
       }
+  
       mRNA_map(sampleData,
                input_files_dir, 
                output_dir,
@@ -295,6 +297,7 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
                threads,  
                order ,
                a, 
+               mmap,
                stranded,
                mode,
                nonunique,

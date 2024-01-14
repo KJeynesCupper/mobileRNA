@@ -687,7 +687,8 @@ mRNA_map <- function(sampleData,
                      genomefile, 
                      condaenv,
                      annotationfile,
-                     threads,  
+                     threads, 
+                     mmap,
                      order ,
                      a, 
                      stranded,
@@ -799,6 +800,38 @@ mRNA_map <- function(sampleData,
         system(pairEndmap_cmd, intern=FALSE)
         stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
         system(stateline, intern=FALSE)
+        # if unique only:
+        if(mmap == "n"){
+          out <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads1.bam"))
+          unique_reads <- c("samtools view", shQuote(bam), "| grep", 
+                            c("NH:i:1"),">", shQuote(out))
+          unique_reads <- paste(unique_reads,collapse = " ")
+          unique_reads <- gsub("^ *| *$", "", unique_reads)
+          system(unique_reads, intern=FALSE)
+          
+          # reheader
+          header <- file.path(unqiuefolder, paste0(sample_name,"_header.txt"))
+          reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
+          reheader1 <- paste(reheader1,collapse = " ")
+          reheader1 <- gsub("^ *| *$", "", reheader1)
+          system(reheader1, intern=FALSE)
+          
+          bam_rce <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads.bam"))
+          reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
+          reheader2 <- paste(reheader2,collapse = " ")
+          reheader2 <- gsub("^ *| *$", "", reheader2)
+          system(reheader2, intern=FALSE)
+          
+          # remove truncated: 
+          rmtrunc <- c("rm", shQuote(out))
+          rmtrunc <- paste(rmtrunc,collapse = " ")
+          rmtrunc <- gsub("^ *| *$", "", rmtrunc)
+          system(rmtrunc, intern=FALSE)
+          
+        } else 
+          if (mmap != "n"){
+            bam_rce <- bam
+          }
         # counts --- 
         count_file <-file.path(unqiuefolder, "Results.txt")
         HTseq_cmd <- c("python -m HTSeq.scripts.count", " ",
@@ -810,7 +843,7 @@ mRNA_map <- function(sampleData,
                        "--nonunique=",shQuote(nonunique)," ",
                        "--type=",shQuote(type)," ",
                        "--idattr=", shQuote(idattr), " ",
-                       shQuote(bam), " ",
+                       shQuote(bam_rce), " ",
                        shQuote(annotationfile), " ",
                        " > ", shQuote(count_file),
                        " 2>> ", shQuote(stats))
@@ -885,6 +918,38 @@ mRNA_map <- function(sampleData,
      system(singleEndmap, intern=FALSE)
      stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
      system(stateline, intern=FALSE)
+     
+     if(mmap == "n"){
+       out <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads1.bam"))
+       unique_reads <- c("samtools view", shQuote(bam), "| grep", 
+                         c("NH:i:1"),">", shQuote(out))
+       unique_reads <- paste(unique_reads,collapse = " ")
+       unique_reads <- gsub("^ *| *$", "", unique_reads)
+       system(unique_reads, intern=FALSE)
+       
+       # reheader
+       header <- file.path(unqiuefolder, paste0(sample_name,"_header.txt"))
+       reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
+       reheader1 <- paste(reheader1,collapse = " ")
+       reheader1 <- gsub("^ *| *$", "", reheader1)
+       system(reheader1, intern=FALSE)
+       
+       bam_rce <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads.bam"))
+       reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
+       reheader2 <- paste(reheader2,collapse = " ")
+       reheader2 <- gsub("^ *| *$", "", reheader2)
+       system(reheader2, intern=FALSE)
+       
+       # remove truncated: 
+       rmtrunc <- c("rm", shQuote(out))
+       rmtrunc <- paste(rmtrunc,collapse = " ")
+       rmtrunc <- gsub("^ *| *$", "", rmtrunc)
+       system(rmtrunc, intern=FALSE)
+       
+     } else 
+       if (mmap != "n"){
+         bam_rce <- bam
+       }
      # counts --- 
      count_file <-file.path(unqiuefolder, "Results.txt")
      HTseq_cmd <- c("python -m HTSeq.scripts.count"," ", 
@@ -895,7 +960,7 @@ mRNA_map <- function(sampleData,
                     "--nonunique=",shQuote(nonunique), " ", 
                     "--type=",shQuote(type)," ", 
                     "--idattr=", shQuote(idattr)," ", 
-                    shQuote(bam), " ",  shQuote(annotationfile)," ",  
+                    shQuote(bam_rce), " ",  shQuote(annotationfile)," ",  
                     " > ", shQuote(count_file),  " 2>> ", shQuote(stats))
      HTseq_cmd <- paste(HTseq_cmd,collapse = "")
      HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
