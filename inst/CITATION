@@ -1,9 +1,9 @@
-citEntry(entry="Unpublished",
+bibentry(bibtype="Unpublished",
 author = personList(as.person("Katie Jeynes-Cupper"),
                               as.person("Marco Catoni")),
 	year = "2023",
 	title = "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes.",
-	note = "Unpublished", 
+	note = "Unpublished", doi ="",
 	textVersion = paste("Katie Jeynes-Cupper, Marco Catoni.","(2023)",
 	 "mobileRNA: Explore sRNAs or mRNAs mobilome & population-scale changes")
 )
