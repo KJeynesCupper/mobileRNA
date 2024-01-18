@@ -50,12 +50,15 @@
 #'  a SummarizedExperiment object }
 #' }
 #'
+#' @rdname mobileRNA-package
+#' @name mobileRNA
+#' @keywords internal
+#' @aliases mobileRNA-package mobileRNA
+#' @docType package
 #' @author
 #' Katie Jeynes-Cupper \email{kej031@@student.bham.ac.uk},
 #' Marco Catoni \email{m.catoni@@bham.ac.uk}
 #' Maintainer: Katie Jeynes-Cupper \email{kej031@@student.bham.ac.uk}
-#' @name mobileRNA
-#' @docType _PACKAGE
 #' @seealso See \code{vignette("mobileRNA", package = "mobieRNA")} for an 
 #' overview of the package.
 NULL
@@ -96,5 +99,10 @@ NULL
 #'  This data was imported and organised by the [RNAimport()] function. 
 #' @examples
 #'  data("mRNA_data")
+NULL
+
+"_PACKAGE"
+## usethis namespace: start
+## usethis namespace: end
 NULL
 
