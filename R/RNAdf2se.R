@@ -35,11 +35,11 @@
 #'se <- RNAdf2se(input = "sRNA", data = sRNA_data)
 #'
 #'@export
-#'@importFrom SummarizedExperiment "SummarizedExperiment"
-#'@importFrom GenomicRanges "GRanges"
-#'@importFrom IRanges "IRanges"
-#'@importFrom S4Vectors "DataFrame"
-#'@importFrom dplyr "select"
+#'@importFrom SummarizedExperiment SummarizedExperiment
+#'@importFrom GenomicRanges GRanges
+#'@importFrom IRanges IRanges
+#'@importFrom S4Vectors DataFrame
+#'@importFrom dplyr select
 RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 

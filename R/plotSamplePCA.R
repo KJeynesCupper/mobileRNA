@@ -63,23 +63,23 @@
 #'
 #'
 #' @export
-#' @importFrom dplyr "select"
-#' @importFrom DESeq2 "DESeqDataSetFromMatrix"
-#' @importFrom SimDesign "quiet"
-#' @importFrom stats "relevel"
-#' @importFrom DESeq2 "estimateSizeFactors"
-#' @importFrom DESeq2 "rlog"
-#' @importFrom DESeq2 "plotPCA"
-#' @importFrom ggrepel "geom_label_repel"
-#' @importFrom ggplot2 "aes"
-#' @importFrom ggplot2 "labs"
-#' @importFrom ggplot2 "xlab"
-#' @importFrom ggplot2 "ylab"
-#' @importFrom ggplot2 "coord_fixed"
-#' @importFrom ggrepel "geom_text_repel"
-#' @importFrom ggplot2 "ggplot"
-#' @importFrom ggplot2 "geom_point"
-#' @importFrom ggplot2 "scale_color_manual"
+#' @importFrom dplyr select
+#' @importFrom DESeq2 DESeqDataSetFromMatrix
+#' @importFrom SimDesign quiet
+#' @importFrom stats relevel
+#' @importFrom DESeq2 estimateSizeFactors
+#' @importFrom DESeq2 rlog
+#' @importFrom DESeq2 plotPCA
+#' @importFrom ggrepel geom_label_repel
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' @importFrom ggplot2 coord_fixed
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 scale_color_manual
 plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
                           legend.title = "Conditions", size.ratio = 2, 
                           colours = NULL, point.shape = TRUE, 

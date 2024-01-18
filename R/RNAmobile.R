@@ -85,11 +85,11 @@
 #'
 #'
 #' @export
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "filter"
-#' @importFrom dplyr "select"
-#' @importFrom tidyselect "starts_with"
-#' @importFrom dplyr "case_when"
+#' @importFrom dplyr %>%
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom tidyselect starts_with
+#' @importFrom dplyr case_when
 RNAmobile <- function(input = c("sRNA", "mRNA"), data, controls, genome.ID,
                       task = NULL, statistical = FALSE, alpha = 0.1, 
                       threshold = NULL){

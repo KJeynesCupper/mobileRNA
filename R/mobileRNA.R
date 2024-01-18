@@ -55,7 +55,7 @@
 #' Marco Catoni \email{m.catoni@@bham.ac.uk}
 #' Maintainer: Katie Jeynes-Cupper \email{kej031@@student.bham.ac.uk}
 #' @name mobileRNA
-#' @docType package
+#' @docType _PACKAGE
 #' @seealso See \code{vignette("mobileRNA", package = "mobieRNA")} for an 
 #' overview of the package.
 NULL

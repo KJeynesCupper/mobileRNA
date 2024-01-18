@@ -99,10 +99,10 @@
 #'                                   tidy=TRUE)
 #'
 #' @export
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "mutate"
-#' @importFrom dplyr "filter"
-#' @importFrom tidyr "replace_na"
+#' @importFrom dplyr %>%
+#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
+#' @importFrom tidyr replace_na
 RNAdicercall <- function(data, conditions = NULL, ties.method = NULL, 
                          tidy = FALSE, chimeric = FALSE, controls = NULL, 
                          genome.ID = NULL) {

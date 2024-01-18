@@ -120,22 +120,22 @@
 #'}
 #'
 #' @export
-#' @importFrom data.table "data.table"
-#' @importFrom data.table "setnames"
-#' @importFrom utils "read.table"
-#' @importFrom data.table "fread"
-#' @importFrom dplyr "mutate"
-#' @importFrom dplyr "across"
-#' @importFrom dplyr "contains"
-#' @importFrom dplyr "rename"
-#' @importFrom tidyr "replace_na"
-#' @importFrom data.table ":="
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "filter"
-#' @importFrom dplyr "if_any"
-#' @importFrom dplyr "where"
-#' @importFrom stats "setNames"
-#' @importFrom utils "flush.console"
+#' @importFrom data.table data.table
+#' @importFrom data.table setnames
+#' @importFrom utils read.table
+#' @importFrom data.table fread
+#' @importFrom dplyr mutate
+#' @importFrom dplyr across
+#' @importFrom dplyr contains
+#' @importFrom dplyr rename
+#' @importFrom tidyr replace_na
+#' @importFrom data.table :=
+#' @importFrom dplyr %>%
+#' @importFrom dplyr filter
+#' @importFrom dplyr if_any
+#' @importFrom dplyr where
+#' @importFrom stats setNames
+#' @importFrom utils flush.console
 RNAimport <- function(input = c("sRNA", "mRNA"), 
                       directory, 
                       samples, 

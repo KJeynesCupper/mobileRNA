@@ -28,12 +28,12 @@
 #' plotSampleDistance(sRNA_data)
 #'
 #' @export
-#' @importFrom DESeq2 "rlog"
-#' @importFrom stats "dist"
-#' @importFrom pheatmap "pheatmap"
-#' @importFrom dplyr "select"
-#' @importFrom grDevices "colorRampPalette"
-#' @importFrom RColorBrewer "brewer.pal"
+#' @importFrom DESeq2 rlog
+#' @importFrom stats dist
+#' @importFrom pheatmap pheatmap
+#' @importFrom dplyr select
+#' @importFrom grDevices colorRampPalette
+#' @importFrom RColorBrewer brewer.pal
 plotSampleDistance <- function(data, 
                                colours = grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(9,"Blues")))(255), 
                                vst = FALSE){

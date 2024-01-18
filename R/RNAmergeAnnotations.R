@@ -89,12 +89,12 @@
 #' merged_anno <- RNAmergeAnnotations(annotationA = anno1, annotationB = anno2,
 #'                                    output_file = output_file)
 #'                                    
-#' @importFrom rtracklayer "import"
-#' @importFrom rtracklayer "export"
-#' @importFrom GenomicRanges "GRangesList"
-#' @importFrom progress "progress_bar"
-#' @importFrom S4Vectors "elementMetadata" 
-#' @importFrom GenomeInfoDb "seqlevels"
+#' @importFrom rtracklayer import
+#' @importFrom rtracklayer export
+#' @importFrom GenomicRanges GRangesList
+#' @importFrom progress progress_bar
+#' @importFrom S4Vectors elementMetadata 
+#' @importFrom GenomeInfoDb seqlevels
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,

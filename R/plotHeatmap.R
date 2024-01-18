@@ -57,12 +57,12 @@
 #'
 #'
 #' @export
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "select"
-#' @importFrom tidyselect "starts_with"
-#' @importFrom pheatmap "pheatmap"
-#' @importFrom grDevices "colorRampPalette"
-#' @importFrom RColorBrewer "brewer.pal"
+#' @importFrom dplyr %>%
+#' @importFrom dplyr select
+#' @importFrom tidyselect starts_with
+#' @importFrom pheatmap pheatmap
+#' @importFrom grDevices colorRampPalette
+#' @importFrom RColorBrewer brewer.pal
 plotHeatmap <- function (data, value = "RPM", pseudocount = 1e-6, 
                          colours = grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "Blues"))(100) ,
                          cluster = TRUE, scale = "none", 

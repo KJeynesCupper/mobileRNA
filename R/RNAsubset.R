@@ -56,8 +56,8 @@
 #'sRNA_2122 <- RNAsubset(sRNA_data_dicercall, class = c(21, 22))
 #'
 #' @export
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "filter"
+#' @importFrom dplyr %>%
+#' @importFrom dplyr filter
 
 RNAsubset <- function(data, class,  statistical=FALSE, alpha = 0.05){
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {

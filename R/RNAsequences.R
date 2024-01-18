@@ -76,10 +76,10 @@
 #'
 #'mobile_sequences <- RNAsequences(sRNA_data_mobile)
 #'
-#'@importFrom dplyr "select"
-#'@importFrom dplyr "starts_with"
-#'@importFrom dplyr "where"
-#'@importFrom dplyr "mutate"
+#'@importFrom dplyr select
+#'@importFrom dplyr starts_with
+#'@importFrom dplyr where
+#'@importFrom dplyr mutate
 #'@export
 RNAsequences <- function(data, original = FALSE, match.threshold = 1, 
                          duplicates  = "random", tidy = FALSE){

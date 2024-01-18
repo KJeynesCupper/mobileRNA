@@ -61,20 +61,20 @@
 #'                             group = groups,
 #'                             method = "edgeR" )
 #' @export
-#' @importFrom DESeq2 "results"
-#' @importFrom DESeq2 "DESeq"
-#' @importFrom stats "relevel"
-#' @importFrom edgeR "exactTest"
-#' @importFrom stats "p.adjust"
-#' @importFrom dplyr "select"
-#' @importFrom tidyselect "starts_with"
-#' @importFrom dplyr "mutate_at"
-#' @importFrom tidyr "replace_na"
-#' @importFrom DESeq2 "DESeqDataSetFromMatrix"
-#' @importFrom DESeq2 "estimateSizeFactors"
-#' @importFrom edgeR "DGEList"
-#' @importFrom edgeR "calcNormFactors"
-#' @importFrom edgeR "estimateDisp"
+#' @importFrom DESeq2 results
+#' @importFrom DESeq2 DESeq
+#' @importFrom stats relevel
+#' @importFrom edgeR exactTest
+#' @importFrom stats p.adjust
+#' @importFrom dplyr select
+#' @importFrom tidyselect starts_with
+#' @importFrom dplyr mutate_at
+#' @importFrom tidyr replace_na
+#' @importFrom DESeq2 DESeqDataSetFromMatrix
+#' @importFrom DESeq2 estimateSizeFactors
+#' @importFrom edgeR DGEList
+#' @importFrom edgeR calcNormFactors
+#' @importFrom edgeR estimateDisp
 
 RNAdifferentialAnalysis <- function(data, group, 
                                     method = c("edgeR", "DESeq2"),

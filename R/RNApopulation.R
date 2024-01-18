@@ -65,10 +65,10 @@
 #'                                                 "heterograft_2", 
 #'                                                 "heterograft_3"))
 #' @export
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "filter"
-#' @importFrom dplyr "select"
-#' @importFrom tidyselect "starts_with"
+#' @importFrom dplyr %>%
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom tidyselect starts_with
 #' @importFrom stats na.omit
 
 RNApopulation <- function(data,conditions,statistical = FALSE,alpha = 0.05,

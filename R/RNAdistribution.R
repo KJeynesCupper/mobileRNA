@@ -95,35 +95,35 @@
 #'p6 <- RNAdistribution(data = sRNA_data_dicercall, style = "consensus")
 #'
 #' @export
-#' @importFrom BiocGenerics "grep"
-#' @importFrom dplyr "%>%"
-#' @importFrom dplyr "select"
-#' @importFrom dplyr "count"
-#' @importFrom dplyr "mutate"
-#' @importFrom tidyselect "all_of"
-#' @importFrom data.table "setDT"
-#' @importFrom ggplot2 "ggplot"
-#' @importFrom ggplot2 "aes_string"
-#' @importFrom ggplot2 "geom_bar"
-#' @importFrom ggplot2 "labs"
-#' @importFrom ggplot2 "aes"
-#' @importFrom ggplot2 "guides"
-#' @importFrom ggplot2 "guide_legend"
-#' @importFrom ggplot2 "unit"
-#' @importFrom ggplot2 "element_text"
-#' @importFrom ggplot2 "element_blank"
-#' @importFrom ggplot2 "element_line"
-#' @importFrom ggplot2 "element_rect"
-#' @importFrom ggplot2 "margin"
-#' @importFrom tidyr "gather"
-#' @importFrom data.table "melt"
-#' @importFrom ggplot2 "facet_wrap"
-#' @importFrom ggplot2 "theme_classic"
-#' @importFrom ggplot2 "geom_point"
-#' @importFrom ggplot2 "geom_line"
-#' @importFrom ggplot2 "xlab"
-#' @importFrom ggplot2 "ylab"
-#' @importFrom ggplot2 "labs"
+#' @importFrom BiocGenerics grep
+#' @importFrom dplyr %>%
+#' @importFrom dplyr select
+#' @importFrom dplyr count
+#' @importFrom dplyr mutate
+#' @importFrom tidyselect all_of
+#' @importFrom data.table setDT
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes_string
+#' @importFrom ggplot2 geom_bar
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 guides
+#' @importFrom ggplot2 guide_legend
+#' @importFrom ggplot2 unit
+#' @importFrom ggplot2 element_text
+#' @importFrom ggplot2 element_blank
+#' @importFrom ggplot2 element_line
+#' @importFrom ggplot2 element_rect
+#' @importFrom ggplot2 margin
+#' @importFrom tidyr gather
+#' @importFrom data.table melt
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' @importFrom ggplot2 labs
 #'
 RNAdistribution  <- function (data, samples = NULL, style, 
                               facet = TRUE, facet.arrange = 3, colour = "black", 

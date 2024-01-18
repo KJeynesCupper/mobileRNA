@@ -86,8 +86,8 @@
 #' output_file = output_file)
 #' 
 #' 
-#' @importFrom Biostrings "readDNAStringSet"
-#' @importFrom Biostrings "writeXStringSet"
+#' @importFrom Biostrings readDNAStringSet
+#' @importFrom Biostrings writeXStringSet
 #' @importFrom BiocParallel bplapply
 #' @importFrom progress progress_bar
 #' @export

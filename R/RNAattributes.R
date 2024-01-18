@@ -38,19 +38,19 @@
 #'
 #'
 #' @export
-#' @importFrom rtracklayer "import"
-#' @importFrom GenomicRanges "GRanges"
-#' @importFrom GenomicRanges "findOverlaps"
-#' @importFrom S4Vectors "queryHits"
-#' @importFrom S4Vectors "subjectHits"
-#' @importFrom dplyr "mutate"
-#' @importFrom rlang "sym"
-#' @importFrom dplyr "select_if"
-#' @importFrom IRanges "IRanges"
-#' @importFrom S4Vectors "mcols" 
-#' @importFrom IRanges "ranges"
-#' @importFrom S4Vectors "elementMetadata"
-#' @importFrom GenomeInfoDb "seqnames"
+#' @importFrom rtracklayer import
+#' @importFrom GenomicRanges GRanges
+#' @importFrom GenomicRanges findOverlaps
+#' @importFrom S4Vectors queryHits
+#' @importFrom S4Vectors subjectHits
+#' @importFrom dplyr mutate
+#' @importFrom rlang sym
+#' @importFrom dplyr select_if
+#' @importFrom IRanges IRanges
+#' @importFrom S4Vectors mcols 
+#' @importFrom IRanges ranges
+#' @importFrom S4Vectors elementMetadata
+#' @importFrom GenomeInfoDb seqnames
 #' @examples
 #'  # load data 
 #' data("sRNA_data")

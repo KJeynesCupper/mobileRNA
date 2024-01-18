@@ -47,19 +47,19 @@
 #'                        annotation = system.file("extdata",
 #'                        "reduced_chr2_Tomato.gff.gz", package="mobileRNA"))
 #'                        
-#'@importFrom rtracklayer "import"
-#'@importFrom GenomicRanges "setdiff"
-#'@importFrom stats "start"
-#'@importFrom stats "end"
-#'@importFrom BiocGenerics "strand"
-#'@importFrom dplyr "select"
-#'@importFrom dplyr "mutate"
-#'@importFrom dplyr "filter"
-#'@importFrom GenomicRanges "makeGRangesFromDataFrame"
-#'@importFrom scales "label_percent"
-#'@importFrom dplyr "%>%"
-#'@importFrom IRanges "overlapsAny"
-#'@importFrom BiocGenerics "width"
+#'@importFrom rtracklayer import
+#'@importFrom GenomicRanges setdiff
+#'@importFrom stats start
+#'@importFrom stats end
+#'@importFrom BiocGenerics strand
+#'@importFrom dplyr select
+#'@importFrom dplyr mutate
+#'@importFrom dplyr filter
+#'@importFrom GenomicRanges makeGRangesFromDataFrame
+#'@importFrom scales label_percent
+#'@importFrom dplyr %>%
+#'@importFrom IRanges overlapsAny
+#'@importFrom BiocGenerics width
 #'@export
 RNAfeatures <- function(data, annotation,
                         repeats = NULL,

@@ -174,7 +174,7 @@
 #' mmap = "n")
 #' }
 #' 
-#' @importFrom reticulate "use_condaenv" 
+#' @importFrom reticulate use_condaenv 
 #' @importFrom GenomicRanges GRangesList
 #' @importFrom rtracklayer import.gff
 #' @importFrom GenomicRanges reduce
