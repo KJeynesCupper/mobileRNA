@@ -159,7 +159,7 @@ Please ensure all OS software is installed within a Conda environment.
 See appendix of vignette for manual pipeline. Alignment statistics are
 reported for each analysis.
 
-** For sRNA analysis**
+\strong{For sRNA analysis}
 The function invokes a number of OS commands, and is dependent
 on the installation of \code{ShortStack} (>= 4.0) with Conda. Please note that
 \code{ShortStack} is only compatible with Linux and Mac operating systems.
@@ -173,7 +173,8 @@ The alignment step aligns and clusters each sample to the genome reference
 along with the file containing the de novo sRNA clusters. The final reports
 are imported into R using \code{\link[=RNAimport]{RNAimport()}}.
 
-** For mRNA analysis**
+\strong{For mRNA analysis}
+
 The function invokes a number of OS commands, and is dependent
 on the installation of \code{HISAT2},\code{HTSeq} and \code{SAMtools} with Conda.
 The pipeline can undertake single- or pair-end analysis, and to do so
@@ -197,8 +198,8 @@ mmap = "n")
 
 }
 \references{
-\url{https://github.com/MikeAxtell/ShortStack},
-\url{https://anaconda.org/bioconda/hisat2},
-\url{https://htseq.readthedocs.io/en/master/install.html},
-\url{https://anaconda.org/bioconda/samtools}
+ShortStack \url{https://github.com/MikeAxtell/ShortStack},
+HISAT2 \url{https://anaconda.org/bioconda/hisat2},
+HTSeq \url{https://htseq.readthedocs.io/en/master/install.html},
+SAMtools \url{https://anaconda.org/bioconda/samtools}
 }

@@ -15,8 +15,8 @@
 #'
 #'
 #' As default, the function as a prefix to chromosomes and separate the original
-#' chromosome name and the prefix with an understore ("_"). 
-#' It will rename the chromosome names in `annotationA`to "A_". For example,
+#' chromosome name and the prefix with an understore. 
+#' It will rename the chromosome names in `annotationA` to "A_". For example,
 #'  A_0, A_1, A_2 etc. To set a custom chromosome name for `annotationA` alter 
 #'  the argument \code{abbreviationAnnoA}. While, for
 #' `annotationB` as default the chromosome names will be named "B_", 
@@ -32,7 +32,7 @@
 #'
 #'
 #'
-#'*IMPORTANT:* The genome reference and annotation of a species
+#'**IMPORTANT:** The genome reference and annotation of a species
 #'must have chromosomes with matching names. It is critical that if you used
 #'the [mobileRNA::RNAmergeGenomes()] function to to create a merged reference
 #'genome,that you treat the input annotations in the same way.

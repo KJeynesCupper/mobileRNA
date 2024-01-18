@@ -41,7 +41,7 @@ as genes, repeats, introns, exons.
 \description{
 Calculates the absolute or relative number of sRNA clusters
 which overlap with genomic features, including promoter regions, repeat
-regions, exons, introns, and 3'/'5 untranslated regions.
+regions, exons, introns, and untranslated regions.
 }
 \details{
 The function calculates the number or percentage of sRNA dicer-derived

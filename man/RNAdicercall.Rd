@@ -49,7 +49,7 @@ plus, two additional columns of data:
 
 The first column, \code{DicerCounts} contains the number of replicates which
 contributed to defining the dicer-derived sRNA class. This can be
-utilised within the \code{RNAmobile} function as a threshold parameter.
+utilised within the \code{\link[=RNAmobile]{RNAmobile()}} function as a threshold parameter.
 While, utilising \code{exclude} ties methods, the \code{DicerCounts} value for a tie
 will be 0 as no consensus classification was concluded. While, if the majority
 of replicates contributed unclassified for a cluster, the \code{DicerCounts} value

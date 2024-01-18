@@ -63,8 +63,7 @@ controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 reorder_df <- RNAreorder(sRNA_data, controls)
 
 # sample conditions.
-groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
-           "Heterograft", "Heterograft", "Heterograft")
+groups <- c("Selfgraft", "Selfgraft", "Selfgraft", "Heterograft", "Heterograft", "Heterograft")
 
 
 ## Differential analysis: DEseq2 method

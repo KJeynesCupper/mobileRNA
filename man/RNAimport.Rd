@@ -46,11 +46,11 @@ only for mRNA data.}
 \value{
 \strong{For sRNAseq:}
 A dataframe where rows represent sRNA clusters and columns represent
-replicate information. Replicate information includes Dicercall, Counts,
-and MajorRNA sequence. Each replicate information is distinguishable as
-the replicate name is joined as a suffix to each column name. For example, for
-a sample called "Sample1", the columns will include DicerCall_Sample1,
-Count_Sample1, MajorRNA_Sample1 and RPM_Sample1
+replicate information extracted from the ShortStack output. Replicate
+information includes Dicercall, Counts, and MajorRNA sequence. Each replicate
+information is distinguishable as the replicate name is joined as a suffix to
+each column name. For example, for a sample called "Sample1", the columns will
+include DicerCall_Sample1, Count_Sample1, MajorRNA_Sample1 and RPM_Sample1.
 
 The breakdown of each column:
 \itemize{
@@ -68,9 +68,9 @@ The breakdown of each column:
 
 \strong{For mRNAseq:}
 A dataframe where rows represent genes and columns represent replicate
-information. Replicate information includes Counts and FPKM.  For example, for
-a sample called "Sample1", the columns will include Count_Sample1, and
-FPKM_Sample1
+information extracted from HTseq result. Replicate information includes Counts
+and FPKM.  For example, for a sample called "Sample1", the columns will
+include Count_Sample1, and FPKM_Sample1.
 
 The breakdown of each column:
 \itemize{
@@ -125,12 +125,16 @@ df_mRNA <- RNAimport(input = "mRNA",
                      directory = "./analysis/mRNA_mapping_results",
                      samples = c("heterograft_1", "heterograft_2",
                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
-                     "selfgraft_3"))
+                     "selfgraft_3"), 
+                     annotation = "./merged_annotation.gff3")
 
 
 }
 
 }
 \references{
-ShortStack (https://github.com/MikeAxtell/ShortStack)
+ShortStack \url{https://github.com/MikeAxtell/ShortStack},
+HISAT2 \url{https://anaconda.org/bioconda/hisat2},
+HTSeq \url{https://htseq.readthedocs.io/en/master/install.html},
+SAMtools \url{https://anaconda.org/bioconda/samtools}
 }

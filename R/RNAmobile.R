@@ -1,4 +1,4 @@
-#' Identify potential mobile RNA molecules
+#' Identify putative mobile RNA molecules
 #'
 #' @description A function to identify the putative sRNA or mRNA mobilome. 
 #' 

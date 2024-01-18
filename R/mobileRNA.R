@@ -7,9 +7,6 @@
 #' fastq files. Output consists of a dataframe with putative differences 
 #' between two conditions along with a number of plots. 
 #'
-#'View the vignette here: 
-#'[mobileRNA](https://github.com/KJeynesCupper/mobileRNA/tree/devel/docs/articles/mobileRNA.html)
-#'
 #'
 #' The most important functions in the \pkg{mobileRNA} are:
 #' \describe{

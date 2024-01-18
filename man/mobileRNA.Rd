@@ -2,6 +2,7 @@
 % Please edit documentation in R/mobileRNA.R
 \docType{package}
 \name{mobileRNA}
+\alias{mobileRNA-package}
 \alias{mobileRNA}
 \title{mobileRNA: Explore RNA mobilome & population-scale changes}
 \description{
@@ -13,9 +14,6 @@ fastq files. Output consists of a dataframe with putative differences
 between two conditions along with a number of plots.
 }
 \details{
-View the vignette here:
-\href{https://github.com/KJeynesCupper/mobileRNA/tree/devel/docs/articles/mobileRNA.html}{mobileRNA}
-
 The most important functions in the \pkg{mobileRNA} are:
 \describe{
 \item{\code{\link{RNAmergeGenomes}}}{Merge two genome assembly files (FASTA)}

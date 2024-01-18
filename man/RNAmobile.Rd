@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAmobile.R
 \name{RNAmobile}
 \alias{RNAmobile}
-\title{Identify potential mobile RNA molecules}
+\title{Identify putative mobile RNA molecules}
 \usage{
 RNAmobile(
   input = c("sRNA", "mRNA"),

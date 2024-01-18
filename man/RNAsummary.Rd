@@ -36,7 +36,7 @@ between the conditions.
 }
 \description{
 Print a summary of the statistical analysis of sRNA clusters
-(sRNAseq analysis) or mRNAs (mRNAseq) from a mobileRNA analysis
+(sRNAseq) or mRNAs (mRNAseq) from a mobileRNA analysis
 }
 \details{
 To look only at the differential abundance from RNAs in the mobilome, use the
@@ -54,8 +54,7 @@ controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 reorder_df <- RNAreorder(sRNA_data, controls)
 
 # sample conditions.
-groups <- c("Selfgraft", "Selfgraft", "Selfgraft", 
-           "Heterograft", "Heterograft", "Heterograft")
+groups <- c("Selfgraft", "Selfgraft", "Selfgraft", "Heterograft", "Heterograft", "Heterograft")
 
 
 ## Differential analysis: DEseq2 method

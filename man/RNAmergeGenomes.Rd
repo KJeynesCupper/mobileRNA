@@ -74,7 +74,7 @@ you are working with large genomes which together take up more than 1Gb
 storage. Please be patient and allow the function to run. Note that this
 function uses parallel computation to improve the processing speed.
 
-\emph{IMPORTANT:}  The genome reference and annotation of the same
+\strong{IMPORTANT:}  The genome reference and annotation of the same
 species/accession/variety must have chromosomes with matching names. It is
 critical that if you use the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function to
 create a merged genome annotation,that you treat the input references in the

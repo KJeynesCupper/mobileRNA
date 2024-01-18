@@ -2,7 +2,7 @@
 #'
 #' @description Calculates the absolute or relative number of sRNA clusters 
 #' which overlap with genomic features, including promoter regions, repeat
-#' regions, exons, introns, and 3'/'5 untranslated regions.
+#' regions, exons, introns, and untranslated regions.
 #'
 #'
 #' @details
@@ -153,13 +153,13 @@ RNAfeatures <- function(data, annotation,
   # select sample
   sRNA_df <-  data %>% dplyr::select(chr, start, end)
   sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
-  sRNA_features_df[2,1] <- length(GenomicRanges::intersect(promoters,sRNA_df))
-  sRNA_features_df[2,2] <- length(GenomicRanges::intersect(exons,sRNA_df))
-  sRNA_features_df[2,3] <- length(GenomicRanges::intersect(introns,sRNA_df))
-  sRNA_features_df[2,4] <- length(GenomicRanges::intersect(five_UTR,sRNA_df))
-  sRNA_features_df[2,5] <- length(GenomicRanges::intersect(three_UTR,sRNA_df))
-  sRNA_features_df[2,6] <- length(GenomicRanges::intersect(repeats,sRNA_df))
-  sRNA_features_df[2,7] <- length(GenomicRanges::intersect(others,sRNA_df))
+  sRNA_features_df[2,1] <- suppressWarnings(length(GenomicRanges::intersect(promoters,sRNA_df)))
+  sRNA_features_df[2,2] <- suppressWarnings(length(GenomicRanges::intersect(exons,sRNA_df)))
+  sRNA_features_df[2,3] <- suppressWarnings(length(GenomicRanges::intersect(introns,sRNA_df)))
+  sRNA_features_df[2,4] <- suppressWarnings(length(GenomicRanges::intersect(five_UTR,sRNA_df)))
+  sRNA_features_df[2,5] <- suppressWarnings(length(GenomicRanges::intersect(three_UTR,sRNA_df)))
+  sRNA_features_df[2,6] <- suppressWarnings(length(GenomicRanges::intersect(repeats,sRNA_df)))
+  sRNA_features_df[2,7] <- suppressWarnings(length(GenomicRanges::intersect(others,sRNA_df)))
   if(percentage == TRUE){
     # convert to percentage
     sRNA_features_df <- data.frame(t(sRNA_features_df)) %>%

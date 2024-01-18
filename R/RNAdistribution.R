@@ -286,12 +286,12 @@ RNAdistribution  <- function (data, samples = NULL, style,
       }
       else 
         if (facet == FALSE){
-          save <- list()
-          for (i in 1:length(plist)) {
-            print(plist[i])
-            save <- list(save, plist[i])
-          }
-          out <- list(plot = save, data = counts.df)
+          # save <- list()
+          # for (i in 1:length(plist)) {
+          #   print(plist[i])
+          #   save <- list(save, plist[i])
+          # }
+          out <- list(plot = plist, data = counts.df)
         }
       return(out)
     }

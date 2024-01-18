@@ -74,7 +74,7 @@
 #'
 #'The first column, `DicerCounts` contains the number of replicates which 
 #'contributed to defining the dicer-derived sRNA class. This can be 
-#'utilised within the \code{RNAmobile} function as a threshold parameter. 
+#'utilised within the [mobileRNA::RNAmobile()] function as a threshold parameter. 
 #'While, utilising `exclude` ties methods, the `DicerCounts` value for a tie 
 #'will be 0 as no consensus classification was concluded. While, if the majority 
 #' of replicates contributed unclassified for a cluster, the `DicerCounts` value 

@@ -56,8 +56,8 @@ chromosome names for a given GFF file and adds an ID before each chromosome
 name and removes any periods.
 
 As default, the function as a prefix to chromosomes and separate the original
-chromosome name and the prefix with an understore ("\emph{").
-It will rename the chromosome names in \code{annotationA}to "A}". For example,
+chromosome name and the prefix with an understore.
+It will rename the chromosome names in \code{annotationA} to "A_". For example,
 A_0, A_1, A_2 etc. To set a custom chromosome name for \code{annotationA} alter
 the argument \code{abbreviationAnnoA}. While, for
 \code{annotationB} as default the chromosome names will be named "B_",
@@ -70,7 +70,7 @@ be saved to the same directory as supplied for the megered output file, with
 a fixed output name of \code{annotationA_altered.gff} and
 \code{annotationB_altered.gff}, respectively.
 
-\emph{IMPORTANT:} The genome reference and annotation of a species
+\strong{IMPORTANT:} The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
 the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a merged reference
 genome,that you treat the input annotations in the same way.

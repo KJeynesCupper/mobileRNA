@@ -11,7 +11,7 @@
 #' See appendix of vignette for manual pipeline. Alignment statistics are 
 #' reported for each analysis. 
 #' 
-#' ** For sRNA analysis** 
+#' **For sRNA analysis** 
 #' The function invokes a number of OS commands, and is dependent 
 #' on the installation of `ShortStack` (>= 4.0) with Conda. Please note that 
 #' `ShortStack` is only compatible with Linux and Mac operating systems. 
@@ -25,7 +25,9 @@
 #' along with the file containing the de novo sRNA clusters. The final reports
 #' are imported into R using [RNAimport()].
 #' 
-#' ** For mRNA analysis** 
+#' 
+#' **For mRNA analysis** 
+#' 
 #' The function invokes a number of OS commands, and is dependent 
 #' on the installation of `HISAT2`,`HTSeq` and `SAMtools` with Conda. 
 #' The pipeline can undertake single- or pair-end analysis, and to do so 
@@ -35,10 +37,10 @@
 #' 
 #' 
 #' @references 
-#' \url{https://github.com/MikeAxtell/ShortStack},
-#' \url{https://anaconda.org/bioconda/hisat2},
-#' \url{https://htseq.readthedocs.io/en/master/install.html},
-#' \url{https://anaconda.org/bioconda/samtools}
+#' ShortStack \url{https://github.com/MikeAxtell/ShortStack},
+#' HISAT2 \url{https://anaconda.org/bioconda/hisat2},
+#' HTSeq \url{https://htseq.readthedocs.io/en/master/install.html},
+#' SAMtools \url{https://anaconda.org/bioconda/samtools}
 #' 
 #' @param input string; define type of Next-Generation Sequencing dataset.
 #'"sRNA" for sRNAseq data and "mRNA" for mRNAseq data. 
