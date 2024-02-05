@@ -1,7 +1,7 @@
 mobileRNA <a href="kjeynescupper.github.io/mobileRNA/"><img src="man/figures/logo.png" align="right" height="138" /></a>
 ======================================================================
 
-An `R` package for analysis of sRNA & mRNA populations in plants and animals. Specalised in the identification of populations in systems with molecules produced by two different genotypes, such as plant graft systems. 
+An `R` package for analysis of sRNA & mRNA populations in plants and animals. Specalised in the identification of RNA populations in systems with multiple genomes, such as plant graft systems. 
 
 <br> 
 

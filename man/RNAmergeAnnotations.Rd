@@ -14,11 +14,11 @@ RNAmergeAnnotations(
 )
 }
 \arguments{
-\item{annotationA}{path; directory path to genome annotation assembly file in
-GFF format.}
+\item{annotationA}{path; directory path to a genome annotation assembly file
+in GFF format.}
 
-\item{annotationB}{path; directory path to genome annotation assembly file in
-GFF format.}
+\item{annotationB}{path; directory path to a genome annotation assembly file
+in GFF format.}
 
 \item{output_file}{path; a character string or a \code{base::connections()}
 open for writing. Including file output name, and must have a GFF file
@@ -34,41 +34,24 @@ existing chromosome names in \code{annotationB}. Default set as "B".}
 Default is "gff3".}
 }
 \value{
-The function output the individually altered annotation files, plus, a merged
-annotation file the given directory.
-The altered annotation files contain either default or custom alterations to
-the chromosome names and are written to the same directory as the merged file,
-with the given names addition of \code{annotationA_altered.gff} and
-\code{annotationB_altered.gff}, respectively.
+A GFF format file containing the annotations of two genomes dinstiguishable by
+the appended prefixes.
 }
 \description{
 Merges two genomes annotation files (GFF) into one
 single GFF format file saved to the desired directory. This function adds a
-unique prefix to the chromosome name in each genome annotation to ensure each
-assembly is distinguishable within the merged file. The individually altered
-references are saved to local directory as well.
+unique prefix to the chromosome names in each genome annotation to ensure
+each is distinguishable within the merged file.
 }
 \details{
-The functions primary goal is to merge two GFF files, however, when
-merging genomic files it is critical that the two genomes are distinguishable
-by the chromosome names. As a default setting, the function extracts the
-chromosome names for a given GFF file and adds an ID before each chromosome
-name and removes any periods.
-
-As default, the function as a prefix to chromosomes and separate the original
-chromosome name and the prefix with an understore.
-It will rename the chromosome names in \code{annotationA} to "A_". For example,
-A_0, A_1, A_2 etc. To set a custom chromosome name for \code{annotationA} alter
-the argument \code{abbreviationAnnoA}. While, for
-\code{annotationB} as default the chromosome names will be named "B_",
-for example, B_0, B_1, B_2 etc. To set a custom chromosome name for
-\code{annotationB} alter the argument \code{abbreviationAnnoB}.
+As default, the function removes periods and adds a prefix to the existing
+chromosome names. The prefix is separated from the original chromosome name
+by an underscore. For example, based on the default settings, it will add the
+prefix "A_" to the chromosome names in \code{annotationA}, for instance,
+A_0, A_1, A_2 etc.
 
 The merged genome is saved to the specified output directory, and requires
-the user to set the name with a GFF extension. The altered annotations will
-be saved to the same directory as supplied for the megered output file, with
-a fixed output name of \code{annotationA_altered.gff} and
-\code{annotationB_altered.gff}, respectively.
+the user to set the name with a GFF format.
 
 \strong{IMPORTANT:} The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
@@ -82,11 +65,6 @@ package="mobileRNA")
 
 anno2 <- system.file("extdata","reduced_chr2_Tomato.gff.gz",
 package="mobileRNA")
-
-# Merge annotations and write them to a file in output_file.
-# For this example, the result is written to a temporary file.
-# For real use cases, the output_file should be an appropriate location on 
-# your computer.
 
 output_file <- tempfile("merged_annotation", fileext = ".gff3")
 

@@ -2,23 +2,22 @@
 % Please edit documentation in R/RNAmergeGenomes.R
 \name{RNAmergeGenomes}
 \alias{RNAmergeGenomes}
-\title{Merge two genome assemblies (FASTA format)}
+\title{Merge two genome reference assemblies (FASTA format)}
 \usage{
 RNAmergeGenomes(
   genomeA,
   genomeB,
   output_file,
   abbreviationGenomeA = "A",
-  abbreviationGenomeB = "B",
-  BPPARAM = BiocParallel::SerialParam()
+  abbreviationGenomeB = "B"
 )
 }
 \arguments{
 \item{genomeA}{path; directory path to a genome reference assembly file in
-FASTA format (.fa/.fasta).}
+FASTA format.}
 
 \item{genomeB}{path; directory path to a genome reference assembly file in
-FASTA format (.fa/.fasta).}
+FASTA format.}
 
 \item{output_file}{path; a character string or a \code{base::connections()}
 open for writing. Including file output name, and file extension of \code{.fa} or
@@ -29,11 +28,6 @@ existing chromosome names in \code{genomeA}. Default set as "A"}
 
 \item{abbreviationGenomeB}{character; string to represent prefix added to
 existing chromosome names in \code{genomeB}. Default set as "B".}
-
-\item{BPPARAM}{An option from \code{\link[=BiocParallelParam]{BiocParallelParam()}} determining the
-parallel back-end to be used during evaluation, or a list of BiocParallelParam
-instances, to be applied in sequence for nested calls to \emph{BiocParallel}
-functions.}
 }
 \value{
 Returns a single FASTA format file containing both genome assemblies
@@ -41,8 +35,8 @@ with edited chromosome names (prefixes, and removal of periods) to the given
 directory.
 }
 \description{
-Merges two reference genomes (.fa/.fasta). into one single
-reference with modified chromosome names to ensure distinguishability.
+Merges two reference genomes (FASTA) into one single
+reference with modified chromosome names.
 
 Typically, use genomeA as the origin tissue genome assembly, and genomeB as
 the genome from which mobile RNAs are produed by.
@@ -52,27 +46,14 @@ The function merges two FASTA files, however, when merging genomic files it
 is critical that the two genomes are distinguishable by the chromosome names.
 As a default setting, the function extracts the chromosome names for the
 given FASTA files and alters adds a unique prefix while retaining the
-identifying number.
+identifying number. Plus, removes any periods.
 
-The function requires the input of two FASTA reference genomes, where one
-represents \code{genome_A} and the other represents \code{genome_B}. As default, the
-function will rename the chromosome names in \code{genome_A} to "A" and separates
-the prefix and the existing chromosome names with an underscore ("_").
-For example, A_0, A_1, A_2 etc. To set a custom chromosome name for
-\code{genome_A} alter the argument \code{abbreviationGenomeA}.
-
-While, for \code{genome_B} as default the chromosome names will be named "B", and separates
-the prefix and the existing chromosome names with an underscore ("_"). For
-example, B_0, B_1, B_2 etc. To set a custom chromosome name for \code{genome_B}
-alter the argument \code{abbreviationGenomeB}.
+As default, the function will rename the chromosome names in \code{genome_A} to
+"A" and separates the prefix and the existing chromosome names with an
+underscore ("_"). For example, A_0, A_1, A_2 etc.
 
 Please note that the underscore is added automatically, hence, when setting a
 custom prefix just include character values.
-
-Please be aware that this function will take a very long time to process if
-you are working with large genomes which together take up more than 1Gb
-storage. Please be patient and allow the function to run. Note that this
-function uses parallel computation to improve the processing speed.
 
 \strong{IMPORTANT:}  The genome reference and annotation of the same
 species/accession/variety must have chromosomes with matching names. It is
@@ -87,11 +68,6 @@ package="mobileRNA")
 fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa.gz",
 package="mobileRNA")
 
-
-# Merge FASTA files and write them to a file in output_file.
-# For this example, the result is written to a temporary file.
-# For real use cases, the output_file should be an appropriate location on 
-# your computer.
 
 output_file <- tempfile("merged_annotation", fileext = ".fa")
 

@@ -1,6 +1,6 @@
 Package: mobileRNA
 Type: Package
-Title: Explore RNA mobilome & population-scale changes
+Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
 Version: 0.99.14
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre"), 
@@ -40,7 +40,6 @@ Imports:
     progress,
     RColorBrewer, 
     GenomicRanges,
-    BiocParallel,
     rtracklayer,
     data.table,
     SimDesign,

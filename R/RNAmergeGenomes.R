@@ -1,16 +1,16 @@
-#' Merge two genome assemblies (FASTA format)
+#' Merge two genome reference assemblies (FASTA format)
 #'
-#' @description Merges two reference genomes (.fa/.fasta). into one single
-#' reference with modified chromosome names to ensure distinguishability.
+#' @description Merges two reference genomes (FASTA) into one single
+#' reference with modified chromosome names. 
 #' 
 #' Typically, use genomeA as the origin tissue genome assembly, and genomeB as 
 #' the genome from which mobile RNAs are produed by. 
 #'
 #'@param genomeA path; directory path to a genome reference assembly file in
-#'FASTA format (.fa/.fasta).
+#'FASTA format.
 #'
 #'@param genomeB path; directory path to a genome reference assembly file in
-#'FASTA format (.fa/.fasta).
+#'FASTA format.
 #'
 #'@param output_file path; a character string or a \code{base::connections()} 
 #'open for writing. Including file output name, and file extension of `.fa` or 
@@ -22,10 +22,6 @@
 #'@param abbreviationGenomeB character; string to represent prefix added to 
 #'existing chromosome names in `genomeB`. Default set as "B". 
 #'
-#'@param BPPARAM An option from [BiocParallelParam()] determining the 
-#'parallel back-end to be used during evaluation, or a list of BiocParallelParam 
-#'instances, to be applied in sequence for nested calls to *BiocParallel*
-#'functions.
 #'
 #'@return Returns a single FASTA format file containing both genome assemblies
 #'with edited chromosome names (prefixes, and removal of periods) to the given
@@ -36,34 +32,21 @@
 #' is critical that the two genomes are distinguishable by the chromosome names. 
 #' As a default setting, the function extracts the chromosome names for the
 #' given FASTA files and alters adds a unique prefix while retaining the 
-#' identifying number.
+#' identifying number. Plus, removes any periods. 
 #'
-#' The function requires the input of two FASTA reference genomes, where one
-#' represents `genome_A` and the other represents `genome_B`. As default, the
-#' function will rename the chromosome names in `genome_A` to "A" and separates
-#' the prefix and the existing chromosome names with an underscore ("_"). 
-#' For example, A_0, A_1, A_2 etc. To set a custom chromosome name for 
-#' `genome_A` alter the argument \code{abbreviationGenomeA}.
-#' 
-#'  While, for `genome_B` as default the chromosome names will be named "B", and separates
-#' the prefix and the existing chromosome names with an underscore ("_"). For 
-#' example, B_0, B_1, B_2 etc. To set a custom chromosome name for `genome_B` 
-#' alter the argument \code{abbreviationGenomeB}.  
+#' As default, the function will rename the chromosome names in `genome_A` to 
+#' "A" and separates the prefix and the existing chromosome names with an 
+#' underscore ("_"). For example, A_0, A_1, A_2 etc.
 #' 
 #' Please note that the underscore is added automatically, hence, when setting a
 #' custom prefix just include character values. 
 #' 
-#'Please be aware that this function will take a very long time to process if 
-#'you are working with large genomes which together take up more than 1Gb 
-#'storage. Please be patient and allow the function to run. Note that this 
-#'function uses parallel computation to improve the processing speed.
 #'
 #'**IMPORTANT:**  The genome reference and annotation of the same 
 #'species/accession/variety must have chromosomes with matching names. It is 
 #'critical that if you use the [mobileRNA::RNAmergeAnnotations()] function to
 #' create a merged genome annotation,that you treat the input references in the 
 #' same way.
-#'
 #'
 #'
 #' @examples
@@ -74,11 +57,6 @@
 #' package="mobileRNA")
 #' 
 #' 
-#' # Merge FASTA files and write them to a file in output_file.
-#' # For this example, the result is written to a temporary file.
-#' # For real use cases, the output_file should be an appropriate location on 
-#' # your computer.
-#' 
 #' output_file <- tempfile("merged_annotation", fileext = ".fa")
 #' 
 #' merged_ref <- RNAmergeGenomes(genomeA = fasta_1, 
@@ -88,13 +66,11 @@
 #' 
 #' @importFrom Biostrings readDNAStringSet
 #' @importFrom Biostrings writeXStringSet
-#' @importFrom BiocParallel bplapply
 #' @importFrom progress progress_bar
 #' @export
 RNAmergeGenomes <- function(genomeA, genomeB, output_file,
                              abbreviationGenomeA = "A",
-                             abbreviationGenomeB = "B",
-                            BPPARAM = BiocParallel::SerialParam()) {
+                             abbreviationGenomeB = "B") {
   if (missing(genomeA) || !file.exists(genomeA)) {
     stop("Please specify genomeA, a connection to a FASTA file in local")
   }
@@ -114,26 +90,19 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
     total = 5)
   pb$tick(0)  # start the progress bar
     # 1- load each genome into R 
-  #ref1_fragments <- Biostrings::readDNAStringSet(genomeA)
-  ref1_fragments <- BiocParallel::bplapply(genomeA, 
-                                           FUN = Biostrings::readDNAStringSet,
-                                           BPPARAM=BPPARAM)
+  ref1 <-  Biostrings::readDNAStringSet(genomeA)
+
   pb$tick()
-  ref2_fragments <-  BiocParallel::bplapply(genomeB, 
-                                            FUN = Biostrings::readDNAStringSet,
-                                            BPPARAM=BPPARAM)
+  ref2 <-  Biostrings::readDNAStringSet(genomeB)
     
   pb$tick()
-  if(!is.null(names(ref1_fragments))){
-    ref1_fragments <- unname(ref1_fragments)
+  if(!is.null(names(ref1))){
+    ref1 <- unname(ref1)
   }
-  if(!is.null(names(ref2_fragments))){
-    ref2_fragments <- unname(ref2_fragments)
+  if(!is.null(names(ref2))){
+    ref2 <- unname(ref2)
   }
   
-  # Join fragments together
-  ref1 <- do.call(c, ref1_fragments)
-  ref2 <- do.call(c, ref2_fragments)
   
   # Replace chromosome names in reference genomes
   ref1_names <- names(ref1)
@@ -155,8 +124,7 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
                               format="fasta")
   pb$tick()
   cat("\n")
-  message("Output files have been saved to: ")
-  message("---- Merged genome:", output_file)
-  
+  message("Output file has been saved to: ", output_file)
+
   return(merged_genome)
 }

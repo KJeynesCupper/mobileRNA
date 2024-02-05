@@ -776,7 +776,8 @@ mRNA_map <- function(sampleData,
         fastq_2 <- pair_files[3]
         unqiuefolder <- file.path(output_dir,sample_name)
         unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
-        bam <-file.path(unqiuefolder, paste0(sample_name,".bam"))
+        bam_name <- paste0(sample_name,".bam")
+        bam <-file.path(unqiuefolder, bam_name)
         time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
                             shQuote(stats)), collapse = " ")
         time_cmd <- gsub("^ *| *$", "", time_cmd)
@@ -802,7 +803,8 @@ mRNA_map <- function(sampleData,
         system(stateline, intern=FALSE)
         # if unique only:
         if(mmap == "n"){
-          out <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads1.bam"))
+          out_filename <- paste0(sample_name,"_uniqueReads1.bam")
+          out <- file.path(unqiuefolder,out_filename )
           unique_reads <- c("samtools view", shQuote(bam), "| grep", 
                             c("NH:i:1"),">", shQuote(out))
           unique_reads <- paste(unique_reads,collapse = " ")
@@ -810,13 +812,15 @@ mRNA_map <- function(sampleData,
           system(unique_reads, intern=FALSE)
           
           # reheader
-          header <- file.path(unqiuefolder, paste0(sample_name,"_header.txt"))
+          header_filename <-  paste0(sample_name,"_header.txt")
+          header <- file.path(unqiuefolder,header_filename)
           reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
           reheader1 <- paste(reheader1,collapse = " ")
           reheader1 <- gsub("^ *| *$", "", reheader1)
           system(reheader1, intern=FALSE)
           
-          bam_rce <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads.bam"))
+          bam_rce_filename <- paste0(sample_name,"_uniqueReads.bam")
+          bam_rce <- file.path(unqiuefolder, bam_rce_filename)
           reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
           reheader2 <- paste(reheader2,collapse = " ")
           reheader2 <- gsub("^ *| *$", "", reheader2)
@@ -896,7 +900,8 @@ mRNA_map <- function(sampleData,
      fastq_1 <- pair_files[2]
      unqiuefolder <- file.path(path_1,sample_name)
      unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
-     bam <-file.path(unqiuefolder, paste0(sample_name,".bam"))
+     bam_name <- paste0(sample_name,".bam")
+     bam <-file.path(unqiuefolder, bam_name)
      time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
                          shQuote(stats)), collapse = " ")
      time_cmd <- gsub("^ *| *$", "", time_cmd)
@@ -920,7 +925,8 @@ mRNA_map <- function(sampleData,
      system(stateline, intern=FALSE)
      
      if(mmap == "n"){
-       out <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads1.bam"))
+       out_filename <-paste0(sample_name,"_uniqueReads1.bam")
+       out <- file.path(unqiuefolder, out_filename)
        unique_reads <- c("samtools view", shQuote(bam), "| grep", 
                          c("NH:i:1"),">", shQuote(out))
        unique_reads <- paste(unique_reads,collapse = " ")
@@ -928,13 +934,15 @@ mRNA_map <- function(sampleData,
        system(unique_reads, intern=FALSE)
        
        # reheader
-       header <- file.path(unqiuefolder, paste0(sample_name,"_header.txt"))
+       header_filename <- paste0(sample_name,"_header.txt")
+       header <- file.path(unqiuefolder, header_filename)
        reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
        reheader1 <- paste(reheader1,collapse = " ")
        reheader1 <- gsub("^ *| *$", "", reheader1)
        system(reheader1, intern=FALSE)
        
-       bam_rce <- file.path(unqiuefolder, paste0(sample_name,"_uniqueReads.bam"))
+       bam_rce_filename <- paste0(sample_name,"_uniqueReads.bam")
+       bam_rce <- file.path(unqiuefolder, bam_rce_filename)
        reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
        reheader2 <- paste(reheader2,collapse = " ")
        reheader2 <- gsub("^ *| *$", "", reheader2)

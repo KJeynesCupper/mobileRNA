@@ -61,7 +61,11 @@
 #' Maintainer: Katie Jeynes-Cupper \email{kej031@@student.bham.ac.uk}
 #' @seealso See \code{vignette("mobileRNA", package = "mobieRNA")} for an 
 #' overview of the package.
+"_PACKAGE"
+## usethis namespace: start
+## usethis namespace: end
 NULL
+
 
 
 #' @name sRNA_data
@@ -99,10 +103,5 @@ NULL
 #'  This data was imported and organised by the [RNAimport()] function. 
 #' @examples
 #'  data("mRNA_data")
-NULL
-
-"_PACKAGE"
-## usethis namespace: start
-## usethis namespace: end
 NULL
 
