@@ -84,7 +84,7 @@ plotHeatmap <- function (data, value = "RPM", pseudocount = 1e-6,
   } else 
     if (value == "FPKM" && any(grepl(paste0("^", "FPKM_"), colnames(data)))) {
     select_data <- data %>% dplyr::select(tidyselect::starts_with("FPKM"))
-    names(select_data) <- sub('^FPKM', '', names(select_data))
+    names(select_data) <- sub('^FPKM_', '', names(select_data))
    } else {
     stop("data must contain columns containing either FPKM, or  RPM data 
           columns depending on the 'value' parameter.")
