@@ -765,7 +765,7 @@ sequences to undertaken target prediction and then onward to gene ontology
 enrichment analysis. 
 
 ```{r, message=FALSE}
-gained_sRNA_sequences <- RNAsequences(gained_sRNA)
+gained_sRNA_sequences <- RNAsequences(gained_sRNA, method = "consensus" )
 ```
 
 Moreover, we can identify genomic features associated with these sRNA clusters 
@@ -885,7 +885,7 @@ complementary sequences.
 
 
 ```{r, message=FALSE}
-mobile_sequences <- RNAsequences(mobile_sRNA)
+mobile_sequences <- RNAsequences(mobile_sRNA, method = "consensus") 
 ```
 <br>
 

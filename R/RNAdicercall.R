@@ -49,7 +49,7 @@
 #' the `data` argument.
 #'
 #' @param tidy logical; tidy-up data by removing sRNA clusters with an unknown 
-#' or unclassified result. Default setting \code{tidy=TRUE}, removes excess 
+#' or unclassified result. Default setting \code{tidy=FALSE}, removes excess 
 #' background noise. 
 #'  
 #' @param ties.method character; string specifying how ties are handled, choose

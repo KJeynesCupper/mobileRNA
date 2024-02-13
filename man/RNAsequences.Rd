@@ -7,6 +7,7 @@
 RNAsequences(
   data,
   original = FALSE,
+  method = c("consensus", "set"),
   match.threshold = 1,
   duplicates = "random",
   tidy = FALSE
@@ -19,11 +20,19 @@ RNAsequences(
 columns (\code{original=TRUE}), or output as new dataframe (\code{original=FALSE}).
 by default, FALSE}
 
+\item{method}{character; string to define method. Either "consensus" or "set".
+The "consensus" method identifies the consensus sequences across replicated
+based on the \code{bioseq} package method. Whereas, the "set" is based on the fixed
+sequences calculated for each replicate and whether they are exact matches or
+not.}
+
 \item{match.threshold}{numeric; the minimum number of replicates
-required to share the sRNA sequence to count as a match. Default is 1.}
+required to share the sRNA sequence to count as a match. Default is 1. Only
+applicable to the "set" method.}
 
 \item{duplicates}{character; string to define how to deal with a tie,
-"random" as default. Options include "random" and "exclude".}
+"random" as default. Options include "random" and "exclude". Only
+applicable to the "set" method.}
 
 \item{tidy}{logical; tidy-up data set by removing sRNA clusters with a
 unknown or unclassified consensus sRNA sequence result. By default,
@@ -46,7 +55,7 @@ only the results from the function. The results includes:
 Extract the RNA sequence from each sRNA cluster; identifies
 whether the most abundant RNA sequence for a sRNA cluster is consistent across
 a defined number of replicates, and if so extracts the RNA sequence. Ties
-can be handled at random, or excluded.
+can be handled at random, or excluded. Or, extract the consensus sequence.
 
 The function also calculates the RNA & DNA complementary sequences, as well
 as stating the length of the sequence.
@@ -85,6 +94,6 @@ sRNA_data_mobile <- RNAmobile(input = "sRNA", data =  sRNA_data,
 controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 
 
-mobile_sequences <- RNAsequences(sRNA_data_mobile)
+mobile_sequences <- RNAsequences(sRNA_data_mobile, method = "consensus") 
 
 }

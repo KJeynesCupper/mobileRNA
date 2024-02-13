@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
 Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
-Version: 0.99.15
+Version: 0.99.16
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre"), 
     comment= "https://orcid.org/0009-0000-1350-1371"),
@@ -23,8 +23,7 @@ RoxygenNote: 7.3.0
 Suggests: 
     knitr,
     rmarkdown,
-    BiocStyle,
-    bioseq
+    BiocStyle
 Imports: 
     dplyr,
     tidyr, 
@@ -52,7 +51,8 @@ Imports:
     S4Vectors,
     GenomeInfoDb,
     SummarizedExperiment,
-    rlang
+    rlang,
+    bioseq
 biocViews: 
     Visualization,
     RNASeq,

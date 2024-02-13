@@ -32,7 +32,7 @@ undefined and a known class, the known class takes president (eg 3x24-nt and
 \code{ties.method="exclude"}.}
 
 \item{tidy}{logical; tidy-up data by removing sRNA clusters with an unknown
-or unclassified result. Default setting \code{tidy=TRUE}, removes excess
+or unclassified result. Default setting \code{tidy=FALSE}, removes excess
 background noise.}
 
 \item{chimeric}{logical; state whether system is chimeric: contains multiple
