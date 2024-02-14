@@ -14,7 +14,11 @@ plotSamplePCA(
   size.ratio = 2,
   colours = NULL,
   point.shape = TRUE,
-  ggplot.theme = NULL
+  ggplot.theme = NULL,
+  label.box.padding = 1,
+  title = "PCA plot",
+  legend.position = "top",
+  legend.direction = "horizontal"
 )
 }
 \arguments{
@@ -50,6 +54,17 @@ for each condition.}
 
 \item{ggplot.theme}{character; state the \code{ggplot2} theme (without ()
 brackets). For example, \code{ggplot.theme=ggplot2::theme_classic}.}
+
+\item{label.box.padding}{numeric; Amount of padding around bounding box,
+as unit or number. Defaults to 1.}
+
+\item{title}{character; title for plot.}
+
+\item{legend.position}{character; the position of legends
+("none", "left", "right", "bottom", "top", or two-element numeric vector)}
+
+\item{legend.direction}{character; layout of items in legends
+("horizontal" or "vertical")}
 }
 \value{
 A PCA plot to show sample distance.
@@ -77,7 +92,8 @@ data("sRNA_data")
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
             
-p <-  plotSamplePCA(data = sRNA_data,group = groups )
+            
+p <-  plotSamplePCA(data = sRNA_data,group = groups)
 
 plot(p)
 

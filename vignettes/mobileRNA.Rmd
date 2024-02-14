@@ -543,10 +543,10 @@ cap4 <-"An example of a PCA, illustracting the sRNA data set sample similarity"
 ```
 
 ```{r, message=FALSE, fig.cap=cap4, fig.show="hold", }
-group <- c("Heterograft", "Heterograft", "Heterograft",
+groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
 
-plotSamplePCA(sRNA_data, group)
+ plotSamplePCA(data = sRNA_data, group = groups, size.ratio = 2)
 ```
 <br>
 

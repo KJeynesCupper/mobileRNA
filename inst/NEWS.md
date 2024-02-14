@@ -1,3 +1,11 @@
+# mobileRNA 0.99.17
+
+* Amended `RNAmobile()` to ensure removal of non-zero values 
+* Improve look of PCA plot 
+* Corrected documentation issue in `plotHeatmap()`
+* Included calculation of consensus sequence determination option for `RNAsequence()`
+* Amending code disparage `plotHeatmap()`
+
 # mobileRNA 0.99.15
 
 * Alteration of vignette and README

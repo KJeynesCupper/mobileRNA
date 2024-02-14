@@ -25,6 +25,8 @@
 #' @param legend.title character; title for legend key. Default
 #' `legend.title = "Conditions"`
 #' 
+#' @param title character; title for plot. 
+#' 
 #' @param size.ratio numeric; set plot ratio, broadens axis dimensions by ratio.
 #' Default `size.ratio=2`, double the plot dimension. 
 #'
@@ -35,8 +37,17 @@
 #'for each condition. 
 #'
 #'@param ggplot.theme character; state the `ggplot2` theme (without () 
-#'brackets). For example, `ggplot.theme=ggplot2::theme_classic`. 
+#'brackets). For example, `ggplot.theme=ggplot2::theme_classic`.
+#' 
+#'@param legend.position character; the position of legends 
+#'("none", "left", "right", "bottom", "top", or two-element numeric vector)
 #'
+#' @param legend.direction character; layout of items in legends
+#' ("horizontal" or "vertical")
+#' 
+#' @param label.box.padding numeric; Amount of padding around bounding box,
+#'  as unit or number. Defaults to 1. 
+#'  
 #' @return A PCA plot to show sample distance.
 #'
 #' @details This function uses the `DESeq2` package to organise and plot the
@@ -57,7 +68,8 @@
 #' groups <- c("Heterograft", "Heterograft", "Heterograft",
 #'             "Selfgraft", "Selfgraft", "Selfgraft")
 #'             
-#' p <-  plotSamplePCA(data = sRNA_data,group = groups )
+#'             
+#' p <-  plotSamplePCA(data = sRNA_data,group = groups)
 #'
 #' plot(p)
 #'
@@ -83,7 +95,10 @@
 plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
                           legend.title = "Conditions", size.ratio = 2, 
                           colours = NULL, point.shape = TRUE, 
-                          ggplot.theme = NULL){
+                          ggplot.theme = NULL, label.box.padding = 1, 
+                          title = "PCA plot", 
+                          legend.position = "top", 
+                          legend.direction = "horizontal"){
   if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
     stop("data must be an object of class data.frame containing raw count data")
   }
@@ -134,10 +149,21 @@ transformation...")
         {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
         ggplot2::coord_fixed()+
         ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = name), 
-                                  show.legend = FALSE, box.padding = 1)+
-        ggplot2::labs(color = legend.title) + 
+                                  show.legend = FALSE, box.padding = label.box.padding)+
+        ggplot2::labs(color = legend.title, title = title) + 
         ggplot2::coord_fixed(ratio = size.ratio)+
-        {if(!is.null(ggplot.theme)) ggplot.theme() }
+        {if(!is.null(ggplot.theme)) ggplot.theme() }+
+        ggplot2::theme(legend.position = legend.position,
+              legend.justification='left',
+              legend.direction=legend.direction,
+              legend.text = ggplot2::element_text(size=12),
+              legend.title = ggplot2::element_text(size = 11, face = "bold"),
+              axis.text.x = ggplot2::element_text(colour = "black", size = 13,face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+              axis.text.y = ggplot2::element_text(colour = "black", size = 13,face = "bold", margin = ggplot2::margin(r = 3)),
+              axis.title.y = ggplot2::element_text( size = 16, face = "bold", margin = ggplot2::margin(r =8)),
+              axis.title.x = ggplot2::element_text(size = 16, face = "bold"),
+              plot.title = ggplot2::element_text(face="bold", size = 18),
+              plot.subtitle = ggplot2::element_text(size = 14))
       
     } else
       X <- ggplot2::ggplot(pca, ggplot2::aes(PC1, PC2, color=Conditions)) +
@@ -148,10 +174,21 @@ transformation...")
         ggplot2::ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
         {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
         ggrepel::geom_label_repel(data = pca, ggplot2::aes(label = name), 
-                                  show.legend = FALSE, box.padding = 1)+
-        ggplot2::labs(color = legend.title) + 
+                                  show.legend = FALSE, box.padding = label.box.padding)+
+        ggplot2::labs(color = legend.title, title = title) + 
         suppressMessages(ggplot2::coord_fixed(ratio = size.ratio))+
-        {if(!is.null(ggplot.theme)) ggplot.theme() }
+        {if(!is.null(ggplot.theme)) ggplot.theme() }+
+        ggplot2::theme(legend.position = legend.position,
+              legend.justification='left',
+              legend.direction=legend.direction,
+              legend.text = ggplot2::element_text(size=12),
+              legend.title = ggplot2::element_text(size = 11, face = "bold"),
+              axis.text.x = ggplot2::element_text(colour = "black", size = 13,face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+              axis.text.y = ggplot2::element_text(colour = "black", size = 13,face = "bold", margin = ggplot2::margin(r = 3)),
+              axis.title.y = ggplot2::element_text( size = 16, face = "bold", margin = ggplot2::margin(r =8)),
+              axis.title.x = ggplot2::element_text(size = 16, face = "bold"),
+              plot.title = ggplot2::element_text(face="bold", size = 18),
+              plot.subtitle = ggplot2::element_text(size = 14))
     
     
   } else {
@@ -162,9 +199,20 @@ transformation...")
       ggplot2::xlab(paste0("PC1: ",percentVar[1],"% variance")) +
       ggplot2::ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
       {if(!is.null(colours)) ggplot2::scale_color_manual(values=colours)}+ 
-      ggplot2::labs(color = legend.title) + 
+      ggplot2::labs(color = legend.title, title = title) + 
       ggplot2::coord_fixed(ratio = size.ratio)+
-      {if(!is.null(ggplot.theme)) ggplot.theme() }
+      {if(!is.null(ggplot.theme)) ggplot.theme() }+
+      ggplot2::theme(legend.position = legend.position,
+            legend.justification='left',
+            legend.direction=legend.direction,
+            legend.text = ggplot2::element_text(size=12),
+            legend.title = ggplot2::element_text(size = 11, face = "bold"),
+            axis.text.x = ggplot2::element_text(colour = "black", size = 13,face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
+            axis.text.y = ggplot2::element_text(colour = "black", size = 13,face = "bold", margin = ggplot2::margin(r = 3)),
+            axis.title.y = ggplot2::element_text( size = 16, face = "bold", margin = ggplot2::margin(r =8)),
+            axis.title.x = ggplot2::element_text(size = 16, face = "bold"),
+            plot.title = ggplot2::element_text(face="bold", size = 18),
+            plot.subtitle = ggplot2::element_text(size = 14))
   }
   return(X)
 }

@@ -22,8 +22,8 @@
 #' Respective options are "row", "column" & "none". Default, `scale="none"`.
 #' @param clustering_method character; clustering method used. Accepts the same 
 #' values as hclust. Default `clustering_method= "complete"`
-#' @param row.names logical; indicated whether to include cluster names as 
-#' rownames. Default `row.names=TRUE`
+#' @param row.names logical; indicated whether to include rownames from column
+#' 1 of dataframe. Default `row.names=TRUE`
 #' 
 #' @param border.color border colour, default is no border, NA. 
 #'
@@ -89,13 +89,12 @@ plotHeatmap <- function (data, value = "RPM", pseudocount = 1e-6,
     stop("data must contain columns containing either FPKM, or  RPM data 
           columns depending on the 'value' parameter.")
   }
-  rownames(select_data) <- data$clusterID # remove cluster with no counts 
+  rownames(select_data) <- data[,1] # remove cluster with no counts 
   select_data <- select_data[rowSums(select_data[])>0,]
   total_reads_per_sample <- colSums(select_data)   # RPM normalization with pseudocount addition
   rpm_matrix <- (select_data / (total_reads_per_sample + pseudocount)) * 1e6
   log_rpm_matrix <- log2(rpm_matrix + 1)   # log transform. 
-  data_rownames <- data$Cluster  # add cluster names
-  rownames(log_rpm_matrix) <- data_rownames   # add row names 
+  
   if(cluster == FALSE){
     p1 <- pheatmap::pheatmap(log_rpm_matrix, scale = scale,cluster_rows = FALSE, 
                              cluster_cols = FALSE, show_row_dendrogram = FALSE, 

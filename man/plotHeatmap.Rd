@@ -36,8 +36,8 @@ Respective options are "row", "column" & "none". Default, \code{scale="none"}.}
 \item{clustering_method}{character; clustering method used. Accepts the same
 values as hclust. Default \code{clustering_method= "complete"}}
 
-\item{row.names}{logical; indicated whether to include cluster names as
-rownames. Default \code{row.names=TRUE}}
+\item{row.names}{logical; indicated whether to include rownames from column
+1 of dataframe. Default \code{row.names=TRUE}}
 
 \item{border.color}{border colour, default is no border, NA.}
 }

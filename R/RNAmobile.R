@@ -130,5 +130,12 @@ RNAmobile <- function(input = c("sRNA", "mRNA"), data, controls, genome.ID,
       res <- res %>% filter(!SampleCounts < threshold)
     }
   }  
-  return(res)
+  
+  # remove zero values 
+  zero_count_rows <- rowSums(res[grep("^Count_", names(res))] == 0) == sum(grepl("^Count_", names(res)))
+  
+  # Subset the dataframe to remove rows with all zero values in "Count_" columns
+  res_fin <- res[!zero_count_rows, ]
+  
+  return(res_fin)
 }
