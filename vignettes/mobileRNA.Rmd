@@ -24,7 +24,6 @@ output:
     theme: united
     highlight: tango
 fig_width: 5
-package: "`r packageVersion('mobileRNA')`"
 bibliography: library.bib
 vignette: >
  %\VignetteIndexEntry{mobileRNA}
@@ -33,6 +32,7 @@ vignette: >
  %\VignetteDepends{mobileRNA}
  %\VignetteDepends{bioseq}
  %\VignetteDepends{dplyr}
+ %\VignetteDepends{magick}
  %\usepackage[utf8]{inputenc}
 ---
 
@@ -117,9 +117,8 @@ as a reference for the unique alignment. Ultimately, in a bid to supply the
 algorithm with as much information as possible to make the best possible 
 predictions and placement of sequencing reads to each genome.
 
-The summarised workflow is shown below  
-[(Figure 1)](https://github.com/KJeynesCupper/mobileRNA/blob/main/man/figures/mobileRNA_graphic_2.png) 
-where it contains a core RNA analysis and a mobile sRNA/mRNA analysis. The core 
+The summarised workflow is shown below (Figure 1) where it contains a core 
+RNA analysis and a mobile sRNA/mRNA analysis. The core 
 analysis represents the standard workflow for the identification of RNA 
 populations which have been gained, lost or changed in abundance, for example, 
 the sRNA population difference between treatment and condition samples, or 
