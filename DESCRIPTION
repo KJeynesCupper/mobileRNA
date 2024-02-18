@@ -16,7 +16,7 @@ Description:Genomic analysis can be utilised to identify differences between RNA
   mapping reads to all genotypes at the same time. 
 License: MIT + file LICENSE
 Depends:
-    R (>= 4.3.0)
+    R (>= 4.0.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
