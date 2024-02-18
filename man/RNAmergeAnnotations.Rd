@@ -8,33 +8,31 @@ RNAmergeAnnotations(
   annotationA,
   annotationB,
   output_file,
-  abbreviationAnnoA = "A",
-  abbreviationAnnoB = "B",
+  AnnoA.ID = "A",
+  AnnoB.ID = "B",
   format = "gff3"
 )
 }
 \arguments{
-\item{annotationA}{path; directory path to a genome annotation assembly file
-in GFF format.}
+\item{annotationA}{path; path to a genome annotation assembly file in GFF format.}
 
-\item{annotationB}{path; directory path to a genome annotation assembly file
-in GFF format.}
+\item{annotationB}{path; path to a genome annotation assembly file in GFF format.}
 
 \item{output_file}{path; a character string or a \code{base::connections()}
 open for writing. Including file output name, and must have a GFF file
 extension.}
 
-\item{abbreviationAnnoA}{character; string to represent prefix added to
+\item{AnnoA.ID}{character; string to represent prefix added to
 existing chromosome names in \code{annotationA}. Default set as "A".}
 
-\item{abbreviationAnnoB}{character; string to represent prefix added to
+\item{AnnoB.ID}{character; string to represent prefix added to
 existing chromosome names in \code{annotationB}. Default set as "B".}
 
 \item{format}{format of GFF output, either "gff", "gff1", "gff2", "gff3."
 Default is "gff3".}
 }
 \value{
-A GFF format file containing the annotations of two genomes dinstiguishable by
+A GFF format file containing the annotations of two genomes distinguishable by
 the appended prefixes.
 }
 \description{
@@ -55,7 +53,7 @@ the user to set the name with a GFF format.
 
 \strong{IMPORTANT:} The genome reference and annotation of a species
 must have chromosomes with matching names. It is critical that if you used
-the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to to create a merged reference
+the \code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} function to create a merged reference
 genome,that you treat the input annotations in the same way.
 }
 \examples{

@@ -34,7 +34,7 @@ counts. Only for sRNA data, default is "mobile".}
 pre-processing. Only for mRNA data.}
 
 \item{idattr}{character; GFF attribute to be used as feature ID containing
-mRNA names. Several GFF ines with the same feature ID will be considered as
+mRNA names. Several GFF lines with the same feature ID will be considered as
 parts of the same  feature. The feature ID is used to identity the counts in
 the output table. Default is "Name". Only for mRNA data.}
 
@@ -115,7 +115,7 @@ df_sRNA <- RNAimport(input = "sRNA",
                      "selfgraft_3"))
 
 
-# The output of this function can be explore in the data object sRNA_data
+# The output of this function can be explored in the data object sRNA_data
 data("sRNA_data")
 head(sRNA_data)
 

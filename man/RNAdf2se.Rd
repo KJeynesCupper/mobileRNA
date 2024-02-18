@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAdf2se.R
 \name{RNAdf2se}
 \alias{RNAdf2se}
-\title{Convert \code{mobileRNA} dataframe to SummarizedExperiment object}
+\title{Convert a \code{mobileRNA} dataframe to a SummarizedExperiment object}
 \usage{
 RNAdf2se(input = c("sRNA", "mRNA"), data)
 }
@@ -14,32 +14,30 @@ RNAdf2se(input = c("sRNA", "mRNA"), data)
 \value{
 A \code{SummarizedExperiment} object containing information from working
 data frame.
+
+#'\strong{For sRNAseq data}
+\itemize{
+\item The rownames contain the locus name and the cluster name.
+\item The assays represent the additional information including DicerCall, Count, RPM, MajorRNA.
+\item The rowData includes the Cluster ID, the DicerCounts & the DicerConsensus.
+\item The colnames represents the sample replicate names.
+}
+
+\strong{For mRNAseq data}
+\itemize{
+\item The rownames contain the gene names.
+\item The assays represent the additional information including Count & FPKM.
+\item The rowData includes the gene & the SampleCounts.
+\item The colnames represents the sample replicate names.
+}
 }
 \description{
 Convert any \code{mobileRNA} output dataframe into a SummarizedExperiment object.
 }
 \details{
 The function relies on the naming structure of columns created by functions
-in the \pkg{mobileRNA} package, specifically \code{\link[=RNAimport]{RNAimport()}} and
-\code{\link[=RNAdicercall]{RNAdicercall()}}.
-It is able to extract the sample names based on these additions, and organise
-the data appropriately.
-
-\strong{For sRNAseq data}
-\itemize{
-\item The rownames contain the locus name and the cluster name.
-\item The assays represent the additional information including DicerCall, Count, RPM, MajorRNA.
-\item The rowData includes the Cluster ID, the DicerCounts & the DicerConsensus
-\item The colnames represents the sample replicate names
-}
-
-\strong{For mRNAseq data}
-\itemize{
-\item The rownames contain the gene names
-\item The assays represent the additional information including Count & FPKM.
-\item The rowData includes the gene & the SampleCounts.
-\item The colnames represents the sample replicate names
-}
+in the \pkg{mobileRNA} package. It is able to extract the sample names
+based on these additions, and organise the data appropriately.
 }
 \examples{
 # load data.frame

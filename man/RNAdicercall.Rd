@@ -25,7 +25,7 @@ the \code{data} argument.}
 
 \item{ties.method}{character; string specifying how ties are handled, choose
 either "exclude" or "random". When using \code{random}, if there is a tie one of
-the classes will be choose at random. While, when using \code{exclude} if there is
+the classes will be chosen at random. While, when using \code{exclude} if there is
 a tie the class is set to undefined, however, if there is a tie between a
 undefined and a known class, the known class takes president (eg 3x24-nt and
 3xN-nt, then it will be classed as 24nt). Default setting
@@ -35,50 +35,39 @@ undefined and a known class, the known class takes president (eg 3x24-nt and
 or unclassified result. Default setting \code{tidy=FALSE}, removes excess
 background noise.}
 
-\item{chimeric}{logical; state whether system is chimeric: contains multiple
-genomes/genotypes.}
+\item{chimeric}{logical; state whether the system is chimeric and contains
+multiple genomes/genotypes.}
 
 \item{controls}{character; vector of control condition sample names.}
 
-\item{genome.ID}{character; chromosome identifier of genome where mobile
-molecules are produced in the chimeric system}
+\item{genome.ID}{character; chromosome identifier of the genome representing
+either the origin of mobile molecules or the other genome in the chimeric
+system.}
 }
 \value{
-A data frame containing all existing columns in the input data object,
-plus, two additional columns of data:
-
-The first column, \code{DicerCounts} contains the number of replicates which
-contributed to defining the dicer-derived sRNA class. This can be
-utilised within the \code{\link[=RNAmobile]{RNAmobile()}} function as a threshold parameter.
-While, utilising \code{exclude} ties methods, the \code{DicerCounts} value for a tie
-will be 0 as no consensus classification was concluded. While, if the majority
-of replicates contributed unclassified for a cluster, the \code{DicerCounts} value
-represents the number of replicates which which contributed to the
-unclassified consensus in \code{DicerConsensus}.
-
-The second, labeled \code{DicerConsensus} states the consensus sRNA class between
-nucleotides in length or "N" if unclassified.
+The original input data with two additional columns appended known as
+\code{DicerCounts} and \code{DicerConsensus}. The \code{DicerCounts} column stores the number
+of replicates that contributed to defining the consensus dicer-derived sRNA
+class. Note that when utilising the \code{exclude} ties methods, the \code{DicerCounts}
+will be represented as 0 when a tie is identified. While, the \code{DicerConsensus}
+stores the consensus dicercall.
 }
 \description{
-The dicercall represent the length in nucleotides of the most
-abundant sRNA sequence within a cluster. The function calculates the
-consensus dicercall classification based on the predictions for the samples
-in the analysis.
+The sRNA dicercall represents the length in nucleotides of the
+most abundant sRNA sequence within a cluster. The function calculates the
+consensus dicercall classification.
 }
 \details{
-For each sample, the mapping step will have predicted the sRNA dicercall for
-each cluster which is stored in the sample columns with names containing with
-"DicerCall_".  The dicercall value represent the length in nucleotides of
+For each sample, the alignment/clustering step predicted the sRNA
+dicercall for each cluster. This value is stored in the columns starting
+with "DicerCall_".  This value represents the length of nucleotides of
 the most abundant sRNA within the cluster. For some clusters, there is no
 particular sRNA which is more abundant than another, hence, it is stated as
-"NA" or "N", which is refereed to as being unclassified. Depending on the
-organism the dicercall values will have varying ranges.
-
-The \code{RNAdicercall()} function is used to calculate the consensus dicercall
-for each sRNA cluster. This is based of the classification predicted for the
-cluster by each sample within the analysis, described above. There are
-several parameters which will alter the output, including the handling of
-ties and the method to draw the consensus from.
+"NA" or "N", which is referred to as unclassified. The \code{RNAdicercall()}
+function calculate the consensus dicercall for each sRNA cluster based on
+the values across replicates. There are several parameters which will alter
+the output, including the handling of ties and the method to draw the
+consensus from.
 
 When ties.method = "random", as per default, ties are broken at random.
 In this case, the determination of a tie assumes that the entries are
@@ -95,7 +84,7 @@ parameter and state \code{genome.ID} and \code{controls} parameter variables. Th
 remove any potential mapping errors which could introduce false interpretation.
 
 To remove excess data noise, \code{tidy=TRUE} can be used to removed unclassified
-("N") sRNA clusters, resulting in a reduced dataset size.
+("N") sRNA clusters, resulting in a reduced data set size.
 }
 \examples{
  # load data 

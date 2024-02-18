@@ -7,13 +7,16 @@ Authors@R: c(person("Katie", "Jeynes-Cupper",
     comment= "https://orcid.org/0009-0000-1350-1371"),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut", 
     comment= "https://orcid.org/0000-0002-3258-2522"))
-Description: The mobileRNA package allows for the identifcation of mobile  
-  RNA molecules in plant graft systems or other chimeric systems, and supports
-  typical sRNAseq analysis between treatment and control conditions. As input, 
-  mobileRNA can utilise sRNAseq or mRNAseq data types.
+Description:Genomic analysis can be utilised to identify differences between RNA 
+  populations in two conditions, both in production and abundance. This includes 
+  the identification of RNAs produced by multiple genomes within a biological 
+  system. For example, RNA produced by pathogens within a host or mobile RNAs in
+  plant graft systems. The mobileRNA package provides methods to pre-process, 
+  analyse and visualise the sRNA and mRNA populations based on the premise of
+  mapping reads to all genotypes at the same time. 
 License: MIT + file LICENSE
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.3.0)
 VignetteBuilder:
     knitr
 Encoding: UTF-8
@@ -52,7 +55,8 @@ Imports:
     GenomeInfoDb,
     SummarizedExperiment,
     rlang,
-    bioseq
+    bioseq,
+    grid
 biocViews: 
     Visualization,
     RNASeq,

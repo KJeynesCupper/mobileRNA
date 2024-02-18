@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAmobile.R
 \name{RNAmobile}
 \alias{RNAmobile}
-\title{Identify putative mobile RNA molecules}
+\title{Identify putative RNA molecules produced by the non-tissue sample genome}
 \usage{
 RNAmobile(
   input = c("sRNA", "mRNA"),
@@ -17,15 +17,15 @@ RNAmobile(
 }
 \arguments{
 \item{input}{character; must be either "sRNA" or "mRNA" to represent the type
-of data, required when setting threshold.}
+of data.}
 
 \item{data}{data.frame; generated through the \pkg{mobileRNA} method.}
 
 \item{controls}{character vector; containing names of control samples.}
 
-\item{genome.ID}{character; string related to the chromosomes in a
-particular genome. A distinguishing feature of the genome of interest or
-non-interest in the chromosome name (\code{chr} column).}
+\item{genome.ID}{character; string or chromosome identifier related to the
+chromosomes in a given genome. A distinguishing feature of the genome of
+interest or non-interest in the chromosome name (\code{chr} column).}
 
 \item{task}{character; string to set the method to keep or remove the
 chromosomes containing the identifying string. To keep the chromosomes with
@@ -50,39 +50,43 @@ for mRNA analysis this represents the number of replicates which contained
 reads for the mRNA molecule which is stored in the \code{SampleCounts} column.}
 }
 \value{
-A data-frame containing candidate mobile sRNAs or mRNAs, which could
+A data frame containing candidate mobile sRNAs or mRNAs, which could
 have been further filtered based on statistical significance and the ability
 to by-pass the thresholds which determine the number of replicates that
 defined the consensus dicercall (sRNA) or contributed to reads counts (mRNA).
 }
 \description{
-A function to identify the putative sRNA or mRNA mobilome.
+A function to identify the putative sRNA or mRNA  molecules
+produced by the non-tissue sample genome. Includes putative RNA mobilome or
+RNAs not expected to be found within the tissue of origin.
 }
 \details{
-The function identifies candidate mobile sRNAs or mRNAs, by selecting those
-that mapped to the genome of mobile molecules (Genome B). It does so by
-either keeping or removing those mapped to a given genome. To do so, it
-requires a common pre-fix across chromosomes of the same genome. See
-\code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} for more information.
+The function identifies candidate sRNAs or mRNAs produced by a specific
+genome/genotype. It does so by either keeping or removing those mapped to a
+given genome. To do so, it requires a common pre-fix across chromosomes of
+the given genome. See\code{\link[=RNAmergeGenomes]{RNAmergeGenomes()}} for more information.
+In addition, it removes RNAs which were likely to be falsely mapped. These
+are those which were mapped to the non-tissue genotype in the control
+samples.
 
 \strong{For sRNAseq:}
-A greater confidence in the mobile sRNA candidates can be achieved by setting
+A greater confidence in the sRNA candidates can be achieved by setting
 a threshold that considers the number of replicates which contributed to
 defining the consensus dicercall (ie. consensus sRNA classification). This
 parameter filters based on the \code{DicerCounts} column introduced by the
 \code{\link[=RNAdicercall]{RNAdicercall()}} function.
 
 \strong{For mRNAseq:}
-A greater confidence in the mobile mRNA candidates can be achieved by setting
+A greater confidence in the mRNA candidates can be achieved by setting
 a threshold that considers the number of replicates which contained reads
 for the mRNA molecule. This parameter filters based on the \code{SampleCounts}
 column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
 
 \strong{Statistical Analysis}
 The function also allows for filtering using statistical inference generated
-from the differential analysis of the total dataset using the function
+from the differential analysis of the total data set using the function
 \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. When \code{statistical=TRUE}, the feature
-is enabled and selected mobile molecules that meet the adjusted p-value
+is enabled and selects molecules that meet the adjusted p-value
 cutoff defined by \code{alpha}.
 }
 \examples{

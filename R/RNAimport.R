@@ -49,7 +49,7 @@
 #'pre-processing. Only for mRNA data.
 #'
 #'@param idattr character; GFF attribute to be used as feature ID containing 
-#'mRNA names. Several GFF ines with the same feature ID will be considered as 
+#'mRNA names. Several GFF lines with the same feature ID will be considered as 
 #'parts of the same  feature. The feature ID is used to identity the counts in 
 #'the output table. Default is "Name". Only for mRNA data.
 #'
@@ -103,7 +103,7 @@
 #'                      "selfgraft_3"))
 #'
 #'
-#'# The output of this function can be explore in the data object sRNA_data
+#'# The output of this function can be explored in the data object sRNA_data
 #' data("sRNA_data")
 #' head(sRNA_data)
 #'
@@ -175,8 +175,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     # remove any hashtags from header - added by shortstack
     dt_list <- lapply(dt_list, function(x) setNames(x, gsub("#", "", names(x))))
     # Check each data frame in the list for the required columns
-    cat("\n")
-    message("Checking data content...")
+    message(" \nChecking data content...")
     required_cols <- c("Locus", "DicerCall", "Reads", "MajorRNA")
     for (df in dt_list) {
       if (!all(required_cols %in% colnames(df))) {
@@ -275,11 +274,13 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     res_data <- as.data.frame(loci_all)
     # Split the Locus column into three new columns
     locus_cols <- data.frame(
-      chr = sapply(strsplit(res_data$Locus, split = ":"), "[[", 1),
-      start = sapply(strsplit(sapply(strsplit(res_data$Locus, split = ":"),
-                                     "[[", 2), split = "-"), "[[", 1),
-      end = sapply(strsplit(sapply(strsplit(res_data$Locus, split = ":"),
-                                   "[[", 2), split = "-"), "[[", 2)
+      chr = vapply(strsplit(data$Locus, split = ":"), "[[", character(1), 1),
+      start = vapply(strsplit(vapply(strsplit(data$Locus, split = ":"),
+                                     "[[", character(1), 2), split = "-"), "[[", 
+                     character(1), 1),
+      end = vapply(strsplit(vapply(strsplit(data$Locus, split = ":"),
+                                   "[[", character(1), 2), split = "-"), "[[", 
+                   character(1), 2)
     )
     df_final <- cbind(res_data[,1], locus_cols, res_data[, 2:ncol(res_data)])
     names(df_final)[1] <- "Locus"
@@ -294,13 +295,12 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     condition <- rowSums(df_final[count_columns])
     filtered_data <-  df_final[rowSums(df_final[count_columns])>0,] 
     # return values
-    cat("\n")
-    message("---Complete!")
+    message("\n---Complete!")
     return(filtered_data)
   } 
   if(input == "mRNA"){
     if (base::missing(annotation)) {
-      stop(paste("Please specify a accessable path to a GFF file"))
+      stop("Please specify a accessable path to a GFF file")
     }
     message("Importing mRNA data into R:")
     # load data as list
@@ -315,7 +315,7 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
       
       Sys.sleep(0.01)
       file_n <- file_n + 1
-      message('\r', "---Importing file ", file_n, " of ", total_files,  appendLF = FALSE)
+      message('\r', "---Importing file ", file_n, " of ", total_files,  appendLF = FALSE, "\n")
       
     }
     # remove rows with extra info 
@@ -336,9 +336,6 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     
     # add mRNA locus and width etc
     annotation_file <- rtracklayer::import(annotation)
-    #gene_columns <- which(sapply(elementMetadata(annotation_file) , function(x) any(grepl("^mRNA$", x))))
-    #gene_col_name <- names(elementMetadata(annotation_file))[gene_columns]
-    #gene_columns <-subset(annotation_file, type %in% "mRNA")
     genes_info <- as.data.frame(subset(annotation_file, type == featuretype))
     Locus <- paste0(genes_info$seqname, ":",genes_info$start,"-",
                     genes_info$end)
@@ -406,7 +403,6 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     # remove rows with
       mRNA_information <- mRNA_information %>%
         dplyr::filter(SampleCounts != 0)
-      cat("\n")
     message("---Complete!")
     return(as.data.frame(mRNA_information))
     

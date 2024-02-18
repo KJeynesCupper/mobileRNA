@@ -1,4 +1,4 @@
-#' mobileRNA pre-processing of sRNAseq & mRNAseq (alignment, raw count or cluster analysis)
+#' mobileRNA pre-processing method for sRNAseq & mRNAseq (alignment, raw count or cluster analysis)
 #'
 #' @description The mobileRNA workflow includes specific pre-processing 
 #' guidelines. For sRNAseq, this undertakes alignment with Bowtie and sRNA 
@@ -9,7 +9,17 @@
 #' @details
 #' Please ensure all OS software is installed within a Conda environment. 
 #' See appendix of vignette for manual pipeline. Alignment statistics are 
-#' reported for each analysis. 
+#' reported for each analysis within log plain text files (log.txt).
+#' 
+#' In order to align reads, the function will check whether a genome reference
+#' index has already been generated and, if not, will generate one. The method
+#' varies between sRNA and mRNA analysis depending on the alignment tool. This
+#' is generated in the same location as the reference file. 
+#' 
+#' NOTE: This function utilises the `reticulate` R package to connect to the 
+#' conda environment. Hence, restart R if you wish to change the employed Conda 
+#' environment during a session. 
+#' 
 #' 
 #' **For sRNA analysis** 
 #' The function invokes a number of OS commands, and is dependent 
@@ -29,11 +39,15 @@
 #' **For mRNA analysis** 
 #' 
 #' The function invokes a number of OS commands, and is dependent 
-#' on the installation of `HISAT2`,`HTSeq` and `SAMtools` with Conda. 
+#' on the installation of `HISAT2`,`HTSeq` and `SAMtools` with `Conda.` 
 #' The pipeline can undertake single- or pair-end analysis, and to do so 
-#' requires a dataframe stating the sample information where each row 
-#' represents a sample. The cleaned reads are mapped using HISAT and then the 
-#' raw counts are estimated by HTSeq.
+#' requires a data frame stating the sample information where each row 
+#' represents a sample. The reads are mapped using `HISAT` and then the 
+#' raw counts are estimated by `HTSeq`. The output alignment file (BAM) and 
+#' raw counts file for each sample are stored within the samples own folder 
+#' within the desired directory. 
+#' 
+#' 
 #' 
 #' 
 #' @references 
@@ -42,7 +56,7 @@
 #' HTSeq \url{https://htseq.readthedocs.io/en/master/install.html},
 #' SAMtools \url{https://anaconda.org/bioconda/samtools}
 #' 
-#' @param input string; define type of Next-Generation Sequencing dataset.
+#' @param input string; define type of Next-Generation Sequencing data set.
 #'"sRNA" for sRNAseq data and "mRNA" for mRNAseq data. 
 #'
 #' @param input_files_dir path; directory containing only the FASTQ samples for 
@@ -53,7 +67,7 @@
 #' where OS dependencies are stored. 
 #' 
 #' @param output_dir path; directory to store output. 
-#' @param genomefile path; path to a FASTA genome referecne file. 
+#' @param genomefile path; path to a FASTA genome reference file. 
 #' @param threads numeric; set the number of threads to use where more threads 
 #' means a faster completion time. Default is 6. 
 #' 
@@ -129,27 +143,22 @@
 #' The OS commands generate output into the users desired location, generating
 #' two folders:
 #' 
-#' * "1_de_novo_detection" : Stores output from the detection of de novo sRNA-producing loci
-#' * "2_sRNA_results" : Stores output from alignment 
+#' * 1_de_novo_detection: Stores output from the detection of de novo sRNA-producing loci
+#' * 2_sRNA_results: Stores results 
 #' 
 #' 
-#' The first folder stores the novo detection of sRNA-producing loci and
-#' alignment files, where the output of each sample are stored in a named 
-#' folder. The de novo detection of sRNA-producing loci analyses each sample to
-#' identify de novo sRNA-producing loci (ie. sRNA clusters), and joins these 
-#' results into a single file called "locifile.txt". 
-#' The second folder stores the alignment and clustering results for each sample 
-#' to the genome reference along with the file containing the de novo sRNA 
-#' clusters. The output of each sample is stored within its own sample folder. 
-#' 
-#' The alignment results generate one folder per sample, where the results 
-#' are stored. As default this includes the alignment files (BAM) and 
-#' sRNA results (.txt). The sRNA results (.txt) are imported into R for 
+#' The first folder stores the alignment (BAM) and the de novo sRNA-producing 
+#' loci for each sample (.txt) within the samples respective folder. The
+#' analyses joins the de novo sRNA clusters across the experimental design which
+#' is stored in "locifile.txt". The second folder stores the final clustering 
+#' results for each sample, and as before the results of each sample are stored 
+#' within it's respective folder. These results (.txt) are imported into R for 
 #' downstream analysis by utilizing the [mobileRNA::RNAimport()] function. 
 #' 
 #' The function generates a number of extra files for each sample and are not 
-#' required for the downstream analysis. See `ShortStack` documentation for more
-#' information (\url{https://github.com/MikeAxtell/ShortStack}). As default
+#' required for the downstream analysis. These are generated by `ShortStack`, 
+#' see documentation for more information 
+#' (\url{https://github.com/MikeAxtell/ShortStack}). As default
 #' these files are deleted. This is determined by the `tidy` argument. 
 #' 
 #' ** For mRNA analysis**
@@ -162,16 +171,41 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' samples <- file.path(system.file("extdata/sRNAseq",package="mobileRNA"))
 #' 
+#' ## EXAMPLE 1 - sRNAseq
+#' samples <- file.path(system.file("extdata/sRNAseq",package="mobileRNA"))
+#' GenomeRef <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", package="mobileRNA")
 #' output_location <- tempdir()
 #' 
 #' mapRNA(input = "sRNA", 
 #' input_files_dir = samples, 
 #' output_dir = output_location, 
-#' genomefile = output_assembly_file,
+#' genomefile = GenomeRef,
 #' condaenv = "ShortStack4", 
 #' mmap = "n")
+#' 
+#' 
+#' ## EXAMPLE 2 - mRNAseq
+#' 
+#' # create sample data including name, and file mates: 
+#'sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
+#'                                    "heterograft_1", "heterograft_2"),
+#'                         mate1 = c("selfgraft_mRNAdemo_1.fq.gz", "selfgraft_mRNAdemo_2.fq.gz", 
+#'                                   "heterograft_mRNAdemo_1.fq.gz", "heterograft_mRNAdemo_2.fq.gz"))
+#'# location of samples:                                 
+#'samples <- system.file("extdata/mRNAseq", package="mobileRNA")
+#'
+#'# location to store output
+#'output_location <- tempdir()
+#'
+#'# run alignment
+#'mapRNA(input = "mRNA",
+#'       input_files_dir = samples, 
+#'       output_dir = output_location, 
+#'       genomefile = output_assembly_file,
+#'       annotationfile = output_annotation_file,
+#'       sampleData = sampleData, 
+#'       condaenv = "/Users/user-name/miniconda3")
 #' }
 #' 
 #' @importFrom reticulate use_condaenv 
@@ -193,19 +227,19 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
     stop("Please state the data-type to the `input` paramter.")
   }
   if (base::missing(input_files_dir)){
-    stop("Please specify an accessable directory where files are stored")
+    stop("Please specify an accessible directory where sequencing files are stored")
   }
   # check it only contains fq 
   files <- list.files(input_files_dir)
-  fastq_files <- files[grep("\\.(fq|fastq)$", files)]
-  other_files <- files[!grepl("\\.(fq|fastq)$", files)]
+  fastq_files <- files[grep("\\.(fq|fastq|fastq.gz|fq.gz|fsa|fsa.gz)$", files)]
+  other_files <- files[!grepl("\\.(fq|fastq|fastq.gz|fq.gz|fsa|fsa.gz)$", files)]
   if (!length(other_files) == 0) {
     stop("input_files_dir location either does not store any fastq files or it 
  contain additional file types. This location must only contain fastq files.")
   }
 
   if (missing(genomefile) || !file.exists(genomefile) || 
-      !grepl("\\.fa$", genomefile)){
+      !grepl("\\.(fa|fasta|fasta.gz|fa.gz|fsa|fsa.gz)$", genomefile)){
     stop("Please specify genomefile, a connection to a FASTA file in local")
   }
   
@@ -228,12 +262,13 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
   }
   
   if(input == "sRNA"){
-    exists_res2 <- shortstack_exists()
-    if(exists_res2 < 4 | is.null(exists_res2)){
-      stop("ShortStack application :
-    --- ShortStack is either not installed or installed incorrectly
-    --- Or the version is too old, please ensure most updated version is installed.")
-    }
+    ### temperamental 
+    # exists_res2 <- shortstack_exists()
+    # if(exists_res2 < 4 | is.null(exists_res2)){
+    #   stop("ShortStack application :
+    # --- ShortStack is either not installed or installed incorrectly
+    # --- Or the version is too old, please ensure most updated version is installed.")
+    # }
     if(mmap != "n"){
       core_map(input_files_dir, 
                output_dir,
@@ -264,31 +299,33 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
       if (base::missing(sampleData) || !base::inherits(sampleData,
                                                        c("matrix","data.frame", 
                                                          "DataFrame"))) {
-      stop("sampleData must be an object of class matrix, data.frame, DataFrame.
-          See ?plotHeatmap for more information.")
+    stop("sampleData must be an object of class matrix, data.frame, DataFrame.")
       }
       
       if (missing(annotationfile) || !file.exists(annotationfile) || 
-          !grepl("\\.(gff|gff1|gff2|gff3)$",annotationfile)) {
+          !grepl("\\.(gff|gff1|gff2|gff3|gff.gz|gff1.gz|gff2.gz|gff3.gz)$", 
+                 annotationfile)) {
         stop("Please specify genomefile, a connection to a FASTA file in local")
       }
-      exists_res_hisat <- exists_conda("hisat2")
-      if(exists_res_hisat == FALSE){
-        stop("HISAT2 application :
-    --- HISAT2 is not installed within conda environment.")
-      }
       
-      exists_res_htseq <- exists_conda("htseq")
-      if(exists_res_htseq == FALSE){
-        stop("HTSeq application :
-    --- HTSeq is not installed within conda environment.")
-      }
-      
-      exists_res_samtools <- exists_conda("samtools")
-      if(exists_res_samtools == FALSE){
-        stop("SAMtools application :
-    --- SAMtools is not installed within conda environment.")
-      }
+      ### removed as temperamental 
+    #   exists_res_hisat <- exists_conda("hisat2")
+    #   if(exists_res_hisat == FALSE){
+    #     stop("HISAT2 application :
+    # --- HISAT2 is not installed within conda environment.")
+    #   }
+    #   
+    #   exists_res_htseq <- exists_conda("htseq")
+    #   if(exists_res_htseq == FALSE){
+    #     stop("HTSeq application :
+    # --- HTSeq is not installed within conda environment.")
+    #   }
+    #   
+    #   exists_res_samtools <- exists_conda("samtools")
+    #   if(exists_res_samtools == FALSE){
+    #     stop("SAMtools application :
+    # --- SAMtools is not installed within conda environment.")
+    #   }
   
       mRNA_map(sampleData,
                input_files_dir, 

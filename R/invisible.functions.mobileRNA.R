@@ -99,7 +99,7 @@ find_complementary_sequenceRNA <- function(seq) {
   conversion_nucleotides <- c(A = "U", U = "A", C = "G", G = "C")
 
   # calculate complementary nt for each
-  complementary_calc <- sapply(strsplit(seq, ""), function(nucleotide) {
+  complementary_calc <- lapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
   })
 
@@ -114,7 +114,7 @@ find_complementary_sequenceDNA <- function(seq) {
   conversion_nucleotides <- c(A = "T", U = "A", C = "G", G = "C")
 
   # calc complementary nt for each in string
-  complementary_calc <- sapply(strsplit(seq, ""), function(nucleotide) {
+  complementary_calc <- lapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
   })
 
@@ -165,9 +165,8 @@ gff_import <- function(gff_file, nrows = -1) {
 
 
 ################### convert character to factor in gramges #####
-
 convertChar2Factor <- function(gr) {
-  charCols <- sapply(S4Vectors::elementMetadata(gr), is.character)
+  charCols <- vapply(S4Vectors::elementMetadata(gr), is.character, FUN.VALUE = logical(1))
   
   if (any(charCols)) {
     gr_metadata <- S4Vectors::elementMetadata(gr)
@@ -175,8 +174,8 @@ convertChar2Factor <- function(gr) {
     S4Vectors::elementMetadata(gr) <- gr_metadata
   }
   metadata_cols <- S4Vectors::elementMetadata(gr)
-  charlist_cols <- sapply(metadata_cols@listData, function(col) 
-    inherits(col, "CompressedCharacterList"))
+  charlist_cols <- vapply(metadata_cols@listData, function(col) 
+    inherits(col, "CompressedCharacterList"), FUN.VALUE = logical(1))
   
  if (any(charlist_cols)) {
    metadata_cols <- metadata_cols[!charlist_cols]
@@ -214,7 +213,9 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   # 1 - bowtie - build 
   # check is alread y done
   index_extension <- "ebwt"
-  base_genomefile <- tools::file_path_sans_ext(basename(genomefile))
+  base_genomefile <- sub('\\.(fasta|fasta.gz|fa|fa.gz|fsa|fsa.gz)$', '',basename(genomefile))
+  base_genomefile_path <- sub('\\.(fasta|fasta.gz|fa|fa.gz|fsa|fsa.gz)$', '',(genomefile))
+  
   dir_genomfile <- dirname(genomefile)
   files_dir <- c("ls", dir_genomfile)
   files_dir <- paste(files_dir,collapse = " ")
@@ -223,8 +224,6 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
   index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
                             "$", sep = ""), files_dir_res)
-  base_genomefile_path <- tools::file_path_sans_ext(genomefile)
-  
   if (length(index_found) > 0) {
     message("Genome index already built.")
     nline <- paste("echo Genome index already built. >> ",  shQuote(stats))
@@ -238,14 +237,22 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     nline <- paste("echo '' >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     
+    if (grepl("\\.(fasta.gz|fa.gz|fsa.gz)$", genomefile)){
+      gunzip_cmd <- c("gunzip", genomefile)
+      gunzip_cmd <- paste(gunzip_cmd,collapse = " ")
+      gunzip_cmd <- gsub("^ *| *$", "", gunzip_cmd)
+      system(gunzip_cmd, intern=FALSE)
+      genomefile <- tools::file_path_sans_ext(genomefile)
+    }
+    
     bowtie_build_cmd <- c("bowtie-build --threads", threads, 
                           genomefile, base_genomefile_path, ">>", 
                           shQuote(stats), "2>&1") 
     bowtie_build_cmd <- paste(bowtie_build_cmd,collapse = " ")
     bowtie_build_cmd <- gsub("^ *| *$", "", bowtie_build_cmd)
     system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to summarydoc. 
-    cat("\n")
-    message("Genome index build. ")
+    
+    message("\nGenome index build. ")
     nline <- paste("echo Genome index complete! >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     nline <- paste("echo '' >> ",  shQuote(stats))
@@ -254,11 +261,11 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
   for (i in seq_along(names_input_files_dir)){
     # file name:
-    readfile_name <- sub("\\.\\w+$", "", names_input_files_dir[i])
+    readfile_name <- sub("\\.(fq|fq.gz|fastq|fastq.gz)$", "", names_input_files_dir[i])
     # step 1 - map as per 
     # file out put: 
     file_outdir <- file.path(path_1, readfile_name)
-    cat("\n", file = stats, append = TRUE)
+    writeLines("\n", con = stats)
     time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
                         "Working with sample:", 
                         shQuote(readfile_name),
@@ -326,11 +333,11 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   ###################.  check bam location ull is correct 
   for (i in seq_along(names_input_files_dir)){
     # file name:
-    readfile_name <- sub("\\.\\w+$", "", names_input_files_dir[i])
+    readfile_name <- sub("\\.(fq|fq.gz|fastq|fastq.gz)$", "", names_input_files_dir[i])
     # step 1 - map as per 
     # file out put: 
     file_outdir <- file.path(path_2, readfile_name)
-    cat("\n", file = stats_2, append = TRUE)
+    writeLines("\n", con = stats_2)
     time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
                         "Working with sample:", 
                         shQuote(readfile_name),
@@ -387,9 +394,7 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     }
   }
   
-  cat("\n")
-  cat("\n")
-  message(" --- Mapping of sRNAseq samples is complete --- ")
+  message("\n\n --- Mapping of sRNAseq samples is complete --- ")
   message("Results saved to: ", path_1, " & ", path_2)
   message("Loci file saved to: ", loci_out)
   
@@ -404,6 +409,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   # 3 - generate output folders (check if they exist )
   path_1 <- file.path(output_dir, "1_de_novo_detection")
   path_2 <- file.path(output_dir, "2_sRNA_results")
+  
   if (!dir.exists(path_1)) {
     dir.create(path_1)
   }
@@ -418,7 +424,9 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   # 1 - bowtie - build 
   # check is alread y done
   index_extension <- "ebwt"
-  base_genomefile <- tools::file_path_sans_ext(basename(genomefile))
+  base_genomefile <- sub('\\.(fasta|fasta.gz|fa|fa.gz|fsa|fsa.gz)$', '',basename(genomefile))
+  base_genomefile_path <- sub('\\.(fasta|fasta.gz|fa|fa.gz|fsa|fsa.gz)$', '',(genomefile))
+  
   dir_genomfile <- dirname(genomefile)
   files_dir <- c("ls", dir_genomfile)
   files_dir <- paste(files_dir,collapse = " ")
@@ -427,29 +435,38 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   
    index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
                              "$", sep = ""), files_dir_res)
-   base_genomefile_path <- tools::file_path_sans_ext(genomefile)
-
+   
+   
   if (length(index_found) > 0) {
     message("Genome index already built.")
     nline <- paste("echo Genome index already built. >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     nline <- paste("echo '' >> ",  shQuote(stats))
     system(nline, intern=FALSE)
+    
   } else {
-    message("Genome index not already built. Building with Bowtie.")
+    
+    message("Genome index not already built. Building with Bowtie...")
     nline <- paste("echo Genome index not already built. Building with Bowtie: >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     nline <- paste("echo '' >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     
+    if (grepl("\\.(fasta.gz|fa.gz|fsa.gz)$", genomefile)){
+      gunzip_cmd <- c("gunzip", genomefile)
+      gunzip_cmd <- paste(gunzip_cmd,collapse = " ")
+      gunzip_cmd <- gsub("^ *| *$", "", gunzip_cmd)
+      system(gunzip_cmd, intern=FALSE)
+      genomefile <- tools::file_path_sans_ext(genomefile)
+    }
     bowtie_build_cmd <- c("bowtie-build --threads", threads, 
                           genomefile, base_genomefile_path, ">>", 
                           shQuote(stats), "2>&1") 
     bowtie_build_cmd <- paste(bowtie_build_cmd,collapse = " ")
     bowtie_build_cmd <- gsub("^ *| *$", "", bowtie_build_cmd)
     system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to summarydoc. 
-    cat("\n")
-    message("Genome index build. ")
+
+    message("\nGenome index build. ")
     nline <- paste("echo Genome index complete! >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     nline <- paste("echo '' >> ",  shQuote(stats))
@@ -470,13 +487,13 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   "| samtools sort -o [outputfile]")
   bowtie_cmd_message <- paste(bowtie_cmd_message,collapse = " ")
   bowtie_cmd_message <- gsub("^ *| *$", "", bowtie_cmd_message)
-  cat(bowtie_cmd_message, file = stats, append = TRUE)
-  cat("\n", file = stats, append = TRUE)
+  writeLines(bowtie_cmd_message, con = stats)
+  writeLines("\n", con = stats)
   
   for (i in seq_along(names_input_files_dir)){
     # file name:
-    cat("\n", file = stats, append = TRUE)
-    readfile_name <- sub("\\.\\w+$", "", names_input_files_dir[i])
+    writeLines("\n", con = stats)
+    readfile_name <- sub("\\.(fq|fq.gz|fastq|fastq.gz)$", "", names_input_files_dir[i])
     # step 1 - map as per 
     # file output folder: 
     op <- paste0(readfile_name,".bam")
@@ -505,7 +522,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   }
   
   #bw message 
-  cat("\n", file = stats, append = TRUE)
+  writeLines("\n", con = stats)
   clustering_cmd_message <-c("echo Running sRNA De Novo Detection: >>", 
                              shQuote(stats))
   
@@ -524,7 +541,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     readfile_name <- sub("\\.\\w+$", "", mapped_file_names[i])
     # file out put: 
     file_outdir <- file.path(p2_path, readfile_name)
-    cat("\n", file = stats, append = TRUE)
+    writeLines("\n", con = stats)
     time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
                         "De novo sRNA detection for sample:", 
                         shQuote(readfile_name),
@@ -624,7 +641,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     # step 1 - map as per 
     # file out put: 
     file_outdir <- file.path(path_2, readfile_name)
-    cat("\n", file = stats_2, append = TRUE)
+    writeLines("\n", con = stats_2)
     time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
                         "Working on sample:", 
                         shQuote(readfile_name),
@@ -666,9 +683,8 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
       system(rm_cmd_2, intern=FALSE)
     }
   }
-  cat("\n")
-  cat("\n")
-  message(" --- Mapping of sRNAseq samples is complete --- ")
+
+  message("\n \n --- Mapping of sRNAseq samples is complete --- ")
   message("Results saved to: ", path_1, " & ", path_2)
   message("Loci file saved to: ", loci_out)
 }
@@ -708,7 +724,17 @@ mRNA_map <- function(sampleData,
   
   # 1 - bowtie - build 
   index_extension <- "ht2"
-  base_genomefile <- tools::file_path_sans_ext(basename(genomefile))
+  if (grepl("\\.(fasta.gz|fa.gz|fsa.gz)$", genomefile)){
+    base_genomefile_1 <- tools::file_path_sans_ext(basename(genomefile))
+    base_genomefile <- tools::file_path_sans_ext(base_genomefile_1)
+    base_genomefile_path_1 <- tools::file_path_sans_ext(genomefile)
+    base_genomefile_path <- tools::file_path_sans_ext(base_genomefile_path_1)
+    
+  } else {
+    base_genomefile_path <- tools::file_path_sans_ext(genomefile)
+    base_genomefile <- tools::file_path_sans_ext(basename(genomefile))
+  }
+  
   dir_genomfile <- dirname(genomefile)
   files_dir <- c("ls", dir_genomfile)
   files_dir <- paste(files_dir,collapse = " ")
@@ -717,20 +743,25 @@ mRNA_map <- function(sampleData,
   
   index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
                             "$", sep = ""), files_dir_res)
-  base_genomefile_path <- tools::file_path_sans_ext(genomefile)
+  
   if (length(index_found) > 0) {
     message("Genome index already built.")
   } else {
     message("Genome index not already built. Building with Bowtie... ")
-    
+    if (grepl("\\.(fasta.gz|fa.gz|fsa.gz)$", genomefile)){
+      gunzip_cmd <- c("gunzip", genomefile)
+      gunzip_cmd <- paste(gunzip_cmd,collapse = " ")
+      gunzip_cmd <- gsub("^ *| *$", "", gunzip_cmd)
+      system(gunzip_cmd, intern=FALSE)
+      genomefile <- tools::file_path_sans_ext(genomefile)
+    }
     hisat_build_cmd <- c("hisat2-build --threads", threads, 
                           genomefile, base_genomefile_path, ">>", 
                           shQuote(stats), "2>&1") 
     hisat_build_cmd <- paste(hisat_build_cmd,collapse = " ")
     hisat_build_cmd <- gsub("^ *| *$", "", hisat_build_cmd)
     system(hisat_build_cmd, intern=FALSE) ## -- get it to print to summary doc. 
-    cat("\n")
-    message("Genome index build. ")
+    message("\nGenome index build. ")
   }
   nline <- paste("echo '' >> ",  shQuote(stats))
   system(nline, intern=FALSE)
@@ -819,7 +850,7 @@ mRNA_map <- function(sampleData,
           reheader1 <- gsub("^ *| *$", "", reheader1)
           system(reheader1, intern=FALSE)
           
-          bam_rce_filename <- paste0(sample_name,"_uniqueReads.bam")
+          bam_rce_filename <- paste0(sample_name,"_unique.bam")
           bam_rce <- file.path(unqiuefolder, bam_rce_filename)
           reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
           reheader2 <- paste(reheader2,collapse = " ")
@@ -827,7 +858,7 @@ mRNA_map <- function(sampleData,
           system(reheader2, intern=FALSE)
           
           # remove truncated: 
-          rmtrunc <- c("rm", shQuote(out))
+          rmtrunc <- c("rm", shQuote(out), shQuote(header), shQuote(bam))
           rmtrunc <- paste(rmtrunc,collapse = " ")
           rmtrunc <- gsub("^ *| *$", "", rmtrunc)
           system(rmtrunc, intern=FALSE)
@@ -941,7 +972,7 @@ mRNA_map <- function(sampleData,
        reheader1 <- gsub("^ *| *$", "", reheader1)
        system(reheader1, intern=FALSE)
        
-       bam_rce_filename <- paste0(sample_name,"_uniqueReads.bam")
+       bam_rce_filename <- paste0(sample_name,"_unique.bam")
        bam_rce <- file.path(unqiuefolder, bam_rce_filename)
        reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
        reheader2 <- paste(reheader2,collapse = " ")
@@ -949,7 +980,7 @@ mRNA_map <- function(sampleData,
        system(reheader2, intern=FALSE)
        
        # remove truncated: 
-       rmtrunc <- c("rm", shQuote(out))
+       rmtrunc <- c("rm", shQuote(out), shQuote(header), shQuote(bam))
        rmtrunc <- paste(rmtrunc,collapse = " ")
        rmtrunc <- gsub("^ *| *$", "", rmtrunc)
        system(rmtrunc, intern=FALSE)
@@ -982,9 +1013,8 @@ mRNA_map <- function(sampleData,
      system(nline, intern=FALSE)
      }
   }
-  cat("\n")
-  cat("\n")
-  message(" --- Mapping of mRNAseq samples is complete --- ")
+
+  message("\n\n --- Mapping of mRNAseq samples is complete --- ")
   message("Results saved to: ", path_1)
 }
 
@@ -1035,5 +1065,7 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "Sequence", "new_df",  "PC1", "PC2", "Conditions",
                          "name", "Length", "Locus", "Name", "SampleCounts", 
                          "UniqueReads", "groups", "is", "log2FoldChange","mRNA",
-                         "no", "none", "pos", "significance", "tidy", "a"))
+                         "no", "none", "pos", "significance", "tidy", "a",
+                         "data"))
+
 

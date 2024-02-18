@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNApopulation.R
 \name{RNApopulation}
 \alias{RNApopulation}
-\title{Identify unique RNA populations between treatment and control conditions}
+\title{Identify gained/lost RNA populations between treatment and control conditions}
 \usage{
 RNApopulation(
   data,
@@ -24,32 +24,32 @@ conditions to locate unique sRNA clusters.}
 \item{statistical}{logical; If TRUE, will undertake statistical filtering
 based on the adjusted p-value cutoff stated by \code{alpha}.
 Default setting \code{statistical=FALSE}. Requires presence of columns
-containing statistical data. In order to filter by the adjusted p-value, a
+containing statistical data. To filter by the adjusted p-value, a
 column named \code{padjusted} must be present. See
 \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} to calculate statistical values.}
 
-\item{alpha}{numeric; user defined numeric value to represent the adjusted
-p-value threshold to define statistic significance. Defaults setting
-\code{alpha=0.05}. Returns sRNA clusters or mRNA with an adjusted p-values equal
+\item{alpha}{numeric; user-defined numeric value to represent the adjusted
+p-value threshold to define statistical significance. Defaults setting
+\code{alpha=0.05}. Returns sRNA clusters or mRNA with adjusted p-values equal
 or lower than the threshold value.}
 
-\item{chimeric}{logical; state whether system is chimeric: contains multiple
+\item{chimeric}{logical; state whether system is chimeric containing multiple
 genomes/genotypes.}
 
 \item{controls}{character; vector of control condition sample names.}
 
-\item{genome.ID}{character; chromosome identifier of genome where mobile
-molecules are produced in the chimeric system}
+\item{genome.ID}{character; chromosome identifier of the genome representing
+either the origin of mobile molecules or the other genome in the chimeric
+system.}
 
 \item{dual}{logical; works in corporation when \code{chimeric=TRUE} and removes
 sRNA clusters mapped to the genome of mobile molecules.}
 }
 \value{
-A refined version of the working data frame supplied, subset to
-contain only the unique sRNA clusters which are only found in replicates.
-Prints summary metric of results including:
+A subset of the supplied data and prints summary metric of
+results including:
 \itemize{
-\item the total number of sRNA clusters or mRNA in the dataset
+\item the total number of sRNA clusters or mRNA in the data set
 \item the number & percentage of unique sRNA clusters or mRNA to your condition
 \item the samples in the condition
 }
@@ -57,20 +57,22 @@ Prints summary metric of results including:
 \description{
 Identify unique sRNA or mRNA populations within a set of
 samples, typically within the same condition, compared to the other samples
-in the analysis.
+in the analysis. This can be known as lost or gained populations due to
+a treatment.
 }
 \details{
-The function selects sRNA clusters or mRNA which are unique to a given
+The function selects RNA which are unique to a given
 condition and absent in the samples within the other condition(s).
 For instance, a treatment might encourage the production of unique sRNAs
 which are not produced in the control samples. The function can also select
 the unique populations which show statistical significance, based on a
-adjusted p-value cutoff. This must be calculated previously, see
+adjusted p-value cutoff. This must have been calculated previously, see
 \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}} function.
 
 If users are working with a chimeric system, utilise the \code{chimeric=TRUE}
 parameter and state \code{genome.ID} and \code{controls} parameter variables. This will
-remove any potential mapping errors which could introduce false interpretation.
+remove any potential mapping errors which could lead to false
+interpretation.
 }
 \examples{
 

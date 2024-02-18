@@ -37,7 +37,7 @@ will not suit all experimental designs.}
 \item{labels}{logical; include sample name labels on PCA. Default
 \code{labels=TRUE}}
 
-\item{boxed}{logical; add box around each sample name label. Default
+\item{boxed}{logical; add a box around each sample name label. Default
 \code{boxed=TRUE}}
 
 \item{legend.title}{character; title for legend key. Default
@@ -56,7 +56,7 @@ for each condition.}
 brackets). For example, \code{ggplot.theme=ggplot2::theme_classic}.}
 
 \item{label.box.padding}{numeric; Amount of padding around bounding box,
-as unit or number. Defaults to 1.}
+as a unit or number. Defaults to 1.}
 
 \item{title}{character; title for plot.}
 
@@ -78,7 +78,7 @@ The function undertakes rlog transformation of the data in an unbiased manner
 This function uses the \code{DESeq2} package to organise and plot the
 data. It organises the data into a DESeqDataSet which undergoes
 log-transformation where the results are used to undertake the PCA analysis.
-The results are plotted against the principle components 1 and 2.
+The results are plotted against the principal  components 1 and 2.
 
 In special conditions, regularized log transformation will not suit
 the experimental design. For example, an experimental design without
@@ -93,7 +93,7 @@ groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
             
             
-p <-  plotSamplePCA(data = sRNA_data,group = groups)
+p <-  plotSamplePCA(data = sRNA_data, group = groups)
 
 plot(p)
 

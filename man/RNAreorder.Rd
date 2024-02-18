@@ -19,14 +19,15 @@ the control sample columns.
 }
 \description{
 Re-organise the working data frame, placing control samples
-before treatment samples; ensures differential analysis comparison
+before treatment samples. This ensures differential analysis comparison
 between controls and treatment are in the correct arrangement.
 }
 \examples{
 # load data 
 data("sRNA_data")
 
-controls <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
+controlReps <- c("selfgraft_1", "selfgraft_2", "selfgraft_3")
 
-reorder_df <- RNAreorder(sRNA_data, controls)
+reorder_df <- RNAreorder(data = sRNA_data, controls = controlReps)
+
 }

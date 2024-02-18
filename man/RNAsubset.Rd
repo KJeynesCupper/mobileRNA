@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNAsubset.R
 \name{RNAsubset}
 \alias{RNAsubset}
-\title{Subset data to select a specific sRNA population based on dicercall size}
+\title{Subset sRNA data based on dicercall size}
 \usage{
 RNAsubset(data, class, statistical = FALSE, alpha = 0.05)
 }
@@ -14,16 +14,16 @@ defines the consensus sRNA class for each sRNA dicer-derived clusters}
 \item{class}{numeric; sRNA dicercall class(es) to select. Based on size in
 nucleotides.}
 
-\item{statistical}{logical; filter and select statistical significant sRNA.
+\item{statistical}{logical; filter and select statistically significant sRNA.
 If \code{statistical=TRUE}, sRNA clusters are selected based on
 p-adjusted alpha threshold.}
 
-\item{alpha}{numeric; user defined numeric value to represent the adjusted
-p-value threshold to define statistic significance. Defaults setting
+\item{alpha}{numeric; user-defined numeric value to represent the adjusted
+p-value threshold to define statistical significance. Defaults setting
 \code{alpha=0.05}.}
 }
 \value{
-A dataframe containing only sRNA clusters defined with a specific
+A data frame containing only sRNA clusters defined with a specific
 sRNA dicer-derived consensus size.
 }
 \description{
@@ -38,12 +38,9 @@ filtered the data by statistical significance based on differential expression
 analysis, see \code{\link[=RNAdifferentialAnalysis]{RNAdifferentialAnalysis()}}. Set
 \code{statistical=TRUE} to filtered by statistical significance (p-adjusted).
 
-It is important to consider what point in your analysis you subset the data
-or/and undertake differential analysis to achieve statistical values.
-Subsetting the dataset into groups based on the sRNA class will
-create a smaller set of data for each to draw statistical differences.
-Depending on the size of your data, and analysis aims this should be taken
-into consideration.
+It is important to consider what point in your analysis the data is subset
+as it will drastically reduce your sample size, altering the output of
+statistical analyse.
 }
 \examples{
 # load data 

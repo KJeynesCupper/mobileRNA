@@ -4,24 +4,24 @@
 #' reference with modified chromosome names. 
 #' 
 #' Typically, use genomeA as the origin tissue genome assembly, and genomeB as 
-#' the genome from which mobile RNAs are produed by. 
+#' the genome from which mobile RNAs are produced by. 
 #'
-#'@param genomeA path; directory path to a genome reference assembly file in
-#'FASTA format.
+#'@param genomeA path; path to a genome reference assembly file in FASTA format.
 #'
-#'@param genomeB path; directory path to a genome reference assembly file in
-#'FASTA format.
+#'@param genomeB path; path to a genome reference assembly file in FASTA format.
 #'
 #'@param output_file path; a character string or a \code{base::connections()} 
 #'open for writing. Including file output name, and file extension of `.fa` or 
 #'`.fasta`. 
 #'
-#'@param abbreviationGenomeA character; string to represent prefix added to 
+#'@param GenomeA.ID character; string to represent prefix added to 
 #'existing chromosome names in `genomeA`. Default set as "A"
 #'
-#'@param abbreviationGenomeB character; string to represent prefix added to 
+#'@param GenomeB.ID character; string to represent prefix added to 
 #'existing chromosome names in `genomeB`. Default set as "B". 
 #'
+#'@param compress.output logical; state whether the output file should be in 
+#'a compressed format (gzip)
 #'
 #'@return Returns a single FASTA format file containing both genome assemblies
 #'with edited chromosome names (prefixes, and removal of periods) to the given
@@ -39,13 +39,13 @@
 #' underscore ("_"). For example, A_0, A_1, A_2 etc.
 #' 
 #' Please note that the underscore is added automatically, hence, when setting a
-#' custom prefix just include character values. 
+#' custom prefix just includes character values. 
 #' 
 #'
 #'**IMPORTANT:**  The genome reference and annotation of the same 
 #'species/accession/variety must have chromosomes with matching names. It is 
 #'critical that if you use the [mobileRNA::RNAmergeAnnotations()] function to
-#' create a merged genome annotation,that you treat the input references in the 
+#' create a merged genome annotation, that you treat the input references in the 
 #' same way.
 #'
 #'
@@ -57,7 +57,7 @@
 #' package="mobileRNA")
 #' 
 #' 
-#' output_file <- tempfile("merged_annotation", fileext = ".fa")
+#' output_file <- file.path(tempfile("merged_annotation", fileext = ".fa"))
 #' 
 #' merged_ref <- RNAmergeGenomes(genomeA = fasta_1, 
 #' genomeB = fasta_2,
@@ -69,20 +69,27 @@
 #' @importFrom progress progress_bar
 #' @export
 RNAmergeGenomes <- function(genomeA, genomeB, output_file,
-                             abbreviationGenomeA = "A",
-                             abbreviationGenomeB = "B") {
+                             GenomeA.ID = "A",
+                             GenomeB.ID = "B", 
+                            compress.output = FALSE) {
   if (missing(genomeA) || !file.exists(genomeA)) {
     stop("Please specify genomeA, a connection to a FASTA file in local")
   }
   if (missing(genomeB) || !file.exists(genomeB)) {
     stop("Please specify annotationA, a connection to a FASTA file in local")
   }
-  if (missing(output_file) || !grepl("\\.fa$", output_file)) {
+  if (missing(output_file) || !grepl("\\.(fa|fasta|fasta.gz|fa.gz|fsa|fsa.gz)$", 
+                                     output_file)) {
     stop("Please specify output_file, a connection to a local directory to write 
     and save merged annotation. Ensure file name with extension (.fa or .fasta) 
          is supplied.")
   }
-  message("-- Note: Please be patient, this next step may take a long time -- \n")
+  
+  if (compress.output == TRUE || grepl("\\.gz$", output_file)) {
+    stop("If you wish to compress the output file, please ensure the file 
+      extension includes '.gz' ")
+  }
+  message("-- Note: Please be patient, this next step may take a long time --")
 
   # progress bar
   pb <- progress::progress_bar$new(
@@ -106,12 +113,12 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
   
   # Replace chromosome names in reference genomes
   ref1_names <- names(ref1)
-  ref1_newnames <- paste0(abbreviationGenomeA, "_", ref1_names)
+  ref1_newnames <- paste0(GenomeA.ID, "_", ref1_names)
   ref1_newnames <- sub("\\.", "", ref1_newnames)
   names(ref1) <- ref1_newnames
   
   ref2_names <- names(ref2)
-  ref2_newnames <- paste0(abbreviationGenomeB, "_", ref2_names)
+  ref2_newnames <- paste0(GenomeB.ID, "_", ref2_names)
   ref2_newnames <- sub("\\.", "", ref2_newnames)
   names(ref2) <- ref2_newnames
   pb$tick()
@@ -121,9 +128,9 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
   # save merged genome
   Biostrings::writeXStringSet(merged_genome, 
                               output_file, 
-                              format="fasta")
+                              format="fasta",
+                              compress = compress.output)
   pb$tick()
-  cat("\n")
   message("Output file has been saved to: ", output_file)
 
   return(merged_genome)

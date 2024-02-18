@@ -1,53 +1,51 @@
 #' mobileRNA: Explore RNA mobilome & population-scale changes
 #'
 #' Uses small RNA or messenger RNA sequencing data in two conditions and 
-#' identifies changes in the RNA population. mobileRNA was primarily designed
+#' identifies changes in the RNA population. `mobileRNA` was primarily designed
 #' for the identification of a putative RNA mobilome in a chimeric system. For 
-#' example, in plant graft systems. As input, mobileRNA takes sRNAseq or mRNAseq
-#' fastq files. Output consists of a dataframe with putative differences 
-#' between two conditions along with a number of plots. 
+#' example, in plant graft systems. As input, `mobileRNA` takes sRNAseq or 
+#' mRNAseq fastq files. Output consists of a data frame with putative 
+#' differences between two conditions along with a number of plots. 
 #'
 #'
 #' The most important functions in the \pkg{mobileRNA} are:
 #' \describe{
-#' \item{\code{\link{RNAmergeGenomes}}}{Merge two genome assembly files (FASTA)}
+#' \item{\code{\link{RNAmergeGenomes}}}{Merge two genome assembly files (FASTA).}
 #'  \item{\code{\link{RNAmergeAnnotations}}}{Merge two genome annotation files
-#'  (GFF)}
+#'  (GFF).}
 #'  \item{\code{\link{mapRNA}}}{Pre-processing of sRNAseq and mRNAseq 
-#'  (alignment, raw count, cluster analysis)}
-#'  \item{\code{\link{RNAimport}}}{Reads the pre-processing report files in 
-#'  to a dataframe for all conditions}
+#'  (alignment, raw count, cluster analysis).}
+#'  \item{\code{\link{RNAimport}}}{Reads the pre-processing report files into a 
+#'  dataframe for all conditions}
 #'  \item{\code{\link{RNAdicercall}}}{Calculates the consensus sRNA 
-#'  dicercall class}
-#'  \item{\code{\link{RNAsubset}}}{Subsets the working data set to select a 
-#'  defined sRNA class}
+#'  dicercall class.}
+#'  \item{\code{\link{RNAsubset}}}{Subsets the data set based on the sRNA class.}
 #'  \item{\code{\link{RNAdifferentialAnalysis}}}{Undertakes differential 
-#'  analysis using either the edgeR or DESeq2 method for data structure}
-#'  \item{\code{\link{RNAmobile}}}{Identifies mobile candidates in chimeric 
-#'  systems}
-#'  \item{\code{\link{RNApopulation}}}{Selects unique RNAs within the defined
-#'  sample replicates}
-#'  \item{\code{\link{RNAsummary}}}{Summarise the differential abundance of RNAs}
+#'  analysis with either the edgeR or DESeq2 method.}
+#'  \item{\code{\link{RNAmobile}}}{Identify putative RNA molecules produced by 
+#'  the non-tissue sample genome}
+#'  \item{\code{\link{RNApopulation}}}{Identify gained/lost RNA populations 
+#'  between treatment and control conditions.}
+#'  \item{\code{\link{RNAsummary}}}{Summarise the differential abundance of 
+#'  RNAs.}
 #'   \item{\code{\link{RNAreorder}}}{Reorder the data frame for differential 
-#'   analysis, ensuring control verse treatment comparison}
-#'  \item{\code{\link{RNAsequences}}}{Defines the consensus RNA sequence for a 
-#'  sRNA cluster}
-#'  \item{\code{\link{RNAattributes}}}{Overlaps the sRNA clusters with a GFF
-#'  annotation file and adds overlapping features to the sRNA cluster 
-#'  information}
-#'  \item{\code{\link{RNAdistribution}}}{Plot the distribution of sRNA 
-#'  lengths/classes}
-#'  \item{\code{\link{plotHeatmap}}}{Plots a heatmap of log2-transformed 
-#'  normalised RPM/FPKM values}
+#'   analysis, ensuring control verse treatment comparison.}
+#'  \item{\code{\link{RNAsequences}}}{Extract RNA sequence from sRNA clusters.}
+#'  
+#'  \item{\code{\link{RNAattributes}}}{Overlap the genomic features related to 
+#'  the sRNA clusters.}
+#'  \item{\code{\link{RNAdistribution}}}{Plot the distribution of sRNA classes 
+#'  based on nucleotide length.}
+#'  \item{\code{\link{plotHeatmap}}}{Heatmap of log-transformed normalization 
+#'  data.}
 #'  \item{\code{\link{plotSampleDistance}}}{Plots a sample distance heatmap for
-#'  quality control}
-#'  \item{\code{\link{plotSamplePCA}}}{Plots a PCA plot, customise ratio, 
-#'  colours and shapes}
-#'  \item{\code{\link{RNAfeatures}}}{Overlaps the sRNA clusters with a GFF
-#'  annotation file and calculates the percentage of clusters which overlap with 
-#'  specific genomic features}
-#'  \item{\code{\link{RNAdf2se}}}{Convert `mobileRNA` dataframe to 
-#'  a SummarizedExperiment object }
+#'  quality control.}
+#'  \item{\code{\link{plotSamplePCA}}}{Plots a PCA plot, customize ratio, 
+#'  colours and shapes.}
+#'  \item{\code{\link{RNAfeatures}}}{Summarise the distribution of sRNA clusters 
+#'  across genomic features.}
+#'  \item{\code{\link{RNAdf2se}}}{Convert a `mobileRNA` dataframe to a 
+#'  SummarizedExperiment object. }
 #' }
 #'
 #' @rdname mobileRNA-package

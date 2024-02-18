@@ -8,26 +8,28 @@ RNAmergeGenomes(
   genomeA,
   genomeB,
   output_file,
-  abbreviationGenomeA = "A",
-  abbreviationGenomeB = "B"
+  GenomeA.ID = "A",
+  GenomeB.ID = "B",
+  compress.output = FALSE
 )
 }
 \arguments{
-\item{genomeA}{path; directory path to a genome reference assembly file in
-FASTA format.}
+\item{genomeA}{path; path to a genome reference assembly file in FASTA format.}
 
-\item{genomeB}{path; directory path to a genome reference assembly file in
-FASTA format.}
+\item{genomeB}{path; path to a genome reference assembly file in FASTA format.}
 
 \item{output_file}{path; a character string or a \code{base::connections()}
 open for writing. Including file output name, and file extension of \code{.fa} or
 \code{.fasta}.}
 
-\item{abbreviationGenomeA}{character; string to represent prefix added to
+\item{GenomeA.ID}{character; string to represent prefix added to
 existing chromosome names in \code{genomeA}. Default set as "A"}
 
-\item{abbreviationGenomeB}{character; string to represent prefix added to
+\item{GenomeB.ID}{character; string to represent prefix added to
 existing chromosome names in \code{genomeB}. Default set as "B".}
+
+\item{compress.output}{logical; state whether the output file should be in
+a compressed format (gzip)}
 }
 \value{
 Returns a single FASTA format file containing both genome assemblies
@@ -39,7 +41,7 @@ Merges two reference genomes (FASTA) into one single
 reference with modified chromosome names.
 
 Typically, use genomeA as the origin tissue genome assembly, and genomeB as
-the genome from which mobile RNAs are produed by.
+the genome from which mobile RNAs are produced by.
 }
 \details{
 The function merges two FASTA files, however, when merging genomic files it
@@ -53,12 +55,12 @@ As default, the function will rename the chromosome names in \code{genome_A} to
 underscore ("_"). For example, A_0, A_1, A_2 etc.
 
 Please note that the underscore is added automatically, hence, when setting a
-custom prefix just include character values.
+custom prefix just includes character values.
 
 \strong{IMPORTANT:}  The genome reference and annotation of the same
 species/accession/variety must have chromosomes with matching names. It is
 critical that if you use the \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} function to
-create a merged genome annotation,that you treat the input references in the
+create a merged genome annotation, that you treat the input references in the
 same way.
 }
 \examples{
@@ -69,7 +71,7 @@ fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa.gz",
 package="mobileRNA")
 
 
-output_file <- tempfile("merged_annotation", fileext = ".fa")
+output_file <- file.path(tempfile("merged_annotation", fileext = ".fa"))
 
 merged_ref <- RNAmergeGenomes(genomeA = fasta_1, 
 genomeB = fasta_2,

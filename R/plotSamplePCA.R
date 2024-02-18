@@ -19,7 +19,7 @@
 #' @param labels logical; include sample name labels on PCA. Default 
 #' `labels=TRUE`
 #' 
-#' @param boxed logical; add box around each sample name label. Default 
+#' @param boxed logical; add a box around each sample name label. Default 
 #' `boxed=TRUE`
 #' 
 #' @param legend.title character; title for legend key. Default
@@ -46,14 +46,14 @@
 #' ("horizontal" or "vertical")
 #' 
 #' @param label.box.padding numeric; Amount of padding around bounding box,
-#'  as unit or number. Defaults to 1. 
+#'  as a unit or number. Defaults to 1. 
 #'  
 #' @return A PCA plot to show sample distance.
 #'
 #' @details This function uses the `DESeq2` package to organise and plot the
 #' data. It organises the data into a DESeqDataSet which undergoes 
 #' log-transformation where the results are used to undertake the PCA analysis. 
-#' The results are plotted against the principle components 1 and 2.
+#' The results are plotted against the principal  components 1 and 2.
 #'
 #' In special conditions, regularized log transformation will not suit
 #' the experimental design. For example, an experimental design without
@@ -69,7 +69,7 @@
 #'             "Selfgraft", "Selfgraft", "Selfgraft")
 #'             
 #'             
-#' p <-  plotSamplePCA(data = sRNA_data,group = groups)
+#' p <-  plotSamplePCA(data = sRNA_data, group = groups)
 #'
 #' plot(p)
 #'

@@ -1,4 +1,4 @@
-#' Convert `mobileRNA` dataframe to SummarizedExperiment object 
+#' Convert a `mobileRNA` dataframe to a SummarizedExperiment object 
 #'
 #'
 #'@description 
@@ -8,25 +8,23 @@
 #'@param input character; must be either "sRNA" or "mRNA"
 #'@details 
 #'The function relies on the naming structure of columns created by functions
-#'in the \pkg{mobileRNA} package, specifically [mobileRNA::RNAimport()] and 
-#'[mobileRNA::RNAdicercall()]. 
-#'It is able to extract the sample names based on these additions, and organise 
-#'the data appropriately. 
-#'
-#'**For sRNAseq data** 
-#'* The rownames contain the locus name and the cluster name. 
-#'* The assays represent the additional information including DicerCall, Count, RPM, MajorRNA. 
-#'* The rowData includes the Cluster ID, the DicerCounts & the DicerConsensus
-#'* The colnames represents the sample replicate names
-#'
-#'**For mRNAseq data** 
-#'* The rownames contain the gene names
-#'* The assays represent the additional information including Count & FPKM. 
-#'* The rowData includes the gene & the SampleCounts. 
-#'* The colnames represents the sample replicate names
+#'in the \pkg{mobileRNA} package. It is able to extract the sample names 
+#'based on these additions, and organise the data appropriately. 
 #'
 #' @return A `SummarizedExperiment` object containing information from working 
 #' data frame.  
+#'
+#'#'**For sRNAseq data** 
+#'* The rownames contain the locus name and the cluster name. 
+#'* The assays represent the additional information including DicerCall, Count, RPM, MajorRNA. 
+#'* The rowData includes the Cluster ID, the DicerCounts & the DicerConsensus. 
+#'* The colnames represents the sample replicate names.
+#'
+#'**For mRNAseq data** 
+#'* The rownames contain the gene names.
+#'* The assays represent the additional information including Count & FPKM. 
+#'* The rowData includes the gene & the SampleCounts. 
+#'* The colnames represents the sample replicate names.
 #'
 #'@examples
 #' # load data.frame
@@ -62,22 +60,23 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     # create gene locations
     if("DicerCounts" %in% colnames(data)) {
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(as.numeric(data$start),
-                                                           as.numeric(data$end)),
+                                        IRanges::IRanges(as.numeric(data$start),
+                                                          as.numeric(data$end)),
                                           Cluster = data$Cluster, 
                                           DicerCounts = data$DicerCounts,
                                           DicerConsensus= data$DicerConsensus)
     } else {
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(as.numeric(data$start),
-                                                           as.numeric(data$end)),
+                                        IRanges::IRanges(as.numeric(data$start),
+                                                          as.numeric(data$end)),
                                           Cluster = data$Cluster)
     }
     
     # create table for the columns
     col_names <- colnames(data) # extract sample names 
-    sample_names <- unique(sapply(base::strsplit(col_names, "_"), 
-                                  function(x) paste(x[-1], collapse = "_"))) 
+    sample_names <- unique(vapply(base::strsplit(col_names, "_"), 
+                                   function(x) paste(x[-1], collapse = "_"), 
+                                  character(1))) 
     sample_names <- sample_names[nzchar(sample_names)] # remove empties
     
     colData <- S4Vectors::DataFrame(samples=sample_names,
@@ -97,7 +96,7 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
     occurrences_check <- all(element_counts == length(sample_names)) 
     # Check if all elements have same occurrences
     if(occurrences_check == FALSE){
-      stop(paste("data is missing information for all replicates"))
+      stop("data is missing information for all replicates")
     }
     assay_list <- list()
     # create matrix for each extra data and count  
@@ -118,16 +117,17 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
       # create gene locations
       
       rowRanges <- GenomicRanges::GRanges(data$chr,
-                                          IRanges::IRanges(as.numeric(data$start), 
-                                                           as.numeric(data$end), 
-                                                           as.numeric(data$width)),
+                                      IRanges::IRanges(as.numeric(data$start), 
+                                                          as.numeric(data$end), 
+                                                       as.numeric(data$width)),
                                           Gene = data$Gene, 
-                                          SampleCounts = as.numeric(data$SampleCounts))
+                                  SampleCounts = as.numeric(data$SampleCounts))
       
       # create table for the columns
       col_names <- colnames(data) # extract sample names 
-      sample_names <- unique(sapply(base::strsplit(col_names, "_"), 
-                                    function(x) paste(x[-1], collapse = "_"))) 
+      sample_names <- unique(vapply(base::strsplit(col_names, "_"), 
+                                    function(x) paste(x[-1], collapse = "_"), 
+                                    character(1))) 
       sample_names <- sample_names[nzchar(sample_names)] # remove empties
       
       colData <- S4Vectors::DataFrame(samples=sample_names,
@@ -147,7 +147,7 @@ RNAdf2se <- function(input= c("sRNA", "mRNA"), data){
       occurrences_check <- all(element_counts == length(sample_names)) 
       # Check if all elements have same occurrences
       if(occurrences_check == FALSE){
-        stop(paste("data is missing information for all replicates"))
+        stop("data is missing information for all replicates")
       }
       assay_list <- list()
       # create matrix for each extra data and count  
