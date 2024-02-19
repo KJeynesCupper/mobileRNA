@@ -1,12 +1,12 @@
 Package: mobileRNA
 Type: Package
 Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
-Version: 0.99.17
+Version: 0.99.18
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre"), 
-    comment= "https://orcid.org/0009-0000-1350-1371"),
+     comment = c(ORCID = "0009-0000-1350-1371")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut", 
-    comment= "https://orcid.org/0000-0002-3258-2522"))
+    comment= c(ORCID = "0000-0002-3258-2522")))
 Description:Genomic analysis can be utilised to identify differences between RNA 
   populations in two conditions, both in production and abundance. This includes 
   the identification of RNAs produced by multiple genomes within a biological 

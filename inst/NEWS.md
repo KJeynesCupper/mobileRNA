@@ -1,5 +1,10 @@
 # mobileRNA 0.99.17
 
+* Corrected ORCID references for authors 
+
+
+# mobileRNA 0.99.17
+
 * Amended `RNAmobile()` to ensure removal of non-zero values 
 * Improved look of PCA plot 
 * Corrected documentation issue and code disparage in `plotHeatmap()`, and improved styling. 
