@@ -81,7 +81,7 @@ RNAfeatures <- function(data, annotation,
     repeats <-subset(annotation_info, type=="transposable_element",
                 type=="transposable_element_gene")
     } else {
-      anno_repeats < rtracklayer::import(anno_repeats)
+      anno_repeats <- rtracklayer::import(anno_repeats)
       repeats <-subset(anno_repeats, type=="transposable_element",
                   type=="transposable_element_gene")
     }
