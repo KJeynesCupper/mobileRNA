@@ -76,7 +76,9 @@ RNAsummary <- function(data, alpha = 0.1, chimeric = FALSE,
   total_rows <- nrow(data)
   # Filter the data based on the padjusted value
   filtered_data <- data[data$padjusted < alpha, ]
-  
+# remove any NA values 
+  filtered_data <- filtered_data[complete.cases(filtered_data$padjusted), ]
+
   # number of rows with positive and negative log2FC
   n_up <- sum(filtered_data[, "log2FoldChange"] > 0)
   n_down <- sum(filtered_data[, "log2FoldChange"] < 0)
