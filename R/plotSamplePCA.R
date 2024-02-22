@@ -106,7 +106,7 @@ plotSamplePCA <- function(data, group, vst = FALSE, labels = TRUE, boxed = TRUE,
     stop("group must be an object of class character vector containing the 
           experimental condition (Treatment vs. Control)")
   }
-  data <- data %>% dplyr::select(tidyselect::starts_with("Count"))
+  data <- data %>% dplyr::select(tidyselect::starts_with("Count_"))
   # use DESeq to organise the data.
   column.data <- data.frame(conditions=as.factor(group))
   base::rownames(column.data) <- base::colnames(data)
