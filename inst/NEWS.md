@@ -1,3 +1,8 @@
+# mobileRNA 0.99.19
+
+* Missing connective in RNAfeatures when using repeats variable.
+* Added additional check for RNAsequences methods. 
+
 # mobileRNA 0.99.17
 
 * Corrected ORCID references for authors 
