@@ -1,0 +1,10 @@
+pandoc: 3.1.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  mobileRNA: mobileRNA.html
+last_built: 2024-02-26T12:52Z
+urls:
+  reference: https://kjeynescupper.github.io/mobileRNA/reference
+  article: https://kjeynescupper.github.io/mobileRNA/articles
+

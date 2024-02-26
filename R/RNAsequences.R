@@ -107,7 +107,7 @@ RNAsequences <- function(data, original = FALSE, method = c("consensus", "set"),
     stop("data is missing. data must be an object of class matrix, data.frame, 
           DataFrame")
   }
-  if (base::missing(method) || method %in% c("consensus", "set")) {
+  if (base::missing(method) || !method %in% c("consensus", "set")) {
     stop("Please specify the method parameter, must be either `consensus` or`set`. ")
   }
   df <- data %>% # select only columns with RNA seqs, remove columns with only NA values
