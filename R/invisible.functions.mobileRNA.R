@@ -102,9 +102,10 @@ find_complementary_sequenceRNA <- function(seq) {
   complementary_calc <- lapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
   })
-
+  
+  output <- sapply(complementary_calc, function(x) paste(x, collapse = ""))
+  
   # Combine into string
-  output <- paste0(complementary_calc, collapse = "")
   return(output)
 }
 
@@ -119,7 +120,7 @@ find_complementary_sequenceDNA <- function(seq) {
   })
 
   # Combine into string
-  output <- paste0(complementary_calc, collapse = "")
+  output <- sapply(complementary_calc, function(x) paste(x, collapse = ""))
   return(output)
 }
 
