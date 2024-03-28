@@ -1,3 +1,8 @@
+# mobileRNA 0.99.22
+
+* Fixed issues in RNAimport function
+
+
 # mobileRNA 0.99.20
 
 * Build redo

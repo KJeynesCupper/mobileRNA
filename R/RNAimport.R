@@ -274,11 +274,11 @@ RNAimport <- function(input = c("sRNA", "mRNA"),
     res_data <- as.data.frame(loci_all)
     # Split the Locus column into three new columns
     locus_cols <- data.frame(
-      chr = vapply(strsplit(data$Locus, split = ":"), "[[", character(1), 1),
-      start = vapply(strsplit(vapply(strsplit(data$Locus, split = ":"),
+      chr = vapply(strsplit(res_data$Locus, split = ":"), "[[", character(1), 1),
+      start = vapply(strsplit(vapply(strsplit(res_data$Locus, split = ":"),
                                      "[[", character(1), 2), split = "-"), "[[", 
                      character(1), 1),
-      end = vapply(strsplit(vapply(strsplit(data$Locus, split = ":"),
+      end = vapply(strsplit(vapply(strsplit(res_data$Locus, split = ":"),
                                    "[[", character(1), 2), split = "-"), "[[", 
                    character(1), 2)
     )
