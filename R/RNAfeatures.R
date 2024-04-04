@@ -46,6 +46,8 @@
 #'                        
 #'@importFrom rtracklayer import
 #'@importFrom GenomicRanges setdiff
+#'@importFrom GenomicRanges findOverlaps
+#'@importFrom S4Vectors queryHits
 #'@importFrom stats start
 #'@importFrom stats end
 #'@importFrom BiocGenerics strand
@@ -151,13 +153,14 @@ RNAfeatures <- function(data, annotation,
   # select sample
   sRNA_df <-  data %>% dplyr::select(chr, start, end)
   sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
-  sRNA_features_df[2,1] <- suppressWarnings(length(GenomicRanges::intersect(promoters,sRNA_df)))
-  sRNA_features_df[2,2] <- suppressWarnings(length(GenomicRanges::intersect(exons,sRNA_df)))
-  sRNA_features_df[2,3] <- suppressWarnings(length(GenomicRanges::intersect(introns,sRNA_df)))
-  sRNA_features_df[2,4] <- suppressWarnings(length(GenomicRanges::intersect(five_UTR,sRNA_df)))
-  sRNA_features_df[2,5] <- suppressWarnings(length(GenomicRanges::intersect(three_UTR,sRNA_df)))
-  sRNA_features_df[2,6] <- suppressWarnings(length(GenomicRanges::intersect(repeats,sRNA_df)))
-  sRNA_features_df[2,7] <- suppressWarnings(length(GenomicRanges::intersect(others,sRNA_df)))
+
+  sRNA_features_df[2,1] <- overlapFUN(promoters,sRNA_df)
+  sRNA_features_df[2,2] <- overlapFUN(exons,sRNA_df)
+  sRNA_features_df[2,3] <- overlapFUN(introns,sRNA_df)
+  sRNA_features_df[2,4] <- overlapFUN(five_UTR,sRNA_df)
+  sRNA_features_df[2,5] <- overlapFUN(three_UTR,sRNA_df)
+  sRNA_features_df[2,6] <- overlapFUN(repeats,sRNA_df)
+  sRNA_features_df[2,7] <- overlapFUN(others,sRNA_df)
   if(percentage == TRUE){
     # convert to percentage
     sRNA_features_df <- data.frame(t(sRNA_features_df)) %>%

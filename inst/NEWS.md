@@ -1,3 +1,7 @@
+# mobileRNA 0.99.23
+
+* Improved RNAfeatures function 
+
 # mobileRNA 0.99.22
 
 * Fixed issues in RNAimport function

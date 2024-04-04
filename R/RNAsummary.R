@@ -50,6 +50,7 @@
 #' res <- RNAsummary(sRNA_DESeq2)
 #'                                  
 #' @export
+#' @importFrom stats complete.cases
 RNAsummary <- function(data, alpha = 0.1, chimeric = FALSE,
                                   controls = NULL, genome.ID = NULL) {
   # Check if 'data' is a data frame
@@ -77,7 +78,7 @@ RNAsummary <- function(data, alpha = 0.1, chimeric = FALSE,
   # Filter the data based on the padjusted value
   filtered_data <- data[data$padjusted < alpha, ]
 # remove any NA values 
-  filtered_data <- filtered_data[complete.cases(filtered_data$padjusted), ]
+  filtered_data <- filtered_data[stats::complete.cases(filtered_data$padjusted), ]
 
   # number of rows with positive and negative log2FC
   n_up <- sum(filtered_data[, "log2FoldChange"] > 0)
