@@ -1,3 +1,8 @@
+# mobileRNA 0.99.24
+
+* Improved RNAdistribution function, including fixing a small bug, replaced 
+depreciated functioned and improved aesthetic and code structure. 
+
 # mobileRNA 0.99.23
 
 * Improved RNAfeatures function 

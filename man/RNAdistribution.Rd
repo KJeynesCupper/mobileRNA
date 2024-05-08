@@ -106,7 +106,7 @@ p5 <- RNAdistribution(data = sRNA_data, style = "bar",
 
 
 # Run function to define sRNA class for each cluster.
-sRNA_data_dicercall <- RNAdicercall(data = sRNA_data, tidy=TRUE)
+sRNA_data_dicercall <- mobileRNA::RNAdicercall(data = sRNA_data, tidy=TRUE)
 
 p6 <- RNAdistribution(data = sRNA_data_dicercall, style = "bar", data.type = "consensus")
 

@@ -89,7 +89,7 @@
 #'
 #'
 #' # Run function to define sRNA class for each cluster.
-#' sRNA_data_dicercall <- RNAdicercall(data = sRNA_data, tidy=TRUE)
+#' sRNA_data_dicercall <- mobileRNA::RNAdicercall(data = sRNA_data, tidy=TRUE)
 #'
 #'p6 <- RNAdistribution(data = sRNA_data_dicercall, style = "bar", data.type = "consensus")
 #'
@@ -102,7 +102,6 @@
 #' @importFrom tidyselect all_of
 #' @importFrom data.table setDT
 #' @importFrom ggplot2 ggplot
-#' @importFrom ggplot2 aes_string
 #' @importFrom ggplot2 geom_bar
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 aes
@@ -124,420 +123,329 @@
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 expansion
+#' @importFrom ggplot2 scale_colour_manual
+#' @importFrom ggplot2 scale_fill_manual
 #'
 RNAdistribution  <- function (data, samples = NULL, style, 
                               data.type = "samples", 
                               facet = TRUE, 
                               facet.arrange = 3, 
                               colour = "#0868AC", 
-                              outline = "black",
+                              outline = "black", 
                               wrap.scales = "fixed", 
                               overlap = TRUE, 
-                              relative = FALSE) {
-  
-  if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
-    stop("data must be a data frame, see ?help for more details")
-  }
-  if (missing(style) || !is.character(style)) {
-    stop("style parameter is missing or not a character vector.")
-  }
-  
-  # Check if style is one of the allowed values
-  allowed_styles <- c("line", "bar")
-  if (!style %in% allowed_styles) {
-    stop("style parameter must be one of 'line', 'bar', or 'consensus'.")
-  }
-  
-  # Check if style is one of the allowed values
-  allowed_datatypes <- c("samples", "consensus")
-  if (!data.type %in% allowed_datatypes) {
-    stop("data.type parameter must be one of 'samples' or 'consensus'.")
-  }
-  
-  if (data.type == "consensus") {
-    x <- data %>% dplyr::count(DicerConsensus)
-    if (!relative == FALSE) {
-      x <- x %>% dplyr::mutate(freq = n/sum(n))
-      if(style == "line"){
-        p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
-                                              y = freq, group = 1)) + 
-          ggplot2::geom_point() + 
-          ggplot2::geom_line() + ggplot2::theme_classic() + 
-          ggplot2::xlab("sRNA Class") + 
-          ggplot2::ylab("Relative frequency")+
-          ggplot2::scale_y_continuous(expand = c(0, 0), limits = c(0, 1))  +
-          ggplot2::theme_bw()+
-          ggplot2::theme(legend.position = "none",
-                         legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                         legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                         axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                         axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                         panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                         panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                         panel.border = ggplot2::element_rect(color = "white", size = 1),
-                         axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                         axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                         plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
-      } else
-        if(style =="bar"){
+                              relative = FALSE) 
+  {
+    if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
+      stop("data must be a data frame, see ?help for more details")
+    }
+    if (missing(style) || !is.character(style)) {
+      stop("style parameter is missing or not a character vector.")
+    }
+    allowed_styles <- c("line", "bar")
+    if (!style %in% allowed_styles) {
+      stop("style parameter must be one of 'line', 'bar', or 'consensus'.")
+    }
+    allowed_datatypes <- c("samples", "consensus")
+    if (!data.type %in% allowed_datatypes) {
+      stop("data.type parameter must be one of 'samples' or 'consensus'.")
+    }
+    custom_theme <- ggplot2::theme(
+      plot.title = ggplot2::element_text(face = "italic", size = 17), 
+      panel.grid = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(color="black", size = 15,
+                                          face = "bold", 
+                                          margin = ggplot2::margin(t = 10, b = 4)),
+      axis.text.y = ggplot2::element_text(color="black", size = 15,face = "bold", 
+                                          margin = ggplot2::margin(r = 10)) ,
+      panel.grid.major.x = ggplot2::element_line( size=.1, color="grey", 
+                                                  linetype = 2 ),
+      panel.grid.major.y = ggplot2::element_line( size=.1, color="grey", linetype = 2 ),
+      legend.position = "right", 
+      legend.box.margin= ggplot2::margin(20,20,20,20),
+      legend.text = ggplot2::element_text(size=14, margin = ggplot2::margin(7,7,7,7)),
+      legend.title = ggplot2::element_text(size = 14.5, face = "bold"),
+      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 10), size = 17, face = "bold"),
+      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 10), size = 17, face = "bold"),
+      strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "black"), 
+      strip.placement = "outside",
+      strip.text.x = ggplot2::element_text(size = 14,face="italic" , margin = margin(b = 6, t = 5)),
+      panel.border = ggplot2::element_rect(fill = "transparent", color = "black", linewidth = 1.5),
+      plot.margin = ggplot2::unit(c(0.1, 0.1, 0.1, 0.1), "inches"))
+    
+    if (data.type == "consensus") {
+      x <- data %>% dplyr::count(DicerConsensus)
+      if (!relative == FALSE) {
+        x <- x %>% dplyr::mutate(freq = n/sum(n))
+        if (style == "line") {
           p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                                 y = freq, group = 1)) + 
-            ggplot2::geom_bar(stat = "identity",fill = colour) + 
-            ggplot2::xlab("sRNA Class") + 
-            ggplot2::ylab("Relative frequency")+
-            ggplot2::scale_y_continuous(expand = c(0, 0))+
-            ggplot2::theme_bw()+
-            ggplot2::theme(legend.position = "none",
-                           legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                           legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                           axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                           axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                           panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                           panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                           panel.border = ggplot2::element_rect(color = "white", size = 1),
-                           axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                           axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                           plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") ) 
+            ggplot2::geom_point(color = colour) + 
+            ggplot2::geom_line(color = colour) + 
+            ggplot2::theme_classic() + 
+            ggplot2::xlab("sRNA Class") + ggplot2::ylab("Relative frequency") + 
+            ggplot2::scale_y_continuous(expand = c(0, 0), 
+                                        limits = c(0, 1)) + 
+            ggplot2::theme_classic() + 
+            custom_theme
+          
         }
-    }
-    else 
-      if (relative == FALSE){
-        if(style == "line"){
+        else if (style == "bar") {
+          
+          p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
+                                                y = freq, group = 1)) + 
+            ggplot2::geom_bar(stat = "identity", fill = colour, color = outline) + 
+            ggplot2::xlab("sRNA Class") + 
+            ggplot2::ylab("Relative frequency") + 
+            ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0,  0)) + 
+            ggplot2::theme_classic() + 
+            custom_theme
+        }
+      }
+      else if (relative == FALSE) {
+        perc_lim <- max(x$n) * 1.10
+        
+        if (style == "line") {
           max_lim <- max(x$n)
-          perc_lim <- max(x$n)*0.014
+
           p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                                 y = n, group = 1)) + 
-            ggplot2::geom_point() + ggplot2::geom_line() + 
-            ggplot2::theme_classic() + ggplot2::xlab("sRNA Class") + 
-            ggplot2::ylab("Count")+
-            ggplot2::theme_bw()+
-            ggplot2::scale_y_continuous(expand = c(0, 0), limits = c(0, perc_lim))  +
-            ggplot2::theme(legend.position = "none",
-                           legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                           legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                           axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                           axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                           panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                           panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                           panel.border = ggplot2::element_rect(color = "white", size = 1),
-                           axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                           axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                           plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
-          
-        } else
-          if(style == "bar"){
-            p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
-                                                  y = n, group = 1)) + 
-              ggplot2::geom_bar(stat = "identity",fill = colour) + 
-              ggplot2::theme_classic() + 
-              ggplot2::xlab("sRNA Class") + 
-              ggplot2::ylab("Count")+
-              ggplot2::theme_bw()+
-              ggplot2::scale_y_continuous(expand = c(0, 0))+ 
-              ggplot2::theme(legend.position = "none",
-                             legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                             legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                             axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                             axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                             panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                             panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                             panel.border = ggplot2::element_rect(color = "white", size = 1),
-                             axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                             axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                             plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
-          }
-      }
-    out <- list(plot = p1, data = x)
-    return(out)
-  }
-  else {
-    if (base::missing(style) || !style %in% c("bar", "line")) {
-      stop("Please specify type of plot to produce (line or bar)")
-    }
-    data.cols <- data %>% dplyr::select(tidyselect::starts_with("DicerCall_"))
-    counts.df <- apply(data.cols, MARGIN = 2, table)
-    
-    # if a replicate only has unclassified sRNAs (N), then we need to alter
-    # beware that any tables which do not have the required columns
-    if (base::inherits(counts.df, c("list"))) {
-      class_colnames <- colnames(data)[grep("DicerCall_", colnames(data))]
-      required_columns <- unique(unlist(data[class_colnames]))
-      for (i in seq_len(nrow(counts.df)) ) {
-        table_i <- counts.df[[i]]  # current table
-        if (length(names(table_i)) < length(required_columns)) {
-          # columns missing from the table
-          missing_columns <- setdiff(required_columns, names(table_i))
-          # add missing columns to table, and assign a value of 0
-          table_i[missing_columns] <- 0
-          # check order:
-          if (!identical(names(table_i), required_columns)) {
-            # match order to required order
-            table_i <- table_i[match(required_columns, names(table_i))]
-          }
-          # Update the table in counts.df
-          counts.df[[i]] <- table_i 
+            ggplot2::geom_point(color = colour) + 
+            ggplot2::geom_line(color = colour) + 
+            ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
+            ggplot2::scale_y_continuous(expand = c(0, 0),limits = c(0, perc_lim))+ 
+            ggplot2::theme_classic() + 
+            custom_theme
+        }
+        else if (style == "bar") {
+          p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
+                                                y = n, group = 1)) + 
+            ggplot2::geom_bar(stat = "identity", fill = colour, color = outline) + 
+            ggplot2::xlab("sRNA Class") + 
+            ggplot2::ylab("Count") + 
+            ggplot2::scale_y_continuous(limits = c(0, perc_lim), expand = c(0,  0)) + 
+            ggplot2::theme_classic() + 
+            custom_theme
         }
       }
-      # transpose, make dataframe of results. 
-      counts.df <- data.frame(t(do.call(rbind, counts.df)))
-    } else 
-      if (!base::inherits(counts.df, c("list"))) {
-        counts.df <- data.frame(counts.df)
-      }
-    
-    
-    colnames(counts.df) <- gsub("DicerCall_", "", colnames(counts.df))
-    counts.df <- data.table::setDT(counts.df, keep.rownames = "Class")[]
-    counts.df <- counts.df[!(counts.df$Class == "N"), ]
-    
-    
-    if (style == "bar") {
-      if(!is.null(samples)){
-        counts_class <- counts.df %>% select(Class)
-        counts.df <- counts.df %>% select(all_of(samples))
-        counts.df <- cbind(counts_class,counts.df )
-      }
-      
-      # Create an empty list to store the plots
-      plist <- list()
-      
-      # Generate plots and store them in the list
-      for (col in names(counts.df)[-grep("Class", names(counts.df))]) {
-        p <- ggplot2::ggplot(counts.df, aes_string(x = "Class", y = col)) +
-          ggplot2::geom_bar(stat = "identity", fill = colour, color = outline) +
-          ggplot2::theme_classic() +
-          ggplot2::labs(title = paste0("Sample: ", col), x = "sRNA Class", 
-                        y = "Count") +
-          ggplot2::theme_bw() +
-          ggplot2::theme(
-            legend.position = "right",
-            plot.title = ggplot2::element_text(face = "bold", size = 16),
-            legend.text = ggplot2::element_text(size = 12, 
-                                                margin = margin(5, 5, 5, 5)),
-            legend.title = ggplot2::element_text(size = 14, face = "bold"),
-            axis.text.x = ggplot2::element_text(colour = "black", size = 14, 
-                        face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-            axis.text.y = ggplot2::element_text(colour = "black", size = 14, 
-                              face = "bold", margin = ggplot2::margin(r = 10)),
-            panel.grid.major = ggplot2::element_blank(), 
-            panel.grid.minor = ggplot2::element_blank(),
-            panel.background = ggplot2::element_blank(), 
-            axis.line = ggplot2::element_line(colour = "black"),
-            panel.border = ggplot2::element_rect(color = "white", linewidth = 1),
-            axis.title.y = ggplot2::element_text(margin = 
-                            ggplot2::margin(r = 15), size = 16, face = "bold"),
-            axis.title.x = ggplot2::element_text(margin = 
-                            ggplot2::margin(t = 15), size = 16, face = "bold"),
-            plot.margin = ggplot2::unit(c(0.1, 0.1, 0.1, 0.1), "inches")
-          )
-        
-        plist[[col]] <- p
-      }
-      
-      # Adjust the y-axis scale for each plot
-      plist <- lapply(plist, function(p) {
-        p + ggplot2::scale_y_continuous(expand = 
-                                          ggplot2::expansion(mult = c(0, 0.1)))
-      })
-      
-      
-      sn <- names(plist)
-      if (facet == TRUE) {
-        p <- ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class), 
-                             ggplot2::aes(Class, Count)) + 
-          ggplot2::geom_bar(stat = "identity", fill = colour, colour = outline) + 
-          ggplot2::facet_wrap(~key, scales = wrap.scales, ncol = facet.arrange)+
-          ggplot2::labs(x = "sRNA Class", y = "Count")+
-          ggplot2::theme_bw()+
-          ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.1)))+
-          ggplot2::theme(legend.position = "right",
-                         legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                         legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                         strip.placement = "outside",
-                         strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "white"),
-                         strip.text = ggplot2::element_text(size = 12,face="italic" ),
-                         axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                         axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                         panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                         panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                         panel.border = ggplot2::element_rect(color = "white", size = 1),
-                         axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                         axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                         plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
-        
-        out <- list(plot = p, data = counts.df)
-        
-      }
-      else 
-        if (facet == FALSE){
-          
-          out <- list(plot = plist, data = counts.df)
-        }
+      out <- list(plot = p1, data = x)
       return(out)
     }
-    if (style == "line") {
-      if (overlap == TRUE) {
-        if (is.null(samples)) {
-          counts.df_melt <- data.table::melt(counts.df, id.vars = "Class")
-          p <- ggplot2::ggplot(counts.df_melt, ggplot2::aes(Class, value, 
-                                                            col = variable, 
-                                                            group = 1)) + 
-            ggplot2::geom_point() + 
-            ggplot2::geom_line() + 
-            ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
-            ggplot2::labs(color = "Samples")+ 
-            ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = 21, size = 8))) +
-            ggplot2::theme_bw()+
-            ggplot2::theme(legend.position = "right",
-                  legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                  legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                  axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                  axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                  panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                  panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                  panel.border = ggplot2::element_rect(color = "white", size = 1),
-                  axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                  axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                  plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+    else {
+      if (base::missing(style) || !style %in% c("bar", "line")) {
+        stop("Please specify type of plot to produce (line or bar)")
+      }
+      data.cols <- data %>% dplyr::select(tidyselect::starts_with("DicerCall_"))
+      counts.df <- apply(data.cols, MARGIN = 2, table)
+      if (base::inherits(counts.df, c("list"))) {
+        class_colnames <- colnames(data)[grep("DicerCall_", 
+                                              colnames(data))]
+        required_columns <- unique(unlist(data[class_colnames]))
+        for (i in 1:length(counts.df) ) {
+          table_i <- counts.df[[i]]
+          if (length(names(table_i)) < length(required_columns)) {
+            missing_columns <- setdiff(required_columns, 
+                                       names(table_i))
+            table_i[missing_columns] <- 0
+            if (!identical(names(table_i), required_columns)) {
+              table_i <- table_i[match(required_columns, 
+                                       names(table_i))]
+            }
+            counts.df[[i]] <- table_i
+          }
+        }
+        counts.df <- data.frame(t(do.call(rbind, counts.df)))
+      } else if (!base::inherits(counts.df, c("list"))) {
+        counts.df <- data.frame(counts.df)
+      }
+      colnames(counts.df) <- gsub("DicerCall_", "", colnames(counts.df))
+      counts.df <- data.table::setDT(counts.df, keep.rownames = "Class")[]
+      counts.df <- counts.df[!(counts.df$Class == "N"), ]
+      
+      if (style == "bar") {
+        if (!is.null(samples)) {
+          counts_class <- counts.df %>% select(Class)
+          counts.df <- counts.df %>% select(all_of(samples))
+          counts.df <- cbind(counts_class, counts.df)
+        }
+        plist <- list()
+        
+        for (col in names(counts.df)[-grep("Class", names(counts.df))]) {
+          xlim_v <- max(counts.df[[col]])*1.10
+          
+          p <- if (!is.null(colour) && length(colour) == (nrow(counts.df) -1) ) {
+            ggplot2::ggplot(counts.df, ggplot2::aes(x = .data[["Class"]],  y = .data[[col]]))+
+              ggplot2::geom_bar(stat = "identity", ggplot2::aes(fill = variable), color = outline)+
+              ggplot2::scale_fill_manual(values = colour )+
+              ggplot2::theme_classic() + 
+              ggplot2::labs(title = paste0("Sample: ", col), 
+                            x = "sRNA Class", y = "Count") + 
+              ggplot2::theme_bw() + 
+              custom_theme
+          } else if (!is.null(colour) && length(colour) == 1) {
+            ggplot2::ggplot(as.data.frame(counts.df), ggplot2::aes(x = .data[["Class"]],  y = .data[[col]]))+
+              ggplot2::geom_bar(stat = "identity", fill = colour, color = outline)+
+              ggplot2::theme_classic() + 
+              ggplot2::labs(title = paste0("Sample: ", col), 
+                            x = "sRNA Class", y = "Count") + 
+              ggplot2::theme_bw() + 
+              custom_theme
+          } else {
+            ggplot2::ggplot(counts.df, ggplot2::aes(x = .data[["Class"]],  y = .data[[col]]))+
+              ggplot2::geom_bar(stat = "identity",  ggplot2::aes(fill = variable), 
+                                color = outline)+
+              ggplot2::theme_classic() + 
+              ggplot2::labs(title = paste0("Sample: ", col), 
+                            x = "sRNA Class", y = "Count") + 
+              ggplot2::theme_bw() + 
+              custom_theme
+          }
+          
+          
+          
+          plist[[col]] <- p
+        }
+        plist <- lapply(plist, function(p) {
+          p + ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 
+                                                                               0.1)))
+        })
+        sn <- names(plist)
+        if (facet == TRUE) {
+          p <- ggplot2::ggplot(tidyr::gather(counts.df, 
+                                             key, Count, -Class), ggplot2::aes(Class, Count)) + 
+            ggplot2::geom_bar(stat = "identity", fill = colour, 
+                              colour = outline) + ggplot2::facet_wrap(~key, 
+                                                                      scales = wrap.scales, ncol = facet.arrange) + 
+            ggplot2::labs(x = "sRNA Class", y = "Count") + 
+            ggplot2::theme_classic()+
+            ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0,0.1)))+ 
+            custom_theme
+          
           out <- list(plot = p, data = counts.df)
         }
-        else 
-          if (!is.null(samples)) {
-            counts.df <- counts.df %>% select(!all_of(samples))
-            counts.df <- data.table::melt(counts.df, id.vars = "Class")
-            p <- ggplot2::ggplot(counts.df, ggplot2::aes(Class, 
-                                                         value, col = variable, 
-                                                         group = 1)) + 
-              ggplot2::geom_point(colour = colour) + 
-              ggplot2::geom_line(colour = colour) + 
-              ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
-              ggplot2::labs(color = "Samples")+ 
-              ggplot2::theme_bw()+
-              ggplot2::theme(legend.position = "right",
-                    legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                    legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                    axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                    axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                    panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                    panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                    panel.border = ggplot2::element_rect(color = "white", size = 1),
-                    axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                    axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                    plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+        else if (facet == FALSE) {
+          out <- list(plot = plist, data = counts.df)
+        }
+        return(out)
+      }
+      if (style == "line") {
+        if (overlap == TRUE) {
+          if (is.null(samples)) {
+            counts.df_melt <- data.table::melt(counts.df, 
+                                               id.vars = "Class")
+            p <- ggplot2::ggplot(counts.df_melt, ggplot2::aes(Class, 
+                                                              value, col = variable, group = 1)) + ggplot2::geom_point() + 
+              ggplot2::geom_line() + ggplot2::xlab("sRNA Class") + 
+              ggplot2::ylab("Count") + ggplot2::labs(color = "Samples") + 
+              ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = 21,size = 8))) + 
+              ggplot2::theme_bw() + 
+              custom_theme
             out <- list(plot = p, data = counts.df)
           }
-      }
-      else 
-        if (overlap == FALSE) {
+          else if (!is.null(samples)) {
+            counts.df <- counts.df %>% select(Class, all_of(samples))
+            counts.df <- data.table::melt(counts.df, id.vars = "Class")
+            p <- ggplot2::ggplot(counts.df, 
+                                 ggplot2::aes(Class, value, col = variable, group = 1)) + 
+              ggplot2::geom_point(ggplot2::aes(color = variable)) + 
+              ggplot2::geom_line(ggplot2::aes(color = variable)) +
+              {if(!is.null(colour) && length(colour)== length(unique(counts.df$variable)))
+                ggplot2::scale_colour_manual(values = colour ) }+
+              ggplot2::xlab("sRNA Class") + 
+              ggplot2::ylab("Count") + ggplot2::labs(color = "Samples") + 
+              ggplot2::theme_bw() + 
+              custom_theme
+            
+            out <- list(plot = p, data = counts.df)
+          }
+        }
+        else if (overlap == FALSE) {
           if (facet == TRUE) {
             if (is.null(samples)) {
-              p <- ggplot2::ggplot(tidyr::gather(counts.df,key, Count, -Class), 
+              p <- ggplot2::ggplot(tidyr::gather(counts.df, key, Count, -Class), 
                                    ggplot2::aes(Class, Count, group = 1)) + 
                 ggplot2::geom_point(colour = colour) + 
                 ggplot2::geom_line(colour = colour) + 
                 ggplot2::facet_wrap(~key, scales = wrap.scales, 
-                                    ncol = facet.arrange, )+
-                ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
-                ggplot2::theme_bw()+
-                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.1)))+
-                ggplot2::theme(legend.position = "right",
-                      legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                      legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                      strip.placement = "outside",
-                      strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "white"),
-                      strip.text = ggplot2::element_text(size = 12,face="italic" ),
-                      axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                      axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                      panel.border = ggplot2::element_rect(color = "white", size = 1),
-                      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                      plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches"),
-                      panel.spacing = unit(2, "lines"))
-              
+                                    ncol = facet.arrange) + 
+                ggplot2::xlab("sRNA Class") + 
+                ggplot2::ylab("Count") + 
+                ggplot2::theme_bw() + 
+                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.1))) + 
+                custom_theme                                                                                                                                                                                                                                                                                                                                            
             }
             else if (!is.null(samples)) {
               counts_class <- counts.df %>% select(Class)
               counts.df <- counts.df %>% select(all_of(samples))
-              counts.df <- cbind(counts_class,counts.df )
-              p <- ggplot2::ggplot(tidyr::gather(counts.df,  key, Count,-Class), 
-                                   ggplot2::aes(Class, Count, group = 1)) + 
-                ggplot2::geom_point(colour = colour) + 
-                ggplot2::geom_line(colour = colour) + 
-                ggplot2::theme_classic() + 
-                ggplot2::facet_wrap(~key, scales = wrap.scales, ncol=facet.arrange)+
-                ggplot2::theme_bw()+
-                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.1)))+
-                ggplot2::theme(legend.position = "right",
-                      legend.text = ggplot2::element_text(size= 12, margin = ggplot2::margin(5,5,5,5)),
-                      legend.title = ggplot2::element_text(size = 14, face = "bold"),
-                      strip.placement = "outside",
-                      strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "white"),
-                      strip.text = ggplot2::element_text(size = 12,face="italic" ),
-                      axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                      axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                      panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                      panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                      panel.border = ggplot2::element_rect(color = "white", size = 1),
-                      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                      plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+              counts.df <- cbind(counts_class, counts.df)
+              p <- ggplot2::ggplot(tidyr::gather(counts.df, 
+                                                 key, Count, -Class), ggplot2::aes(Class, 
+                                                                                   Count, group = 1)) + ggplot2::geom_point(colour = colour) + 
+                ggplot2::geom_line(colour = colour) + ggplot2::theme_classic() + 
+                ggplot2::facet_wrap(~key, scales = wrap.scales, 
+                                    ncol = facet.arrange) + ggplot2::theme_bw() + 
+                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0,0.1))) +   
+                custom_theme
             }
             out <- list(plot = p, data = counts.df)
             return(out)
           }
           else if (facet == FALSE) {
-            if(!is.null(samples)){
+            if (!is.null(samples)) {
               counts_class <- counts.df %>% select(Class)
               counts.df <- counts.df %>% select(all_of(samples))
-              counts.df <- cbind(counts_class,counts.df )
+              counts.df <- cbind(counts_class, counts.df)
             }
             plist2 <- list()
-            
-            for (col in names(counts.df)[-grep("Class", names(counts.df))]) {
-              p2 <- ggplot2::ggplot(counts.df, 
-                              ggplot2::aes_string(x ="Class",y =col, group=1))+ 
-                ggplot2::geom_point(colour = colour) + 
-                ggplot2::theme_classic() + 
-                ggplot2::geom_line(colour = colour) + 
-                ggplot2::labs(title = paste0("Sample: ", col), x = "sRNA Class",
-                              y = "Count")+
-                ggplot2::theme_bw()+
-                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.1)))+
-                ggplot2::theme(legend.position = "right",
-                               plot.title = ggplot2::element_text(face = "bold",
-                                                                  size = 16), 
-                               legend.text = ggplot2::element_text(size= 12, 
-                                            margin = ggplot2::margin(5,5,5,5)),
-                               legend.title = ggplot2::element_text(size = 14, 
-                                                                face = "bold"),
-                               axis.text.x = ggplot2::element_text(colour = "black", size = 14, face = "bold", margin = ggplot2::margin(t = 10, b = 4)),
-                               axis.text.y = ggplot2::element_text(colour = "black", size = 14,  face = "bold", margin = ggplot2::margin(r = 10)),
-                               panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                               panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                               panel.border = ggplot2::element_rect(color = "white", size = 1),
-                               axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 15), size = 16, face = "bold"),
-                               axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 15), size = 16, face = "bold"),
-                               plot.margin = ggplot2::unit(c(0.1, 0.1,0.1, 0.1),"inches") )
+            for (col in names(counts.df)[-grep("Class",  names(counts.df))]) {
+              
+              xlim_v <- max(counts.df[[col]])*1.10
+              
+              p2 <- if (!is.null(colour) && length(colour) == (nrow(counts.df) -1) ) {
+                ggplot2::ggplot(counts.df, 
+                                ggplot2::aes(x = .data[["Class"]],  y = .data[[col]], group = 1))+
+                  ggplot2::geom_point(ggplot2::aes(color = variable))+
+                  ggplot2::geom_line(ggplot2::aes(color = variable)) + 
+                  ggplot2::scale_fill_manual(values = colour )+
+                  ggplot2::theme_classic() + 
+                  ggplot2::labs(title = paste0("Sample: ", col), 
+                                x = "sRNA Class", y = "Count") + 
+                  ggplot2::theme_bw() + 
+                  custom_theme
+              } else if (!is.null(colour) && length(colour) == 1) {
+                ggplot2::ggplot(as.data.frame(counts.df), 
+                                ggplot2::aes(x = .data[["Class"]],  y = .data[[col]], group = 1))+
+                  ggplot2::geom_point( color = colour)+
+                  ggplot2::geom_line(color = colour) + 
+                  ggplot2::theme_classic() + 
+                  ggplot2::labs(title = paste0("Sample: ", col), 
+                                x = "sRNA Class", y = "Count") + 
+                  ggplot2::theme_bw() + 
+                  custom_theme
+              } else {
+                ggplot2::ggplot(counts.df, 
+                                ggplot2::aes(x = .data[["Class"]],  y = .data[[col]], group = 1))+
+                  ggplot2::geom_point(ggplot2::aes(color = variable))+
+                  ggplot2::geom_line(ggplot2::aes(color = variable)) + 
+                  ggplot2::theme_classic() + 
+                  ggplot2::labs(title = paste0("Sample: ", col), 
+                                x = "sRNA Class", y = "Count") + 
+                  ggplot2::theme_bw() + 
+                  custom_theme
+              }
               
               plist2[[col]] <- p2
             }
-            
-            # Adjust the y-axis scale for each plot
             plist2 <- lapply(plist2, function(p2) {
-              p2 + ggplot2::scale_y_continuous(expand = 
-                                          ggplot2::expansion(mult = c(0, 0.1)))
+              p2 + ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 
+                                                                                    0.1)))
             })
-            
-            
             sn <- names(plist2)
             p <- plist2
             out <- list(plot = p, data = counts.df)
-          
           }
         }
-      return(out) 
+        return(out)
+      }
     }
-  }
 }

@@ -1079,6 +1079,6 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "name", "Length", "Locus", "Name", "SampleCounts", 
                          "UniqueReads", "groups", "is", "log2FoldChange","mRNA",
                          "no", "none", "pos", "significance", "tidy", "a",
-                         "data", "complete.cases"))
+                         "data", "complete.cases", ".data"))
 
 
