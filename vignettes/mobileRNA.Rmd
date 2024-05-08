@@ -894,7 +894,15 @@ regions. The results can either be displayed in the data frame as an
 absolute value or as a percentage of the total:
 
 ```{r}
-mobile_features <- RNAfeatures(data = mobile_sRNA, annotation = annotation_file)
+mobile_features <- RNAfeatures(data = mobile_sRNA, 
+                               annotation = annotation_file)
+print(mobile_features)
+
+# plot as stacked bar chart
+features_plot <- plotRNAfeatures(data = sRNA_data,  
+                                 annotation = annotation_file)
+
+plot(features_plot)
 ```
 <br>
 

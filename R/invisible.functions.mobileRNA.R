@@ -1052,18 +1052,6 @@ exists_htseq <- function(package_name){
 }
 
 
-################## overlpa function for RNAfeatures  #####################################
-overlapFUN <- function(x,y){
-  overlaps <- suppressWarnings(GenomicRanges::findOverlaps(x, y,ignore.strand=TRUE))
-  
-  # Extract unique hits
-  unique_overlaps <- unique(S4Vectors::queryHits(overlaps))
-  
-  # Number of ranges in y that overlap with a range in x
-  num_overlapping_ranges <- length(unique_overlaps)
-  
-  return(num_overlapping_ranges)
-}
 
 ################## global variable storage #####################################
 utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
@@ -1079,6 +1067,7 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "name", "Length", "Locus", "Name", "SampleCounts", 
                          "UniqueReads", "groups", "is", "log2FoldChange","mRNA",
                          "no", "none", "pos", "significance", "tidy", "a",
-                         "data", "complete.cases", ".data"))
+                         "data", "complete.cases", ".data", "width", "Origin",
+                         "percentage" ))
 
 
