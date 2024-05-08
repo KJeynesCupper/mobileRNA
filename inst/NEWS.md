@@ -1,7 +1,11 @@
-# mobileRNA 0.99.24
+# mobileRNA 1.0.1
 
+* Version bump following Bioconductor updates.
+* Improved the RNAfeatures function due discrepancies. Previously, calculated 
+width rather than relative number of features. 
 * Improved RNAdistribution function, including fixing a small bug, replaced 
 depreciated functioned and improved aesthetic and code structure. 
+* Introduced new plotting function plotRNAfeatures. 
 
 # mobileRNA 0.99.23
 
