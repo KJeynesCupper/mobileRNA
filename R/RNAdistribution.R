@@ -160,22 +160,31 @@ RNAdistribution  <- function (data, samples = NULL, style,
       panel.grid = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_text(color="black", size = 15,
                                           face = "bold", 
-                                          margin = ggplot2::margin(t = 10, b = 4)),
-      axis.text.y = ggplot2::element_text(color="black", size = 15,face = "bold", 
+                                          margin = ggplot2::margin(t = 10, 
+                                                                   b = 4)),
+      axis.text.y = ggplot2::element_text(color="black", size = 15,
+                                          face = "bold", 
                                           margin = ggplot2::margin(r = 10)) ,
       panel.grid.major.x = ggplot2::element_line( size=.1, color="grey", 
                                                   linetype = 2 ),
-      panel.grid.major.y = ggplot2::element_line( size=.1, color="grey", linetype = 2 ),
+      panel.grid.major.y = ggplot2::element_line( size=.1, color="grey", 
+                                                  linetype = 2 ),
       legend.position = "right", 
       legend.box.margin= ggplot2::margin(20,20,20,20),
-      legend.text = ggplot2::element_text(size=14, margin = ggplot2::margin(7,7,7,7)),
+      legend.text = ggplot2::element_text(size=14, 
+                                          margin = ggplot2::margin(7,7,7,7)),
       legend.title = ggplot2::element_text(size = 14.5, face = "bold"),
-      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 10), size = 17, face = "bold"),
-      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 10), size = 17, face = "bold"),
-      strip.background = ggplot2::element_rect(fill = "lightgrey", colour = "black"), 
+      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 10),
+                                           size = 17, face = "bold"),
+      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(t = 10),
+                                           size = 17, face = "bold"),
+      strip.background = ggplot2::element_rect(fill = "lightgrey", 
+                                               colour = "black"), 
       strip.placement = "outside",
-      strip.text.x = ggplot2::element_text(size = 14,face="italic" , margin = margin(b = 6, t = 5)),
-      panel.border = ggplot2::element_rect(fill = "transparent", color = "black", linewidth = 1.5),
+      strip.text.x = ggplot2::element_text(size = 14,face="italic", 
+                                        margin = ggplot2::margin(b = 6,t = 5)),
+      panel.border = ggplot2::element_rect(fill = "transparent", 
+                                           color = "black", linewidth = 1.5),
       plot.margin = ggplot2::unit(c(0.1, 0.1, 0.1, 0.1), "inches"))
     
     if (data.type == "consensus") {
@@ -199,7 +208,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
           
           p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                                 y = freq, group = 1)) + 
-            ggplot2::geom_bar(stat = "identity", fill = colour, color = outline) + 
+            ggplot2::geom_bar(stat = "identity", fill = colour, 
+                              color = outline) + 
             ggplot2::xlab("sRNA Class") + 
             ggplot2::ylab("Relative frequency") + 
             ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0,  0)) + 
@@ -218,17 +228,20 @@ RNAdistribution  <- function (data, samples = NULL, style,
             ggplot2::geom_point(color = colour) + 
             ggplot2::geom_line(color = colour) + 
             ggplot2::xlab("sRNA Class") + ggplot2::ylab("Count") + 
-            ggplot2::scale_y_continuous(expand = c(0, 0),limits = c(0, perc_lim))+ 
+            ggplot2::scale_y_continuous(expand = c(0, 0),
+                                        limits = c(0, perc_lim))+ 
             ggplot2::theme_classic() + 
             custom_theme
         }
         else if (style == "bar") {
           p1 <- ggplot2::ggplot(x, ggplot2::aes(x = DicerConsensus, 
                                                 y = n, group = 1)) + 
-            ggplot2::geom_bar(stat = "identity", fill = colour, color = outline) + 
+            ggplot2::geom_bar(stat = "identity", fill = colour, 
+                              color = outline) + 
             ggplot2::xlab("sRNA Class") + 
             ggplot2::ylab("Count") + 
-            ggplot2::scale_y_continuous(limits = c(0, perc_lim), expand = c(0,  0)) + 
+            ggplot2::scale_y_continuous(limits = c(0, perc_lim), 
+                                        expand = c(0,  0)) + 
             ggplot2::theme_classic() + 
             custom_theme
         }
@@ -283,9 +296,11 @@ RNAdistribution  <- function (data, samples = NULL, style,
         for (col in names(counts.df)[-grep("Class", names(counts.df))]) {
           xlim_v <- max(counts.df[[col]])*1.10
           
-          p <- if (!is.null(colour) && length(colour) == (nrow(counts.df) -1) ) {
-            ggplot2::ggplot(counts.df, ggplot2::aes(x = .data[["Class"]],  y = .data[[col]]))+
-              ggplot2::geom_bar(stat = "identity", ggplot2::aes(fill = variable), color = outline)+
+          p <- if (!is.null(colour) && length(colour) == (nrow(counts.df) -1) ){
+            ggplot2::ggplot(counts.df, ggplot2::aes(x = .data[["Class"]],  
+                                                    y = .data[[col]]))+
+              ggplot2::geom_bar(stat = "identity",ggplot2::aes(fill = variable),
+                                color = outline)+
               ggplot2::scale_fill_manual(values = colour )+
               ggplot2::theme_classic() + 
               ggplot2::labs(title = paste0("Sample: ", col), 
@@ -293,16 +308,21 @@ RNAdistribution  <- function (data, samples = NULL, style,
               ggplot2::theme_bw() + 
               custom_theme
           } else if (!is.null(colour) && length(colour) == 1) {
-            ggplot2::ggplot(as.data.frame(counts.df), ggplot2::aes(x = .data[["Class"]],  y = .data[[col]]))+
-              ggplot2::geom_bar(stat = "identity", fill = colour, color = outline)+
+            ggplot2::ggplot(as.data.frame(counts.df), 
+                            ggplot2::aes(x = .data[["Class"]],  
+                                         y = .data[[col]]))+
+              ggplot2::geom_bar(stat = "identity", fill = colour, 
+                                color = outline)+
               ggplot2::theme_classic() + 
               ggplot2::labs(title = paste0("Sample: ", col), 
                             x = "sRNA Class", y = "Count") + 
               ggplot2::theme_bw() + 
               custom_theme
           } else {
-            ggplot2::ggplot(counts.df, ggplot2::aes(x = .data[["Class"]],  y = .data[[col]]))+
-              ggplot2::geom_bar(stat = "identity",  ggplot2::aes(fill = variable), 
+            ggplot2::ggplot(counts.df, ggplot2::aes(x = .data[["Class"]], 
+                                                    y = .data[[col]]))+
+              ggplot2::geom_bar(stat = "identity",  
+                                ggplot2::aes(fill = variable), 
                                 color = outline)+
               ggplot2::theme_classic() + 
               ggplot2::labs(title = paste0("Sample: ", col), 
@@ -316,19 +336,22 @@ RNAdistribution  <- function (data, samples = NULL, style,
           plist[[col]] <- p
         }
         plist <- lapply(plist, function(p) {
-          p + ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 
-                                                                               0.1)))
+          p + ggplot2::scale_y_continuous(expand = 
+                                            ggplot2::expansion(mult = c(0,0.1)))
         })
         sn <- names(plist)
         if (facet == TRUE) {
           p <- ggplot2::ggplot(tidyr::gather(counts.df, 
-                                             key, Count, -Class), ggplot2::aes(Class, Count)) + 
+                                             key, Count, -Class), 
+                               ggplot2::aes(Class, Count)) + 
             ggplot2::geom_bar(stat = "identity", fill = colour, 
-                              colour = outline) + ggplot2::facet_wrap(~key, 
-                                                                      scales = wrap.scales, ncol = facet.arrange) + 
+                              colour = outline) + 
+            ggplot2::facet_wrap(~key,  scales = wrap.scales, 
+                                ncol = facet.arrange) + 
             ggplot2::labs(x = "sRNA Class", y = "Count") + 
             ggplot2::theme_classic()+
-            ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0,0.1)))+ 
+            ggplot2::scale_y_continuous(expand = 
+                                          ggplot2::expansion(mult = c(0,0.1)))+ 
             custom_theme
           
           out <- list(plot = p, data = counts.df)
@@ -344,10 +367,15 @@ RNAdistribution  <- function (data, samples = NULL, style,
             counts.df_melt <- data.table::melt(counts.df, 
                                                id.vars = "Class")
             p <- ggplot2::ggplot(counts.df_melt, ggplot2::aes(Class, 
-                                                              value, col = variable, group = 1)) + ggplot2::geom_point() + 
+                                                              value, 
+                                                              col = variable,
+                                                              group = 1)) + 
+              ggplot2::geom_point() + 
               ggplot2::geom_line() + ggplot2::xlab("sRNA Class") + 
               ggplot2::ylab("Count") + ggplot2::labs(color = "Samples") + 
-              ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = 21,size = 8))) + 
+              ggplot2::guides(fill = ggplot2::guide_legend(override.aes = 
+                                                             list(shape = 21,
+                                                                  size = 8))) + 
               ggplot2::theme_bw() + 
               custom_theme
             out <- list(plot = p, data = counts.df)
@@ -356,10 +384,12 @@ RNAdistribution  <- function (data, samples = NULL, style,
             counts.df <- counts.df %>% select(Class, all_of(samples))
             counts.df <- data.table::melt(counts.df, id.vars = "Class")
             p <- ggplot2::ggplot(counts.df, 
-                                 ggplot2::aes(Class, value, col = variable, group = 1)) + 
+                                 ggplot2::aes(Class, value, col = variable, 
+                                              group = 1)) + 
               ggplot2::geom_point(ggplot2::aes(color = variable)) + 
               ggplot2::geom_line(ggplot2::aes(color = variable)) +
-              {if(!is.null(colour) && length(colour)== length(unique(counts.df$variable)))
+              {if(!is.null(colour) && length(colour)== 
+                  length(unique(counts.df$variable)))
                 ggplot2::scale_colour_manual(values = colour ) }+
               ggplot2::xlab("sRNA Class") + 
               ggplot2::ylab("Count") + ggplot2::labs(color = "Samples") + 
@@ -381,7 +411,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
                 ggplot2::xlab("sRNA Class") + 
                 ggplot2::ylab("Count") + 
                 ggplot2::theme_bw() + 
-                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.1))) + 
+                ggplot2::scale_y_continuous(expand = 
+                                              ggplot2::expansion(mult = c(0, 0.1))) + 
                 custom_theme                                                                                                                                                                                                                                                                                                                                            
             }
             else if (!is.null(samples)) {
@@ -389,12 +420,14 @@ RNAdistribution  <- function (data, samples = NULL, style,
               counts.df <- counts.df %>% select(all_of(samples))
               counts.df <- cbind(counts_class, counts.df)
               p <- ggplot2::ggplot(tidyr::gather(counts.df, 
-                                                 key, Count, -Class), ggplot2::aes(Class, 
-                                                                                   Count, group = 1)) + ggplot2::geom_point(colour = colour) + 
+                                                 key, Count, -Class), 
+                                   ggplot2::aes(Class,  Count, group = 1)) + 
+                ggplot2::geom_point(colour = colour) + 
                 ggplot2::geom_line(colour = colour) + ggplot2::theme_classic() + 
                 ggplot2::facet_wrap(~key, scales = wrap.scales, 
                                     ncol = facet.arrange) + ggplot2::theme_bw() + 
-                ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0,0.1))) +   
+                ggplot2::scale_y_continuous(expand = 
+                                              ggplot2::expansion(mult = c(0,0.1))) +   
                 custom_theme
             }
             out <- list(plot = p, data = counts.df)
@@ -413,7 +446,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
               
               p2 <- if (!is.null(colour) && length(colour) == (nrow(counts.df) -1) ) {
                 ggplot2::ggplot(counts.df, 
-                                ggplot2::aes(x = .data[["Class"]],  y = .data[[col]], group = 1))+
+                                ggplot2::aes(x = .data[["Class"]], 
+                                             y = .data[[col]], group = 1))+
                   ggplot2::geom_point(ggplot2::aes(color = variable))+
                   ggplot2::geom_line(ggplot2::aes(color = variable)) + 
                   ggplot2::scale_fill_manual(values = colour )+
@@ -424,7 +458,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
                   custom_theme
               } else if (!is.null(colour) && length(colour) == 1) {
                 ggplot2::ggplot(as.data.frame(counts.df), 
-                                ggplot2::aes(x = .data[["Class"]],  y = .data[[col]], group = 1))+
+                                ggplot2::aes(x = .data[["Class"]],  
+                                             y = .data[[col]], group = 1))+
                   ggplot2::geom_point( color = colour)+
                   ggplot2::geom_line(color = colour) + 
                   ggplot2::theme_classic() + 
@@ -434,7 +469,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
                   custom_theme
               } else {
                 ggplot2::ggplot(counts.df, 
-                                ggplot2::aes(x = .data[["Class"]],  y = .data[[col]], group = 1))+
+                                ggplot2::aes(x = .data[["Class"]],  
+                                             y = .data[[col]], group = 1))+
                   ggplot2::geom_point(ggplot2::aes(color = variable))+
                   ggplot2::geom_line(ggplot2::aes(color = variable)) + 
                   ggplot2::theme_classic() + 
@@ -447,8 +483,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
               plist2[[col]] <- p2
             }
             plist2 <- lapply(plist2, function(p2) {
-              p2 + ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 
-                                                                                    0.1)))
+              p2 + ggplot2::scale_y_continuous(expand = 
+                                                 ggplot2::expansion(mult = c(0,  0.1)))
             })
             sn <- names(plist2)
             p <- plist2
