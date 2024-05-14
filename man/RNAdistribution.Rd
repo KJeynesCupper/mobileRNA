@@ -15,7 +15,8 @@ RNAdistribution(
   outline = "black",
   wrap.scales = "fixed",
   overlap = TRUE,
-  relative = FALSE
+  relative = FALSE,
+  non.classified = TRUE
 )
 }
 \arguments{
@@ -58,6 +59,9 @@ sample replicate information. Default \code{overlap=TRUE}.}
 Instructs plotting of the relative frequency of all sRNA classes across the
 data defined by the consensus dicer-derived sRNA column (see
 \code{\link[=RNAdicercall]{RNAdicercall()}} function for more information).}
+
+\item{non.classified}{logical; to include distribution of sRNAs which were
+unclassified. Default is TRUE, ie. maintain.}
 }
 \value{
 The function returns a list containing the results: a data frame and

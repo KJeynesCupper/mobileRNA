@@ -37,6 +37,10 @@
 #' @param overlap logical; generates a single line graph, containing all 
 #' sample replicate information. Default \code{overlap=TRUE}.
 #'
+#'@param non.classified logical; to include distribution of sRNAs which were 
+#'unclassified. Default is TRUE, ie. maintain.
+#'
+#'
 #'@param relative logical; used in conjunction with \code{data.type="consensus"}. 
 #'Instructs plotting of the relative frequency of all sRNA classes across the 
 #'data defined by the consensus dicer-derived sRNA column (see 
@@ -134,7 +138,8 @@ RNAdistribution  <- function (data, samples = NULL, style,
                               outline = "black", 
                               wrap.scales = "fixed", 
                               overlap = TRUE, 
-                              relative = FALSE) 
+                              relative = FALSE,
+                              non.classified = TRUE) 
   {
     if (base::missing(data) || !base::inherits(data, c("data.frame"))) {
       stop("data must be a data frame, see ?help for more details")
@@ -254,14 +259,19 @@ RNAdistribution  <- function (data, samples = NULL, style,
             counts.df[[i]] <- table_i
           }
         }
+        # reorder dimensions
+        desired_order <- c("N", "21", "22", "24", "23")
+        counts.df <- lapply(counts.df, reorder_table, order = desired_order)
+        
         counts.df <- data.frame(t(do.call(rbind, counts.df)))
       } else if (!base::inherits(counts.df, c("list"))) {
         counts.df <- data.frame(counts.df)
       }
       colnames(counts.df) <- gsub("DicerCall_", "", colnames(counts.df))
       counts.df <- data.table::setDT(counts.df, keep.rownames = "Class")[]
+      if(non.classified == FALSE){
       counts.df <- counts.df[!(counts.df$Class == "N"), ]
-      
+      }
       if (style == "bar") {
         if (!is.null(samples)) {
           counts_class <- counts.df %>% select(Class)

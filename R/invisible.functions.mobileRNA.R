@@ -1051,7 +1051,15 @@ exists_htseq <- function(package_name){
   return(res)
 }
 
+################## RNAdistribution extra #####################################
 
+reorder_table <- function(tbl, order) {
+  if (is.null(names(tbl))) {
+    tbl[match(order, dimnames(tbl)[[1]])]
+  } else {
+    tbl[order]
+  }
+}
 
 ################## global variable storage #####################################
 utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
