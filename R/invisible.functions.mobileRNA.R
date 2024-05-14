@@ -32,43 +32,43 @@
 }
 ################ Remove mapping errors  #########################
 .remove_mapping_errors_V2 <- function(data,  controls, genome.ID) {
-    if (base::missing(controls) || !base::inherits(controls, "character")) {
+  if (base::missing(controls) || !base::inherits(controls, "character")) {
     stop("Please specify a character vector storing names of control 
           replicates")
   }
-    if (base::missing(genome.ID) || genome.ID %in% "") {
+  if (base::missing(genome.ID) || genome.ID %in% "") {
     stop("Please specify a single character string which is present in the all 
            the chromosomes within the foriegn genome")
   }
-    data_native <- data %>% dplyr::filter(!grepl(genome.ID,chr))
+  data_native <- data %>% dplyr::filter(!grepl(genome.ID,chr))
   # subset data to find all rows of forign genome
-    data_select <- data %>% dplyr::filter(grepl(genome.ID,chr))
-    class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
-    if (length(colnames(class_colnames)) > 1){
+  data_select <- data %>% dplyr::filter(grepl(genome.ID,chr))
+  class_colnames  <- data_select %>% dplyr::select(paste0("Count_", controls))
+  if (length(colnames(class_colnames)) > 1){
     x <- c()
     for (j in seq_len(nrow(data_select)) ){
-    if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
-                                        na.rm=TRUE)))>0){
-    x <- c(x,j)
+      if(sum(stats::na.omit(as.numeric(data_select[j,colnames(class_colnames)],
+                                       na.rm=TRUE)))>0){
+        x <- c(x,j)
       }
     }
   } else
     if (length(colnames(class_colnames)) == 1){
-    x <- c()
-    for (k in seq_len(nrow(data_select)) ){
-    if(stats::na.omit(as.numeric(data_select[k,colnames(class_colnames)],
+      x <- c()
+      for (k in seq_len(nrow(data_select)) ){
+        if(stats::na.omit(as.numeric(data_select[k,colnames(class_colnames)],
                                      na.rm=TRUE))!= 0){
           x <- c(x,k)
         }
       }
     }
-    if(is.null(x)){
+  if(is.null(x)){
     data_id <- data_select
   } else
     if(!is.null(x)){ 
       data_id <- data_select[-x,]
     }
-    data <- rbind(data_native,data_id)
+  data <- rbind(data_native,data_id)
 }
 
 ################ DESE2 function (RNAdifferentialAnalysis function) #############
@@ -97,7 +97,7 @@
 find_complementary_sequenceRNA <- function(seq) {
   # conversions
   conversion_nucleotides <- c(A = "U", U = "A", C = "G", G = "C")
-
+  
   # calculate complementary nt for each
   complementary_calc <- lapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
@@ -113,12 +113,12 @@ find_complementary_sequenceRNA <- function(seq) {
 find_complementary_sequenceDNA <- function(seq) {
   # conversions
   conversion_nucleotides <- c(A = "T", U = "A", C = "G", G = "C")
-
+  
   # calc complementary nt for each in string
   complementary_calc <- lapply(strsplit(seq, ""), function(nucleotide) {
     conversion_nucleotides[nucleotide]
   })
-
+  
   # Combine into string
   output <- sapply(complementary_calc, function(x) paste(x, collapse = ""))
   return(output)
@@ -178,9 +178,9 @@ convertChar2Factor <- function(gr) {
   charlist_cols <- vapply(metadata_cols@listData, function(col) 
     inherits(col, "CompressedCharacterList"), FUN.VALUE = logical(1))
   
- if (any(charlist_cols)) {
-   metadata_cols <- metadata_cols[!charlist_cols]
-   S4Vectors::elementMetadata(gr) <- metadata_cols
+  if (any(charlist_cols)) {
+    metadata_cols <- metadata_cols[!charlist_cols]
+    S4Vectors::elementMetadata(gr) <- metadata_cols
   }
   return(gr)
 }
@@ -192,7 +192,7 @@ convertChar2Factor <- function(gr) {
 
 ################## core map #####################################
 core_map <- function(input_files_dir, output_dir, genomefile, condaenv, 
-             threads,mmap, dicermin,dicermax, mincov, pad, tidy){
+                     threads,mmap, dicermin,dicermax, mincov, pad, tidy){
   
   
   # 3 - generate output folders (check if they exist )
@@ -390,7 +390,7 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     # conditions
     for (k in seq_along(map_2_files)) {
       rm_cmd_2 <- paste0("find '", map_2_files[k], 
-    "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
+                         "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
       system(rm_cmd_2, intern=FALSE)
     }
   }
@@ -405,7 +405,7 @@ core_map <- function(input_files_dir, output_dir, genomefile, condaenv,
 
 ################## mobile map  #####################################
 mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv, 
-                     threads,mmap, dicermin,dicermax, mincov, pad, tidy){
+                       threads,mmap, dicermin,dicermax, mincov, pad, tidy){
   
   # 3 - generate output folders (check if they exist )
   path_1 <- file.path(output_dir, "1_de_novo_detection")
@@ -434,10 +434,10 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   files_dir <- gsub("^ *| *$", "", files_dir)
   files_dir_res <- system(files_dir, intern=TRUE)
   
-   index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
-                             "$", sep = ""), files_dir_res)
-   
-   
+  index_found <- grep(paste("^", base_genomefile, ".*\\.", index_extension, 
+                            "$", sep = ""), files_dir_res)
+  
+  
   if (length(index_found) > 0) {
     message("Genome index already built.")
     nline <- paste("echo Genome index already built. >> ",  shQuote(stats))
@@ -466,7 +466,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     bowtie_build_cmd <- paste(bowtie_build_cmd,collapse = " ")
     bowtie_build_cmd <- gsub("^ *| *$", "", bowtie_build_cmd)
     system(bowtie_build_cmd, intern=FALSE) ## -- get it to print to summarydoc. 
-
+    
     message("\nGenome index build. ")
     nline <- paste("echo Genome index complete! >> ",  shQuote(stats))
     system(nline, intern=FALSE)
@@ -484,8 +484,8 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   #bw message 
   bowtie_cmd_message <-c("Mapping with Bowtie, Running Command: 
   bowtie -p", threads, 
-  "-v 0 -a -m 1 --sam -x [genomefile] [fastqfile] | samtools view -bS",
-  "| samtools sort -o [outputfile]")
+                         "-v 0 -a -m 1 --sam -x [genomefile] [fastqfile] | samtools view -bS",
+                         "| samtools sort -o [outputfile]")
   bowtie_cmd_message <- paste(bowtie_cmd_message,collapse = " ")
   bowtie_cmd_message <- gsub("^ *| *$", "", bowtie_cmd_message)
   writeLines(bowtie_cmd_message, con = stats)
@@ -501,7 +501,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     output_file <- file.path(path_1,"Alignment",op)
     time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), 
                         "Alignment with Bowtie for sample:", 
-                          shQuote(readfile_name),  ">>", 
+                        shQuote(readfile_name),  ">>", 
                         shQuote(stats)), collapse = " ")
     time_cmd <- gsub("^ *| *$", "", time_cmd)
     system(time_cmd, intern=FALSE)
@@ -535,7 +535,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   mapped_file_names <- list.files(p1_path)
   p2_path <- file.path(path_1,"Cluster")
   p2_dir <- dir.create(p2_path)
-
+  
   # 3 - shorstack clustering 
   for (i in seq_along(mapped_file_names)){
     # file name:
@@ -549,7 +549,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
                         ">>", shQuote(stats)), collapse = " ")
     time_cmd <- gsub("^ *| *$", "", time_cmd)
     system(time_cmd, intern=FALSE)
-  
+    
     shortstack_cmd_1 <- c(
       shQuote(Sys.which("shortstack")),
       "--bamfile", shQuote(file.path(p1_path,mapped_file_names[i])),
@@ -630,7 +630,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
   system(paste0(">> ", stats_2))
   
   clustering_cmd_message<-c("echo Running sRNA Clustering with loci information >>", 
-                             shQuote(stats_2))
+                            shQuote(stats_2))
   
   clustering_cmd_message <- paste(clustering_cmd_message,collapse = " ")
   clustering_cmd_message <- gsub("^ *| *$", "", clustering_cmd_message)
@@ -680,11 +680,11 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
     # Iterate over each directory and remove files that don't match the conditions
     for (k in seq_along(map_2_files)) {
       rm_cmd_2 <- paste0("find '", map_2_files[k], 
-     "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
+                         "' -type f ! \\( -name '*.bam' -o -name 'Results.txt' \\) -exec rm {} \\;")
       system(rm_cmd_2, intern=FALSE)
     }
   }
-
+  
   message("\n \n --- Mapping of sRNAseq samples is complete --- ")
   message("Results saved to: ", path_1, " & ", path_2)
   message("Loci file saved to: ", loci_out)
@@ -757,8 +757,8 @@ mRNA_map <- function(sampleData,
       genomefile <- tools::file_path_sans_ext(genomefile)
     }
     hisat_build_cmd <- c("hisat2-build --threads", threads, 
-                          genomefile, base_genomefile_path, ">>", 
-                          shQuote(stats), "2>&1") 
+                         genomefile, base_genomefile_path, ">>", 
+                         shQuote(stats), "2>&1") 
     hisat_build_cmd <- paste(hisat_build_cmd,collapse = " ")
     hisat_build_cmd <- gsub("^ *| *$", "", hisat_build_cmd)
     system(hisat_build_cmd, intern=FALSE) ## -- get it to print to summary doc. 
@@ -771,7 +771,7 @@ mRNA_map <- function(sampleData,
   if(ncol(sampleData)>2){
     pairend_cmd_message <-paste("echo Running HISAT2 Command: 
     'hist2 -p", shQuote(threads), 
-    "-x [genomefile] 
+                                "-x [genomefile] 
      -1 shQuote([fastqfile_1.fq]) 
      -2 shQuote([fastqfile_2.fq]) 
     | samtools view -bS | samtools sort -o [outputfile.bam]' >>",shQuote(stats))
@@ -786,14 +786,14 @@ mRNA_map <- function(sampleData,
     'python -m HTSeq.scripts.count
     --format=bam 
     --order=", shQuote(order),
-    "--a=", shQuote(a),                          
-    "--stranded=",shQuote(stranded), 
-    "--mode=",shQuote(mode), 
-    "--nonunique=",shQuote(nonunique), 
-    "--type=",shQuote(type),
-    "--idattr=", shQuote(idattr), 
-    "[outputfile.bam] [annotationfile.gff]' >>", shQuote(stats))
-  
+                                  "--a=", shQuote(a),                          
+                                  "--stranded=",shQuote(stranded), 
+                                  "--mode=",shQuote(mode), 
+                                  "--nonunique=",shQuote(nonunique), 
+                                  "--type=",shQuote(type),
+                                  "--idattr=", shQuote(idattr), 
+                                  "[outputfile.bam] [annotationfile.gff]' >>", shQuote(stats))
+    
     
     pairend_cmd_2_message <- paste(pairend_cmd_2_message,collapse = " ")
     pairend_cmd_2_message <- gsub("^ *| *$", "", pairend_cmd_2_message)
@@ -801,104 +801,104 @@ mRNA_map <- function(sampleData,
     nline <- paste("echo '' >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     
-      for(i in seq_len(nrow(sampleData))){
-        pair_files <- as.character(sampleData[i,])
-        sample_name <- pair_files[1]
-        fastq_1 <- pair_files[2]
-        fastq_2 <- pair_files[3]
-        unqiuefolder <- file.path(output_dir,sample_name)
-        unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
-        bam_name <- paste0(sample_name,".bam")
-        bam <-file.path(unqiuefolder, bam_name)
-        time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
-                            shQuote(stats)), collapse = " ")
-        time_cmd <- gsub("^ *| *$", "", time_cmd)
-        system(time_cmd, intern=FALSE)
-        sample_cmd <- paste(c("echo Working with sample:", 
-                              shQuote(sample_name), ">>", shQuote(stats)),
-                            collapse = " ")
-        sample_cmd <- gsub("^ *| *$", "", sample_cmd)
-        system(sample_cmd, intern=FALSE)
-        stateline <- paste("echo 1.Alignment: >> ",  shQuote(stats))
-        system(stateline, intern=FALSE)
-
-        pairEndmap_cmd <- c("hisat2 -p", threads, 
-                        "-x", shQuote(base_genomefile_path),"-1", 
-                        shQuote(file.path(input_files_dir, fastq_1)), 
-                        "-2",shQuote(file.path(input_files_dir, fastq_2)),
-                        "| samtools view -bS | samtools sort -o", 
-                        shQuote(bam), "2>>", shQuote(stats))
-        pairEndmap_cmd <- paste(pairEndmap_cmd,collapse = " ")
-        pairEndmap_cmd <- gsub("^ *| *$", "", pairEndmap_cmd)
-        system(pairEndmap_cmd, intern=FALSE)
-        stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
-        system(stateline, intern=FALSE)
-        # if unique only:
-        if(mmap == "n"){
-          out_filename <- paste0(sample_name,"_uniqueReads1.bam")
-          out <- file.path(unqiuefolder,out_filename )
-          unique_reads <- c("samtools view", shQuote(bam), "| grep", 
-                            c("NH:i:1"),">", shQuote(out))
-          unique_reads <- paste(unique_reads,collapse = " ")
-          unique_reads <- gsub("^ *| *$", "", unique_reads)
-          system(unique_reads, intern=FALSE)
-          
-          # reheader
-          header_filename <-  paste0(sample_name,"_header.txt")
-          header <- file.path(unqiuefolder,header_filename)
-          reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
-          reheader1 <- paste(reheader1,collapse = " ")
-          reheader1 <- gsub("^ *| *$", "", reheader1)
-          system(reheader1, intern=FALSE)
-          
-          bam_rce_filename <- paste0(sample_name,"_unique.bam")
-          bam_rce <- file.path(unqiuefolder, bam_rce_filename)
-          reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
-          reheader2 <- paste(reheader2,collapse = " ")
-          reheader2 <- gsub("^ *| *$", "", reheader2)
-          system(reheader2, intern=FALSE)
-          
-          # remove truncated: 
-          rmtrunc <- c("rm", shQuote(out), shQuote(header), shQuote(bam))
-          rmtrunc <- paste(rmtrunc,collapse = " ")
-          rmtrunc <- gsub("^ *| *$", "", rmtrunc)
-          system(rmtrunc, intern=FALSE)
-          
-        } else 
-          if (mmap != "n"){
-            bam_rce <- bam
-          }
-        # counts --- 
-        count_file <-file.path(unqiuefolder, "Results.txt")
-        HTseq_cmd <- c("python -m HTSeq.scripts.count", " ",
-                       "--format=bam", " ",
-                       "--order=",shQuote(order), " ",
-                       "--a=", shQuote(a)," ",
-                       "--stranded=",shQuote(stranded)," ",
-                       "--mode=",shQuote(mode), " ",
-                       "--nonunique=",shQuote(nonunique)," ",
-                       "--type=",shQuote(type)," ",
-                       "--idattr=", shQuote(idattr), " ",
-                       shQuote(bam_rce), " ",
-                       shQuote(annotationfile), " ",
-                       " > ", shQuote(count_file),
-                       " 2>> ", shQuote(stats))
-        HTseq_cmd <- paste(HTseq_cmd,collapse = "")
-        HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
-        system(HTseq_cmd, intern=FALSE)
+    for(i in seq_len(nrow(sampleData))){
+      pair_files <- as.character(sampleData[i,])
+      sample_name <- pair_files[1]
+      fastq_1 <- pair_files[2]
+      fastq_2 <- pair_files[3]
+      unqiuefolder <- file.path(output_dir,sample_name)
+      unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
+      bam_name <- paste0(sample_name,".bam")
+      bam <-file.path(unqiuefolder, bam_name)
+      time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
+                          shQuote(stats)), collapse = " ")
+      time_cmd <- gsub("^ *| *$", "", time_cmd)
+      system(time_cmd, intern=FALSE)
+      sample_cmd <- paste(c("echo Working with sample:", 
+                            shQuote(sample_name), ">>", shQuote(stats)),
+                          collapse = " ")
+      sample_cmd <- gsub("^ *| *$", "", sample_cmd)
+      system(sample_cmd, intern=FALSE)
+      stateline <- paste("echo 1.Alignment: >> ",  shQuote(stats))
+      system(stateline, intern=FALSE)
+      
+      pairEndmap_cmd <- c("hisat2 -p", threads, 
+                          "-x", shQuote(base_genomefile_path),"-1", 
+                          shQuote(file.path(input_files_dir, fastq_1)), 
+                          "-2",shQuote(file.path(input_files_dir, fastq_2)),
+                          "| samtools view -bS | samtools sort -o", 
+                          shQuote(bam), "2>>", shQuote(stats))
+      pairEndmap_cmd <- paste(pairEndmap_cmd,collapse = " ")
+      pairEndmap_cmd <- gsub("^ *| *$", "", pairEndmap_cmd)
+      system(pairEndmap_cmd, intern=FALSE)
+      stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
+      system(stateline, intern=FALSE)
+      # if unique only:
+      if(mmap == "n"){
+        out_filename <- paste0(sample_name,"_uniqueReads1.bam")
+        out <- file.path(unqiuefolder,out_filename )
+        unique_reads <- c("samtools view", shQuote(bam), "| grep", 
+                          c("NH:i:1"),">", shQuote(out))
+        unique_reads <- paste(unique_reads,collapse = " ")
+        unique_reads <- gsub("^ *| *$", "", unique_reads)
+        system(unique_reads, intern=FALSE)
         
-        complete_cmd <- paste(c("echo Complete.", ">>", shQuote(stats)),
+        # reheader
+        header_filename <-  paste0(sample_name,"_header.txt")
+        header <- file.path(unqiuefolder,header_filename)
+        reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
+        reheader1 <- paste(reheader1,collapse = " ")
+        reheader1 <- gsub("^ *| *$", "", reheader1)
+        system(reheader1, intern=FALSE)
+        
+        bam_rce_filename <- paste0(sample_name,"_unique.bam")
+        bam_rce <- file.path(unqiuefolder, bam_rce_filename)
+        reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
+        reheader2 <- paste(reheader2,collapse = " ")
+        reheader2 <- gsub("^ *| *$", "", reheader2)
+        system(reheader2, intern=FALSE)
+        
+        # remove truncated: 
+        rmtrunc <- c("rm", shQuote(out), shQuote(header), shQuote(bam))
+        rmtrunc <- paste(rmtrunc,collapse = " ")
+        rmtrunc <- gsub("^ *| *$", "", rmtrunc)
+        system(rmtrunc, intern=FALSE)
+        
+      } else 
+        if (mmap != "n"){
+          bam_rce <- bam
+        }
+      # counts --- 
+      count_file <-file.path(unqiuefolder, "Results.txt")
+      HTseq_cmd <- c("python -m HTSeq.scripts.count", " ",
+                     "--format=bam", " ",
+                     "--order=",shQuote(order), " ",
+                     "--a=", shQuote(a)," ",
+                     "--stranded=",shQuote(stranded)," ",
+                     "--mode=",shQuote(mode), " ",
+                     "--nonunique=",shQuote(nonunique)," ",
+                     "--type=",shQuote(type)," ",
+                     "--idattr=", shQuote(idattr), " ",
+                     shQuote(bam_rce), " ",
+                     shQuote(annotationfile), " ",
+                     " > ", shQuote(count_file),
+                     " 2>> ", shQuote(stats))
+      HTseq_cmd <- paste(HTseq_cmd,collapse = "")
+      HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
+      system(HTseq_cmd, intern=FALSE)
+      
+      complete_cmd <- paste(c("echo Complete.", ">>", shQuote(stats)),
                             collapse = " ")
-        complete_cmd <- gsub("^ *| *$", "", complete_cmd)
-        system(complete_cmd, intern=FALSE)
-        nline <- paste("echo '' >> ",  shQuote(stats))
-        system(nline, intern=FALSE)
-      }
+      complete_cmd <- gsub("^ *| *$", "", complete_cmd)
+      system(complete_cmd, intern=FALSE)
+      nline <- paste("echo '' >> ",  shQuote(stats))
+      system(nline, intern=FALSE)
+    }
   } else {
     singleend_cmd_message <- paste("echo Running HISAT2 Command: 'hist2 -p", 
-    shQuote(threads), "-x [genomefile] 
+                                   shQuote(threads), "-x [genomefile] 
                     -U shQuote([fastqfile_1.fastq]) | samtools view -bS",
-                    "| samtools sort -o [outputfile.bam]' >>", shQuote(stats))
+                                   "| samtools sort -o [outputfile.bam]' >>", shQuote(stats))
     
     singleend_cmd_message <- paste(singleend_cmd_message,collapse = " ")
     singleend_cmd_message <- gsub("^ *| *$", "", singleend_cmd_message)
@@ -918,7 +918,7 @@ mRNA_map <- function(sampleData,
       "--idattr=", shQuote(idattr), " ",
       "[outputfile.bam] [annotationfile.gff]' >> ", shQuote(stats)
     )
-  
+    
     singleend_cmd_2_message <- paste(singleend_cmd_2_message, collapse = "")
     singleend_cmd_2_message <- gsub("^ *| *$", "", singleend_cmd_2_message)
     system(singleend_cmd_2_message, intern=FALSE)
@@ -926,95 +926,95 @@ mRNA_map <- function(sampleData,
     nline <- paste("echo '' >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     
-   for(k in seq_len(nrow(sampleData))) {
-     pair_files <- as.character(sampleData[k,])
-     sample_name <- pair_files[1]
-     fastq_1 <- pair_files[2]
-     unqiuefolder <- file.path(path_1,sample_name)
-     unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
-     bam_name <- paste0(sample_name,".bam")
-     bam <-file.path(unqiuefolder, bam_name)
-     time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
-                         shQuote(stats)), collapse = " ")
-     time_cmd <- gsub("^ *| *$", "", time_cmd)
-     system(time_cmd, intern=FALSE)
-     sample_cmd <- paste(c("echo Working with sample:", 
-                           shQuote(sample_name), ">>", shQuote(stats)),
-                         collapse = " ")
-     sample_cmd <- gsub("^ *| *$", "", sample_cmd)
-     system(sample_cmd, intern=FALSE)
-     stateline <- paste("echo 1.Alignment: >> ",  shQuote(stats))
-     system(stateline, intern=FALSE)
-     singleEndmap <- c("(hisat2 -p", threads, 
-                     "-x", shQuote(base_genomefile_path),"-U", 
-                     shQuote(file.path(input_files_dir,fastq_1)), 
-                     "| samtools view -bS | samtools sort -o", 
-                     shQuote(bam),") 2>>", shQuote(stats))
-     singleEndmap <- paste(singleEndmap,collapse = " ")
-     singleEndmap <- gsub("^ *| *$", "", singleEndmap)
-     system(singleEndmap, intern=FALSE)
-     stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
-     system(stateline, intern=FALSE)
-     
-     if(mmap == "n"){
-       out_filename <-paste0(sample_name,"_uniqueReads1.bam")
-       out <- file.path(unqiuefolder, out_filename)
-       unique_reads <- c("samtools view", shQuote(bam), "| grep", 
-                         c("NH:i:1"),">", shQuote(out))
-       unique_reads <- paste(unique_reads,collapse = " ")
-       unique_reads <- gsub("^ *| *$", "", unique_reads)
-       system(unique_reads, intern=FALSE)
-       
-       # reheader
-       header_filename <- paste0(sample_name,"_header.txt")
-       header <- file.path(unqiuefolder, header_filename)
-       reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
-       reheader1 <- paste(reheader1,collapse = " ")
-       reheader1 <- gsub("^ *| *$", "", reheader1)
-       system(reheader1, intern=FALSE)
-       
-       bam_rce_filename <- paste0(sample_name,"_unique.bam")
-       bam_rce <- file.path(unqiuefolder, bam_rce_filename)
-       reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
-       reheader2 <- paste(reheader2,collapse = " ")
-       reheader2 <- gsub("^ *| *$", "", reheader2)
-       system(reheader2, intern=FALSE)
-       
-       # remove truncated: 
-       rmtrunc <- c("rm", shQuote(out), shQuote(header), shQuote(bam))
-       rmtrunc <- paste(rmtrunc,collapse = " ")
-       rmtrunc <- gsub("^ *| *$", "", rmtrunc)
-       system(rmtrunc, intern=FALSE)
-       
-     } else 
-       if (mmap != "n"){
-         bam_rce <- bam
-       }
-     # counts --- 
-     count_file <-file.path(unqiuefolder, "Results.txt")
-     HTseq_cmd <- c("python -m HTSeq.scripts.count"," ", 
-                    "--format=bam", " ", 
-                    "--stranded=",shQuote(stranded), " ", 
-                    "-a=", shQuote(a), " ", 
-                    "--mode=",shQuote(mode), " ", 
-                    "--nonunique=",shQuote(nonunique), " ", 
-                    "--type=",shQuote(type)," ", 
-                    "--idattr=", shQuote(idattr)," ", 
-                    shQuote(bam_rce), " ",  shQuote(annotationfile)," ",  
-                    " > ", shQuote(count_file),  " 2>> ", shQuote(stats))
-     HTseq_cmd <- paste(HTseq_cmd,collapse = "")
-     HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
-     system(HTseq_cmd, intern=FALSE)
-     
-     complete_cmd <- paste(c("echo Complete.", ">>", shQuote(stats)),
-                           collapse = " ")
-     complete_cmd <- gsub("^ *| *$", "", complete_cmd)
-     system(complete_cmd, intern=FALSE)
-     nline <- paste("echo '' >> ",  shQuote(stats))
-     system(nline, intern=FALSE)
-     }
+    for(k in seq_len(nrow(sampleData))) {
+      pair_files <- as.character(sampleData[k,])
+      sample_name <- pair_files[1]
+      fastq_1 <- pair_files[2]
+      unqiuefolder <- file.path(path_1,sample_name)
+      unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE) 
+      bam_name <- paste0(sample_name,".bam")
+      bam <-file.path(unqiuefolder, bam_name)
+      time_cmd <- paste(c("echo", shQuote(as.character(Sys.time())), ">>", 
+                          shQuote(stats)), collapse = " ")
+      time_cmd <- gsub("^ *| *$", "", time_cmd)
+      system(time_cmd, intern=FALSE)
+      sample_cmd <- paste(c("echo Working with sample:", 
+                            shQuote(sample_name), ">>", shQuote(stats)),
+                          collapse = " ")
+      sample_cmd <- gsub("^ *| *$", "", sample_cmd)
+      system(sample_cmd, intern=FALSE)
+      stateline <- paste("echo 1.Alignment: >> ",  shQuote(stats))
+      system(stateline, intern=FALSE)
+      singleEndmap <- c("(hisat2 -p", threads, 
+                        "-x", shQuote(base_genomefile_path),"-U", 
+                        shQuote(file.path(input_files_dir,fastq_1)), 
+                        "| samtools view -bS | samtools sort -o", 
+                        shQuote(bam),") 2>>", shQuote(stats))
+      singleEndmap <- paste(singleEndmap,collapse = " ")
+      singleEndmap <- gsub("^ *| *$", "", singleEndmap)
+      system(singleEndmap, intern=FALSE)
+      stateline <- paste("echo 2.Raw count: >> ",  shQuote(stats))
+      system(stateline, intern=FALSE)
+      
+      if(mmap == "n"){
+        out_filename <-paste0(sample_name,"_uniqueReads1.bam")
+        out <- file.path(unqiuefolder, out_filename)
+        unique_reads <- c("samtools view", shQuote(bam), "| grep", 
+                          c("NH:i:1"),">", shQuote(out))
+        unique_reads <- paste(unique_reads,collapse = " ")
+        unique_reads <- gsub("^ *| *$", "", unique_reads)
+        system(unique_reads, intern=FALSE)
+        
+        # reheader
+        header_filename <- paste0(sample_name,"_header.txt")
+        header <- file.path(unqiuefolder, header_filename)
+        reheader1 <- c("samtools view -H", shQuote(bam), ">", shQuote(header)) 
+        reheader1 <- paste(reheader1,collapse = " ")
+        reheader1 <- gsub("^ *| *$", "", reheader1)
+        system(reheader1, intern=FALSE)
+        
+        bam_rce_filename <- paste0(sample_name,"_unique.bam")
+        bam_rce <- file.path(unqiuefolder, bam_rce_filename)
+        reheader2 <- c("cat", shQuote(header), shQuote(out), ">",  shQuote(bam_rce))
+        reheader2 <- paste(reheader2,collapse = " ")
+        reheader2 <- gsub("^ *| *$", "", reheader2)
+        system(reheader2, intern=FALSE)
+        
+        # remove truncated: 
+        rmtrunc <- c("rm", shQuote(out), shQuote(header), shQuote(bam))
+        rmtrunc <- paste(rmtrunc,collapse = " ")
+        rmtrunc <- gsub("^ *| *$", "", rmtrunc)
+        system(rmtrunc, intern=FALSE)
+        
+      } else 
+        if (mmap != "n"){
+          bam_rce <- bam
+        }
+      # counts --- 
+      count_file <-file.path(unqiuefolder, "Results.txt")
+      HTseq_cmd <- c("python -m HTSeq.scripts.count"," ", 
+                     "--format=bam", " ", 
+                     "--stranded=",shQuote(stranded), " ", 
+                     "-a=", shQuote(a), " ", 
+                     "--mode=",shQuote(mode), " ", 
+                     "--nonunique=",shQuote(nonunique), " ", 
+                     "--type=",shQuote(type)," ", 
+                     "--idattr=", shQuote(idattr)," ", 
+                     shQuote(bam_rce), " ",  shQuote(annotationfile)," ",  
+                     " > ", shQuote(count_file),  " 2>> ", shQuote(stats))
+      HTseq_cmd <- paste(HTseq_cmd,collapse = "")
+      HTseq_cmd <- gsub("^ *| *$", "", HTseq_cmd)
+      system(HTseq_cmd, intern=FALSE)
+      
+      complete_cmd <- paste(c("echo Complete.", ">>", shQuote(stats)),
+                            collapse = " ")
+      complete_cmd <- gsub("^ *| *$", "", complete_cmd)
+      system(complete_cmd, intern=FALSE)
+      nline <- paste("echo '' >> ",  shQuote(stats))
+      system(nline, intern=FALSE)
+    }
   }
-
+  
   message("\n\n --- Mapping of mRNAseq samples is complete --- ")
   message("Results saved to: ", path_1)
 }
@@ -1051,7 +1051,15 @@ exists_htseq <- function(package_name){
   return(res)
 }
 
+################## RNAdistribution extra #####################################
 
+reorder_table <- function(tbl, order) {
+  if (is.null(names(tbl))) {
+    tbl[match(order, dimnames(tbl)[[1]])]
+  } else {
+    tbl[order]
+  }
+}
 
 ################## global variable storage #####################################
 utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
@@ -1069,5 +1077,4 @@ utils::globalVariables(c("ID", "DicerConsensus", "nt_20", "nt_21", "nt_22",
                          "no", "none", "pos", "significance", "tidy", "a",
                          "data", "complete.cases", ".data", "width", "Origin",
                          "percentage" ))
-
 
