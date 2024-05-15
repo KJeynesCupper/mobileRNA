@@ -165,9 +165,9 @@ RNAdistribution  <- function (data, samples = NULL, style,
       axis.text.y = ggplot2::element_text(color="black", size = 15,
                                           face = "bold", 
                                           margin = ggplot2::margin(r = 10)) ,
-      panel.grid.major.x = ggplot2::element_line( size=.1, color="grey", 
+      panel.grid.major.x = ggplot2::element_line( linewidth=.1, color="grey", 
                                                   linetype = 2 ),
-      panel.grid.major.y = ggplot2::element_line( size=.1, color="grey", 
+      panel.grid.major.y = ggplot2::element_line( linewidth=.1, color="grey", 
                                                   linetype = 2 ),
       legend.position = "right", 
       legend.box.margin= ggplot2::margin(20,20,20,20),
@@ -273,8 +273,7 @@ RNAdistribution  <- function (data, samples = NULL, style,
           }
         }
         # reorder dimensions
-        desired_order <- c("N", "21", "22", "24", "23")
-        counts.df <- lapply(counts.df, reorder_table, order = desired_order)
+        counts.df <- lapply(counts.df, reorder_table, order = required_columns)
         
         counts.df <- data.frame(t(do.call(rbind, counts.df)))
       } else if (!base::inherits(counts.df, c("list"))) {
