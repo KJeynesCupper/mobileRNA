@@ -1,3 +1,8 @@
+# mobileRNA 1.0.11
+
+* Major updated to RNAfeatures. Instead identifies features independently for 
+the genome annotation rather than using preset features.  
+
 # mobileRNA 1.0.1
 
 * Version bump following Bioconductor updates.

@@ -9,8 +9,7 @@ RNAfeatures(
   annotation,
   repeats = NULL,
   promoterRegions = 1000,
-  percentage = TRUE,
-  repeat.type = NULL
+  percentage = TRUE
 )
 }
 \arguments{
@@ -34,23 +33,16 @@ genes}
 percentage of the total or returned as a count value representing the
 number of sRNA clusters that overlap with a given genomic feature. Default is
 \code{TRUE}.}
-
-\item{repeat.type}{character; features type in \code{annotation} file to represent
-repeats or transposable elements when \code{repeats} not supplied. Default is
-\verb{c("transposable_element", transposable_element_gene")} which represent the
-transposable element features in the TAIR10 genome annotation.}
 }
 \value{
 Returns a table containing the number or percentage of overlaps in
-the supplied sRNA data set with specific regions in the genome annotation
-such as genes, repeats, introns, exons.
+the supplied sRNA data set with genomic features within supplied annotation
+and/or with repeats.
 }
 \description{
 Calculates the number of genomic features within the supplied
 annotations and calculates the number of sRNA clusters which overlap with
-these genomic features. Features include promoter regions, repeat regions,
-exons, introns, and untranslated regions. This can be summarised as the
-absolute or relative values.
+these genomic features. Based on the features within the provided annotation.
 }
 \details{
 \code{RNAfeatures} calculates the number or percentage of sRNA clusters which
