@@ -97,9 +97,11 @@ plotRNAfeatures <- function(data, annotation,
                                      repeats = repeats, 
                                      percentage = F)
   
+  
+  
   vec1 <- rep(rownames(as.data.frame(data_res)), 2)
-  vec2 <- rep("Genome", 7)
-  vec3 <- rep("Dataset", 7)
+  vec2 <- rep("Genome", nrow(data_res))
+  vec3 <- rep("Dataset", nrow(data_res))
   vec4 <- as.data.frame(data_res)$Genome
   vec5 <- as.data.frame(data_res)$Dataset
   
@@ -113,6 +115,7 @@ plotRNAfeatures <- function(data, annotation,
                    variable = vec1, 
                    value = c(vec4, vec5),
                    percentage = c(perc_vec4, perc_vec5) )
+  
   df[is.na(df)] <- 0
   
  df$Origin <- factor(df$Origin, 

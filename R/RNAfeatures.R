@@ -2,10 +2,7 @@
 #'
 #' @description Calculates the number of genomic features within the supplied 
 #' annotations and calculates the number of sRNA clusters which overlap with 
-#' these genomic features. Features include promoter regions, repeat regions, 
-#' exons, introns, and untranslated regions. This can be summarised as the 
-#' absolute or relative values. 
-#'
+#' these genomic features. Based on the features within the provided annotation.
 #'
 #' @details
 #' `RNAfeatures` calculates the number or percentage of sRNA clusters which 
@@ -35,15 +32,11 @@
 #' number of sRNA clusters that overlap with a given genomic feature. Default is
 #' `TRUE`. 
 #'
-#'@param repeat.type character; features type in `annotation` file to represent
-#'repeats or transposable elements when `repeats` not supplied. Default is 
-#'`c("transposable_element", transposable_element_gene")` which represent the 
-#'transposable element features in the TAIR10 genome annotation. 
 #'
 #' @return Returns a table containing the number or percentage of overlaps in
-#' the supplied sRNA data set with specific regions in the genome annotation 
-#' such as genes, repeats, introns, exons.
-#'
+#' the supplied sRNA data set with genomic features within supplied annotation
+#' and/or with repeats. 
+#' 
 #' @examples
 #' data("sRNA_data")
 #' features <- RNAfeatures(data = sRNA_data,
@@ -51,7 +44,6 @@
 #'                        "reduced_chr2_Tomato.gff.gz", package="mobileRNA"))
 #'                        
 #'@importFrom rtracklayer import
-#'@importFrom GenomicRanges setdiff
 #'@importFrom GenomicRanges findOverlaps
 #'@importFrom S4Vectors queryHits
 #'@importFrom stats start
@@ -68,8 +60,7 @@
 RNAfeatures <- function(data, annotation,
                         repeats = NULL,
                         promoterRegions = 1000,
-                        percentage = TRUE, 
-                        repeat.type = NULL) {
+                        percentage = TRUE) {
   if (base::missing(data)) {
     stop("data is missing. data must be an object of class matrix, data.frame, 
          DataFrame. ")
@@ -81,38 +72,26 @@ RNAfeatures <- function(data, annotation,
       !file.exists(annotation)) {
     stop("annotation parameter is missing or empty.")
   }
+  
   annotation_info <-rtracklayer::import(annotation)
+  store_f <- GRangesList()
   
-  if(is.null(repeats)) {
-    # features
-    if(is.null(repeat.type)){
-      repeat.type <- c("transposable_element", 
-                       "transposable_element_gene")
-    }
-    repeats <-subset(annotation_info, type==repeat.type)
-    } else {
-      repeats <- rtracklayer::import(repeats)
-    }
+  # extract types of genomic features 
+  features <- levels(annotation_info$type)
   
-  if(length(repeats) == 0 ){
-    
-    genes<-subset(annotation_info, type=="gene")
-    five_UTR<-subset(annotation_info,type=="five_prime_UTR")
-    three_UTR<-subset(annotation_info, type=="three_prime_UTR")
-    three_UTR<-GenomicRanges::setdiff(three_UTR, c(five_UTR), 
-                                      ignore.strand=TRUE)
-    
-    exons<-subset(annotation_info[IRanges::overlapsAny(annotation_info,
-                                                       genes,
-                                                       ignore.strand=TRUE)],
-                  type=="exon")
-    exons<-GenomicRanges::setdiff(exons, c(five_UTR, three_UTR),
-                                  ignore.strand=TRUE)
-    
-    introns <- GenomicRanges::setdiff(genes, c(exons, five_UTR, three_UTR),
-                                      ignore.strand=TRUE)
-    
+  for (i in seq_along(features)) {
+    label_feature_type <-  features[i]
+    feature_type <- subset(annotation_info, type == features[i])
+    store_f[[label_feature_type]] <- feature_type
+  }
+  
+  # Convert list to GRangesList
+  store_f <- GRangesList(store_f)
+  
+  # if genes presents, then make promorer
+  if("gene" %in% names(store_f)){
     # define promoter regions
+    genes <- store_f[["gene"]]
     gene_promoters <-as.data.frame(genes)
     colnames(gene_promoters)[1] <- "chr"
     if('*' %in% gene_promoters$strand){
@@ -131,112 +110,58 @@ RNAfeatures <- function(data, annotation,
     
     promoters <- rbind(pos_strand_promoter, neg_strand_promoter)
     promoters <- GenomicRanges::makeGRangesFromDataFrame(promoters)
-    promoters <-   BiocGenerics::setdiff(promoters, c( exons,five_UTR,
-                                                      three_UTR,introns),
-                                         ignore.strand=TRUE)
-    #get others
-    others <-   BiocGenerics::setdiff(subset(annotation_info, type=="chromosome"),
-                                      c( exons,five_UTR,three_UTR,introns,
-                                        promoters), ignore.strand=TRUE)
     
-  } else {
-    genes<-subset(annotation_info[!IRanges::overlapsAny(annotation_info,
-                                                        repeats,
-                                                        ignore.strand=TRUE)],
-                  type=="gene")
-    five_UTR<-subset(annotation_info[IRanges::overlapsAny(annotation_info,
-                                                          genes,
-                                                          ignore.strand=TRUE)],
-                     type=="five_prime_UTR")
-    five_UTR<-GenomicRanges::setdiff(five_UTR, c(repeats), ignore.strand=TRUE)
-    three_UTR<-subset(annotation_info[IRanges::overlapsAny(annotation_info,
-                                                           genes,
-                                                           ignore.strand=TRUE)],
-                      type=="three_prime_UTR")
-    three_UTR<-GenomicRanges::setdiff(three_UTR, c(five_UTR, repeats),
-                                      ignore.strand=TRUE)
+    # add to list 
+    store_f[["promoters"]] <- promoters
     
-    exons<-subset(annotation_info[IRanges::overlapsAny(annotation_info,
-                                                       genes,
-                                                       ignore.strand=TRUE)],
-                  type=="exon")
-    exons<-GenomicRanges::setdiff(exons, c(five_UTR, three_UTR, repeats),
-                                  ignore.strand=TRUE)
-    
-    introns <- GenomicRanges::setdiff(genes, c(exons, five_UTR, three_UTR),
-                                      ignore.strand=TRUE)
-    
-    # define promoter regions
-    gene_promoters <-as.data.frame(genes)
-    colnames(gene_promoters)[1] <- "chr"
-    if('*' %in% gene_promoters$strand){
-      gene_promoters <- gene_promoters[, -match("strand", 
-                                                colnames(gene_promoters))]
-    }
-    pos_strand_promoter <- gene_promoters %>%
-      dplyr::filter(strand == "+") %>% dplyr::mutate(end=start) %>%
-      dplyr::filter(strand == "+") %>% dplyr::mutate(start=start-
-                                                       promoterRegions)
-    
-    neg_strand_promoter <- gene_promoters %>%
-      dplyr::filter(strand == "-") %>% dplyr::mutate(end=start) %>%
-      dplyr::filter(strand == "-") %>% dplyr::mutate(start=start-
-                                                       promoterRegions)
-    
-    promoters <- rbind(pos_strand_promoter, neg_strand_promoter)
-    promoters <- GenomicRanges::makeGRangesFromDataFrame(promoters)
-    promoters <-   BiocGenerics::setdiff(promoters, c(repeats, exons,five_UTR,
-                                                      three_UTR,introns),
-                                         ignore.strand=TRUE)
-    #get others
-    others <-   BiocGenerics::setdiff(subset(annotation_info, 
-                                             type=="chromosome"),
-                                      c(repeats, exons,five_UTR,
-                                        three_UTR,introns,
-                                        promoters), ignore.strand=TRUE)
   }
   
+  
+ # if repeats present then add to store 
+  if(!is.null(repeats)){
+    repeats <- rtracklayer::import(repeats)
+    # add repeats to list 
+    store_f[["repeats"]] <- repeats
+  }
+  
+  
+  # remove special characters from grange names::
+  replace_special_chars <- function(name) {
+    gsub("[-_.]", " ", name)
+  }
+  old_res_features_names <- names(store_f)
+  new_gr_names <- sapply(old_res_features_names, replace_special_chars)
+  names(store_f) <- new_gr_names
+  res_features_names <- names(store_f)
+  
+  
   # data frame
-  sRNA_features_df <- matrix(0, ncol=7, nrow = 2)
-  colnames(sRNA_features_df) <- c("promoters","exons", "introns", "5'UTR",
-                                  "3'UTR", "repeats", "others")
+  sRNA_features_df <- matrix(0, ncol= length(res_features_names), nrow = 2)
+  colnames(sRNA_features_df) <- res_features_names
   rownames(sRNA_features_df) <- c("Genome", "Dataset")
   
-    # genome
-    sRNA_features_df[1,1] <- length(promoters)
-    sRNA_features_df[1,2] <- length(exons)
-    sRNA_features_df[1,3] <- length(introns)
-    sRNA_features_df[1,4] <- length(five_UTR)
-    sRNA_features_df[1,5] <- length(three_UTR)
-    sRNA_features_df[1,6] <- length(repeats)
-    sRNA_features_df[1,7] <- length(others)
-   
-    overlapFUN <- function(x,y){
-      overlaps <- suppressWarnings(
-        GenomicRanges::findOverlaps(x, y,ignore.strand=TRUE))
-      
-      # Extract unique hits
-      unique_overlaps <- unique(S4Vectors::queryHits(overlaps))
-      
-      # Number of ranges in y that overlap with a range in x
-      num_overlapping_ranges <- length(unique_overlaps)
-      
-      return(num_overlapping_ranges)
-    }
-    
-    # select sample
-    sRNA_df <-  data %>% dplyr::select(chr, start, end)
-    sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
-    
-    
-    sRNA_features_df[2,1] <- overlapFUN(promoters,sRNA_df)
-    sRNA_features_df[2,2] <- overlapFUN(exons,sRNA_df)
-    sRNA_features_df[2,3] <- overlapFUN(introns,sRNA_df)
-    sRNA_features_df[2,4] <- overlapFUN(five_UTR,sRNA_df)
-    sRNA_features_df[2,5] <- overlapFUN(three_UTR,sRNA_df)
-    sRNA_features_df[2,6] <- overlapFUN(repeats,sRNA_df)
-    sRNA_features_df[2,7] <- overlapFUN(others,sRNA_df)
-
+  # genome
+  for(f in 1:length(res_features_names)){
+    sRNA_features_df[1,f]  <- length(store_f[[res_features_names[f]]])
+  }
+  
+  overlapFUN <- function(x,y){
+    overlaps <- suppressWarnings(
+      GenomicRanges::findOverlaps(x, y,ignore.strand=TRUE))
+    # Extract unique hits
+    unique_overlaps <- unique(S4Vectors::queryHits(overlaps))
+    # Number of ranges in y that overlap with a range in x
+    num_overlapping_ranges <- length(unique_overlaps)
+    return(num_overlapping_ranges)
+  }
+  
+  # select sample
+  sRNA_df <-  data %>% dplyr::select(chr, start, end)
+  sRNA_df <-  GenomicRanges::makeGRangesFromDataFrame(sRNA_df)
+  for(k in 1:length(res_features_names)){
+    sRNA_features_df[2,k]  <- overlapFUN(store_f[[res_features_names[k]]],sRNA_df)
+  }
+  
   
   if(percentage == TRUE){
     # convert to percentage
@@ -250,7 +175,6 @@ RNAfeatures <- function(data, annotation,
     return(sRNA_features_df)
     
   } else
-  return(t(sRNA_features_df))
-    
+    return(t(sRNA_features_df))
+  
 }
-

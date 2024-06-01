@@ -473,7 +473,7 @@ write.table(mobile_sRNA, "./sRNA_mobile_output.txt")
 <br>
 
 
-
+ 
 ## Advancing the Analysis
 For a more advanced analysis, users can include further steps. Here we 
 demonstrate a more advanced analysis for the Core RNA analysis and Mobile 
@@ -899,7 +899,7 @@ mobile_features <- RNAfeatures(data = mobile_sRNA,
 print(mobile_features)
 
 # plot as stacked bar chart
-features_plot <- plotRNAfeatures(data = sRNA_data,  
+features_plot <- plotRNAfeatures(data = mobile_sRNA,  
                                  annotation = annotation_file)
 
 plot(features_plot)
