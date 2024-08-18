@@ -31,7 +31,12 @@
 #' percentage of the total or returned as a count value representing the 
 #' number of sRNA clusters that overlap with a given genomic feature. Default is
 #' `TRUE`. 
+#'@param repeat.type character; features type in `annotation` file to represent
+#'repeats when `repeats` not supplied. 
 #'
+#'
+#'@param rmFeatures vector; type of genomic features to not consider such as 
+#'"gene" or "exon" etc. 
 #'
 #' @return Returns a table containing the number or percentage of overlaps in
 #' the supplied sRNA data set with genomic features within supplied annotation
@@ -53,32 +58,35 @@
 #'@importFrom dplyr mutate
 #'@importFrom dplyr filter
 #'@importFrom GenomicRanges makeGRangesFromDataFrame
+#'@importFrom GenomicRanges GRangesList
 #'@importFrom scales label_percent
 #'@importFrom dplyr %>%
 #'@importFrom IRanges overlapsAny
 #'@export
 RNAfeatures <- function(data, annotation,
-                        repeats = NULL,
-                        promoterRegions = 1000,
-                        percentage = TRUE) {
+                         repeats = NULL,
+                        repeat.type = NULL, 
+                         promoterRegions = 1000,
+                         percentage = TRUE,
+                         rmFeatures =NULL) {
   if (base::missing(data)) {
-    stop("data is missing. data must be an object of class matrix, data.frame, 
+    stop("data is missing. data must be an object of class matrix, data.frame,
          DataFrame. ")
   }
   if (!base::inherits(data, c("matrix", "data.frame", "DataFrame"))) {
     stop("data must be an object of class matrix, data.frame, DataFrame.")
   }
-  if (missing(annotation) || is.null(annotation) || annotation == "" || 
+  if (missing(annotation) || is.null(annotation) || annotation == "" ||
       !file.exists(annotation)) {
     stop("annotation parameter is missing or empty.")
   }
   
   annotation_info <-rtracklayer::import(annotation)
-  store_f <- GRangesList()
+  store_f <- GenomicRanges::GRangesList()
   
-  # extract types of genomic features 
+  # extract types of genomic features
   features <- levels(annotation_info$type)
-  
+  features <- subset(features, !features %in% rmFeatures )
   for (i in seq_along(features)) {
     label_feature_type <-  features[i]
     feature_type <- subset(annotation_info, type == features[i])
@@ -86,43 +94,50 @@ RNAfeatures <- function(data, annotation,
   }
   
   # Convert list to GRangesList
-  store_f <- GRangesList(store_f)
+  store_f <- GenomicRanges::GRangesList(store_f)
   
   # if genes presents, then make promorer
   if("gene" %in% names(store_f)){
     # define promoter regions
     genes <- store_f[["gene"]]
-    gene_promoters <-as.data.frame(genes)
-    colnames(gene_promoters)[1] <- "chr"
+    gene_promoters <-as.data.frame(genes) %>%
+      select(seqnames, start, end, strand)
+    gene_promoters$start <- as.numeric(gene_promoters$start)
+    gene_promoters$end <- as.numeric(gene_promoters$end)
+    
     if('*' %in% gene_promoters$strand){
-      gene_promoters <- gene_promoters[, -match("strand", 
+      gene_promoters <- gene_promoters[, -match("strand",
                                                 colnames(gene_promoters))]
     }
+    promoterRegions <- as.numeric(promoterRegions)
     pos_strand_promoter <- gene_promoters %>%
-      dplyr::filter(strand == "+") %>% 
+      dplyr::filter(strand == "+") %>%
       dplyr::mutate(end=start) %>%
       dplyr::mutate(start=start-promoterRegions)
     
     neg_strand_promoter <- gene_promoters %>%
-      dplyr::filter(strand == "-") %>% 
+      dplyr::filter(strand == "-") %>%
       dplyr::mutate(end=start) %>%
       dplyr::mutate(start=start-promoterRegions)
     
     promoters <- rbind(pos_strand_promoter, neg_strand_promoter)
-    promoters <- GenomicRanges::makeGRangesFromDataFrame(promoters)
+    promoters <- GenomicRanges::makeGRangesFromDataFrame(promoters, seqnames.field=c("seqnames") )#########new
     
-    # add to list 
+    # add to list
     store_f[["promoters"]] <- promoters
     
   }
   
   
- # if repeats present then add to store 
+  # if repeats present then add to store
   if(!is.null(repeats)){
     repeats <- rtracklayer::import(repeats)
-    # add repeats to list 
+    # add repeats to list
     store_f[["repeats"]] <- repeats
-  }
+  } else
+    if(is.null(repeats) && !is.null(repeat.type)){
+      repeats <-subset(annotation, type==repeat.type) 
+    }
   
   
   # remove special characters from grange names::
@@ -168,8 +183,8 @@ RNAfeatures <- function(data, annotation,
     sRNA_features_df <- data.frame(t(sRNA_features_df)) %>%
       dplyr::mutate(Genome = scales::label_percent()(Genome / sum(Genome)))%>%
       dplyr::mutate(Dataset = scales::label_percent()(Dataset / sum(Dataset)))
-    # if NA, conevrt to 0 assuming all columsn are character. 
-    sRNA_features_df[] <- lapply(sRNA_features_df, function(x) 
+    # if NA, conevrt to 0 assuming all columsn are character.
+    sRNA_features_df[] <- lapply(sRNA_features_df, function(x)
       ifelse(is.na(x), "0%", x))
     
     return(sRNA_features_df)

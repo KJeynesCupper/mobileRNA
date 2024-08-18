@@ -8,8 +8,10 @@ RNAfeatures(
   data,
   annotation,
   repeats = NULL,
+  repeat.type = NULL,
   promoterRegions = 1000,
-  percentage = TRUE
+  percentage = TRUE,
+  rmFeatures = NULL
 )
 }
 \arguments{
@@ -25,6 +27,9 @@ sequences in the genome (.gff/.gff1/.gff2/.gff3). By default, this is not
 required, however if there is a specific repeats annotation file for the
 genome it is suggested to supply it. Can be in compressed format (gzip).}
 
+\item{repeat.type}{character; features type in \code{annotation} file to represent
+repeats when \code{repeats} not supplied.}
+
 \item{promoterRegions}{numeric; defines the upstream promoter region of
 genes. Default is 1000, which refers to promoters set at 1Kb upstream of
 genes}
@@ -33,6 +38,9 @@ genes}
 percentage of the total or returned as a count value representing the
 number of sRNA clusters that overlap with a given genomic feature. Default is
 \code{TRUE}.}
+
+\item{rmFeatures}{vector; type of genomic features to not consider such as
+"gene" or "exon" etc.}
 }
 \value{
 Returns a table containing the number or percentage of overlaps in

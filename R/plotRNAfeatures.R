@@ -32,17 +32,15 @@
 #' 
 #'
 #'@param repeat.type character; features type in `annotation` file to represent
-#'repeats or transposable elements when `repeats` not supplied. Default is 
-#'`c("transposable_element", transposable_element_gene")` which represent the 
-#'transposable element features in the TAIR10 genome annotation. 
+#'repeats when `repeats` not supplied. 
 #'
-#'
-#'@param brewerPalette vector; colour scales from ColorBrewer to support the 
-#'ggplot2::scale_fill_brewer function. Default is "Spectral". 
+#'@param colors vector; colours for each feature. 
 #'
 #'@param x.axis.text vector; labs to represent the genome and the dataset 
 #'bars in the plot. Default is x.axis.text=c("Genome", "Dataset"). 
 #'
+#'@param rmFeatures vector; type of genomic features to not consider such as 
+#'"gene" or "exon" etc. 
 #'
 #'@param legend.position character; position of legend. Either "none", "left", 
 #'"right", "bottom", "top", "inside". 
@@ -74,7 +72,6 @@
 #'@importFrom ggplot2 ggplot
 #'@importFrom ggplot2 geom_bar
 #'@importFrom ggplot2 labs
-#'@importFrom ggplot2 scale_fill_brewer
 #'@importFrom ggplot2 guides
 #'@importFrom ggplot2 theme
 #'@importFrom ggplot2 element_blank
@@ -86,16 +83,19 @@
 
 plotRNAfeatures <- function(data, annotation,
                             repeats = NULL,
-                            promoterRegions = 1000, 
-                            repeat.type = NULL, 
-                            brewerPalette = "Spectral", 
-                            x.axis.text =  c("Genome", "Dataset"), 
-                            legend.position = "bottom" ){
+                            promoterRegions = 1000,
+                            repeat.type = NULL,
+                            colors = c("#FC8D59", "#99D594"),
+                            x.axis.text =  c("Genome", "Dataset"),
+                            legend.position = "bottom" ,
+                            rmFeatures =NULL){
   
-  data_res <- RNAfeatures(data = data,
-                                     annotation = annotation,
-                                     repeats = repeats, 
-                                     percentage = F)
+  data_res <-RNAfeatures(data = data,
+                           annotation = annotation,
+                           repeats = repeats,
+                           percentage = F,
+                           rmFeatures = rmFeatures,
+                           promoterRegions = promoterRegions)
   
   
   
@@ -111,53 +111,53 @@ plotRNAfeatures <- function(data, annotation,
   perc_vec4 <- round((vec4/sum_vec4) *100, digits = 3)
   perc_vec5 <- round((vec5/sum_vec5) *100, digits = 3)
   
-  df <- data.frame(Origin = c(vec2, vec3), 
-                   variable = vec1, 
+  df <- data.frame(Origin = c(vec2, vec3),
+                   variable = vec1,
                    value = c(vec4, vec5),
                    percentage = c(perc_vec4, perc_vec5) )
   
   df[is.na(df)] <- 0
   
- df$Origin <- factor(df$Origin, 
-                     levels = c("Genome", "Dataset"), 
-                     labels =  x.axis.text)
+  df$Origin <- factor(df$Origin,
+                      levels = x.axis.text,
+                      labels =  x.axis.text)
   
-  p <- ggplot2::ggplot(df, 
-                       ggplot2::aes(x = Origin, 
+  p <- ggplot2::ggplot(df,
+                       ggplot2::aes(x = Origin,
                                     y = percentage, fill = variable)) +
     ggplot2::geom_bar(stat = "identity", alpha = 0.9, color = "black") +
     ggplot2::labs(x = "", y = "Percentage (%)", fill = "Genomic Feature") +
     ggplot2::theme_bw()+
-    ggplot2::scale_fill_brewer(palette = brewerPalette ,direction = -1)+  
-    ggplot2::guides(fill = ggplot2::guide_legend(override.aes = 
-                                                   list(shape = 20, size = 4)))+
+    ggplot2::scale_fill_manual(values = colors)+
+    ggplot2::guides(fill = ggplot2::guide_legend(override.aes =
+                                                 list(shape = 20, size = 4)))+
     ggplot2::theme(
       strip.background = ggplot2::element_blank(),
       strip.placement = "outside",
       panel.grid = ggplot2::element_blank(),
-      axis.text.x = ggplot2::element_text(color="black", 
-                                          size = 15,face = "bold", 
-                                          margin = ggplot2::margin(t = 10, 
+      axis.text.x = ggplot2::element_text(color="black",
+                                          size = 16,
+                                          margin = ggplot2::margin(t = 5,
                                                                    b = 4)),
-      axis.text.y = ggplot2::element_text(color="black", size = 15,
-                                          face = "bold", 
-                                          margin = ggplot2::margin(r = 10)) ,
+      axis.text.y = ggplot2::element_text(color="black", size = 16,
+                                          margin = ggplot2::margin(r = 5)) ,
       panel.grid.major.x = ggplot2::element_line( linewidth=.1, color="grey",
-                                             linetype = 2 ),
-      panel.grid.major.y = ggplot2::element_line( linewidth=.1, color="grey", 
-                                             linetype = 2 ),
-      legend.position = legend.position,
-      legend.text = ggplot2::element_text(size=14, 
+                                                  linetype = 2 ),
+      panel.grid.major.y = ggplot2::element_line( linewidth=.1, color="grey",
+                                                  linetype = 2 ),
+      legend.position = "right",
+      legend.text = ggplot2::element_text(size=14,
                                           margin = ggplot2::margin(7,7,7,7)),
       legend.title = ggplot2::element_text(size = 14.5, face = "bold"),
-      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 20), size = 20, 
-                                      face = "bold"),
+      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(r = 5), size = 20,
+                                           face = "bold"),
       axis.title.x = ggplot2::element_text(size = 20, face = "bold"),
-      strip.text.x = ggplot2::element_text(size = 16,face="italic" , 
-                                      margin = ggplot2::margin(b = 10)),
-      strip.text.y = ggplot2::element_text(size = 16,face="italic" , 
-                                      margin = ggplot2::margin(l = 10)),
-      plot.margin = grid::unit(c(1,1,1,1), units = "cm"))
+      strip.text.x = ggplot2::element_text(size = 16,face="italic" ,
+                                           margin = ggplot2::margin(b = 10)),
+      strip.text.y = ggplot2::element_text(size = 16,face="italic" ,
+                                           margin = ggplot2::margin(l = 10)),
+      plot.margin = grid::unit(c(1,1,1,1), units = "cm"))+
+    ggplot2::scale_x_discrete(labels=function(x) sub(" "," \n",x,fixed=TRUE))
   
   return(p)
   
