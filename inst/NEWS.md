@@ -1,3 +1,9 @@
+# mobileRNA 1.0.12
+
+* Updated RNAfeatures and plotRNAfeatures including new parameters to
+control plotting and representation of genomic features. 
+* Updated citation 
+
 # mobileRNA 1.0.11
 
 * Major updated to RNAfeatures. Instead identifies features independently for 
