@@ -100,8 +100,8 @@ plotRNAfeatures <- function(data, annotation,
   
   
   vec1 <- rep(rownames(as.data.frame(data_res)), 2)
-  vec2 <- rep("Genome", nrow(data_res))
-  vec3 <- rep("Dataset", nrow(data_res))
+  vec2 <- rep(x.axis.text[1], nrow(data_res))
+  vec3 <- rep(x.axis.text[2], nrow(data_res))
   vec4 <- as.data.frame(data_res)$Genome
   vec5 <- as.data.frame(data_res)$Dataset
   
