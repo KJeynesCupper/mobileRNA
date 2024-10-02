@@ -1,3 +1,7 @@
+# mobileRNA 1.0.13
+
+* Updates citation 
+
 # mobileRNA 1.0.12
 
 * Updated RNAfeatures and plotRNAfeatures including new parameters to

@@ -3,7 +3,7 @@ Type: Package
 Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
 Version: 1.0.12
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
-    email = "kej031@student.bham.ac.uk", role = c("aut", "cre"), 
+    email = "kejc@illinois.edu", role = c("aut", "cre"), 
      comment = c(ORCID = "0009-0000-1350-1371")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut", 
     comment= c(ORCID = "0000-0002-3258-2522")))
