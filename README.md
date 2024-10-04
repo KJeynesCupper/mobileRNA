@@ -16,6 +16,12 @@ Katie Jeynes-Cupper, University of Illinois Urbana-Champaign, kejc@illinois.edu
 Marco Catoni, University of Birmingham
 
 
+IMPORTANT UPDATES
+======================================================================
+Recently we were made aware of a bug in the RNAmergeGenomes function 
+which has now been fixed. Similarly, we introduced a new plotting function to 
+plot the distribution of sRNAs across genomic features. 
+
 Table of Contents
 ======================================================================
 -   [Overview](#Overview)
