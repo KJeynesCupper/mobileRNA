@@ -1,3 +1,9 @@
+# mobileRNA 1.0.14
+
+* Fixed inaccuracies in README
+* Fixed bug in RNAmergeGenomes
+
+
 # mobileRNA 1.0.13
 
 * Updates citation 

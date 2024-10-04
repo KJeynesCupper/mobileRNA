@@ -10,6 +10,11 @@ An `R` package for analysis of sRNA & mRNA populations in plants and animals. Sp
 status](https://github.com/KJeynesCupper/mobileRNA/workflows/R-CMD-check/badge.svg)](https://github.com/KJeynesCupper/mobileRNA/actions)
 <!-- badges: end -->
 
+Author
+======================================================================
+Katie Jeynes-Cupper, University of Illinois Urbana-Champaign, kejc@illinois.edu
+Marco Catoni, University of Birmingham
+
 
 Table of Contents
 ======================================================================
@@ -123,10 +128,10 @@ Merge the FASTA genome assemblies of tomato and eggplant into a single
 reference file stored in your desired directory.
 
 ```r
-fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa", 
+fasta_1 <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", 
                        package="mobileRNA")
 
-fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa",
+fasta_2 <-system.file("extdata","reduced_chr2_Tomato.fa.gz",
                       package="mobileRNA")
 # define temporary output directory - replace with your directory
 output_assembly_file <- file.path(tempfile("merged_assembly", 

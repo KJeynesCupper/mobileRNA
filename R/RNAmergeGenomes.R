@@ -103,12 +103,6 @@ RNAmergeGenomes <- function(genomeA, genomeB, output_file,
   ref2 <-  Biostrings::readDNAStringSet(genomeB)
     
   pb$tick()
-  if(!is.null(names(ref1))){
-    ref1 <- unname(ref1)
-  }
-  if(!is.null(names(ref2))){
-    ref2 <- unname(ref2)
-  }
   
   
   # Replace chromosome names in reference genomes
