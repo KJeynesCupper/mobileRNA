@@ -712,7 +712,8 @@ mRNA_map <- function(sampleData,
                      mode,
                      nonunique,
                      type,
-                     idattr){
+                     idattr,
+                     python){
   # generate output folders (check if they exist )
   path_1 <- file.path(output_dir, "1_mRNA_preprocessing")
   if (!dir.exists(path_1)) {
@@ -769,12 +770,7 @@ mRNA_map <- function(sampleData,
   
   # paired end 
   if(ncol(sampleData)>2){
-    pairend_cmd_message <-paste("echo Running HISAT2 Command: 
-    'hist2 -p", shQuote(threads), 
-                                "-x [genomefile] 
-     -1 shQuote([fastqfile_1.fq]) 
-     -2 shQuote([fastqfile_2.fq]) 
-    | samtools view -bS | samtools sort -o [outputfile.bam]' >>",shQuote(stats))
+    pairend_cmd_message <-paste("echo Running HISAT2.. >>",shQuote(stats))
     
     pairend_cmd_message <- paste(pairend_cmd_message,collapse = " ")
     pairend_cmd_message <- gsub("^ *| *$", "", pairend_cmd_message)
@@ -782,19 +778,7 @@ mRNA_map <- function(sampleData,
     nline <- paste("echo '' >> ",  shQuote(stats))
     system(nline, intern=FALSE)
     
-    pairend_cmd_2_message <-paste("echo Running HTSeq Command: 
-    'python -m HTSeq.scripts.count
-    --format=bam 
-    --order=", shQuote(order),
-                                  "--a=", shQuote(a),                          
-                                  "--stranded=",shQuote(stranded), 
-                                  "--mode=",shQuote(mode), 
-                                  "--nonunique=",shQuote(nonunique), 
-                                  "--type=",shQuote(type),
-                                  "--idattr=", shQuote(idattr), 
-                                  "[outputfile.bam] [annotationfile.gff]' >>", shQuote(stats))
-    
-    
+    pairend_cmd_2_message <-paste("echo Running HTSeq... >>", shQuote(stats))
     pairend_cmd_2_message <- paste(pairend_cmd_2_message,collapse = " ")
     pairend_cmd_2_message <- gsub("^ *| *$", "", pairend_cmd_2_message)
     system(pairend_cmd_2_message, intern=FALSE)
@@ -870,7 +854,8 @@ mRNA_map <- function(sampleData,
         }
       # counts --- 
       count_file <-file.path(unqiuefolder, "Results.txt")
-      HTseq_cmd <- c("python -m HTSeq.scripts.count", " ",
+      HTseq_cmd <- c(shQuote(python)," ",
+                     "-m HTSeq.scripts.count", " ",
                      "--format=bam", " ",
                      "--order=",shQuote(order), " ",
                      "--a=", shQuote(a)," ",
@@ -895,10 +880,7 @@ mRNA_map <- function(sampleData,
       system(nline, intern=FALSE)
     }
   } else {
-    singleend_cmd_message <- paste("echo Running HISAT2 Command: 'hist2 -p", 
-                                   shQuote(threads), "-x [genomefile] 
-                    -U shQuote([fastqfile_1.fastq]) | samtools view -bS",
-                                   "| samtools sort -o [outputfile.bam]' >>", shQuote(stats))
+    singleend_cmd_message <- paste("echo Running HISAT2.. >>", shQuote(stats))
     
     singleend_cmd_message <- paste(singleend_cmd_message,collapse = " ")
     singleend_cmd_message <- gsub("^ *| *$", "", singleend_cmd_message)
@@ -907,17 +889,7 @@ mRNA_map <- function(sampleData,
     system(nline, intern=FALSE)
     
     singleend_cmd_2_message <- paste(
-      "echo 'Running HTSeq Command: python -m HTSeq.scripts.count --format=bam 
-      --order=",
-      shQuote(order), " ",
-      "--a=", shQuote(a), " ",                              
-      "--stranded=", shQuote(stranded), " ",
-      "--mode=", shQuote(mode), " ",
-      "--nonunique=", shQuote(nonunique), " ",
-      "--type=", shQuote(type), " ",
-      "--idattr=", shQuote(idattr), " ",
-      "[outputfile.bam] [annotationfile.gff]' >> ", shQuote(stats)
-    )
+      "echo Running HTSeq... >> ", shQuote(stats))
     
     singleend_cmd_2_message <- paste(singleend_cmd_2_message, collapse = "")
     singleend_cmd_2_message <- gsub("^ *| *$", "", singleend_cmd_2_message)
@@ -992,7 +964,8 @@ mRNA_map <- function(sampleData,
         }
       # counts --- 
       count_file <-file.path(unqiuefolder, "Results.txt")
-      HTseq_cmd <- c("python -m HTSeq.scripts.count"," ", 
+      HTseq_cmd <- c(shQuote(python), " ", 
+                      "-m HTSeq.scripts.count"," ", 
                      "--format=bam", " ", 
                      "--stranded=",shQuote(stranded), " ", 
                      "-a=", shQuote(a), " ", 

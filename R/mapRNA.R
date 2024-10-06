@@ -137,6 +137,10 @@
 #' @param a numeric; skip all reads with alignment quality lower than the given 
 #' minimum value (default: 10). For mRNA analysis only. 
 #'  
+#' @param python character; phython version. default is python but could be 
+#' python3 etc. This is for defining HTseq. 
+#' 
+#' 
 #' @return
 #' 
 #' ** For sRNA analysis**
@@ -186,7 +190,8 @@
 #' 
 #' 
 #' ## EXAMPLE 2 - mRNAseq
-#' 
+#' GenomeRef <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", package="mobileRNA")
+#' GenomeGFF <- system.file("extdata","reduced_chr12_Eggplant.gff.gz", package="mobileRNA")
 #' # create sample data including name, and file mates: 
 #'sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
 #'                                    "heterograft_1", "heterograft_2"),
@@ -221,7 +226,8 @@ mapRNA <- function(input = c("mRNA", "sRNA"), sampleData = NULL, tidy = TRUE,
                    dicermax = 24, mincov = 0.5, pad = 200, 
                    order = "pos",stranded = "no", a = 10, 
                    mode = "union", nonunique = "none", 
-                   type = "mRNA", idattr = "Name"){
+                   type = "mRNA", idattr = "Name",
+                   python="python"){
   # check inputs 
   if (base::missing(input) || !input %in% c("sRNA", "mRNA")){
     stop("Please state the data-type to the `input` paramter.")

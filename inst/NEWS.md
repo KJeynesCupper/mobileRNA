@@ -1,3 +1,7 @@
+# mobileRNA 1.0.15
+
+* Fixed typo in mapRNA
+
 # mobileRNA 1.0.14
 
 * Fixed inaccuracies in README
