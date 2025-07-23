@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
 Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
-Version: 1.5.0
+Version: 1.5.1
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kej031@student.bham.ac.uk", role = c("aut", "cre"), 
      comment = c(ORCID = "0009-0000-1350-1371")),
@@ -52,7 +52,7 @@ Imports:
     Biostrings, 
     reticulate,
     S4Vectors,
-    GenomeInfoDb,
+    Seqinfo,
     SummarizedExperiment,
     rlang,
     bioseq,
