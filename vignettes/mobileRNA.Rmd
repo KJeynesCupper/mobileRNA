@@ -255,12 +255,6 @@ For mRNA data, [HISAT2](https://anaconda.org/bioconda/hisat2) [@Kim2015],
 within the same Conda environment [@Anaconda].
 
 
-For utilising baymobil detection algorithm for mRNA data, please install 
-[baymobil](https://github.com/mtomtom/baymobil)[@Tomkins2023], 
-[bcftools](https://anaconda.org/bioconda/bcftools)[@Danecek2021],
-[snpEff](https://anaconda.org/bioconda/snpeff)[@Lu2012]
-
-
 ## Example Data
 
 The package includes a simulated data set to replicate the grafting
@@ -1028,7 +1022,7 @@ gff_alignment <- GenomicRanges::GRangesList()
 for (i in samples) {
   file_path <- file.path(dir, i, "Results.gff.gz3")
   if (file.exists(file_path)) {
-    gff_alignment[[i]] <- rtracklayer::import.gff.gz(file_path)
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
   } else{
     Stop("File does not exist:", file_path, "\n")
   }
@@ -1118,7 +1112,7 @@ gff_alignment <- GenomicRanges::GRangesList()
 for (i in samples) {
   file_path <- file.path(dir, i, "Results.gff.gz3")
   if (file.exists(file_path)) {
-    gff_alignment[[i]] <- rtracklayer::import.gff.gz(file_path)
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
   } else{
     Stop("File does not exist:", file_path, "\n")
   }

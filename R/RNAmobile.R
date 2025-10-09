@@ -37,11 +37,6 @@
 #' brew while this runs). Note that this option produces additional files, see
 #' `Value` section for more details.
 #'
-#' To utilise `baymobil` please ensure that you have installed baymobil and
-#' added it to your path. As well as a conda environment containing `bcftools`
-#' and `snpEff`. This is essential. Pleasue supply the conda environment
-#' that includes these packages to the `condaenv` parameter.
-#'
 #'
 #' **Statistical Analysis**
 #' The function also allows for filtering using statistical inference generated
@@ -85,38 +80,6 @@
 #' for mRNA analysis this represents the number of replicates which contained
 #' reads for the mRNA molecule which is stored in the `SampleCounts` column.
 #'
-#'@param baymobil logical; whether to utilise baymobil computation. Only
-#'suitable for mRNA. Default is FALSE.
-#'
-#'@param directory path; path to stored .bam alignment files. For baymobil only.
-#'
-#'@param heterografts character vector; containing names of heterograft samples.
-#'as shown on .bam alignment files.For baymobil only.
-#'
-#'@param genomefile path; path to a FASTA genome reference file. For baymobil
-#'only.
-#'@param output_dir path; directory to store output. For baymobil only.
-#'
-#'@param nmax numeric; nmax parameter for baymobile. Default is 10. For
-#'baymobil only.
-#'
-#'@param Bayes_cutoff numeric; log10 Bayes factor threshold for mobility. For
-#'baymobil only. Default is 1.
-#'
-#'@param condaenv character; name or directory of the Conda environment to use
-#' where OS dependencies are stored. For baymobil only.
-#'
-#'@param snpEff_database character; name of snpEff database to utilise. If
-#'custom snpEff database is utilised, provide given database name. For baymobil
-#'only. Default is "Arabidopsis_thaliana".
-#'
-#'@param custom_database logical; state whether using a custom snpEff database.
-#'For baymobil only.
-#'@param GenomeA.ID character; string to represent prefix added to
-#'existing chromosome names in `genomeA`. Default set as "A". For baymobil only.
-#'
-#'@param GenomeB.ID character; string to represent prefix added to
-#'existing chromosome names in `genomeB`. Default set as "B". For baymobil only.
 #'
 #'
 #' @return A data frame containing candidate mobile sRNAs or mRNAs, which could
@@ -124,28 +87,6 @@
 #' to by-pass the thresholds which determine the number of replicates that
 #' defined the consensus dicercall (sRNA) or contributed to reads counts (mRNA).
 #'
-#' More information on `baymobil` output:
-#' When employing this computation, the alignment files must be appropriately
-#' pre-processed and formatted accordingly. Hence, in your given output
-#' directory three folders are output:
-#' - 1_variantcalling
-#' - 2_snp_df
-#' - 3_baymobil
-#'
-#' The `1_variantcalling` folder stores information generated during variant
-#' calling and annotation. These files are important for analysis.
-#'
-#' The `2_snp_df` folder stores the files utilised to put into baymobil.
-#' Specifically, the individual Dataframe representing the total information
-#' from homografts (Nh1_Nh2_snp_counts.csv) and the individual Dataframe
-#' representing the total information from heterografts (Nn_snp_counts.csv). The
-#' file which contains all information is "Nn_Nh_nh_snp_counts.csv".
-#'
-#' The `3_baymobil` folder stores the output from baymobil computation. There
-#' should be one single file named "results_baymobil.csv".
-#'
-#'Note that this analysis can only handle a maximum of four replicates per
-#'condition.
 #'
 #' @examples
 #'data("sRNA_data")
@@ -172,19 +113,7 @@ RNAmobile <- function(input = c("sRNA", "mRNA"), data,
                       task = NULL,
                       statistical = FALSE,
                       alpha = 0.1,
-                      threshold = NULL,
-                      baymobil = FALSE,
-                      directory = NULL,
-                      heterografts = NULL,
-                      genomefile = NULL,
-                      output_dir = NULL,
-                      nmax =10,
-                      Bayes_cutoff = 1,
-                      condaenv = NULL,
-                      snpEff_database = "Arabidopsis_thaliana",
-                      custom_database = FALSE,
-                      GenomeA.ID = "A",
-                      GenomeB.ID = "B"){
+                      threshold = NULL){
   if (base::missing(input)) {
     stop("Please specify a character vector of either `sRNA` or `mRNA`
                  to input parameter.")
@@ -201,7 +130,6 @@ RNAmobile <- function(input = c("sRNA", "mRNA"), data,
           the all the chromosomes within the genome you wish to keep or remove")
   }
 
-  if (baymobil == FALSE) {
     y <- data %>%
       dplyr::filter(dplyr::case_when(
         is.null(task) & base::grepl(genome.ID, chr) ~ TRUE,
@@ -229,88 +157,5 @@ RNAmobile <- function(input = c("sRNA", "mRNA"), data,
     res_fin <- res[!zero_count_rows, ]
 
     return(res_fin)
-  } else
-    if(baymobil == TRUE){
-
-      # connect to conda
-      reticulate::use_condaenv(condaenv, required = TRUE)
-      t <- reticulate::py_config()
-      exists_res <- t$prefix
-      if(exists_res != condaenv){
-        stop("R has not connected to the conda environment")
-      }
-
-      # check if software is installed bcftools + snpEFF + baymobil
-
-      t <- snpEFF_exists()
-      if(length(t) > 0) {
-        message("snpEff package located in conda env...")
-      } else {
-          stop("Could not locate snpEff in conda env.") }
-
-      b <- bcftools_exists()
-      if(length(b) > 0) {
-        message("bcftools package located in conda env...")
-      } else {
-        stop("Could not locate bcftools in conda env.") }
-
-
-      # set vars
-      var1 <- genomefile
-      var2 <- paste0(directory,"/", controls, ".bam")
-      var3 <- paste0(directory,"/", heterografts, ".bam")
-      var4 <- output_dir
-      var5 <- nmax
-      var6 <- snpEff_database
-      var7 <- GenomeA.ID
-      var8 <- GenomeB.ID
-      var9 <- custom_database
-
-      # check for algnment files.
-      bamFiles <- file.exists(c(var2, var3))
-      if (bamFiles == FALSE) {
-        stop("ERROR: alignment files not found.")
-      }
-
-      # check fasta exists
-      fasta_exist <- file.exists(genomefile)
-      if (fasta_exist == FALSE) {
-        stop("ERROR: genome fasta file not found in directory.")
-      }
-
-      # Path to the bash script
-      baymobil_path <- system.file("baymobil","baymobil_run.sh",
-                                   package="mobileRNA")
-
-      # Construct the command
-      command <- sprintf("bash %s %s %s &",
-                         baymobil_path, var1, var2, var3,var4, var5, var6,
-                         var7, var8, var9 )
-
-      message("Initiating analysis with baymobil...")
-      message("Initiating analysis with baymobil...")
-
-      # Execute the command in the background
-      system(command, wait = FALSE)
-      message("Analysis with baymobil complete. Completing processing")
-
-      #import results
-      res <- read.csv(paste0(output_dir, "/4_baymobil/results_baymobil.csv"))
-      annotaton <- read.csv(paste0(output_dir,"output_dir/1_variantcalling/4_Heterografts_variants_reformatted.txt"))
-      combined <- merge(res, annotaton, by = "SNP")
-
-      # select obly positive values
-      mobile <- res[res$log10BF > Bayes_cutoff,]
-
-      # rank & label
-      mobile$BF <-paste0(round(10^(mobile$log10BF)), "x")
-      mobile$confidence_rank <- rank(-mobile$log10BF )
-
-      # filter original df, and bind results.
-
-      # return output
-      return()
-    }
-
 
 }
