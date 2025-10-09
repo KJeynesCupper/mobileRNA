@@ -876,13 +876,15 @@ sRNAs. Here we will be overlapping the data with genes and adding a buffer
 region of 1 kb upstream and downstream of each gene. 
 
 ```{r}
-annotation_file <- system.file("extdata", 
-                                    "prefix_reduced_chr2_Tomato.gff.gz",
-                                    package="mobileRNA")
+annotation_file <- system.file("extdata",
+                     "prefix_reduced_chr2_Tomato.gff", 
+                     package="mobileRNA")
 
 mobile_attributes <- RNAattributes(data = mobile_sRNA, 
                                       match ="genes",
                                       annotation = annotation_file)
+
+
 ```
 <br>
 

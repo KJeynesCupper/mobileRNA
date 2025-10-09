@@ -10,7 +10,6 @@ RNAfeatures(
   repeats = NULL,
   repeat.type = NULL,
   promoterRegions = 1000,
-  percentage = TRUE,
   rmFeatures = NULL
 )
 }
@@ -34,26 +33,21 @@ repeats when \code{repeats} not supplied.}
 genes. Default is 1000, which refers to promoters set at 1Kb upstream of
 genes}
 
-\item{percentage}{logical; define whether to return the results as a
-percentage of the total or returned as a count value representing the
-number of sRNA clusters that overlap with a given genomic feature. Default is
-\code{TRUE}.}
-
 \item{rmFeatures}{vector; type of genomic features to not consider such as
 "gene" or "exon" etc.}
 }
 \value{
-Returns a table containing the number or percentage of overlaps in
+Returns a table containing the number and percentage of overlaps in
 the supplied sRNA data set with genomic features within supplied annotation
 and/or with repeats.
 }
 \description{
-Calculates the number of genomic features within the supplied
-annotations and calculates the number of sRNA clusters which overlap with
-these genomic features. Based on the features within the provided annotation.
+Calculates the number/proportion of genomic features within the
+supplied annotations and calculates the number/proportion of sRNA clusters
+which overlap with these genomic features.
 }
 \details{
-\code{RNAfeatures} calculates the number or percentage of sRNA clusters which
+\code{RNAfeatures} calculates the number/percentage of sRNA clusters which
 overlap with genomic features based on their genomic coordinates.
 }
 \examples{
@@ -61,7 +55,7 @@ data("sRNA_data")
 features <- RNAfeatures(data = sRNA_data,
                        annotation = system.file("extdata",
                        "reduced_chr2_Tomato.gff.gz", package="mobileRNA"))
-                       
+
 }
 \seealso{
 \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} to merge 2 GFF files into 1.

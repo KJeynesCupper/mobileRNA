@@ -11,8 +11,8 @@ plotRNAfeatures(
   repeats = NULL,
   promoterRegions = 1000,
   repeat.type = NULL,
-  colors = c("#FC8D59", "#99D594"),
-  x.axis.text = c("Genome", "Dataset"),
+  colors = c("#EEB05AFF", "#E35E28FF", "#4DA284FF", "#4692B0FF", "#134B73FF",
+    "#B5361CFF"),
   legend.position = "bottom",
   rmFeatures = NULL
 )
@@ -38,9 +38,6 @@ genes}
 repeats when \code{repeats} not supplied.}
 
 \item{colors}{vector; colours for each feature.}
-
-\item{x.axis.text}{vector; labs to represent the genome and the dataset
-bars in the plot. Default is x.axis.text=c("Genome", "Dataset").}
 
 \item{legend.position}{character; position of legend. Either "none", "left",
 "right", "bottom", "top", "inside".}
@@ -68,7 +65,7 @@ data("sRNA_data")
 features_plot <- plotRNAfeatures(data = sRNA_data,
                        annotation = system.file("extdata",
                        "reduced_chr2_Tomato.gff.gz", package="mobileRNA"))
-                       
+
 }
 \seealso{
 \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} to merge 2 GFF files into 1.

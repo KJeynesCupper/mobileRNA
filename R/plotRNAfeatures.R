@@ -82,7 +82,6 @@ plotRNAfeatures <- function(data, annotation,
   data_res <-RNAfeatures(data = data,
                            annotation = annotation,
                            repeats = repeats,
-                           percentage = F,
                            rmFeatures = rmFeatures,
                            promoterRegions = promoterRegions)
 

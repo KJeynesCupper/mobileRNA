@@ -55,7 +55,7 @@
 #'@importFrom GenomicRanges promoters
 #'@importFrom dplyr inner_join
 #'@importFrom GenomicRanges mcols
-#'@importFrom GenomicRanges queryHits
+#'@importFrom S4Vectors queryHits
 #'@importFrom dplyr rename
 #'@export
 RNAfeatures <- function(data, annotation,
@@ -116,10 +116,10 @@ RNAfeatures <- function(data, annotation,
                                                      keep.extra.columns = T)
 
   # find overlaps
-  overlaps <- GenomicRanges::findOverlaps(allfeatures, data_gr)
+  overlaps <- suppressWarnings(GenomicRanges::findOverlaps(allfeatures, data_gr))
 
   # Subset the 'features' GRanges to get only overlapping regions
-  overlapping_features <- allfeatures[GenomicRanges::queryHits(overlaps)]
+  overlapping_features <- allfeatures[S4Vectors::queryHits(overlaps)]
 
   # Extract the 'type' column from the metadata
   feature_types <- GenomicRanges::mcols(overlapping_features)$type

@@ -1,3 +1,7 @@
+# mobileRNA 1.0.16
+
+* Updated several functions including RNAfeatures. 
+
 # mobileRNA 1.0.15
 
 * Fixed typo in mapRNA
