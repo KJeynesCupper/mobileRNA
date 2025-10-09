@@ -1,4 +1,4 @@
-# mobileRNA 1.0.16
+# mobileRNA 1.5.0
 
 * Updated several functions including RNAfeatures. 
 
