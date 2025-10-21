@@ -1,9 +1,11 @@
-bibentry(bibtype="Unpublished",
-author = personList(as.person("Katie Jeynes-Cupper"),
+citEntry(entry="article",
+         title = "mobileRNA:Investigate the RNA mobilome & population-scale changes",
+         author = personList( as.person("Katie Jeynes-Cupper"),
                               as.person("Marco Catoni")),
-	year = "2023",
-	title = "mobileRNA: Investigate the RNA mobilome & population-scale changes.",
-	note = "Unpublished", doi ="https://github.com/KJeynesCupper/mobileRNA",
-	textVersion = paste("Jeynes-Cupper, K., Catoni, M.","(2023)",
-	 "mobileRNA: Investigate the RNA mobilome & population-scale changes.")
-)
+         year = 2023,
+         journal = "Bioconductor",
+         doi = "10.18129/B9.bioc.mobileRNA",
+         textVersion = 
+         paste("Jeynes-Cupper, K., Catoni, M. (2023)",  
+        "mobileRNA: Investigate the RNA mobilome & population-scale changes.",
+         "doi:10.18129/B9.bioc.mobileRNA") )

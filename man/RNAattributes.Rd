@@ -47,12 +47,12 @@ name, must be carried forth to the genome annotation file. See
 more information.
 }
 \examples{
- # load data 
+ # load data
 data("sRNA_data")
 
 attributes_df <- RNAattributes(data = sRNA_data,
                     annotation = system.file("extdata",
-                    "prefix_reduced_chr2_Tomato.gff.gz", package="mobileRNA"),
+                    "prefix_reduced_chr2_Tomato.gff", package="mobileRNA"),
                     match = "genes")
 
 }

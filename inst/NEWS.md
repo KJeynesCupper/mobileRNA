@@ -1,3 +1,32 @@
+# mobileRNA 1.5.0
+
+* Updated several functions including RNAfeatures. 
+
+# mobileRNA 1.0.15
+
+* Fixed typo in mapRNA
+
+# mobileRNA 1.0.14
+
+* Fixed inaccuracies in README
+* Fixed bug in RNAmergeGenomes
+
+
+# mobileRNA 1.0.13
+
+* Updates citation 
+
+# mobileRNA 1.0.12
+
+* Updated RNAfeatures and plotRNAfeatures including new parameters to
+control plotting and representation of genomic features. 
+* Updated citation 
+
+# mobileRNA 1.0.11
+
+* Major updated to RNAfeatures. Instead identifies features independently for 
+the genome annotation rather than using preset features.  
+
 # mobileRNA 1.0.1
 
 * Version bump following Bioconductor updates.

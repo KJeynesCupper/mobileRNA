@@ -11,9 +11,10 @@ plotRNAfeatures(
   repeats = NULL,
   promoterRegions = 1000,
   repeat.type = NULL,
-  brewerPalette = "Spectral",
-  x.axis.text = c("Genome", "Dataset"),
-  legend.position = "bottom"
+  colors = c("#EEB05AFF", "#E35E28FF", "#4DA284FF", "#4692B0FF", "#134B73FF",
+    "#B5361CFF"),
+  legend.position = "bottom",
+  rmFeatures = NULL
 )
 }
 \arguments{
@@ -34,18 +35,15 @@ genes. Default is 1000, which refers to promoters set at 1Kb upstream of
 genes}
 
 \item{repeat.type}{character; features type in \code{annotation} file to represent
-repeats or transposable elements when \code{repeats} not supplied. Default is
-\verb{c("transposable_element", transposable_element_gene")} which represent the
-transposable element features in the TAIR10 genome annotation.}
+repeats when \code{repeats} not supplied.}
 
-\item{brewerPalette}{vector; colour scales from ColorBrewer to support the
-ggplot2::scale_fill_brewer function. Default is "Spectral".}
-
-\item{x.axis.text}{vector; labs to represent the genome and the dataset
-bars in the plot. Default is x.axis.text=c("Genome", "Dataset").}
+\item{colors}{vector; colours for each feature.}
 
 \item{legend.position}{character; position of legend. Either "none", "left",
 "right", "bottom", "top", "inside".}
+
+\item{rmFeatures}{vector; type of genomic features to not consider such as
+"gene" or "exon" etc.}
 }
 \value{
 Returns a table containing the number or percentage of overlaps in
@@ -67,7 +65,7 @@ data("sRNA_data")
 features_plot <- plotRNAfeatures(data = sRNA_data,
                        annotation = system.file("extdata",
                        "reduced_chr2_Tomato.gff.gz", package="mobileRNA"))
-                       
+
 }
 \seealso{
 \code{\link[=RNAmergeAnnotations]{RNAmergeAnnotations()}} to merge 2 GFF files into 1.

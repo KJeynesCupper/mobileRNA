@@ -400,6 +400,7 @@ If there are issues utilising this function, the manual steps are illustrated in
 the [Appendix](#Appendix)
 <br>
 
+
 ###  Import Pre-Processed Data into R 
 Import the results from the alignment step into R using the `RNAimport()` 
 function. 
@@ -473,7 +474,7 @@ write.table(mobile_sRNA, "./sRNA_mobile_output.txt")
 <br>
 
 
-
+ 
 ## Advancing the Analysis
 For a more advanced analysis, users can include further steps. Here we 
 demonstrate a more advanced analysis for the Core RNA analysis and Mobile 
@@ -875,13 +876,15 @@ sRNAs. Here we will be overlapping the data with genes and adding a buffer
 region of 1 kb upstream and downstream of each gene. 
 
 ```{r}
-annotation_file <- system.file("extdata", 
-                                    "prefix_reduced_chr2_Tomato.gff.gz",
-                                    package="mobileRNA")
+annotation_file <- system.file("extdata",
+                     "prefix_reduced_chr2_Tomato.gff", 
+                     package="mobileRNA")
 
 mobile_attributes <- RNAattributes(data = mobile_sRNA, 
                                       match ="genes",
                                       annotation = annotation_file)
+
+
 ```
 <br>
 
@@ -899,7 +902,7 @@ mobile_features <- RNAfeatures(data = mobile_sRNA,
 print(mobile_features)
 
 # plot as stacked bar chart
-features_plot <- plotRNAfeatures(data = sRNA_data,  
+features_plot <- plotRNAfeatures(data = mobile_sRNA,  
                                  annotation = annotation_file)
 
 plot(features_plot)
@@ -1021,7 +1024,7 @@ gff_alignment <- GenomicRanges::GRangesList()
 for (i in samples) {
   file_path <- file.path(dir, i, "Results.gff.gz3")
   if (file.exists(file_path)) {
-    gff_alignment[[i]] <- rtracklayer::import.gff.gz(file_path)
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
   } else{
     Stop("File does not exist:", file_path, "\n")
   }
@@ -1111,7 +1114,7 @@ gff_alignment <- GenomicRanges::GRangesList()
 for (i in samples) {
   file_path <- file.path(dir, i, "Results.gff.gz3")
   if (file.exists(file_path)) {
-    gff_alignment[[i]] <- rtracklayer::import.gff.gz(file_path)
+    gff_alignment[[i]] <- rtracklayer::import.gff(file_path)
   } else{
     Stop("File does not exist:", file_path, "\n")
   }

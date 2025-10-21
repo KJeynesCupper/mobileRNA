@@ -1,13 +1,13 @@
 Package: mobileRNA
 Type: Package
 Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
-Version: 1.4.0
+Version: 1.0.15
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
-    email = "kej031@student.bham.ac.uk", role = c("aut", "cre"), 
+    email = "kejc@illinois.edu", role = c("aut", "cre"), 
      comment = c(ORCID = "0009-0000-1350-1371")),
     person("Marco", "Catoni", email = "m.catoni@bham.ac.uk", role = "aut", 
     comment= c(ORCID = "0000-0002-3258-2522")))
-Description:Genomic analysis can be utilised to identify differences between RNA 
+Description: Genomic analysis can be utilised to identify differences between RNA 
   populations in two conditions, both in production and abundance. This includes 
   the identification of RNAs produced by multiple genomes within a biological 
   system. For example, RNA produced by pathogens within a host or mobile RNAs in
@@ -22,11 +22,12 @@ VignetteBuilder:
 Encoding: UTF-8
 LazyData: FALSE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    testthat (>= 3.0.0)
 Imports: 
     dplyr,
     tidyr, 
@@ -78,3 +79,4 @@ SystemRequirements:
     HISAT2,
     SAMtools,
     Conda
+Config/testthat/edition: 3

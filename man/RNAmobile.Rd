@@ -82,6 +82,13 @@ a threshold that considers the number of replicates which contained reads
 for the mRNA molecule. This parameter filters based on the \code{SampleCounts}
 column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
 
+Alternatively, utilize the \code{baymobil} algorithm, which identifies the mobile
+mRNAs using exact Bayesian inference based on SNP variant information. This
+option requires the user to input substantially more information. Please
+be aware this option requires significant processing time (so, maybe get a
+brew while this runs). Note that this option produces additional files, see
+\code{Value} section for more details.
+
 \strong{Statistical Analysis}
 The function also allows for filtering using statistical inference generated
 from the differential analysis of the total data set using the function
@@ -90,8 +97,6 @@ is enabled and selects molecules that meet the adjusted p-value
 cutoff defined by \code{alpha}.
 }
 \examples{
-
-
 data("sRNA_data")
 
 
@@ -104,4 +109,8 @@ mobile_df1 <- RNAmobile(input = "sRNA", data =  sRNA_data,
 controls = controls, genome.ID = "B_", task = "keep", statistical = FALSE)
 
 
+
+}
+\references{
+baymobil \url{https://doi.org/10.21203/rs.3.rs-2520491/v1}
 }

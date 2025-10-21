@@ -25,7 +25,8 @@ mapRNA(
   mode = "union",
   nonunique = "none",
   type = "mRNA",
-  idattr = "Name"
+  idattr = "Name",
+  python = "python"
 )
 }
 \arguments{
@@ -111,6 +112,9 @@ For mRNA analysis only.}
 lines with the same feature ID will be considered as parts of the same
 feature. The feature ID is used to identity the counts in the output table.
 Default is "Name". For mRNA analysis only.}
+
+\item{python}{character; phython version. default is python but could be
+python3 etc. This is for defining HTseq.}
 }
 \value{
 ** For sRNA analysis**
@@ -205,7 +209,8 @@ mmap = "n")
 
 
 ## EXAMPLE 2 - mRNAseq
-
+GenomeRef <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", package="mobileRNA")
+GenomeGFF <- system.file("extdata","reduced_chr12_Eggplant.gff.gz", package="mobileRNA")
 # create sample data including name, and file mates: 
 sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
                                    "heterograft_1", "heterograft_2"),
