@@ -63,7 +63,7 @@
 #' @importFrom GenomicRanges GRangesList
 #' @importFrom progress progress_bar
 #' @importFrom S4Vectors elementMetadata 
-#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom Seqinfo seqlevels
 #' @export
 #'
 RNAmergeAnnotations <- function(annotationA, annotationB,
@@ -100,13 +100,13 @@ RNAmergeAnnotations <- function(annotationA, annotationB,
   
   # remove full-stop
   annotationA_seqnames <- gsub("\\.", "", paste0(AnnoA.ID, "_",   
-                                          GenomeInfoDb::seqlevels(annotationA)))
+                                          Seqinfo::seqlevels(annotationA)))
   annotationB_seqnames <- gsub("\\.", "", paste0(AnnoB.ID, "_",
-                                         GenomeInfoDb::seqlevels(annotationB)))
+                                         Seqinfo::seqlevels(annotationB)))
   
   # change seqnames
-  GenomeInfoDb::seqlevels(annotationA) <- annotationA_seqnames
-  GenomeInfoDb::seqlevels(annotationB) <- annotationB_seqnames
+  Seqinfo::seqlevels(annotationA) <- annotationA_seqnames
+  Seqinfo::seqlevels(annotationB) <- annotationB_seqnames
 
   pb$tick()
  # change classes 
