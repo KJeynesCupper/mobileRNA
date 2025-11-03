@@ -1,4 +1,4 @@
-# mobileRNA 1.5.3
+# mobileRNA 1.7.0
 
 * Added Namespace dependency to DESCRIPTION Imports/Depends entries: ‘Seqinfo’
 
