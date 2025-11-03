@@ -47,7 +47,7 @@
 #' @importFrom S4Vectors mcols
 #' @importFrom IRanges ranges
 #' @importFrom S4Vectors elementMetadata
-#' @importFrom Seqinfo seqnames
+#' @importFrom GenomicRanges seqnames
 #' @examples
 #'  # load data
 #' data("sRNA_data")
@@ -134,7 +134,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
 
     #add ranges to genes info
     adjusted_grange <- GenomicRanges::GRanges(
-      Seqinfo::seqnames(genes),
+      GenomicRanges::seqnames(genes),
       ranges = adjusted_ranges,
       metadata = S4Vectors::mcols(genes)
     )
