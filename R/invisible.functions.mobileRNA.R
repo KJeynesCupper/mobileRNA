@@ -1,6 +1,6 @@
 #------------------------------------------------------------#
 # Title:  Invisible functions                                #
-# Author: Katie Jeynes-Cupper (kej031@student.bham.ac.uk) #
+# Author: Katie Jeynes-Cupper (kejc@@illinois.edu) #
 # Date:   01.02.23                                           #
 #------------------------------------------------------------#
 ################ remove mapping errors (RNAmobile function) ####################
