@@ -58,7 +58,7 @@ genome,that you treat the input annotations in the same way.
 }
 \examples{
 
-anno1 <- system.file("extdata", "reduced_chr12_Eggplant.gff.gz", 
+anno1 <- system.file("extdata", "reduced_chr12_Eggplant.gff.gz",
 package="mobileRNA")
 
 anno2 <- system.file("extdata","reduced_chr2_Tomato.gff.gz",
@@ -68,5 +68,5 @@ output_file <- tempfile("merged_annotation", fileext = ".gff3")
 
 merged_anno <- RNAmergeAnnotations(annotationA = anno1, annotationB = anno2,
                                    output_file = output_file)
-                                   
+
 }
