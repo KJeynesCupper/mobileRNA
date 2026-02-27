@@ -1,6 +1,7 @@
-# mobileRNA 1.6.2
+# mobileRNA 1.7.2
 
 * Updated ShortStack mobile sRNA integration 
+# mobileRNA 1.7.1
 
 # mobileRNA 1.6.1
 
