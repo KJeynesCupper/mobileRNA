@@ -1,36 +1,51 @@
-home:
-  title: "mobileRNA: RNA mobilome & RNA population-scale changes"
-  description: "Explore small RNA or messenger RNA abundance changes between 
-treatment and conditions from NGS data. Plus, identify putative mobile RNA 
-molecules, for example in plant grafting experiments."
-
-url: https://kjeynescupper.github.io/mobileRNA/
-
-deploy:
-  install_metadata: true
-  
-template:
-  bootstrap: 5
-  bootswatch: flatly
-
-navbar:
-  structure:
-    left: [intro, reference, vignettes, news]
-    right: [search, github]
-
-components:
-  vignettes:
-   text: Vignettes
-   menu:
-     - text: mobileRNA Manula
-       href: articles/mobileRNA.html
-
-figures:
-  dev: ragg::agg_png
-  dpi: 96
-  dev.args: []
-  fig.ext: png
-  fig.width: 7.2916667
-  fig.height: ~
-  fig.retina: 2
-  fig.asp: 1.618
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+name: R-CMD-check
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+    steps:
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-tinytex@v2
+      - run: tlmgr --version
+      - run: tlmgr update --self
+      - name: Install additional LaTeX packages
+        run: |
+          tlmgr install ae babel-english pdflscape pdfpages sidecap
+          tlmgr list --only-installed
+      
+      - name: Install ghostscript
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install ghostscript
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
