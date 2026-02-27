@@ -1,7 +1,7 @@
 Package: mobileRNA
 Type: Package
 Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
-Version: 1.7.1
+Version: 1.6.2
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kejc@illinois.edu", role = c("aut", "cre"), 
      comment = c(ORCID = "0009-0000-1350-1371")),
