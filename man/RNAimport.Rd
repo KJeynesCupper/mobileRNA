@@ -125,7 +125,7 @@ df_mRNA <- RNAimport(input = "mRNA",
                      directory = "./analysis/mRNA_mapping_results",
                      samples = c("heterograft_1", "heterograft_2",
                      "heterograft_3","selfgraft_1" , "selfgraft_2" ,
-                     "selfgraft_3"), 
+                     "selfgraft_3"),
                      annotation = "./merged_annotation.gff3")
 
 
