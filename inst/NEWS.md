@@ -1,4 +1,8 @@
-# mobileRNA 1.7.0
+# mobileRNA 1.6.2
+
+* Updated ShortStack mobile sRNA integration 
+
+# mobileRNA 1.6.1
 
 * Added Namespace dependency to DESCRIPTION Imports/Depends entries: ‘Seqinfo’
 

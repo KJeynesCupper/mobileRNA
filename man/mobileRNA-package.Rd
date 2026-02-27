@@ -59,8 +59,8 @@ See \code{vignette("mobileRNA", package = "mobieRNA")} for an
 overview of the package.
 }
 \author{
-Katie Jeynes-Cupper \email{kej031@student.bham.ac.uk},
+Katie Jeynes-Cupper \email{kejc@illinois.edu},
 Marco Catoni \email{m.catoni@bham.ac.uk}
-Maintainer: Katie Jeynes-Cupper \email{kej031@student.bham.ac.uk}
+Maintainer: Katie Jeynes-Cupper \email{kejc@illinois.edu}
 }
 \keyword{internal}
