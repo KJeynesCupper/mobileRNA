@@ -8,6 +8,9 @@ An `R` package for analysis of sRNA & mRNA populations in plants and animals. Sp
 <!-- badges: start -->
 [![R build
 status](https://github.com/KJeynesCupper/mobileRNA/workflows/R-CMD-check/badge.svg)](https://github.com/KJeynesCupper/mobileRNA/actions)
+
+[![](https://bioconductor.org/shields/downloads/release/mobileRNA.svg)](https://bioconductor.org/packages/stats/bioc/mobileRNA/)
+
 <!-- badges: end -->
 
 Author
