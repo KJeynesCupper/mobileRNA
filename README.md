@@ -12,6 +12,8 @@ status](https://github.com/KJeynesCupper/mobileRNA/workflows/R-CMD-check/badge.s
 [![](https://bioconductor.org/shields/downloads/release/mobileRNA.svg)](https://bioconductor.org/packages/stats/bioc/mobileRNA/)
 
 <!-- badges: end -->
+This is available through Bioconductor, follow this (<a href="https://bioconductor.org/packages/release/bioc/html/mobileRNA.html">link</a>)
+
 
 Author
 ======================================================================
