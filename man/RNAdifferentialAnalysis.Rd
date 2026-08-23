@@ -19,11 +19,11 @@ design, formatted in the order of samples shown in the \code{data} object from
 left to right.}
 
 \item{method}{character; method to undertaken differential analysis, choose
-from methods of either \link[DESeq2:DESeq]{DESeq2::DESeq} or \link[edgeR:edgeR-package]{edgeR::edgeR}.
+from methods of either \link[DESeq2:DESeq]{DESeq2::DESeq} or \link[edgeR:edgeR]{edgeR::edgeR}.
 Must be stated as either "DESeq2" or "edgeR" in the function.}
 
 \item{dispersionValue}{numeric; value to represent the dispersion value for
-the \link[edgeR:edgeR-package]{edgeR::edgeR} method. Recommended for analysis in experiments without
+the \link[edgeR:edgeR]{edgeR::edgeR} method. Recommended for analysis in experiments without
 biological replicates.}
 }
 \value{
@@ -55,7 +55,7 @@ Benjamini-Hochberg method. Note that this function is only capable of
 handling one replicate per condition with the \code{edgeR} method. This requires
 setting a suitable dispersion value. The dispersion value is other wise known
 as the common Biological squared coefficient of variation. See the
-User’s Guide for the \code{edgeR} package for more details, \link[edgeR:edgeR-package]{edgeR::edgeR}.
+User’s Guide for the \code{edgeR} package for more details, \link[edgeR:edgeR]{edgeR::edgeR}.
 }
 \examples{
 # load data 

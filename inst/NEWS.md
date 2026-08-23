@@ -1,4 +1,16 @@
-# mobileRNA 1.4.1
+# mobileRNA 1.8.1
+
+* added baymobik integrations 
+
+# mobileRNA 1.6.2
+
+* Updated ShortStack mobile sRNA integration 
+
+# mobileRNA 1.6.1
+
+* Added Namespace dependency to DESCRIPTION Imports/Depends entries: ‘Seqinfo’
+
+# mobileRNA 1.5.2
 
 * Updated several functions including RNAfeatures. 
 
