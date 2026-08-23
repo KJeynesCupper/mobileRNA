@@ -1,11 +1,11 @@
 citEntry(entry="article",
-         title = "mobileRNA:Investigate the RNA mobilome & population-scale changes",
+         title = "mobileRNA: an integrative, automated tool for accurate identification of mobile RNA molecules based on multiple genome mapping.",
          author = personList( as.person("Katie Jeynes-Cupper"),
                               as.person("Marco Catoni")),
          year = 2023,
          journal = "Bioconductor",
          doi = "10.18129/B9.bioc.mobileRNA",
-         textVersion = 
-         paste("Jeynes-Cupper, K., Catoni, M. (2023)",  
-        "mobileRNA: Investigate the RNA mobilome & population-scale changes.",
+         textVersion =
+         paste("Jeynes-Cupper, K., Catoni, M. (2023)",
+        "mobileRNA: an integrative, automated tool for accurate identification of mobile RNA molecules based on multiple genome mapping.",
          "doi:10.18129/B9.bioc.mobileRNA") )

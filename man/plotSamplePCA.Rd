@@ -91,8 +91,8 @@ data("sRNA_data")
 
 groups <- c("Heterograft", "Heterograft", "Heterograft",
             "Selfgraft", "Selfgraft", "Selfgraft")
-            
-            
+
+
 p <-  plotSamplePCA(data = sRNA_data, group = groups)
 
 plot(p)

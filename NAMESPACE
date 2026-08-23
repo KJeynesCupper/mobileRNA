@@ -21,108 +21,141 @@ export(plotRNAfeatures)
 export(plotSampleDistance)
 export(plotSamplePCA)
 importFrom(BiocGenerics,grep)
-importFrom(Biostrings,readDNAStringSet)
-importFrom(Biostrings,writeXStringSet)
-importFrom(DESeq2,DESeq)
-importFrom(DESeq2,DESeqDataSetFromMatrix)
-importFrom(DESeq2,estimateSizeFactors)
-importFrom(DESeq2,plotPCA)
-importFrom(DESeq2,results)
-importFrom(DESeq2,rlog)
+importFrom(Biostrings,
+  readDNAStringSet,
+  writeXStringSet
+)
+importFrom(DESeq2,
+  DESeq,
+  DESeqDataSetFromMatrix,
+  estimateSizeFactors,
+  plotPCA,
+  results,
+  rlog
+)
 importFrom(GenomeInfoDb,seqlevels)
-importFrom(GenomicRanges,GRanges)
-importFrom(GenomicRanges,GRangesList)
-importFrom(GenomicRanges,findOverlaps)
-importFrom(GenomicRanges,makeGRangesFromDataFrame)
-importFrom(GenomicRanges,mcols)
-importFrom(GenomicRanges,promoters)
-importFrom(GenomicRanges,reduce)
-importFrom(GenomicRanges,seqnames)
-importFrom(IRanges,IRanges)
-importFrom(IRanges,overlapsAny)
-importFrom(IRanges,ranges)
+importFrom(GenomicRanges,
+  GRanges,
+  GRangesList,
+  findOverlaps,
+  makeGRangesFromDataFrame,
+  mcols,
+  promoters,
+  reduce,
+  seqnames
+)
+importFrom(IRanges,
+  IRanges,
+  overlapsAny,
+  ranges
+)
 importFrom(RColorBrewer,brewer.pal)
-importFrom(S4Vectors,DataFrame)
-importFrom(S4Vectors,elementMetadata)
-importFrom(S4Vectors,mcols)
-importFrom(S4Vectors,queryHits)
-importFrom(S4Vectors,subjectHits)
-importFrom(SimDesign,quiet)
+importFrom(S4Vectors,
+  DataFrame,
+  elementMetadata,
+  mcols,
+  queryHits,
+  subjectHits
+)
 importFrom(SummarizedExperiment,SummarizedExperiment)
-importFrom(bioseq,rna)
-importFrom(bioseq,seq_consensus)
-importFrom(data.table,":=")
-importFrom(data.table,data.table)
-importFrom(data.table,fread)
-importFrom(data.table,melt)
-importFrom(data.table,setDT)
-importFrom(data.table,setnames)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,across)
-importFrom(dplyr,case_when)
-importFrom(dplyr,contains)
-importFrom(dplyr,count)
-importFrom(dplyr,filter)
-importFrom(dplyr,if_any)
-importFrom(dplyr,inner_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,mutate_at)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,select_if)
-importFrom(dplyr,starts_with)
-importFrom(dplyr,where)
-importFrom(edgeR,DGEList)
-importFrom(edgeR,calcNormFactors)
-importFrom(edgeR,estimateDisp)
-importFrom(edgeR,exactTest)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,coord_fixed)
-importFrom(ggplot2,element_blank)
-importFrom(ggplot2,element_line)
-importFrom(ggplot2,element_rect)
-importFrom(ggplot2,element_text)
-importFrom(ggplot2,expansion)
-importFrom(ggplot2,facet_wrap)
-importFrom(ggplot2,geom_bar)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,guide_legend)
-importFrom(ggplot2,guides)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,margin)
-importFrom(ggplot2,scale_color_manual)
-importFrom(ggplot2,scale_colour_manual)
-importFrom(ggplot2,scale_fill_manual)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_classic)
-importFrom(ggplot2,unit)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
-importFrom(ggrepel,geom_label_repel)
-importFrom(ggrepel,geom_text_repel)
+importFrom(bioseq,
+  rna,
+  seq_consensus
+)
+importFrom(data.table,
+  ":=",
+  data.table,
+  fread,
+  melt,
+  setDT,
+  setnames
+)
+importFrom(dplyr,
+  "%>%",
+  across,
+  case_when,
+  contains,
+  count,
+  filter,
+  if_any,
+  inner_join,
+  mutate,
+  mutate_at,
+  rename,
+  select,
+  select_if,
+  starts_with,
+  where
+)
+importFrom(edgeR,
+  DGEList,
+  calcNormFactors,
+  estimateDisp,
+  exactTest
+)
+importFrom(ggplot2,
+  aes,
+  coord_fixed,
+  element_blank,
+  element_line,
+  element_rect,
+  element_text,
+  expansion,
+  facet_wrap,
+  geom_bar,
+  geom_line,
+  geom_point,
+  ggplot,
+  guide_legend,
+  guides,
+  labs,
+  margin,
+  scale_color_manual,
+  scale_colour_manual,
+  scale_fill_manual,
+  theme,
+  theme_classic,
+  unit,
+  xlab,
+  ylab
+)
+importFrom(ggrepel,
+  geom_label_repel,
+  geom_text_repel
+)
 importFrom(grDevices,colorRampPalette)
-importFrom(grid,gpar)
-importFrom(grid,unit)
+importFrom(grid,
+  gpar,
+  unit
+)
 importFrom(pheatmap,pheatmap)
 importFrom(progress,progress_bar)
 importFrom(reticulate,use_condaenv)
 importFrom(rlang,sym)
-importFrom(rtracklayer,export)
-importFrom(rtracklayer,import)
-importFrom(rtracklayer,import.gff)
+importFrom(rtracklayer,
+  export,
+  import,
+  import.gff
+)
 importFrom(scales,label_percent)
-importFrom(stats,complete.cases)
-importFrom(stats,dist)
-importFrom(stats,na.omit)
-importFrom(stats,p.adjust)
-importFrom(stats,relevel)
-importFrom(stats,setNames)
-importFrom(tidyr,gather)
-importFrom(tidyr,replace_na)
-importFrom(tidyselect,all_of)
-importFrom(tidyselect,starts_with)
-importFrom(utils,flush.console)
-importFrom(utils,read.table)
-importFrom(utils,write.table)
+importFrom(stats,
+  complete.cases,
+  dist,
+  na.omit,
+  p.adjust,
+  relevel,
+  setNames
+)
+importFrom(tidyr,
+  gather,
+  replace_na
+)
+importFrom(tidyselect,
+  all_of,
+  starts_with
+)
+importFrom(utils,
+  flush.console,
+  read.table,
+  write.table
+)

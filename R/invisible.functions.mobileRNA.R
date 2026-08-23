@@ -1053,6 +1053,100 @@ bcftools_exists <- function(){
 }
 
 
+baymobil_results_integration <- function(baymobil_filepath,
+                                         annotation_filepath,
+                                         gene_id_field,
+                                         log10BF_threshold){
+
+  # read in csv:
+  baymobil_res <- read.csv(baymobil_filepath)
+
+
+  #  load mereged annotation file
+  annotation <- rtracklayer::import(annotation_filepath)
+  annotation <- annotation[annotation$type == "gene"]
+
+
+  #  Convert SNP df to GRanges where start = end = POS
+  baymobil_gr <- GenomicRanges::GRanges(
+    seqnames = baymobil_res$CHROM,
+    ranges   = IRanges(start = baymobil_res$POS, end = baymobil_res$POS)
+  )
+
+  # keep a link back to the original row order
+  mcols(baymobil_gr)$snp_id <- seq_len(nrow(baymobil_res))
+
+
+
+  # check if chromosomes naming matches:
+  missing_levels <- setdiff(seqlevels(annotation), seqlevels(baymobil_gr))
+
+  if (length(missing_levels) > 0) {
+    stop(
+      "Chromosome naming mismatch between baymobil results and annotation.\n",
+      "Levels present in the annotation but missing from the baymobil results: ",
+      paste(missing_levels, collapse = ", ")
+    )
+  }
+
+
+  # Find overlaps -
+  hits <- GenomicRanges::findOverlaps(baymobil_gr, annotation, type = "within", ignore.strand = TRUE)
+
+
+  #  Build annotation table
+  # handles SNPs with 0 or multiple overlapping genes correctly
+  annot <- tibble::tibble(
+    snp_id = mcols(baymobil_gr)$snp_id[queryHits(hits)],
+    mRNA   = mcols(annotation)[[gene_id_field]][subjectHits(hits)]
+  )
+
+  # collapse multiple gene hits per SNP into one row (semicolon-separated)..
+  annot_collapsed <- annot %>%
+    dplyr::group_by(snp_id) %>%
+    dplyr::summarise(mRNA = paste(unique(mRNA), collapse = ";"), .groups = "drop")
+  # then left-join
+  baymobil_res <- baymobil_res %>%
+    dplyr::mutate(snp_id = row_number()) %>%
+    dplyr::left_join(annot_collapsed, by = "snp_id") %>%
+    dplyr::select(-snp_id)
+
+  cap_low <- cap[[1]]
+  cap_high <- cap[[2]]
+  # select mobile candidates
+  baymobil_res <-  baymobil_res %>%
+    mutate(N = as.integer(N),
+           n = as.integer(n),
+           Nh1 = as.integer(Nh1),
+           nh1 = as.integer(nh1),
+           Nh2= as.integer(Nh2),
+           nh2= as.integer(nh2),
+           log10BF= as.numeric(log10BF) )%>%
+    dplyr::group_by(mRNA) %>%
+    # filter based on Nh1 - where Nh1 is zero
+      dplyr::filter(
+        Nh1 != 0 |
+          n() == 1 |
+          all(Nh1 == 0, na.rm = TRUE)
+      ) %>%
+      dplyr::slice(if (all(Nh1 == 0, na.rm = TRUE)) 1L else seq_len(n())) %>%
+    # cap the log10BF values
+      mutate(capped_logBF10 = case_when(
+        log10BF >= cap_high ~ 10,
+        log10BF <= cap_low ~ -2,
+        .default = log10BF
+      ))%>%
+    # filter for mobilt based on the sun of log10bf
+      mutate(summed_logBF10 = sum(capped_logBF10, na.rm = TRUE))%>%
+      dplyr::ungroup()%>%
+      filter(summed_logBF10 >= log10BF_threshold)
+
+  return(baymobil_res)
+}
+
+
+
+
 
 
 

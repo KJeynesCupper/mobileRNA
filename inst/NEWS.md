@@ -1,3 +1,7 @@
+# mobileRNA 1.8.1
+
+* added baymobik integrations 
+
 # mobileRNA 1.6.2
 
 * Updated ShortStack mobile sRNA integration 
