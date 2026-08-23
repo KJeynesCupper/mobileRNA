@@ -1,4 +1,4 @@
-# mobileRNA 2.0.0
+# mobileRNA 1.9.1
 
 * added baymobil integration 
 
