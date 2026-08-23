@@ -12,7 +12,13 @@ RNAmobile(
   task = NULL,
   statistical = FALSE,
   alpha = 0.1,
-  threshold = NULL
+  threshold = NULL,
+  baymobil_integration = FALSE,
+  baymobil_filepath = NULL,
+  annotation_filepath = NULL,
+  gene_id_field = "ID",
+  log10BF_threshold = 1,
+  cap = c(-2, 10)
 )
 }
 \arguments{
@@ -48,12 +54,40 @@ represents filtering by the minimum number of replicates that defined the
 consensus dicercall which is stored in the \code{DicerCounts} column. While,
 for mRNA analysis this represents the number of replicates which contained
 reads for the mRNA molecule which is stored in the \code{SampleCounts} column.}
+
+\item{baymobil_integration}{logical; state whether to supply results from
+baymobil (Default = FALSE)}
+
+\item{baymobil_filepath}{path; directory path to a CSV file produced as
+output from baymobil.Only required for baymobil integration.}
+
+\item{annotation_filepath}{path; directory path to the merged annotation file
+(GFF).Only required for baymobil integration.}
+
+\item{gene_id_field}{character; column in annotation file supplying gene
+names or ID (Default ="ID"). Only required for baymobil integration.}
+
+\item{log10BF_threshold}{numeric; summed log10BF value to use as threshold
+for baymobil integration. Only required for baymobil integration.}
+
+\item{cap}{vector; vector containing lowest and highest numeric values to
+cap log10BF values. (Default = c(-2, 10)) Only required for baymobil
+integration.}
 }
 \value{
 A data frame containing candidate mobile sRNAs or mRNAs, which could
 have been further filtered based on statistical significance and the ability
 to by-pass the thresholds which determine the number of replicates that
 defined the consensus dicercall (sRNA) or contributed to reads counts (mRNA).
+
+If baymobil results are integrated for mRNA mobility calculation, then
+additional columns are added from the baymobil output. Only mRNA transcripts
+with supported statistical evidence for mobility are added. In some cases,
+this will include genes that are not detected as mobile by mobileRNA. The
+column "baymobil_mobility_status" is always added, and states whether the
+mRNA transcript has evidence for mobility from baymobil or whether it has no
+evidence. When this is used the statistical and threshold
+filtering is not applied.
 }
 \description{
 A function to identify the putative sRNA or mRNA  molecules
@@ -82,12 +116,18 @@ a threshold that considers the number of replicates which contained reads
 for the mRNA molecule. This parameter filters based on the \code{SampleCounts}
 column introduced by the \code{\link[=RNAimport]{RNAimport()}} function.
 
-Alternatively, utilize the \code{baymobil} algorithm, which identifies the mobile
-mRNAs using exact Bayesian inference based on SNP variant information. This
-option requires the user to input substantially more information. Please
-be aware this option requires significant processing time (so, maybe get a
-brew while this runs). Note that this option produces additional files, see
-\code{Value} section for more details.
+For intraspecfic grafts (eg. A.thaliana ecotypes), we have demonstrated it to
+be favourable to utilize the \code{baymobil} algorithm alongside mobileRNA.
+This approach utilities exact Bayesian inference based on SNP variant
+information. Please run the \code{baymobil} outside of mobileRNA, and here, you
+can supply the output of \code{baymobil} to add more information to the mobileRNA
+results. Please refer to our latest publication for a comprehensive breakdown.
+
+To determine mobility, the log10 Bayes factors (logBF) is summed across SNPs
+for each transcript, neglecting SNPs where Nh1 is zero and limiting the logBF
+value to -2 and capping at 10 (default). Transcripts with a summed logBF
+greater than or equal to the threshold value (log10BF_threshold,
+default = 1) have statistical support for mobility.
 
 \strong{Statistical Analysis}
 The function also allows for filtering using statistical inference generated

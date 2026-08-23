@@ -1,7 +1,8 @@
 Package: mobileRNA
 Type: Package
-Title: mobileRNA: Investigate the RNA mobilome & population-scale changes
-Version: 1.7.2
+Title: mobileRNA: an integrative, automated tool for accurate identification of 
+mobile RNA molecules based on multiple genome mapping. 
+Version: 1.8.1
 Authors@R: c(person("Katie", "Jeynes-Cupper", 
     email = "kejc@illinois.edu", role = c("aut", "cre"), 
      comment = c(ORCID = "0009-0000-1350-1371")),
@@ -22,7 +23,6 @@ VignetteBuilder:
 Encoding: UTF-8
 LazyData: FALSE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rmarkdown,
@@ -45,7 +45,6 @@ Imports:
     GenomicRanges,
     rtracklayer,
     data.table,
-    SimDesign,
     scales,
     IRanges,
     stats,
@@ -80,3 +79,4 @@ SystemRequirements:
     SAMtools,
     Conda
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
