@@ -136,6 +136,11 @@
 #' @importFrom dplyr select
 #' @importFrom tidyselect starts_with
 #' @importFrom dplyr case_when
+#' @importFrom utils read.csv
+#' @importFrom dplyr row_number
+#' @importFrom S4Vectors mcols
+#' @importFrom dplyr if_else
+#' @importFrom tibble tibble
 RNAmobile <- function(input = c("sRNA", "mRNA"),
                       data,
                       controls,
@@ -194,7 +199,7 @@ RNAmobile <- function(input = c("sRNA", "mRNA"),
     # join with the results
     res <- res %>%
       dplyr::full_join(SNP_res, by = "mRNA") %>%
-      dplyr::mutate(baymobil_mobility_status = if_else(
+      dplyr::mutate(baymobil_mobility_status = dplyr::if_else(
         mRNA %in% SNP_res$mRNA,
         "mobile",
         "No evidence for mobility"

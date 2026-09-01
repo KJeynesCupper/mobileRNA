@@ -1,3 +1,8 @@
+# mobileRNA 1.9.2
+
+* updated mRNA mapping function; silent errors due to bugs and updated in dependencies.
+* Updated RNAdifferentialAnalysis() fails at return: object 'groups' not found. 
+
 # mobileRNA 1.9.1
 
 * added baymobil integration 

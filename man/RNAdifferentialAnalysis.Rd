@@ -58,7 +58,7 @@ as the common Biological squared coefficient of variation. See the
 User’s Guide for the \code{edgeR} package for more details, \link[edgeR:edgeR]{edgeR::edgeR}.
 }
 \examples{
-# load data 
+# load data
 data("sRNA_data")
 
 

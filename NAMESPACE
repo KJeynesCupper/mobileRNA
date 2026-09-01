@@ -20,7 +20,10 @@ export(plotHeatmap)
 export(plotRNAfeatures)
 export(plotSampleDistance)
 export(plotSamplePCA)
-importFrom(BiocGenerics,grep)
+importFrom(BiocGenerics,
+  as.data.frame,
+  grep
+)
 importFrom(Biostrings,
   readDNAStringSet,
   writeXStringSet
@@ -78,10 +81,12 @@ importFrom(dplyr,
   count,
   filter,
   if_any,
+  if_else,
   inner_join,
   mutate,
   mutate_at,
   rename,
+  row_number,
   select,
   select_if,
   starts_with,
@@ -146,6 +151,7 @@ importFrom(stats,
   relevel,
   setNames
 )
+importFrom(tibble,tibble)
 importFrom(tidyr,
   gather,
   replace_na
@@ -156,6 +162,7 @@ importFrom(tidyselect,
 )
 importFrom(utils,
   flush.console,
+  read.csv,
   read.table,
   write.table
 )

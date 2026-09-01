@@ -697,6 +697,7 @@ mobile_map <- function(input_files_dir, output_dir, genomefile, condaenv,
 
 
 ################## mRNA map  #####################################
+# updated in version Sep 2026
 
 mRNA_map <- function(sampleData,
                      input_files_dir,
@@ -749,7 +750,7 @@ mRNA_map <- function(sampleData,
   if (length(index_found) > 0) {
     message("Genome index already built.")
   } else {
-    message("Genome index not already built. Building with Bowtie... ")
+    message("Genome index not already built. Building with HISAT2... ")
     if (grepl("\\.(fasta.gz|fa.gz|fsa.gz)$", genomefile)){
       gunzip_cmd <- c("gunzip", genomefile)
       gunzip_cmd <- paste(gunzip_cmd,collapse = " ")
@@ -790,7 +791,8 @@ mRNA_map <- function(sampleData,
       sample_name <- pair_files[1]
       fastq_1 <- pair_files[2]
       fastq_2 <- pair_files[3]
-      unqiuefolder <- file.path(output_dir,sample_name)
+      # unqiuefolder <- file.path(output_dir,sample_name)
+      unqiuefolder <- file.path(path_1,sample_name)
       unqiuefolder_mkdir <- dir.create(unqiuefolder, recursive = TRUE)
       bam_name <- paste0(sample_name,".bam")
       bam <-file.path(unqiuefolder, bam_name)
@@ -821,8 +823,12 @@ mRNA_map <- function(sampleData,
       if(mmap == "n"){
         out_filename <- paste0(sample_name,"_uniqueReads1.bam")
         out <- file.path(unqiuefolder,out_filename )
-        unique_reads <- c("samtools view", shQuote(bam), "| grep",
-                          c("NH:i:1"),">", shQuote(out))
+        # unique_reads <- c("samtools view", shQuote(bam), "| grep",
+        #                   c("NH:i:1"),">", shQuote(out))
+
+        unique_reads <- c("samtools view", shQuote(bam), "| grep -P",
+                          shQuote("NH:i:1\\b"), ">", shQuote(out))
+
         unique_reads <- paste(unique_reads,collapse = " ")
         unique_reads <- gsub("^ *| *$", "", unique_reads)
         system(unique_reads, intern=FALSE)
@@ -858,7 +864,7 @@ mRNA_map <- function(sampleData,
                      "-m HTSeq.scripts.count", " ",
                      "--format=bam", " ",
                      "--order=",shQuote(order), " ",
-                     "--a=", shQuote(a)," ",
+                     "-a ", shQuote(a)," ",
                      "--stranded=",shQuote(stranded)," ",
                      "--mode=",shQuote(mode), " ",
                      "--nonunique=",shQuote(nonunique)," ",
@@ -931,8 +937,12 @@ mRNA_map <- function(sampleData,
       if(mmap == "n"){
         out_filename <-paste0(sample_name,"_uniqueReads1.bam")
         out <- file.path(unqiuefolder, out_filename)
-        unique_reads <- c("samtools view", shQuote(bam), "| grep",
-                          c("NH:i:1"),">", shQuote(out))
+        # unique_reads <- c("samtools view", shQuote(bam), "| grep",
+        #                   c("NH:i:1"),">", shQuote(out))
+
+        unique_reads <- c("samtools view", shQuote(bam), "| grep -P",
+                          shQuote("NH:i:1\\b"), ">", shQuote(out))
+
         unique_reads <- paste(unique_reads,collapse = " ")
         unique_reads <- gsub("^ *| *$", "", unique_reads)
         system(unique_reads, intern=FALSE)
@@ -965,10 +975,10 @@ mRNA_map <- function(sampleData,
       # counts ---
       count_file <-file.path(unqiuefolder, "Results.txt")
       HTseq_cmd <- c(shQuote(python), " ",
-                      "-m HTSeq.scripts.count"," ",
+                     "-m HTSeq.scripts.count"," ",
                      "--format=bam", " ",
                      "--stranded=",shQuote(stranded), " ",
-                     "-a=", shQuote(a), " ",
+                     "-a ", shQuote(a), " ",
                      "--mode=",shQuote(mode), " ",
                      "--nonunique=",shQuote(nonunique), " ",
                      "--type=",shQuote(type)," ",
@@ -991,7 +1001,6 @@ mRNA_map <- function(sampleData,
   message("\n\n --- Mapping of mRNAseq samples is complete --- ")
   message("Results saved to: ", path_1)
 }
-
 
 
 ################## mRNA map extras  #####################################
@@ -1056,10 +1065,11 @@ bcftools_exists <- function(){
 baymobil_results_integration <- function(baymobil_filepath,
                                          annotation_filepath,
                                          gene_id_field,
-                                         log10BF_threshold){
+                                         log10BF_threshold,
+                                         cap){
 
   # read in csv:
-  baymobil_res <- read.csv(baymobil_filepath)
+  baymobil_res <- utils::read.csv(baymobil_filepath)
 
 
   #  load mereged annotation file
@@ -1074,7 +1084,7 @@ baymobil_results_integration <- function(baymobil_filepath,
   )
 
   # keep a link back to the original row order
-  mcols(baymobil_gr)$snp_id <- seq_len(nrow(baymobil_res))
+  S4Vectors::mcols(baymobil_gr)$snp_id <- seq_len(nrow(baymobil_res))
 
 
 
@@ -1097,8 +1107,8 @@ baymobil_results_integration <- function(baymobil_filepath,
   #  Build annotation table
   # handles SNPs with 0 or multiple overlapping genes correctly
   annot <- tibble::tibble(
-    snp_id = mcols(baymobil_gr)$snp_id[queryHits(hits)],
-    mRNA   = mcols(annotation)[[gene_id_field]][subjectHits(hits)]
+    snp_id = S4Vectors::mcols(baymobil_gr)$snp_id[queryHits(hits)],
+    mRNA   = S4Vectors::mcols(annotation)[[gene_id_field]][subjectHits(hits)]
   )
 
   # collapse multiple gene hits per SNP into one row (semicolon-separated)..
@@ -1107,7 +1117,7 @@ baymobil_results_integration <- function(baymobil_filepath,
     dplyr::summarise(mRNA = paste(unique(mRNA), collapse = ";"), .groups = "drop")
   # then left-join
   baymobil_res <- baymobil_res %>%
-    dplyr::mutate(snp_id = row_number()) %>%
+    dplyr::mutate(snp_id = dplyr::row_number()) %>%
     dplyr::left_join(annot_collapsed, by = "snp_id") %>%
     dplyr::select(-snp_id)
 

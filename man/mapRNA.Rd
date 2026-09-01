@@ -143,7 +143,7 @@ these files are deleted. This is determined by the \code{tidy} argument.
 For mRNA analysis, generate a new folder which stores the results in the
 users desired output location, known as "1_mRNA_preprocessing". Within this
 folder, there will contain one folder per sample storing it's sorted
-alignment file (BAM) and raw counts file ("Result.txt"). Note, that the
+alignment file (BAM) and raw counts file ("Results.txt"). Note, that the
 function excludes multi-mapped mRNAs.
 }
 \description{
@@ -169,8 +169,9 @@ environment during a session.
 
 \strong{For sRNA analysis}
 The function invokes a number of OS commands, and is dependent
-on the installation of \code{ShortStack} (>= 4.0) with Conda. Please note that
-\code{ShortStack} is only compatible with Linux and Mac operating systems.
+on the installation of \code{ShortStack} (>= 4.0), \code{bowtie} with Conda.
+Please note that \code{ShortStack} is only compatible with Linux and Mac
+operating systems.
 
 The pipeline undertakes de novo detection of sRNA-producing loci and
 alignment, where the output of each are stored in their respective folders in
@@ -184,7 +185,7 @@ are imported into R using \code{\link[=RNAimport]{RNAimport()}}.
 \strong{For mRNA analysis}
 
 The function invokes a number of OS commands, and is dependent
-on the installation of \code{HISAT2},\code{HTSeq} and \code{SAMtools} with \code{Conda.}
+on the installation of \code{HISAT2},\code{HTSeq}, \code{grep} and \code{SAMtools} with \code{Conda.}
 The pipeline can undertake single- or pair-end analysis, and to do so
 requires a data frame stating the sample information where each row
 represents a sample. The reads are mapped using \code{HISAT} and then the
@@ -200,23 +201,23 @@ samples <- file.path(system.file("extdata/sRNAseq",package="mobileRNA"))
 GenomeRef <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", package="mobileRNA")
 output_location <- tempdir()
 
-mapRNA(input = "sRNA", 
-input_files_dir = samples, 
-output_dir = output_location, 
+mapRNA(input = "sRNA",
+input_files_dir = samples,
+output_dir = output_location,
 genomefile = GenomeRef,
-condaenv = "ShortStack4", 
+condaenv = "ShortStack4",
 mmap = "n")
 
 
 ## EXAMPLE 2 - mRNAseq
 GenomeRef <- system.file("extdata","reduced_chr12_Eggplant.fa.gz", package="mobileRNA")
 GenomeGFF <- system.file("extdata","reduced_chr12_Eggplant.gff.gz", package="mobileRNA")
-# create sample data including name, and file mates: 
-sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2", 
+# create sample data including name, and file mates:
+sampleData <- data.frame(sample = c("selfgraft_1", "selfgraft_2",
                                    "heterograft_1", "heterograft_2"),
-                        mate1 = c("selfgraft_mRNAdemo_1.fq.gz", "selfgraft_mRNAdemo_2.fq.gz", 
+                        mate1 = c("selfgraft_mRNAdemo_1.fq.gz", "selfgraft_mRNAdemo_2.fq.gz",
                                   "heterograft_mRNAdemo_1.fq.gz", "heterograft_mRNAdemo_2.fq.gz"))
-# location of samples:                                 
+# location of samples:
 samples <- system.file("extdata/mRNAseq", package="mobileRNA")
 
 # location to store output
@@ -224,12 +225,13 @@ output_location <- tempdir()
 
 # run alignment
 mapRNA(input = "mRNA",
-      input_files_dir = samples, 
-      output_dir = output_location, 
-      genomefile = output_assembly_file,
-      annotationfile = output_annotation_file,
-      sampleData = sampleData, 
-      condaenv = "/Users/user-name/miniconda3")
+      input_files_dir = samples,
+      output_dir = output_location,
+      genomefile = GenomeRef,
+      annotationfile = GenomeGFF,
+      sampleData = sampleData,
+       condaenv = "/Users/user-name/miniconda3/envs/rnaseq",
+       python = "/Users/user-name/miniconda3/envs/rnaseq/bin/python")
 }
 
 }

@@ -48,6 +48,7 @@
 #' @importFrom IRanges ranges
 #' @importFrom S4Vectors elementMetadata
 #' @importFrom GenomicRanges seqnames
+#' @importFrom  BiocGenerics as.data.frame
 #' @examples
 #'  # load data
 #' data("sRNA_data")
@@ -57,7 +58,8 @@
 #'                     "prefix_reduced_chr2_Tomato.gff", package="mobileRNA"),
 #'                     match = "genes")
 #'
-RNAattributes <- function(data, annotation, match = c("within", "genes"),
+RNAattributes <- function(data, annotation,
+                          match = c("within", "genes"),
                           bufferRegion = 1000){
   if (base::missing(data) || nrow(data) == 0) {
     stop("data is missing. data must be an object of class matrix, data.frame,
@@ -133,11 +135,17 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     )
 
     #add ranges to genes info
+#    adjusted_grange <- GenomicRanges::GRanges(
+#   seqnames = GenomicRanges::seqnames(genes),
+#   ranges = adjusted_ranges
+# )
     adjusted_grange <- GenomicRanges::GRanges(
-      GenomicRanges::seqnames(genes),
-      ranges = adjusted_ranges,
-      metadata = S4Vectors::mcols(genes)
+      seqnames = GenomicRanges::seqnames(genes),
+      ranges = adjusted_ranges
     )
+
+    S4Vectors::mcols(adjusted_grange) <- S4Vectors::mcols(genes)
+
 
     # convert data to granges
     data_gr <- GenomicRanges::GRanges(
@@ -148,19 +156,22 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     # Find overlaps between genomic loci and adjusted GRanges
     overlaps <- suppressWarnings(GenomicRanges::findOverlaps(data_gr, adjusted_grange))
 
+
     # Get the indices of overlapping genomic loci ie row number
     queryHits_ot <- S4Vectors::queryHits(overlaps)
     subjectHits_ot <- S4Vectors::subjectHits(overlaps)
 
 
     # convert to dataframe
-    adjusted_grange_df <- as.data.frame(adjusted_grange)
+    adjusted_grange_df <- BiocGenerics::as.data.frame(adjusted_grange)
     # converion adds metadeta to metadatcols
     names(adjusted_grange_df) <- sub('^metadata.', '',names(adjusted_grange_df))
+
+
     # add columns to data
     add_cols <- colnames(adjusted_grange_df)
     col_diff <- setdiff(add_cols, colnames(data))
-    rm_extra <- c("seqnames", "width","strand","source", "score", "phase")
+    rm_extra <- c("seqnames", "width","strand","source", "score", "phase", "type")
     col_diff <- col_diff[!col_diff %in% rm_extra]
     data[,col_diff] <- NA
     if(length(subjectHits_ot) == 0 ){
@@ -170,7 +181,7 @@ RNAattributes <- function(data, annotation, match = c("within", "genes"),
     for (i in seq_along(subjectHits_ot)) {
       row_index <- subjectHits_ot[i]
       row_vals <- adjusted_grange_df[row_index, ]
-      row_vals<- row_vals[,col_diff] # only extra columns.
+      row_vals <- row_vals[, col_diff, drop = FALSE] # only extra columns.
 
       for (j in names(row_vals)) {
         if (j %in% names(data[queryHits_ot[i],])) {
