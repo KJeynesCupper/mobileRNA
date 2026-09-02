@@ -1,3 +1,6 @@
+# mobileRNA 1.9.3
+* changed vignette rendering settings. 
+
 # mobileRNA 1.9.2
 
 * updated mRNA mapping function; silent errors due to bugs and updated in dependencies.
